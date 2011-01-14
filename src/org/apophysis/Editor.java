@@ -532,7 +532,7 @@ public class Editor extends MyThinlet implements Constants, ThreadTarget {
 			polyx[2] = XScreen(t.x[2], ix, gCenterX, sc);
 			polyy[2] = YScreen(t.y[2], iy, gCenterY, sc);
 
-			if (selectMode | (mouseOverTriangle == selectedTriangle)) {
+			if (selectMode || (mouseOverTriangle == selectedTriangle)) {
 				g2.fillPolygon(polyx, polyy, 3);
 			} else {
 				g2.drawPolygon(polyx, polyy, 3);
@@ -2337,8 +2337,8 @@ public class Editor extends MyThinlet implements Constants, ThreadTarget {
 	public void cbTransformsChange(Object combo) {
 		int index = getSelectedIndex(combo);
 
-		if ((index != selectedTriangle) & (index >= 0)
-				& (index <= lastTriangle())) {
+		if ((index != selectedTriangle) && (index >= 0)
+				&& (index <= lastTriangle())) {
 			selectedTriangle = index;
 			showSelectedInfo();
 		}

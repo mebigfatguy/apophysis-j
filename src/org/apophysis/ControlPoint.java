@@ -179,7 +179,7 @@ public class ControlPoint implements Constants {
 		brightness = tag.getDouble("brightness", brightness);
 		gamma = tag.getDouble("gamma", gamma);
 		vibrancy = tag.getDouble("vibrancy", vibrancy);
-		if (Global.limitVibrancy & (vibrancy > 1)) {
+		if (Global.limitVibrancy && (vibrancy > 1)) {
 			vibrancy = 1.0;
 		}
 		zoom = tag.getDouble("zoom", zoom);
