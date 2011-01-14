@@ -47,26 +47,37 @@ public class Triangle {
 	/*****************************************************************************/
 
 	public void copy(Triangle t) {
-		for (int i = 0; i < 3; i++) {
-			this.x[i] = t.x[i];
-			this.y[i] = t.y[i];
-		}
+		System.arraycopy(t.x, 0, x, 0, 3);
+		System.arraycopy(t.y, 0, y, 0, 3);
 	}
 
 	/*****************************************************************************/
 
-	public boolean equals(Triangle t) {
-		for (int i = 0; i < 3; i++) {
-			if (this.x[i] != t.x[i])
-				return false;
-			if (this.y[i] != t.y[i])
-				return false;
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof Triangle) {
+			Triangle t = (Triangle) o;
+			for (int i = 0; i < 3; i++) {
+				if (this.x[i] != t.x[i]) {
+					return false;
+				}
+				if (this.y[i] != t.y[i]) {
+					return false;
+				}
+			}
+			return true;
 		}
-		return true;
+		return false;
 	}
 
 	/*****************************************************************************/
 
+	@Override
+	public int hashCode() {
+		return (int)x[0] ^ (int)x[1] ^ (int)x[2] ^ (int)y[0] ^ (int)y[1] ^ (int)y[2];
+	}
+
+	/*****************************************************************************/
 	public void set(double x0, double y0, double x1, double y1, double x2,
 			double y2) {
 		x[0] = x0;
@@ -94,12 +105,13 @@ public class Triangle {
 	double getArea() {
 		double base = dist(x[0], y[0], x[1], y[1]);
 		double height = line_dist(x[2], y[2], x[1], y[1], x[0], y[0]);
-		if (base < 1.0)
+		if (base < 1.0) {
 			return height;
-		else if (height < 1.0)
+		} else if (height < 1.0) {
 			return base;
-		else
+		} else {
 			return 0.5 * base * height;
+		}
 	}
 
 	/*****************************************************************************/
@@ -116,18 +128,20 @@ public class Triangle {
 		a = dist(x, y, x1, y1);
 		b = dist(x, y, x2, y2);
 		e = dist(x1, y1, x2, y2);
-		if ((a * a + e * e) < (b * b))
+		if ((a * a + e * e) < (b * b)) {
 			return a;
-		else if ((b * b + e * e) < (a * a))
+		} else if ((b * b + e * e) < (a * a)) {
 			return b;
-		else if (e != 0) {
+		} else if (e != 0) {
 			c = (b * b - a * a - e * e) / (-2 * e);
-			if ((a * a - c * c) < 0)
+			if ((a * a - c * c) < 0) {
 				return 0;
-			else
+			} else {
 				return Math.sqrt(a * a - c * c);
-		} else
+			}
+		} else {
 			return a;
+		}
 
 	}
 
@@ -178,8 +192,9 @@ public class Triangle {
 
 	public void scaleCornerAroundPoint(int index, double xs, double ys,
 			double scale) {
-		if (scale == 0)
+		if (scale == 0) {
 			scale = 1e-64;
+		}
 
 		x[index] = scale * (x[index] - xs) + xs;
 		y[index] = scale * (y[index] - ys) + ys;
@@ -189,8 +204,9 @@ public class Triangle {
 	/*****************************************************************************/
 
 	public void scaleAroundPoint(double xs, double ys, double scale) {
-		if (scale == 0)
+		if (scale == 0) {
 			scale = 1e-64;
+		}
 
 		for (int i = 0; i < 3; i++) {
 			x[i] = scale * (x[i] - xs) + xs;
