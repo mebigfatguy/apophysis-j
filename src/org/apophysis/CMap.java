@@ -287,8 +287,7 @@ class CMap {
 		}
 
 		try {
-			InputStream is = Global.main.getClass().getResourceAsStream(
-					"cmap.dat");
+			InputStream is = Global.main.getClass().getResourceAsStream("/org/apophysis/cmap.dat");
 
 			is.skip(index * 256 * 3);
 
