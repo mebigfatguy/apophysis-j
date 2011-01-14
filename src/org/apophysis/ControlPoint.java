@@ -1185,7 +1185,7 @@ public class ControlPoint implements Constants {
 		// check if some variations are authorized in the options
 		varpossible = false;
 		for (int i = 0; i < nv; i++) {
-			varpossible = varpossible |= XForm.isAuthorized(i);
+			varpossible |= XForm.isAuthorized(i);
 		}
 
 		if (varpossible) {
