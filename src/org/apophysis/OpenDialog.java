@@ -50,9 +50,9 @@ public class OpenDialog {
 
 	private final List<File> dirs = new Vector<File>();
 	private final List<String[]> filters = new Vector<String[]>();
-	private String patterns[] = { "*.*" };
+	private String[] patterns = { "*.*" };
 
-	File roots[] = null;
+	File[] roots = null;
 	File root = null;
 
 	/******************************************************************************/
@@ -96,7 +96,7 @@ public class OpenDialog {
 		thinlet.removeAll(combo);
 
 		for (int i = 0; i < filters.size(); i++) {
-			String s[] = filters.get(i);
+			String[] s = filters.get(i);
 
 			Object choice = Thinlet.createImpl("choice");
 			thinlet.setString(choice, "text", s[0]);
@@ -216,7 +216,7 @@ public class OpenDialog {
 		Object filelist = thinlet.find("openfilelist");
 		thinlet.removeAll(filelist);
 
-		String filenames[] = curdir.list();
+		String[] filenames = curdir.list();
 		if (filenames != null) {
 			for (String filename2 : filenames) {
 				if (filename2.startsWith(".")) {
@@ -310,7 +310,7 @@ public class OpenDialog {
 	public void changeType(Object list) {
 		int index = thinlet.getSelectedIndex(list);
 
-		String s[] = filters.get(index);
+		String[] s = filters.get(index);
 
 		StringTokenizer tk = new StringTokenizer(s[1], ";");
 

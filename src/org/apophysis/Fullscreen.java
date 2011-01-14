@@ -59,7 +59,7 @@ public class Fullscreen extends MyThinlet implements Constants {
 	boolean calculate;
 	ControlPoint cp = new ControlPoint();
 	double zoom;
-	double center[] = new double[2];
+	double[] center = new double[2];
 
 	GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 	GraphicsDevice gd = ge.getDefaultScreenDevice();

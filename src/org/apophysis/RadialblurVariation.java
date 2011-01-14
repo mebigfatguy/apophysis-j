@@ -31,7 +31,7 @@ public class RadialblurVariation extends Variation {
 
 	double angle = 2 * Math.random() - 1;
 	double spin, zoom;
-	double rnd[] = new double[4];
+	double[] rnd = new double[4];
 	int N;
 
 	int context;

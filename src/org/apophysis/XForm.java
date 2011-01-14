@@ -95,7 +95,7 @@ public class XForm implements Constants {
 	static int nparams;
 	static ClassLoader loader = null;
 
-	static boolean sheep[] = null; // if variation is sheep compatible
+	static boolean[] sheep = null; // if variation is sheep compatible
 
 	/****************************************************************************/
 	// FIELDS
@@ -129,15 +129,15 @@ public class XForm implements Constants {
 
 	public double vars[]; // variation parameters
 	double pvalues[]; // parameters values
-	Variation variations[] = null; // local variations for this xform
+	Variation[] variations = null; // local variations for this xform
 
 	int ncomp;
-	Computation computations[] = null;
+	Computation[] computations = null;
 
 	// temp matrices
-	double MA[][] = new double[3][3];
-	double MB[][] = new double[3][3];
-	double MC[][] = new double[3][3];
+	double[][] MA = new double[3][3];
+	double[][] MB = new double[3][3];
+	double[][] MC = new double[3][3];
 
 	/*****************************************************************************/
 	// CONSTRUCOR
@@ -204,7 +204,7 @@ public class XForm implements Constants {
 		color = tag.getDouble("color", color);
 		symmetry = tag.getDouble("symmetry", symmetry);
 
-		double coefs[] = tag.getDoubles("coefs");
+		double[] coefs = tag.getDoubles("coefs");
 		if (coefs != null) {
 			if (coefs.length == 6) {
 				c00 = coefs[0];
@@ -290,7 +290,7 @@ public class XForm implements Constants {
 		loader = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
 			public ClassLoader run() {
 				try {
-					URL urls[] = new URL[] { dplugin.toURL() };
+					URL[] urls = new URL[] { dplugin.toURL() };
 					return new URLClassLoader(urls);
 				} catch (Exception ex) {
 					ex.printStackTrace();
@@ -305,7 +305,7 @@ public class XForm implements Constants {
 
 		List<Variation> vdup = new ArrayList<Variation>();
 
-		String filenames[] = dapo.list();
+		String[] filenames = dapo.list();
 		if (filenames == null) {
 			return;
 		}

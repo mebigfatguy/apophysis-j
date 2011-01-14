@@ -78,7 +78,7 @@ public class Script extends MyThinlet implements Constants {
 	Map<Integer, ControlPoint> cps = new Hashtable<Integer, ControlPoint>();
 	List<ControlPoint> cpf = new Vector<ControlPoint>();
 
-	Triangle triangles[] = new Triangle[NXFORMS + 2];
+	Triangle[] triangles = new Triangle[NXFORMS + 2];
 
 	boolean updateflame = true;
 	boolean resetlocation = false;
@@ -264,7 +264,7 @@ public class Script extends MyThinlet implements Constants {
 
 		// expose all the methods starting with _
 		try {
-			Method methods[] = this.getClass().getDeclaredMethods();
+			Method[] methods = this.getClass().getDeclaredMethods();
 			for (int i = 0; i < methods.length; i++) {
 				if (!methods[i].getName().startsWith("_")) {
 					continue;
@@ -607,7 +607,7 @@ public class Script extends MyThinlet implements Constants {
 
 	public String _Format(String fmt, Object a1, Object a2, Object a3,
 			Object a4, Object a5, Object a6, Object a7, Object a8, Object a9) {
-		Object args[] = new Object[] { a1, a2, a3, a4, a5, a6, a7, a8, a9 };
+		Object[] args = new Object[] { a1, a2, a3, a4, a5, a6, a7, a8, a9 };
 		return StringFormatter.format(fmt, args);
 
 	}
@@ -669,7 +669,7 @@ public class Script extends MyThinlet implements Constants {
 	public void _ListFile(String filename) throws IOException {
 		File file = new File(filename);
 		if (file.exists()) {
-			File files[] = new File[] { file };
+			File[] files = new File[] { file };
 			Global.main.openFiles(files);
 			cp.copy(Global.mainCP);
 			_at_ = 0;
@@ -1259,7 +1259,7 @@ public class Script extends MyThinlet implements Constants {
 
 	int getLineNumber(Throwable t, int nprefix) {
 
-		StackTraceElement s[] = t.getStackTrace();
+		StackTraceElement[] s = t.getStackTrace();
 		for (StackTraceElement element : s) {
 			if (element.getFileName().equals("<cmd>")) {
 				if (element.getLineNumber() > 0) {
@@ -1365,7 +1365,7 @@ public class Script extends MyThinlet implements Constants {
 	public void caretChange(Object textarea) {
 
 		int pos = getInteger(textarea, "end");
-		char c[] = getString(textarea, "text").toCharArray();
+		char[] c = getString(textarea, "text").toCharArray();
 		int line = 1;
 		for (int i = 0; i < pos; i++) {
 			if (c[i] == '\n') {

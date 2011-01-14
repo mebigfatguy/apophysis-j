@@ -41,12 +41,12 @@ public class ScriptRenderer extends MyThinlet implements Constants,
 
 	ControlPoint cp = new ControlPoint();
 	Renderer renderer = null;
-	int colormap[][] = new int[256][3];
+	int[][] colormap = new int[256][3];
 	String filename;
 	int imagewidth, imageheight;
 	int oversample;
 	double zoom, sample_density, brightness, gamma, vibrancy, filter_radius;
-	double center[] = new double[2];
+	double[] center = new double[2];
 
 	boolean cancelled = false;
 

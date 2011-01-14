@@ -63,7 +63,7 @@ public class Options extends MyThinlet implements Constants {
 
 		int nv = XForm.getNrVariations();
 
-		SortableVariation svar[] = new SortableVariation[nv];
+		SortableVariation[] svar = new SortableVariation[nv];
 		for (int i = 0; i < nv; i++)
 			svar[i] = new SortableVariation(XForm.getVariation(i).getName(), i,
 					XForm.getVariation(i).getGroup());

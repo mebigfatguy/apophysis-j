@@ -89,7 +89,7 @@ public class Global implements Constants {
 	public static boolean maintainRatio;
 
 	// mainTriangle[M1] is mainTriangle[-1] in delphi
-	public static Triangle mainTriangles[] = new Triangle[NXFORMS + 2];
+	public static Triangle[] mainTriangles = new Triangle[NXFORMS + 2];
 
 	// UPR options
 
@@ -232,7 +232,7 @@ public class Global implements Constants {
 
 	// Image Size Presets
 	// 0 = left, 1=top, 2=width, 3=height
-	public static int sizepresets[][] = new int[3][4];
+	public static int[][] sizepresets = new int[3][4];
 
 	public static ControlPoint mainCP = null;
 
@@ -986,7 +986,7 @@ public class Global implements Constants {
 			throw new IOException("Cannot copy " + filesrc.getName());
 		}
 
-		byte buffer[] = new byte[512];
+		byte[] buffer = new byte[512];
 		FileInputStream is = new FileInputStream(filesrc);
 		FileOutputStream os = new FileOutputStream(filedst);
 		while (true) {

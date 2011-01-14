@@ -70,7 +70,7 @@ public class Helper extends MyThinlet implements Constants, Runnable {
 
 	void buildTopicMenu() {
 		Object combo = find("cmbTopic");
-		Object choices[] = getItems(combo);
+		Object[] choices = getItems(combo);
 
 		int n = choices.length;
 
@@ -124,7 +124,7 @@ public class Helper extends MyThinlet implements Constants, Runnable {
 		String name = names[index];
 
 		try {
-			char buffer[] = new char[512];
+			char[] buffer = new char[512];
 
 			String rname = "/help/" + name + ".txt";
 

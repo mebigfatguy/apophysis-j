@@ -28,8 +28,8 @@
 package org.apophysis;
 
 public class Triangle {
-	public double x[] = new double[3];
-	public double y[] = new double[3];
+	public double[] x = new double[3];
+	public double[] y = new double[3];
 
 	Triangle() {
 		this(0, 0, 0, 0, 0, 0);
@@ -91,7 +91,7 @@ public class Triangle {
 	/*****************************************************************************/
 
 	double[] getCentroid() {
-		double xy[] = new double[2];
+		double[] xy = new double[2];
 
 		xy[0] = (x[0] + x[1] + x[2]) / 3.0;
 		xy[1] = (y[0] + y[1] + y[2]) / 3.0;

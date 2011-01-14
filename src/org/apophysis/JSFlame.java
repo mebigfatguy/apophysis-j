@@ -20,8 +20,8 @@ public class JSFlame implements Constants {
 	public double FilterRadius;
 	public double Scale;
 
-	public int Background[] = new int[3];
-	public int Gradient[][] = new int[256][3];
+	public int[] Background = new int[3];
+	public int[][] Gradient = new int[256][3];
 
 	public String Name;
 	public String Nick = "";

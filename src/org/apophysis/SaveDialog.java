@@ -53,7 +53,7 @@ public class SaveDialog {
 
 	String exts = ""; // current extension
 
-	File roots[] = null;
+	File[] roots = null;
 	File root = null;
 
 	public String warning = "Replace";
@@ -196,7 +196,7 @@ public class SaveDialog {
 		Object filelist = thinlet.find("savefilelist");
 		thinlet.removeAll(filelist);
 
-		String filenames[] = curdir.list();
+		String[] filenames = curdir.list();
 
 		for (String filename2 : filenames) {
 			if (filename2.startsWith(".")) {

@@ -62,7 +62,7 @@ public class XmlTag {
 		String attr = null;
 		String value = null;
 
-		char c[] = line.toCharArray();
+		char[] c = line.toCharArray();
 
 		int state = ST_WNAME;
 
@@ -235,7 +235,7 @@ public class XmlTag {
 		StringTokenizer tk = new StringTokenizer(s);
 		int n = tk.countTokens();
 
-		double dd[] = new double[n];
+		double[] dd = new double[n];
 		for (int i = 0; i < n; i++) {
 			dd[i] = Double.valueOf(tk.nextToken()).doubleValue();
 		}

@@ -66,7 +66,7 @@ public class Editor extends MyThinlet implements Constants, ThreadTarget {
 	static final int ACTION_SLIDE = 10;
 	static final int ACTION_SLIDE_CORNER = 12;
 
-	static final int trgColors[] = { 0xFF0000, 0xFFFF00, 0x00FF00, 0x00FFFF,
+	static final int[] trgColors = { 0xFF0000, 0xFFFF00, 0x00FF00, 0x00FFFF,
 			0x4040FF, 0xFF00FF, 0xFF7F00, 0xFF007F, 0xFFFF55, 0xCCFFCC,
 			0xAAFFFF, 0xFF7F7F, 0xFFAAFF, 0xFFCC55 };
 
@@ -77,11 +77,11 @@ public class Editor extends MyThinlet implements Constants, ThreadTarget {
 	/*****************************************************************************/
 	// FIELDS
 
-	int cmap[][] = new int[256][3];
+	int[][] cmap = new int[256][3];
 
-	double fclick[] = new double[2];
-	double fdrag[] = new double[2];
-	double fmove[] = new double[2];
+	double[] fclick = new double[2];
+	double[] fdrag = new double[2];
+	double[] fmove = new double[2];
 
 	double dclick; // distance to pivot when clicking
 	double ddrag; // distance to pivot when dragging
@@ -92,7 +92,7 @@ public class Editor extends MyThinlet implements Constants, ThreadTarget {
 	double cclick; // cos when clicking
 	double sclick; // sin when clicking
 
-	double widgets[][][] = new double[4][3][2];
+	double[][][] widgets = new double[4][3][2];
 	double xx, xy, yx, yy;
 
 	SPoint rcenter = new SPoint(); // center of rotation
@@ -123,8 +123,8 @@ public class Editor extends MyThinlet implements Constants, ThreadTarget {
 	boolean changed = false;
 	boolean mustupdateflame = false;
 
-	int polyx[] = new int[5];
-	int polyy[] = new int[5];
+	int[] polyx = new int[5];
+	int[] polyy = new int[5];
 
 	double gCenterX;
 	double gCenterY;
@@ -133,7 +133,7 @@ public class Editor extends MyThinlet implements Constants, ThreadTarget {
 
 	SPoint pivot = new SPoint();
 
-	double tcenter[] = new double[2];
+	double[] tcenter = new double[2];
 	boolean mustautozoom = false;
 
 	// PUBLIC
@@ -186,7 +186,7 @@ public class Editor extends MyThinlet implements Constants, ThreadTarget {
 	boolean showVarPreview = false;
 	int varPreviewDensity = 2, varPreviewRange = 6, varPreviewDepth = 3;
 
-	int pixels[] = null;
+	int[] pixels = null;
 	MemoryImageSource source = null;
 	Image vimage = null;
 	int graphwidth;
@@ -667,7 +667,7 @@ public class Editor extends MyThinlet implements Constants, ThreadTarget {
 
 		int rgb = getTriangleColor(selectedTriangle) + 0xFF000000;
 
-		double txy[] = new double[2];
+		double[] txy = new double[2];
 
 		for (int ax = -n; ax <= n; ax++) {
 			for (int ay = -n; ay <= n; ay++) {
@@ -2976,7 +2976,7 @@ public class Editor extends MyThinlet implements Constants, ThreadTarget {
 		int rgb1 = 0xFF | color;
 		int rgb2 = (new Color(color)).darker().getRGB();
 
-		int pixels[] = new int[] { rgb0, rgb0, rgb0, rgb0, rgb0, rgb0, rgb0,
+		int[] pixels = new int[] { rgb0, rgb0, rgb0, rgb0, rgb0, rgb0, rgb0,
 				rgb0, rgb0, rgb0, rgb0, rgb0, rgb0, rgb0, rgb0, rgb0, rgb0,
 				rgb0, rgb0, rgb0, rgb0, rgb0, rgb1, rgb0, rgb0, rgb0, rgb0,
 				rgb0, rgb0, rgb0, rgb0, rgb0, rgb0, rgb1, rgb1, rgb0, rgb0,

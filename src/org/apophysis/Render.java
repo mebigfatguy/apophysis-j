@@ -48,13 +48,13 @@ public class Render extends MyThinlet implements Constants, ThreadTarget {
 	long approxsamples;
 
 	long physicalmemory, approxmemory, totalphysicalmemory;
-	int colormap[][] = new int[256][3];
+	int[][] colormap = new int[256][3];
 	ControlPoint cp;
 	String filename;
 	int imagewidth, imageheight, oversample;
 	int bitspersample;
 	double zoom, sample_density, brightness, gamma, vibrancy, filter_radius;
-	double center[] = new double[2];
+	double[] center = new double[2];
 	int maxmemory;
 	boolean renderall = false;
 

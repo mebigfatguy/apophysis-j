@@ -62,7 +62,7 @@ class Terminal extends Frame implements Runnable, WindowListener {
 	int iline = 0;
 	int icol = 0;
 
-	char debug[] = { 'd', 'e', 'b', 'u', 'g' };
+	char[] debug = { 'd', 'e', 'b', 'u', 'g' };
 
 	/*****************************************************************************/
 
@@ -208,7 +208,7 @@ class Terminal extends Frame implements Runnable, WindowListener {
 		}
 
 		icolor[iline] = ic;
-		char cc[] = line.toCharArray();
+		char[] cc = line.toCharArray();
 		for (int i = 0; i < cc.length; i++)
 			screen[iline][i] = cc[i];
 

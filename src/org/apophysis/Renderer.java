@@ -48,7 +48,7 @@ public class Renderer implements Constants {
 	/*****************************************************************************/
 	// FIELDS
 
-	XForm propTable[] = new XForm[PROP_TABLE_SIZE];
+	XForm[] propTable = new XForm[PROP_TABLE_SIZE];
 	XForm finalXform = null;
 
 	boolean useFinalXform;
@@ -75,7 +75,7 @@ public class Renderer implements Constants {
 
 	Imager imager;
 
-	int colormap[][] = new int[256][3];
+	int[][] colormap = new int[256][3];
 
 	int fmaxmem;
 	int fslice;
@@ -96,8 +96,8 @@ public class Renderer implements Constants {
 
 	public double fmindensity;
 
-	double p[] = new double[3]; // used as a TCPoint
-	double q[] = new double[3]; // used as a TCPoint
+	double[] p = new double[3]; // used as a TCPoint
+	double[] q = new double[3]; // used as a TCPoint
 
 	boolean terminating = false;
 
@@ -774,7 +774,7 @@ public class Renderer implements Constants {
 
 	void writeBuckets(FileOutputStream out, int buckets[], int nrow)
 			throws IOException {
-		byte b[] = new byte[bucketwidth * 4 * 4];
+		byte[] b = new byte[bucketwidth * 4 * 4];
 
 		int offset = 0;
 		for (int i = 0; i < nrow; i++) {

@@ -14,7 +14,7 @@ public class JSStringList implements Constants {
 	// FIELDS
 
 	public int Count = 0;
-	public String Strings[] = new String[0];
+	public String[] Strings = new String[0];
 
 	private List<String> lines = new Vector<String>();
 

@@ -55,14 +55,14 @@ public class Mutate extends MyThinlet implements Constants, ThreadTarget {
 	double brightness, gamma, vibrancy;
 
 	double zoom;
-	double center[] = new double[2];
-	int cmap[][] = new int[256][3];
+	double[] center = new double[2];
+	int[][] cmap = new int[256][3];
 
 	boolean maintainsymmetry = true;
 	boolean resetlocation = true;
 	boolean samenumber = false;
 
-	Image images[] = new Image[9];
+	Image[] images = new Image[9];
 
 	Updater updater = null;
 

@@ -165,7 +165,7 @@ public class JpegCommentOutputStream extends OutputStream implements Constants {
 	/*****************************************************************************/
 
 	void writeComment() throws IOException {
-		byte b[] = comment.getBytes();
+		byte[] b = comment.getBytes();
 
 		os.write(0xFF);
 		os.write(M_COM);

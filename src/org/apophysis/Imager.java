@@ -48,10 +48,10 @@ public class Imager implements Constants {
 	/*****************************************************************************/
 	// FIELDS
 
-	int rbits[] = new int[256];
-	int gbits[] = new int[256];
-	int bbits[] = new int[256];
-	int abits[] = new int[256];
+	int[] rbits = new int[256];
+	int[] gbits = new int[256];
+	int[] bbits = new int[256];
+	int[] abits = new int[256];
 
 	double filter[][];
 	int filtersize;
@@ -178,11 +178,11 @@ public class Imager implements Constants {
 		int ri, gi, bi;
 		int ai;
 		double ls;
-		double fp[] = new double[4];
+		double[] fp = new double[4];
 		int vib, notvib;
-		int bgi[] = new int[3];
+		int[] bgi = new int[3];
 		double filtervalue;
-		double lsa[] = new double[1025];
+		double[] lsa = new double[1025];
 		double sample_density;
 		double k1, k2;
 		double area;
@@ -493,7 +493,7 @@ public class Imager implements Constants {
 						|| !Global.crypto.password.equals(Global.passwordText)) {
 					Global.crypto = new Crypto(Global.passwordText);
 				}
-				byte e[] = Global.crypto.encode(sw.toString().getBytes());
+				byte[] e = Global.crypto.encode(sw.toString().getBytes());
 				sw.close();
 
 				ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -629,7 +629,7 @@ public class Imager implements Constants {
 		int w = oldimage.getWidth(null);
 		int h = oldimage.getHeight(null);
 
-		int pixels[] = new int[w * h];
+		int[] pixels = new int[w * h];
 		PixelGrabber pg = new PixelGrabber(oldimage, 0, 0, w, h, pixels, 0, w);
 
 		try {

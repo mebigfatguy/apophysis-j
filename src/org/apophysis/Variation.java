@@ -39,7 +39,7 @@ public abstract class Variation implements Computation {
 
 	public double weight;
 
-	public String pnames[] = null;
+	public String[] pnames = null;
 
 	/*****************************************************************************/
 

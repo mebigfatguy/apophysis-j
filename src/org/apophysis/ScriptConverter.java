@@ -366,7 +366,7 @@ public class ScriptConverter {
 	static void processStructure(StringBuffer sb, String sname, Class<?> klass) {
 
 		try {
-			Field fields[] = klass.getDeclaredFields();
+			Field[] fields = klass.getDeclaredFields();
 			int nf = fields.length;
 			for (int i = 0; i < nf; i++) {
 				String fname = sname + "." + fields[i].getName();
@@ -642,7 +642,7 @@ public class ScriptConverter {
 
 	static void processFields(StringBuffer sb, String varname, Class<?> klass) {
 		try {
-			Field fields[] = klass.getDeclaredFields();
+			Field[] fields = klass.getDeclaredFields();
 			int nf = fields.length;
 			for (int i = 0; i < nf; i++) {
 				String name = fields[i].getName();
@@ -745,7 +745,7 @@ public class ScriptConverter {
 	/*****************************************************************************/
 
 	static void getNiladicFunctions() {
-		Method m[] = Script.class.getDeclaredMethods();
+		Method[] m = Script.class.getDeclaredMethods();
 		for (Method element : m) {
 			String name = element.getName();
 			if (!name.startsWith("_")) {
@@ -835,7 +835,7 @@ public class ScriptConverter {
 		// check function calls for spelling and parentheses
 
 		try {
-			Method methods[] = Script.class.getDeclaredMethods();
+			Method[] methods = Script.class.getDeclaredMethods();
 			for (int i = 0; i < methods.length; i++) {
 				if (!methods[i].getName().startsWith("_")) {
 					continue;

@@ -99,10 +99,10 @@ public class PngCommentOutputStream extends OutputStream implements Constants {
 	/*****************************************************************************/
 
 	void writeCompressedComment() throws IOException {
-		byte b1[] = ("genome").getBytes();
+		byte[] b1 = ("genome").getBytes();
 		int sep = 0; // separator
 		int comp = 0; // compression method
-		byte b2[] = deflate(comment);
+		byte[] b2 = deflate(comment);
 		;
 
 		int len = b1.length + 2 + b2.length;
@@ -160,7 +160,7 @@ public class PngCommentOutputStream extends OutputStream implements Constants {
 	/*****************************************************************************/
 
 	void writeComment() throws IOException {
-		byte b[] = ("genome\000" + comment).getBytes();
+		byte[] b = ("genome\000" + comment).getBytes();
 
 		int len = b.length;
 

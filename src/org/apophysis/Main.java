@@ -105,9 +105,9 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 	ControlPoint renderCP = null;;
 
-	double center[] = new double[2];
-	double viewpos[] = new double[2];
-	double viewoldpos[] = new double[2];
+	double[] center = new double[2];
+	double[] viewpos = new double[2];
+	double[] viewoldpos = new double[2];
 	double viewscale;
 
 	Timer timer = null;
@@ -1261,8 +1261,8 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 	void smoothPalette() {
 		int cmap_best[] = new int[256];
-		int original[] = new int[256];
-		int clist[] = new int[256];
+		int[] original = new int[256];
+		int[] clist = new int[256];
 		int len = 0, len_best = 0, as_is = 0, swapd = 0;
 		int p, rand, tryit, i0, i1, x, y, i, iw, ih;
 
@@ -1371,7 +1371,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 			}
 
 			// create palette
-			int pal[][] = new int[256][3];
+			int[][] pal = new int[256][3];
 			for (i = 0; i < 256; i++) {
 				pal[i][0] = (clist[i] >> 16) & 0xFF;
 				pal[i][1] = (clist[i] >> 8) & 0xFF;
@@ -1658,7 +1658,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 	/*****************************************************************************/
 
 	void unselectItems(Object menu) {
-		Object items[] = getItems(menu);
+		Object[] items = getItems(menu);
 		for (Object item : items) {
 			if (getClass(item) == "menu") {
 				unselectItems(item);
@@ -2207,7 +2207,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 	/*****************************************************************************/
 
 	void drawRotateLines(double angle) {
-		int points[][] = new int[4][2];
+		int[][] points = new int[4][2];
 		int x, y;
 		int p0x, p0y, p1x, p1y, p2x, p2y, p3x, p3y;
 
@@ -2672,7 +2672,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 		try {
 			e.acceptDrop(DnDConstants.ACTION_COPY_OR_MOVE);
 			t = e.getTransferable();
-			File files[] = getFiles(t);
+			File[] files = getFiles(t);
 			e.getDropTargetContext().dropComplete(true);
 			openFiles(files);
 		} catch (Exception ex) {
@@ -2685,7 +2685,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 	File[] getFiles(Transferable t) throws Exception {
 
-		DataFlavor flavors[] = t.getTransferDataFlavors();
+		DataFlavor[] flavors = t.getTransferDataFlavors();
 		int nf = flavors.length;
 		for (int i = 0; i < nf; i++) {
 			Object o = t.getTransferData(flavors[i]);
@@ -2847,7 +2847,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 		Object menu = find("mnuScript");
 
-		Object items[] = getItems(menu);
+		Object[] items = getItems(menu);
 		for (int i = 8; i < items.length; i++) {
 			remove(items[i]);
 		}
@@ -2906,7 +2906,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 		Object o = (index >= 0) ? cps.get(index) : null;
 
 		int n = cps.size();
-		SortableControlPoint ss[] = new SortableControlPoint[n];
+		SortableControlPoint[] ss = new SortableControlPoint[n];
 		for (int i = 0; i < n; i++) {
 			ss[i] = new SortableControlPoint(cps.get(i),
 					option);
@@ -3015,7 +3015,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 		long mask = tk.getMenuShortcutKeyMask();
 
 		Object menubar = find("MainMenu");
-		Object menus[] = getItems(menubar);
+		Object[] menus = getItems(menubar);
 		for (Object menu : menus) {
 			int n = getCount(menu);
 			for (int j = 0; j < n; j++) {
@@ -3043,7 +3043,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 		public void execute() {
 			Global.browserPath = Global.opendialog.getBrowserPath();
 			File file = new File(Global.opendialog.filename);
-			File files[] = new File[] { file };
+			File[] files = new File[] { file };
 			openFiles(files);
 		}
 
