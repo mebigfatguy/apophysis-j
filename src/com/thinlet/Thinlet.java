@@ -2493,7 +2493,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 					port.height + (hneed ? 1 : 2), enabled ? c_border
 							: c_disable, c_textbg, true, true, !hneed, !vneed,
 					true);
-			if ("table" == classname) {
+			if ("table".equals(classname)) {
 				Object header = get(component, "header");
 				if (header != null) {
 					int[] columnwidths = (int[]) get(component, ":widths");
@@ -2900,7 +2900,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 			char dir, boolean enabled, boolean inside, boolean pressed,
 			String part, boolean top, boolean left, boolean bottom,
 			boolean right, boolean horizontal) {
-		inside = inside && (insidepart == part);
+		inside = inside && (insidepart != null) && (insidepart.equals(part));
 		pressed = pressed && (pressedpart == part);
 		paintRect(g, x, y, width, height, enabled ? c_border : c_disable,
 				enabled ? ((inside != pressed) ? c_hover : (pressed ? c_press
@@ -7992,7 +7992,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 	private String getI18NString(Object component, String key, String text) { // for
 																				// I18N
 		if (allI18n && (langResource != null)
-				&& ((key == "text") || (key == "tooltip"))
+				&& (("text".equals(key)) || ("tooltip".equals(key)))
 				&& getBoolean(component, "i18n", true)) {
 			String ikey = (String) getProperty(component, "i18n." + key);
 			if (!"__NONE__".equals(ikey)) {
