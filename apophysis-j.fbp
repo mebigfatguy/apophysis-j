@@ -1,0 +1,8 @@
+<Project projectName="apophysis-j">
+  <Jar>./classes</Jar>
+  <AuxClasspathEntry>./lib/js.jar</AuxClasspathEntry>
+  <SrcDir>./src</SrcDir>
+  <SuppressionFilter>
+    <LastVersion value="-1" relOp="NEQ"/>
+  </SuppressionFilter>
+</Project>
