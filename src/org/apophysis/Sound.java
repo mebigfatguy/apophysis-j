@@ -1,32 +1,29 @@
-
 /*
 
-    Apophysis-j Copyright (C) 2008 Jean-Francois Bouzereau
+ Apophysis-j Copyright (C) 2008 Jean-Francois Bouzereau
 
-	based on Apophysis ( http://www.apophysis.org )
-	Apophysis Copyright (C) 2001-2004 Mark Townsend
-	Apophysis Copyright (C) 2005-2006 Ronald Hordijk, Piotr Borys, Peter Sdobnov
-	Apophysis Copyright (C) 2007 Piotr Borys, Peter Sdobnov
+ based on Apophysis ( http://www.apophysis.org )
+ Apophysis Copyright (C) 2001-2004 Mark Townsend
+ Apophysis Copyright (C) 2005-2006 Ronald Hordijk, Piotr Borys, Peter Sdobnov
+ Apophysis Copyright (C) 2007 Piotr Borys, Peter Sdobnov
 
-	based on Flam3 ( http://www.flam3.com )
-    Copyright (C) 1992-2006  Scott Draves <source@flam3.com>
+ based on Flam3 ( http://www.flam3.com )
+ Copyright (C) 1992-2006  Scott Draves <source@flam3.com>
 
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software
+ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-*/
-
-
+ */
 
 package org.apophysis;
 
@@ -41,84 +38,71 @@ import javax.sound.sampled.DataLine;
 
 class Sound {
 
-Clip clip = null;
+	Clip clip = null;
 
-/*****************************************************************************/
+	/*****************************************************************************/
 
-Sound(File file)
-{
+	Sound(File file) {
 
-try {
-	URL url = file.toURL();
-    AudioInputStream stream = AudioSystem.getAudioInputStream(url);
-    AudioFormat format = stream.getFormat();
+		try {
+			URL url = file.toURL();
+			AudioInputStream stream = AudioSystem.getAudioInputStream(url);
+			AudioFormat format = stream.getFormat();
 
-    DataLine.Info info = new DataLine.Info(
-        Clip.class,
-        stream.getFormat(),
-        (int)stream.getFrameLength()*format.getFrameSize()
-        );
+			DataLine.Info info = new DataLine.Info(Clip.class,
+					stream.getFormat(), (int) stream.getFrameLength()
+							* format.getFrameSize());
 
-    clip = (Clip)AudioSystem.getLine(info);
+			clip = (Clip) AudioSystem.getLine(info);
 
-    clip.open(stream);
-    }
-catch(Exception ex)
-    {
-    ex.printStackTrace();
-    }
+			clip.open(stream);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 
-}   //  End of method   openClip
+	} // End of method openClip
 
+	/*****************************************************************************/
 
-/*****************************************************************************/
+	void play() {
+		if (clip == null)
+			return;
 
-void play()
-{
-if(clip==null)
-	return;
+		try {
+			clip.setFramePosition(0);
+			clip.start();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 
-try	{
-	clip.setFramePosition(0);
-	clip.start();
-	}
-catch(Exception ex)
-	{
-	ex.printStackTrace();
 	}
 
-}
+	/*****************************************************************************/
 
-/*****************************************************************************/
+	void stop() {
+		if (clip == null)
+			return;
 
-void stop()
-{
-if(clip==null) return;
-
-try	{
-	clip.stop();
+		try {
+			clip.stop();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 	}
-catch(Exception ex)
-	{
-	ex.printStackTrace();
+
+	/*****************************************************************************/
+
+	void close() {
+		if (clip == null)
+			return;
+
+		try {
+			clip.close();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 	}
-}
 
-/*****************************************************************************/
+	/*****************************************************************************/
 
-void close()
-{
-if(clip==null) return;
-
-try	{
-	clip.close();
-	}
-catch(Exception ex)
-	{
-	ex.printStackTrace();
-	}
-}
-
-/*****************************************************************************/
-
-}	//	End of class	Sound
+} // End of class Sound

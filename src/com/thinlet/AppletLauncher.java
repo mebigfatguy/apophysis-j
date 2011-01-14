@@ -11,8 +11,8 @@ import java.awt.Image;
 import java.awt.Label;
 
 /**
- * <code>AppletLauncher</code> is a double buffered applet
- * to launch any <i>thinlet</i> component
+ * <code>AppletLauncher</code> is a double buffered applet to launch any
+ * <i>thinlet</i> component
  */
 public class AppletLauncher extends Applet implements Runnable {
 
@@ -28,11 +28,13 @@ public class AppletLauncher extends Applet implements Runnable {
 
 	/**
 	 * Called by the browser to inform this applet that it has been loaded into
-	 * the system, it displays the <i>Loading...</i> label and starts the loader thread
+	 * the system, it displays the <i>Loading...</i> label and starts the loader
+	 * thread
 	 */
 	@Override
 	public void init() {
-		setBackground(Color.white); setForeground(Color.darkGray);
+		setBackground(Color.white);
+		setForeground(Color.darkGray);
 		setLayout(new BorderLayout());
 		add(new Label("Loading...", Label.CENTER), BorderLayout.CENTER);
 		new Thread(this).start();
@@ -40,17 +42,18 @@ public class AppletLauncher extends Applet implements Runnable {
 
 	/**
 	 * Create a new <i>thinlet</i> instance of the class given as
-	 * <code>class</code> applet parameter, and show it or the
-	 * message of the thrown exception. First try a contructor with
-	 * an applet parameter (thus you get this applet instance e.g. for
-	 * the parameters of the applet HTML tag), then the empty constructor
+	 * <code>class</code> applet parameter, and show it or the message of the
+	 * thrown exception. First try a contructor with an applet parameter (thus
+	 * you get this applet instance e.g. for the parameters of the applet HTML
+	 * tag), then the empty constructor
 	 */
 	public void run() {
 		try {
 			Class thinletclass = Class.forName(getParameter("class"));
 			try {
-				content = (Thinlet) thinletclass.getConstructor(new Class[] {
-					Applet.class }).newInstance(new Object[] { this });
+				content = (Thinlet) thinletclass.getConstructor(
+						new Class[] { Applet.class }).newInstance(
+						new Object[] { this });
 			} catch (NoSuchMethodException nsme) {
 				content = (Thinlet) thinletclass.newInstance();
 			}
@@ -58,10 +61,11 @@ public class AppletLauncher extends Applet implements Runnable {
 			add(content, BorderLayout.CENTER);
 		} catch (Throwable exc) {
 			removeAll();
-			add(new Label(exc.getClass().getName() + " " +
-				exc.getMessage(), Label.CENTER), BorderLayout.CENTER);
+			add(new Label(exc.getClass().getName() + " " + exc.getMessage(),
+					Label.CENTER), BorderLayout.CENTER);
 		}
-		doLayout(); repaint();
+		doLayout();
+		repaint();
 	}
 
 	/**
@@ -78,8 +82,8 @@ public class AppletLauncher extends Applet implements Runnable {
 	}
 
 	/**
-	 * Called by the browser to inform this applet that it should stop its execution,
-	 * it clears the double buffer image
+	 * Called by the browser to inform this applet that it should stop its
+	 * execution, it clears the double buffer image
 	 */
 	@Override
 	public void stop() {
@@ -99,8 +103,8 @@ public class AppletLauncher extends Applet implements Runnable {
 	}
 
 	/**
-	 * Create a double buffer if needed,
-	 * the <i>thinlet</i> component paints the content
+	 * Create a double buffer if needed, the <i>thinlet</i> component paints the
+	 * content
 	 */
 	@Override
 	public void paint(Graphics g) {
@@ -117,8 +121,8 @@ public class AppletLauncher extends Applet implements Runnable {
 
 	/**
 	 * Called by the browser to inform this applet that it is being reclaimed,
-	 * it calls the <i>thinlet</i> component's <code>destroy</code> method
-	 * (its return value is irrelevant)
+	 * it calls the <i>thinlet</i> component's <code>destroy</code> method (its
+	 * return value is irrelevant)
 	 */
 	@Override
 	public void destroy() {

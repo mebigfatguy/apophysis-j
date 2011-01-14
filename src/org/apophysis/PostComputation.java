@@ -1,44 +1,40 @@
-
 /*
 
-    Apophysis-j Copyright (C) 2008 Jean-Francois Bouzereau
+ Apophysis-j Copyright (C) 2008 Jean-Francois Bouzereau
 
-	based on Apophysis ( http://www.apophysis.org )
-	Apophysis Copyright (C) 2001-2004 Mark Townsend
-	Apophysis Copyright (C) 2005-2006 Ronald Hordijk, Piotr Borys, Peter Sdobnov
-	Apophysis Copyright (C) 2007 Piotr Borys, Peter Sdobnov
+ based on Apophysis ( http://www.apophysis.org )
+ Apophysis Copyright (C) 2001-2004 Mark Townsend
+ Apophysis Copyright (C) 2005-2006 Ronald Hordijk, Piotr Borys, Peter Sdobnov
+ Apophysis Copyright (C) 2007 Piotr Borys, Peter Sdobnov
 
-	based on Flam3 ( http://www.flam3.com )
-    Copyright (C) 1992-2006  Scott Draves <source@flam3.com>
+ based on Flam3 ( http://www.flam3.com )
+ Copyright (C) 1992-2006  Scott Draves <source@flam3.com>
 
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software
+ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-*/
-
-
+ */
 
 package org.apophysis;
 
 public class PostComputation implements Computation {
 
-public void compute(XForm xform)
-{
-double x = xform.fpx;
-double y = xform.fpy;
+	public void compute(XForm xform) {
+		double x = xform.fpx;
+		double y = xform.fpy;
 
-xform.fpx = xform.p00*x + xform.p10*y + xform.p20;
-xform.fpy = xform.p01*x + xform.p11*y + xform.p21;
-}
+		xform.fpx = xform.p00 * x + xform.p10 * y + xform.p20;
+		xform.fpy = xform.p01 * x + xform.p11 * y + xform.p21;
+	}
 
 }

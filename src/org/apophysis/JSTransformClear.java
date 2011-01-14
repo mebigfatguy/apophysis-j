@@ -1,4 +1,3 @@
-
 package org.apophysis;
 
 import org.mozilla.javascript.BaseFunction;
@@ -7,24 +6,23 @@ import org.mozilla.javascript.Scriptable;
 
 public class JSTransformClear extends BaseFunction {
 
-/****************************************************************************/
+	/****************************************************************************/
 
-public String getFunctionName()
-{
-return "Clear";
-}
+	@Override
+	public String getFunctionName() {
+		return "Clear";
+	}
 
-/****************************************************************************/
+	/****************************************************************************/
 
-public Object call(Context cx, Scriptable scope, Scriptable obj,
-	Object[] args)
-{
-JSTransform transform = (JSTransform)obj;
-transform.Clear();
-return null;
-}
+	@Override
+	public Object call(Context cx, Scriptable scope, Scriptable obj,
+			Object[] args) {
+		JSTransform transform = (JSTransform) obj;
+		transform.Clear();
+		return null;
+	}
 
-/****************************************************************************/
+	/****************************************************************************/
 
-
-}	//	End of class	JSTransformClear
+} // End of class JSTransformClear

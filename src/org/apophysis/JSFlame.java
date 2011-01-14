@@ -1,176 +1,168 @@
 package org.apophysis;
 
-public class	JSFlame implements Constants  {
+public class JSFlame implements Constants {
 
-/*****************************************************************************/
-//	FIELDS
+	/*****************************************************************************/
+	// FIELDS
 
-public double Gamma;
-public double Brightness;
-public double Vibrancy;
-public double Time;
-public double Zoom;
-public double X;
-public double Y;
-public double Width;
-public double Height;
-public double SampleDensity;
-public double Quality;
-public int Oversample;
-public double FilterRadius;
-public double Scale;
+	public double Gamma;
+	public double Brightness;
+	public double Vibrancy;
+	public double Time;
+	public double Zoom;
+	public double X;
+	public double Y;
+	public double Width;
+	public double Height;
+	public double SampleDensity;
+	public double Quality;
+	public int Oversample;
+	public double FilterRadius;
+	public double Scale;
 
-public int Background[] = new int[3];
-public int Gradient[][] = new int[256][3];
+	public int Background[] = new int[3];
+	public int Gradient[][] = new int[256][3];
 
-public String Name;
-public String Nick = "";
-public String URL = "";
+	public String Name;
+	public String Nick = "";
+	public String URL = "";
 
-public double Hue;
-public int Batches;
-public boolean FinalXformEnabled;
-public double Angle;
+	public double Hue;
+	public int Batches;
+	public boolean FinalXformEnabled;
+	public double Angle;
 
-int nxforms = 0;
+	int nxforms = 0;
 
-private Script script = null;
-protected ControlPoint cp = null;
+	private Script script = null;
+	protected ControlPoint cp = null;
 
-/*****************************************************************************/
+	/*****************************************************************************/
 
-JSFlame(Script script)
-{
-this.script = script;
+	JSFlame(Script script) {
+		this.script = script;
 
-this.cp = new ControlPoint();
+		this.cp = new ControlPoint();
 
-}
-
-/*****************************************************************************/
-
-void	java2js()
-{
-
-Name = cp.name;
-SampleDensity = cp.sample_density;
-Oversample = cp.spatial_oversample;
-FilterRadius = cp.spatial_filter_radius;
-Scale = cp.pixels_per_unit;
-
-Gamma = cp.gamma;
-Brightness = cp.brightness;
-Vibrancy = cp.vibrancy;
-Time = cp.time;
-Zoom = cp.zoom;
-X = cp.center[0];
-Y = cp.center[1];
-Width = cp.width;
-Height = cp.height;
-
-Quality = cp.actual_density;
-
-Background[0] = cp.background[0];
-Background[1] = cp.background[1];
-Background[2] = cp.background[2];
-
-for(int i=0;i<256;i++)
-	{
-	Gradient[i][0] = cp.cmap[i][0];
-	Gradient[i][1] = cp.cmap[i][1];
-	Gradient[i][2] = cp.cmap[i][2];
 	}
 
-nxforms = cp.nxforms;
+	/*****************************************************************************/
 
+	void java2js() {
 
-FinalXformEnabled = cp.hasFinalXform;
+		Name = cp.name;
+		SampleDensity = cp.sample_density;
+		Oversample = cp.spatial_oversample;
+		FilterRadius = cp.spatial_filter_radius;
+		Scale = cp.pixels_per_unit;
 
-}	//	End of method	java2js
+		Gamma = cp.gamma;
+		Brightness = cp.brightness;
+		Vibrancy = cp.vibrancy;
+		Time = cp.time;
+		Zoom = cp.zoom;
+		X = cp.center[0];
+		Y = cp.center[1];
+		Width = cp.width;
+		Height = cp.height;
 
-/*****************************************************************************/
+		Quality = cp.actual_density;
 
-void	js2java()
-{
-cp.name = Name;
-cp.sample_density = SampleDensity;
-cp.spatial_oversample = Oversample;
-cp.spatial_filter_radius = FilterRadius;
-cp.width = (int)Width;
-cp.height = (int)Height;
-cp.pixels_per_unit = Scale;
-cp.zoom = Zoom;
+		Background[0] = cp.background[0];
+		Background[1] = cp.background[1];
+		Background[2] = cp.background[2];
 
-cp.gamma = Gamma;
-cp.brightness = Brightness;
-cp.vibrancy = Vibrancy;
-cp.time = Time;
-cp.center[0] = X;
-cp.center[1] = Y;
+		for (int i = 0; i < 256; i++) {
+			Gradient[i][0] = cp.cmap[i][0];
+			Gradient[i][1] = cp.cmap[i][1];
+			Gradient[i][2] = cp.cmap[i][2];
+		}
 
-cp.actual_density = Quality;
+		nxforms = cp.nxforms;
 
-cp.background[0] = Background[0];
-cp.background[1] = Background[1];
-cp.background[2] = Background[2];
+		FinalXformEnabled = cp.hasFinalXform;
 
-for(int i=0;i<256;i++)
-	{
-	cp.cmap[i][0] = Gradient[i][0];
-	cp.cmap[i][1] = Gradient[i][1];
-	cp.cmap[i][2] = Gradient[i][2];
-	}
+	} // End of method java2js
 
-cp.nxforms = nxforms;
+	/*****************************************************************************/
 
+	void js2java() {
+		cp.name = Name;
+		cp.sample_density = SampleDensity;
+		cp.spatial_oversample = Oversample;
+		cp.spatial_filter_radius = FilterRadius;
+		cp.width = (int) Width;
+		cp.height = (int) Height;
+		cp.pixels_per_unit = Scale;
+		cp.zoom = Zoom;
 
-cp.finalXformEnabled = FinalXformEnabled;
-cp.hasFinalXform = FinalXformEnabled;
+		cp.gamma = Gamma;
+		cp.brightness = Brightness;
+		cp.vibrancy = Vibrancy;
+		cp.time = Time;
+		cp.center[0] = X;
+		cp.center[1] = Y;
 
-}	//	End of method	js2java
+		cp.actual_density = Quality;
 
-/*****************************************************************************/
+		cp.background[0] = Background[0];
+		cp.background[1] = Background[1];
+		cp.background[2] = Background[2];
 
-public JSFlame Clone()
-{ 
-JSFlame f = new JSFlame(script);
+		for (int i = 0; i < 256; i++) {
+			cp.cmap[i][0] = Gradient[i][0];
+			cp.cmap[i][1] = Gradient[i][1];
+			cp.cmap[i][2] = Gradient[i][2];
+		}
 
-f.cp.copy(cp);
+		cp.nxforms = nxforms;
 
-f.Gamma = Gamma;
-f.Brightness = Brightness;
-f.Vibrancy= Vibrancy;
-f.Time = Time;
-f.Zoom = Zoom;
-f.X = X;
-f.Y = Y;
-f.Width = Width;
-f.Height = Height;
-f.SampleDensity = SampleDensity;
-f.Quality = Quality;
-f.Oversample = Oversample;
-f.FilterRadius = FilterRadius;
-f.Scale = Scale;
-f.Hue = Hue;
-f.Batches = Batches;
-f.FinalXformEnabled = FinalXformEnabled;
-f.Angle = f.Angle;
+		cp.finalXformEnabled = FinalXformEnabled;
+		cp.hasFinalXform = FinalXformEnabled;
 
-f.nxforms = nxforms;
+	} // End of method js2java
 
-f.Name = Name;
-f.Nick = Nick;
-f.URL = URL;
+	/*****************************************************************************/
 
-for(int i=0;i<3;i++)
-	f.Background[i] = Background[i];
+	public JSFlame Clone() {
+		JSFlame f = new JSFlame(script);
 
-CMap.copyPalette(Gradient,f.Gradient);
+		f.cp.copy(cp);
 
-return f;
+		f.Gamma = Gamma;
+		f.Brightness = Brightness;
+		f.Vibrancy = Vibrancy;
+		f.Time = Time;
+		f.Zoom = Zoom;
+		f.X = X;
+		f.Y = Y;
+		f.Width = Width;
+		f.Height = Height;
+		f.SampleDensity = SampleDensity;
+		f.Quality = Quality;
+		f.Oversample = Oversample;
+		f.FilterRadius = FilterRadius;
+		f.Scale = Scale;
+		f.Hue = Hue;
+		f.Batches = Batches;
+		f.FinalXformEnabled = FinalXformEnabled;
+		f.Angle = f.Angle;
 
-}	//	End of method	Clone
+		f.nxforms = nxforms;
 
-/*****************************************************************************/
+		f.Name = Name;
+		f.Nick = Nick;
+		f.URL = URL;
 
-}	//	End of class	JSFlame
+		for (int i = 0; i < 3; i++)
+			f.Background[i] = Background[i];
+
+		CMap.copyPalette(Gradient, f.Gradient);
+
+		return f;
+
+	} // End of method Clone
+
+	/*****************************************************************************/
+
+} // End of class JSFlame
