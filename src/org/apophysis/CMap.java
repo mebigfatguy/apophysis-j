@@ -317,7 +317,7 @@ class CMap {
 	/*****************************************************************************/
 
 	static int[][] randomGradient() {
-		int pal[][] = new int[256][3];
+		int[][] pal = new int[256][3];
 		int a, b, n, nodes;
 		Color color;
 
@@ -423,8 +423,8 @@ class CMap {
 
 	static int[][] paletteFromGradient(BufferedReader r) {
 		String line = null;
-		int index[] = new int[400];
-		int color[] = new int[400];
+		int[] index = new int[400];
+		int[] color = new int[400];
 
 		int n = 0;
 
@@ -486,7 +486,7 @@ class CMap {
 		} catch (Exception ex) {
 		}
 
-		int cmap[][] = new int[256][3];
+		int[][] cmap = new int[256][3];
 
 		for (int i = 0; i < n; i++) {
 			int ind = index[i];

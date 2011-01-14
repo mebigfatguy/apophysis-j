@@ -77,9 +77,9 @@ public class Adjust extends MyThinlet implements Constants, ThreadTarget {
 
 	double previewdensity;
 
-	int palette[][] = new int[256][3];
-	int backupal[][] = new int[256][3];
-	int tmpbackupal[][] = new int[256][3];
+	int[][] palette = new int[256][3];
+	int[][] backupal = new int[256][3];
+	int[][] tmpbackupal = new int[256][3];
 
 	int scrollmode = modeRotate;
 
@@ -95,13 +95,13 @@ public class Adjust extends MyThinlet implements Constants, ThreadTarget {
 	int previewwidth = 0, previewheight = 0;
 	int previewtop = 0, previewleft = 0;
 
-	Rectangle preset[] = new Rectangle[4];
+	Rectangle[] preset = new Rectangle[4];
 
 	double ratio;
 
 	Image gimage = null; // gradient image
 
-	float hsv[] = new float[3];
+	float[] hsv = new float[3];
 
 	Renderer renderer;
 
@@ -241,7 +241,7 @@ public class Adjust extends MyThinlet implements Constants, ThreadTarget {
 	/*****************************************************************************/
 
 	Image buildGradientImage(int palette[][]) {
-		int pixels[] = new int[256];
+		int[] pixels = new int[256];
 
 		for (int i = 0; i < 256; i++) {
 			Color color = new Color(palette[i][0], palette[i][1], palette[i][2]);

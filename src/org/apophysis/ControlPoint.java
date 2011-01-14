@@ -38,10 +38,10 @@ public class ControlPoint implements Constants {
 	/*****************************************************************************/
 	// STATIC FIELDS
 
-	static int var_distrib[] = null;
-	static int mixed_var_distrib[] = null;
+	static int[] var_distrib = null;
+	static int[] mixed_var_distrib = null;
 
-	static int sym_distrib[] = { -4, -3, -2, -2, -2, -1, -1, -1, 2, 2, 2, 3, 3,
+	static int[] sym_distrib = { -4, -3, -2, -2, -2, -1, -1, -1, 2, 2, 2, 3, 3,
 			4, 4 };
 
 	/*****************************************************************************/
@@ -52,11 +52,11 @@ public class ControlPoint implements Constants {
 
 	public boolean transparency;
 
-	public XForm xform[] = new XForm[NXFORMS + 1];
+	public XForm[] xform = new XForm[NXFORMS + 1];
 	public int nxforms = 0; // number of xforms, not counting the final one
 
 	public int variation;
-	public int cmap[][] = new int[256][3];
+	public int[][] cmap = new int[256][3];
 
 	public int cmapindex = -1;
 	public double time;
@@ -77,7 +77,7 @@ public class ControlPoint implements Constants {
 
 	public double[] center = new double[2];
 
-	public int background[] = new int[3];
+	public int[] background = new int[3];
 
 	public double pixels_per_unit;
 	public double spatial_filter_radius;
@@ -91,8 +91,8 @@ public class ControlPoint implements Constants {
 
 	public int symmetry;
 
-	public double pulse[][] = new double[2][2];
-	public double wiggle[][] = new double[2][2];
+	public double[][] pulse = new double[2][2];
+	public double[][] wiggle = new double[2][2];
 
 	public double estimator;
 	public double estimator_min;
@@ -106,7 +106,7 @@ public class ControlPoint implements Constants {
 
 	public List<String> unknown; // name of unknown variations
 
-	XForm propTable[] = new XForm[PROP_TABLE_SIZE];
+	XForm[] propTable = new XForm[PROP_TABLE_SIZE];
 
 	/*****************************************************************************/
 	// CONSTRUCTORS
@@ -205,13 +205,13 @@ public class ControlPoint implements Constants {
 
 		estimator_curve = tag.getDouble("estimator_curve", estimator_curve);
 
-		double size[] = tag.getDoubles("size");
+		double[] size = tag.getDoubles("size");
 		if (size != null) {
 			width = (int) size[0];
 			height = (int) size[1];
 		}
 
-		double back[] = tag.getDoubles("background");
+		double[] back = tag.getDoubles("background");
 		background = new int[3];
 		if (back == null) {
 			background[0] = 0;
@@ -294,7 +294,7 @@ public class ControlPoint implements Constants {
 		// convert gradient to colormap
 
 		for (int i = 0; i < v.size(); i++) {
-			int x[] = v.get(i);
+			int[] x = v.get(i);
 			int ind = x[0];
 			int col = x[1];
 			ind = (int) (ind * 255 / 399 + 0.5);
@@ -353,7 +353,7 @@ public class ControlPoint implements Constants {
 
 	public void addColor(XmlTag tag) {
 		int index = tag.getInt("index", 0);
-		double rgb[] = tag.getDoubles("rgb");
+		double[] rgb = tag.getDoubles("rgb");
 
 		if ((index >= 0) && (index < 256) && (rgb.length == 3)) {
 			cmap[index][0] = (int) rgb[0];
@@ -676,7 +676,7 @@ public class ControlPoint implements Constants {
 	/*****************************************************************************/
 
 	public void getFromTriangles(Triangle triangles[], int t) {
-		double abe[] = new double[3];
+		double[] abe = new double[3];
 
 		for (int i = 0; i <= t; i++) {
 			if (xform[i].postXswap) {
@@ -1056,7 +1056,7 @@ public class ControlPoint implements Constants {
 				}
 			}
 
-			Triangle triangles[] = new Triangle[NXFORMS + 2];
+			Triangle[] triangles = new Triangle[NXFORMS + 2];
 			for (int i = 0; i < triangles.length; i++) {
 				triangles[i] = new Triangle();
 			}
@@ -1252,7 +1252,7 @@ public class ControlPoint implements Constants {
 	/*****************************************************************************/
 
 	void calcBoundBox() {
-		double points[][] = new double[SUB_BATCH_SIZE][2];
+		double[][] points = new double[SUB_BATCH_SIZE][2];
 		double deltax, minx, maxx;
 		double deltay, miny, maxy;
 		int cntminx, cntmaxx, cntminy, cntmaxy;
@@ -1367,7 +1367,7 @@ public class ControlPoint implements Constants {
 	/*****************************************************************************/
 
 	void iterateXY(double points[][]) {
-		double xy[] = new double[2];
+		double[] xy = new double[2];
 
 		xy[0] = 2 * Global.random() - 1;
 		xy[1] = 2 * Global.random() - 1;
@@ -1731,8 +1731,8 @@ public class ControlPoint implements Constants {
 
 	void interpolateX(ControlPoint cp1, ControlPoint cp2, double tm) {
 		double c0, c1;
-		float s[] = new float[3];
-		float t[] = new float[3];
+		float[] s = new float[3];
+		float[] t = new float[3];
 		int nxforms1, nxforms2;
 
 		if ((cp2.time - cp1.time) > 1e-6) {

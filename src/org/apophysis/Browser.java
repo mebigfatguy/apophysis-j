@@ -55,14 +55,14 @@ public class Browser extends MyThinlet implements Constants {
 	int flameindex, gradientindex;
 	String extension, identifier, filename;
 	ControlPoint cp;
-	int palette[][] = new int[256][3];
+	int[][] palette = new int[256][3];
 	double zoom;
-	double center[] = new double[2];
+	double[] center = new double[2];
 	Renderer renderer;
 	String flamestring;
 
-	int indices[] = new int[400];
-	int colors[] = new int[400];
+	int[] indices = new int[400];
+	int[] colors = new int[400];
 
 	Image pimage = null;
 
@@ -368,7 +368,7 @@ public class Browser extends MyThinlet implements Constants {
 	/*****************************************************************************/
 
 	Image buildGradientImage(int palette[][]) {
-		int pixels[] = new int[256];
+		int[] pixels = new int[256];
 
 		for (int i = 0; i < 256; i++) {
 			Color color = new Color(palette[i][0], palette[i][1], palette[i][2]);

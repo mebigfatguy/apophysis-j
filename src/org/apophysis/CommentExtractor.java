@@ -87,7 +87,7 @@ public class CommentExtractor implements Constants {
 
 				if ((m1 == 0xFF) && (m2 == M_COM)) {
 					// read comment
-					byte b[] = new byte[len - 2];
+					byte[] b = new byte[len - 2];
 					int k = len - 2;
 					int o = 0;
 					while (k > 0) {
@@ -140,7 +140,7 @@ public class CommentExtractor implements Constants {
 	static String readPngComment(String filename) {
 		String comment = "";
 		BufferedInputStream is = null;
-		byte chunk[] = new byte[4];
+		byte[] chunk = new byte[4];
 
 		try {
 			is = new BufferedInputStream(new FileInputStream(filename));
@@ -168,7 +168,7 @@ public class CommentExtractor implements Constants {
 
 				if (schunk.equals("tEXt")) {
 					// uncompressed comment
-					byte b[] = new byte[len];
+					byte[] b = new byte[len];
 					int k = len;
 					int o = 0;
 					while (k > 0) {
@@ -188,7 +188,7 @@ public class CommentExtractor implements Constants {
 					}
 				} else if (schunk.equals("zTXt")) {
 					// compressed comment
-					byte b[] = new byte[len];
+					byte[] b = new byte[len];
 					int k = len;
 					int o = 0;
 					while (k > 0) {
@@ -253,7 +253,7 @@ public class CommentExtractor implements Constants {
 		ByteArrayInputStream bis = new ByteArrayInputStream(b, off, len);
 		InflaterInputStream is = new InflaterInputStream(bis);
 
-		byte a[] = new byte[20 * b.length];
+		byte[] a = new byte[20 * b.length];
 		int o = 0;
 		int k = a.length;
 		while (true) {
@@ -277,10 +277,10 @@ public class CommentExtractor implements Constants {
 		ByteArrayInputStream bis = new ByteArrayInputStream(comment.getBytes());
 		BASE64DecoderStream b = new BASE64DecoderStream(bis);
 
-		byte d[] = null;
+		byte[] d = null;
 
 		try {
-			byte c[] = new byte[comment.length() * 2];
+			byte[] c = new byte[comment.length() * 2];
 			int off = 0;
 			int len = c.length;
 			while (true) {
@@ -311,7 +311,7 @@ public class CommentExtractor implements Constants {
 					Global.crypto = new Crypto(Global.passwordText);
 				}
 
-				byte e[] = Global.crypto.decode(d);
+				byte[] e = Global.crypto.decode(d);
 				s = new String(e);
 			} catch (Exception ex) {
 			}

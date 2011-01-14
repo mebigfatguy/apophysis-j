@@ -5002,7 +5002,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 			return false;
 		}
 
-		Object items[] = getItems(header);
+		Object[] items = getItems(header);
 		int xcumul = 0;
 		for (int i = 0; i < items.length; i++) {
 			int w = getInteger(items[i], "width");

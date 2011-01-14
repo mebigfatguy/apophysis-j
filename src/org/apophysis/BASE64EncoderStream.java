@@ -36,7 +36,7 @@ import java.io.OutputStream;
  * FilterOutputStream, so one can just wrap this class around any output stream
  * and write bytes into this filter. The encoding is done as the bytes are
  * written out.
- * 
+ *
  * @author John Mani
  * @author Bill Shannon
  */
@@ -54,7 +54,7 @@ public class BASE64EncoderStream extends FilterOutputStream {
 
 	/**
 	 * Create a BASE64 encoder that encodes the specified output stream.
-	 * 
+	 *
 	 * @param out
 	 *            the output stream
 	 * @param bytesPerLine
@@ -86,7 +86,7 @@ public class BASE64EncoderStream extends FilterOutputStream {
 	/**
 	 * Create a BASE64 encoder that encodes the specified input stream. Inserts
 	 * the CRLF sequence after outputting 76 bytes.
-	 * 
+	 *
 	 * @param out
 	 *            the output stream
 	 */
@@ -97,7 +97,7 @@ public class BASE64EncoderStream extends FilterOutputStream {
 	/**
 	 * Encodes <code>len</code> bytes from the specified <code>byte</code> array
 	 * starting at offset <code>off</code> to this output stream.
-	 * 
+	 *
 	 * @param b
 	 *            the data.
 	 * @param off
@@ -155,7 +155,7 @@ public class BASE64EncoderStream extends FilterOutputStream {
 
 	/**
 	 * Encodes <code>b.length</code> bytes to this output stream.
-	 * 
+	 *
 	 * @param b
 	 *            the data to be written.
 	 * @exception IOException
@@ -168,7 +168,7 @@ public class BASE64EncoderStream extends FilterOutputStream {
 
 	/**
 	 * Encodes the specified <code>byte</code> to this output stream.
-	 * 
+	 *
 	 * @param c
 	 *            the <code>byte</code>.
 	 * @exception IOException
@@ -186,7 +186,7 @@ public class BASE64EncoderStream extends FilterOutputStream {
 	/**
 	 * Flushes this output stream and forces any buffered output bytes to be
 	 * encoded out to the stream.
-	 * 
+	 *
 	 * @exception IOException
 	 *                if an I/O error occurs.
 	 */
@@ -214,7 +214,7 @@ public class BASE64EncoderStream extends FilterOutputStream {
 	}
 
 	/** This array maps the characters to their 6 bit values */
-	private final static char pem_array[] = { 'A', 'B', 'C', 'D', 'E', 'F',
+	private final static char[] pem_array = { 'A', 'B', 'C', 'D', 'E', 'F',
 			'G', 'H', // 0
 			'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', // 1
 			'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', // 2
@@ -228,7 +228,7 @@ public class BASE64EncoderStream extends FilterOutputStream {
 	/**
 	 * Encode the data stored in <code>buffer</code>. Uses <code>outbuf</code>
 	 * to store the encoded data before writing.
-	 * 
+	 *
 	 * @exception IOException
 	 *                if an I/O error occurs.
 	 */
@@ -320,7 +320,7 @@ public class BASE64EncoderStream extends FilterOutputStream {
 	 * begin TEST program public static void main(String argv[]) throws
 	 * Exception { FileInputStream infile = new FileInputStream(argv[0]);
 	 * BASE64EncoderStream encoder = new BASE64EncoderStream(System.out); int c;
-	 * 
+	 *
 	 * while ((c = infile.read()) != -1) encoder.write(c); encoder.close(); }
 	 * end TEST program
 	 **/

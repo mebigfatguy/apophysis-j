@@ -47,7 +47,7 @@ public class ColorDialog {
 	Image himage = null;
 
 	int red, green, blue;
-	float hsb[] = new float[3];
+	float[] hsb = new float[3];
 
 	/******************************************************************************/
 	// CONSTRUCTOR
@@ -73,7 +73,7 @@ public class ColorDialog {
 	/******************************************************************************/
 
 	Image createHueImage() {
-		int pixels[] = new int[256 * 256];
+		int[] pixels = new int[256 * 256];
 
 		for (int i = 0; i < 256; i++) {
 			float sat = (255.0f - i) / 255.0f;

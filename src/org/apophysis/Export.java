@@ -271,7 +271,7 @@ public class Export extends MyThinlet implements Constants {
 		v.add("enable_jpeg_comments=" + Global.jpegComment);
 		v.add("enable_png_comments=" + Global.jpegComment);
 
-		String env[] = new String[v.size()];
+		String[] env = new String[v.size()];
 		for (int i = 0; i < env.length; i++) {
 			env[i] = v.get(i);
 		}

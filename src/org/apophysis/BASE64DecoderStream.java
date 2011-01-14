@@ -37,7 +37,7 @@ import java.io.InputStream;
  * FilterInputStream, so one can just wrap this class around any input stream
  * and read bytes from this filter. The decoding is done as the bytes are read
  * out.
- * 
+ *
  * @author John Mani
  * @author Bill Shannon
  */
@@ -61,7 +61,7 @@ public class BASE64DecoderStream extends FilterInputStream {
 	 * System property <code>mail.mime.base64.ignoreerrors</code> controls
 	 * whether errors in the encoded data cause an exception or are ignored. The
 	 * default is false (errors cause exception).
-	 * 
+	 *
 	 * @param in
 	 *            the input stream
 	 */
@@ -78,7 +78,7 @@ public class BASE64DecoderStream extends FilterInputStream {
 
 	/**
 	 * Create a BASE64 decoder that decodes the specified input stream.
-	 * 
+	 *
 	 * @param in
 	 *            the input stream
 	 * @param ignoreErrors
@@ -96,7 +96,7 @@ public class BASE64DecoderStream extends FilterInputStream {
 	 * the value <code>-1</code> is returned. This method blocks until input
 	 * data is available, the end of the stream is detected, or an exception is
 	 * thrown.
-	 * 
+	 *
 	 * @return next byte of data, or <code>-1</code> if the end of the stream is
 	 *         reached.
 	 * @exception IOException
@@ -119,7 +119,7 @@ public class BASE64DecoderStream extends FilterInputStream {
 	 * Reads up to <code>len</code> decoded bytes of data from this input stream
 	 * into an array of bytes. This method blocks until some input is available.
 	 * <p>
-	 * 
+	 *
 	 * @param buf
 	 *            the buffer into which the data is read.
 	 * @param off
@@ -201,7 +201,7 @@ public class BASE64DecoderStream extends FilterInputStream {
 	 * This character array provides the character to value map based on
 	 * RFC1521.
 	 */
-	private final static char pem_array[] = { 'A', 'B', 'C', 'D', 'E', 'F',
+	private final static char[] pem_array = { 'A', 'B', 'C', 'D', 'E', 'F',
 			'G', 'H', // 0
 			'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', // 1
 			'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', // 2
@@ -212,7 +212,7 @@ public class BASE64DecoderStream extends FilterInputStream {
 			'4', '5', '6', '7', '8', '9', '+', '/' // 7
 	};
 
-	private final static byte pem_convert_array[] = new byte[256];
+	private final static byte[] pem_convert_array = new byte[256];
 
 	static {
 		for (int i = 0; i < 255; i++) {
@@ -229,7 +229,7 @@ public class BASE64DecoderStream extends FilterInputStream {
 	 * is done by filling an int with 4 6-bit values by shifting them in from
 	 * the bottom and then extracting 3 8-bit bytes from the int by shifting
 	 * them out from the bottom.
-	 * 
+	 *
 	 * @param outbuf
 	 *            the buffer into which to put the decoded bytes
 	 * @param pos
@@ -358,7 +358,7 @@ public class BASE64DecoderStream extends FilterInputStream {
 	/**
 	 * Read the next valid byte from the input stream. Buffer lots of data from
 	 * underlying stream in input_buffer, for efficiency.
-	 * 
+	 *
 	 * @return the next byte, -1 on EOF, or -2 if next byte is '=' (padding at
 	 *         end of encoded data)
 	 */
@@ -428,7 +428,7 @@ public class BASE64DecoderStream extends FilterInputStream {
 	 * Base64 decode a byte array. No line breaks are allowed. This method is
 	 * suitable for short strings, such as those in the IMAP AUTHENTICATE
 	 * protocol, but not to decode the entire content of a MIME part.
-	 * 
+	 *
 	 * NOTE: inbuf may only contain valid base64 characters. Whitespace is not
 	 * ignored.
 	 */
@@ -485,7 +485,7 @@ public class BASE64DecoderStream extends FilterInputStream {
 	 * begin TEST program *** public static void main(String argv[]) throws
 	 * Exception { FileInputStream infile = new FileInputStream(argv[0]);
 	 * BASE64DecoderStream decoder = new BASE64DecoderStream(infile); int c;
-	 * 
+	 *
 	 * while ((c = decoder.read()) != -1) System.out.print((char)c);
 	 * System.out.flush(); } end TEST program
 	 ***/
