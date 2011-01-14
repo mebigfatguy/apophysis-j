@@ -146,7 +146,7 @@ public class JSFlame implements Constants {
 		f.Hue = Hue;
 		f.Batches = Batches;
 		f.FinalXformEnabled = FinalXformEnabled;
-		f.Angle = f.Angle;
+		f.Angle = Angle;
 
 		f.nxforms = nxforms;
 
@@ -154,8 +154,9 @@ public class JSFlame implements Constants {
 		f.Nick = Nick;
 		f.URL = URL;
 
-		for (int i = 0; i < 3; i++)
+		for (int i = 0; i < 3; i++) {
 			f.Background[i] = Background[i];
+		}
 
 		CMap.copyPalette(Gradient, f.Gradient);
 
