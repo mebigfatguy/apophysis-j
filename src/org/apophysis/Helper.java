@@ -126,7 +126,7 @@ public class Helper extends MyThinlet implements Constants, Runnable {
 		try {
 			char buffer[] = new char[512];
 
-			String rname = "/org/apophysis/help/" + name + ".txt";
+			String rname = "/help/" + name + ".txt";
 
 			InputStreamReader r = new InputStreamReader(Global.main.getClass()
 					.getResourceAsStream(rname));
