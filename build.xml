@@ -37,6 +37,7 @@
     			<include name="**/*.xml"/>
     			<include name="**/*.txt"/>
     			<include name="**/*.gif"/>
+    			<include name="**/*.dat"/>
     		</fileset>
 		</copy>
 	</target>
@@ -60,6 +61,7 @@
 				<include name="**/*.xml"/>
 				<include name="**/*.txt"/>
 				<include name="**/*.gif"/>
+    			<include name="**/*.dat"/>
 			</fileset>
 			<manifest>
 				<attribute name="apophysis-j-version" value="${apophysis-j.version}"/>
