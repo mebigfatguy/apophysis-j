@@ -28,6 +28,7 @@
 package org.apophysis;
 
 import java.io.File;
+import java.util.List;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -47,8 +48,8 @@ public class OpenDialog {
 
 	private File curdir = null;
 
-	private final Vector dirs = new Vector();
-	private final Vector filters = new Vector();
+	private final List<File> dirs = new Vector<File>();
+	private final List<String[]> filters = new Vector<String[]>();
 	private String patterns[] = { "*.*" };
 
 	File roots[] = null;
@@ -95,7 +96,7 @@ public class OpenDialog {
 		thinlet.removeAll(combo);
 
 		for (int i = 0; i < filters.size(); i++) {
-			String s[] = (String[]) filters.get(i);
+			String s[] = filters.get(i);
 
 			Object choice = Thinlet.createImpl("choice");
 			thinlet.setString(choice, "text", s[0]);
@@ -111,7 +112,7 @@ public class OpenDialog {
 
 	public void changeDirectory(Object list) {
 		int index = thinlet.getSelectedIndex(list);
-		File dir = (File) dirs.get(index);
+		File dir = dirs.get(index);
 		setDirectory(dir);
 		updateDirs();
 
@@ -125,7 +126,7 @@ public class OpenDialog {
 	/******************************************************************************/
 
 	void setDirectory(File dir) {
-		dirs.removeAllElements();
+		dirs.clear();
 
 		curdir = dir;
 
@@ -175,7 +176,7 @@ public class OpenDialog {
 		thinlet.removeAll(dirlist);
 
 		for (int i = 0; i < dirs.size(); i++) {
-			File dir = (File) dirs.get(i);
+			File dir = dirs.get(i);
 
 			Object choice = Thinlet.createImpl("choice");
 
@@ -309,7 +310,7 @@ public class OpenDialog {
 	public void changeType(Object list) {
 		int index = thinlet.getSelectedIndex(list);
 
-		String s[] = (String[]) filters.get(index);
+		String s[] = filters.get(index);
 
 		StringTokenizer tk = new StringTokenizer(s[1], ";");
 

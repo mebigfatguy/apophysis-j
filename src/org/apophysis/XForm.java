@@ -44,7 +44,7 @@ public class XForm implements Constants {
 	static final double MAX_WEIGHT = 1000.0;
 	static final double EPS = 1e-300;
 
-	static Vector registered_variations = new Vector();
+	static List<Variation> registered_variations = new Vector<Variation>();
 
 	static {
 		registerVariation(new LinearVariation());
@@ -461,7 +461,7 @@ public class XForm implements Constants {
 	/****************************************************************************/
 
 	public static Variation getVariation(int index) {
-		return (Variation) registered_variations.get(index);
+		return registered_variations.get(index);
 	}
 
 	/****************************************************************************/

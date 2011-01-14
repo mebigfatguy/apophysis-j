@@ -36,6 +36,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.List;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -316,7 +317,7 @@ public class Browser extends MyThinlet implements Constants {
 		Object list = find("ListView");
 		removeAll(list);
 
-		Vector v = new Vector();
+		List<MySortable> v = new Vector<MySortable>();
 
 		try {
 			BufferedReader r = new BufferedReader(new FileReader(filename));

@@ -6617,6 +6617,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 	 * @param value
 	 *            the new client property value
 	 */
+	@SuppressWarnings("unchecked")
 	public void putProperty(Object component, Object key, Object value) {
 		Object table = get(component, ":bind");
 		if (value != null) {
@@ -6639,6 +6640,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 	 * @return the value to which the key is mapped or null if the key is not
 	 *         mapped to any value
 	 */
+	@SuppressWarnings("unchecked")
 	public Object getProperty(Object component, Object key) {
 		Object table = get(component, ":bind");
 		return (table != null) ? ((Hashtable<Object, Object>) table).get(key) : null;
