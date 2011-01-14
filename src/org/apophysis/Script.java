@@ -619,7 +619,7 @@ public class Script extends MyThinlet implements Constants {
 	}
 
 	public void _print(Object o) {
-		log.append(cx.toString(o));
+		log.append(Context.toString(o));
 		log.append("\n");
 		setString(console, "text", log.toString());
 
@@ -1433,7 +1433,7 @@ public class Script extends MyThinlet implements Constants {
 		double sin = Math.sin(radians);
 
 		int oldmode = Global.editor.pivotMode;
-		Global.editor.pivotMode = Global.editor.PIVOT_WORLD;
+		Global.editor.pivotMode = Editor.PIVOT_WORLD;
 		SPoint pivot = Global.editor.getPivot();
 		Global.editor.pivotMode = oldmode;
 

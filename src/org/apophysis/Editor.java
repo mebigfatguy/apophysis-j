@@ -2177,7 +2177,7 @@ public class Editor extends MyThinlet implements Constants, ThreadTarget {
 		setColor(find("pnlColor"), "background", valueToColor(xform.color));
 		setInteger(find("scrollColor"), "value", (int) (xform.color * 1000));
 
-		int nv = xform.getNrVariations();
+		int nv = XForm.getNrVariations();
 		for (int i = 0; i < nv; i++) {
 			if (xform.vars[i] == 0) {
 				setString(find("variation" + i), "text", "");
@@ -2186,7 +2186,7 @@ public class Editor extends MyThinlet implements Constants, ThreadTarget {
 			}
 		}
 
-		int np = xform.getNrParameters();
+		int np = XForm.getNrParameters();
 		for (int i = 0; i < np; i++) {
 			setString(find("txtParameter" + i), "text", "" + xform.pvalues[i]);
 		}
