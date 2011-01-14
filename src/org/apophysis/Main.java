@@ -58,6 +58,7 @@ import java.io.StringWriter;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -144,8 +145,9 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 		canvas = find("MainCanvas");
 
-		for (int i = 0; i < Global.mainTriangles.length; i++)
+		for (int i = 0; i < Global.mainTriangles.length; i++) {
 			Global.mainTriangles[i] = new Triangle();
+		}
 
 		// Global.readSettings();
 
@@ -175,8 +177,9 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 		File home = new File(System.getProperty("user.home"));
 		File adir = new File(home, DIRNAME);
 
-		if (!adir.exists())
+		if (!adir.exists()) {
 			adir.mkdir();
+		}
 
 		if (adir.exists() && adir.isDirectory()) {
 			Global.apopath = adir.getAbsolutePath();
@@ -197,15 +200,17 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 			// check if plugin directory exists
 			File fplugin = new File(Global.apopath, PLUGNAME);
-			if (!fplugin.exists())
+			if (!fplugin.exists()) {
 				fplugin.mkdir();
+			}
 
 			// check if sub-directory apophysis exists
 			String pname = getClass().getPackage().getName();
 			if (fplugin.exists() && fplugin.isDirectory()) {
 				File fapo = new File(fplugin, pname);
-				if (!fapo.exists())
+				if (!fapo.exists()) {
 					fapo.mkdir();
+				}
 			}
 		}
 
@@ -213,6 +218,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 	/*****************************************************************************/
 
+	@Override
 	public void show() {
 		super.show();
 
@@ -259,8 +265,9 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 	void dumpVariations() {
 		int nv = XForm.getNrVariations();
-		for (int i = 0; i < nv; i++)
+		for (int i = 0; i < nv; i++) {
 			System.out.println(XForm.getVariation(i).getName());
+		}
 	}
 
 	/*****************************************************************************/
@@ -297,39 +304,43 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 			while (true) {
 				String line = r.readLine();
-				if (line == null)
+				if (line == null) {
 					break;
+				}
 
 				cp.nxforms = 0;
 
 				// name of flame
 				StringTokenizer tk = new StringTokenizer(line);
-				if (tk.countTokens() != 2)
+				if (tk.countTokens() != 2) {
 					break;
+				}
 				cp.name = tk.nextToken();
 				temp = tk.nextToken();
-				if (!temp.equals("{"))
+				if (!temp.equals("{")) {
 					break;
+				}
 
 				while (true) {
 					line = r.readLine();
-					if (line == null)
+					if (line == null) {
 						break;
+					}
 
 					tk = new StringTokenizer(line);
 					int n = tk.countTokens();
 					while (tk.hasMoreTokens()) {
 						temp = tk.nextToken();
-						if (temp.equals("time"))
+						if (temp.equals("time")) {
 							cp.time = Double.valueOf(tk.nextToken())
 									.doubleValue();
-						else if (temp.equals("zoom"))
+						} else if (temp.equals("zoom")) {
 							cp.zoom = Double.valueOf(tk.nextToken())
 									.doubleValue();
-						else if (temp.equals("angle"))
+						} else if (temp.equals("angle")) {
 							cp.fangle = Double.valueOf(tk.nextToken())
 									.doubleValue();
-						else if (temp.equals("image_size")) {
+						} else if (temp.equals("image_size")) {
 							cp.width = Integer.parseInt(tk.nextToken());
 							cp.height = Integer.parseInt(tk.nextToken());
 						} else if (temp.equals("center")) {
@@ -337,52 +348,53 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 									.doubleValue();
 							cp.center[1] = Double.valueOf(tk.nextToken())
 									.doubleValue();
-						} else if (temp.equals("pixels_per_unit"))
+						} else if (temp.equals("pixels_per_unit")) {
 							cp.pixels_per_unit = Double.valueOf(tk.nextToken())
 									.doubleValue();
-						else if (temp.equals("spatial_oversample"))
+						} else if (temp.equals("spatial_oversample")) {
 							cp.spatial_oversample = Integer.parseInt(tk
 									.nextToken());
-						else if (temp.equals("spatial_filter_radius"))
+						} else if (temp.equals("spatial_filter_radius")) {
 							cp.spatial_filter_radius = Double.valueOf(
 									tk.nextToken()).doubleValue();
-						else if (temp.equals("sample_density"))
+						} else if (temp.equals("sample_density")) {
 							cp.sample_density = Double.valueOf(tk.nextToken())
 									.doubleValue();
-						else if (temp.equals("background")) {
+						} else if (temp.equals("background")) {
 							cp.background[0] = Integer.parseInt(tk.nextToken());
 							cp.background[1] = Integer.parseInt(tk.nextToken());
 							cp.background[2] = Integer.parseInt(tk.nextToken());
-						} else if (temp.equals("brightness"))
+						} else if (temp.equals("brightness")) {
 							cp.brightness = Double.valueOf(tk.nextToken())
 									.doubleValue();
-						else if (temp.equals("gamma"))
+						} else if (temp.equals("gamma")) {
 							cp.gamma = Double.valueOf(tk.nextToken())
 									.doubleValue();
-						else if (temp.equals("vibrancy"))
+						} else if (temp.equals("vibrancy")) {
 							cp.vibrancy = Double.valueOf(tk.nextToken())
 									.doubleValue();
-						else if (temp.equals("hue_rotation"))
+						} else if (temp.equals("hue_rotation")) {
 							cp.hue_rotation = Double.valueOf(tk.nextToken())
 									.doubleValue();
-						else if (temp.equals("finalzformenabled"))
+						} else if (temp.equals("finalzformenabled")) {
 							cp.finalXformEnabled = (!tk.nextToken().equals("0"));
-						else if (temp.equals("xform"))
+						} else if (temp.equals("xform")) {
 							ixform = Integer.parseInt(tk.nextToken());
-						else if (temp.equals("density"))
+						} else if (temp.equals("density")) {
 							cp.xform[ixform].density = Double.valueOf(
 									tk.nextToken()).doubleValue();
-						else if (temp.equals("color"))
+						} else if (temp.equals("color")) {
 							cp.xform[ixform].color = Double.valueOf(
 									tk.nextToken()).doubleValue();
-						else if (temp.equals("symmetry"))
+						} else if (temp.equals("symmetry")) {
 							cp.xform[ixform].symmetry = Double.valueOf(
 									tk.nextToken()).doubleValue();
-						else if (temp.equals("vars")) {
+						} else if (temp.equals("vars")) {
 							int iv = 0;
-							while (tk.hasMoreTokens())
+							while (tk.hasMoreTokens()) {
 								cp.xform[ixform].vars[iv++] = Double.valueOf(
 										tk.nextToken()).doubleValue();
+							}
 							break;
 						} else if (temp.equals("coefs")) {
 							cp.xform[ixform].c00 = Double.valueOf(
@@ -429,12 +441,15 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 			r.close();
 
 			cp.nxforms = 0;
-			for (int i = 0; i < cp.xform.length; i++)
-				if (cp.xform[i].density != 0)
+			for (int i = 0; i < cp.xform.length; i++) {
+				if (cp.xform[i].density != 0) {
 					cp.nxforms = i + 1;
+				}
+			}
 
-			if (cp.nxforms > 0)
+			if (cp.nxforms > 0) {
 				newcps.addElement(cp);
+			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -450,18 +465,21 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 		if (comment.length() == 0) {
 			// try to open the corresponding flame file
 			int i = filename.lastIndexOf('.');
-			if (i > 0)
+			if (i > 0) {
 				filename = filename.substring(0, i) + ".flame";
-			else
+			} else {
 				filename = filename + ".flame";
+			}
 			return openXMLFile(filename);
 		} else {
 			int i = comment.indexOf("<flame");
-			if (i < 0)
+			if (i < 0) {
 				return new Vector();
+			}
 
-			if (i > 0)
+			if (i > 0) {
 				comment = comment.substring(i);
+			}
 			return readXML(new StringReader(comment));
 		}
 
@@ -474,18 +492,21 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 		if (comment.length() == 0) {
 			// try to open the corresponding flame file
 			int i = filename.lastIndexOf('.');
-			if (i > 0)
+			if (i > 0) {
 				filename = filename.substring(0, i) + ".flame";
-			else
+			} else {
 				filename = filename + ".flame";
+			}
 			return openXMLFile(filename);
 		} else {
 			int i = comment.indexOf("<flame");
-			if (i < 0)
+			if (i < 0) {
 				return new Vector();
+			}
 
-			if (i > 0)
+			if (i > 0) {
 				comment = comment.substring(i);
+			}
 			return readXML(new StringReader(comment));
 		}
 
@@ -503,25 +524,29 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 			while (true) {
 				String line = r.readLine();
-				if (line == null)
+				if (line == null) {
 					break;
+				}
 
 				if (line.trim().endsWith("{")) {
 					// read parameters
 					Hashtable h = new Hashtable();
 					while (true) {
 						line = r.readLine();
-						if (line == null)
+						if (line == null) {
 							break;
+						}
 						i = line.indexOf("gradient:");
-						if (i >= 0)
+						if (i >= 0) {
 							break;
+						}
 						StringTokenizer tk = new StringTokenizer(line);
 						while (tk.hasMoreTokens()) {
 							String token = tk.nextToken();
 							i = token.indexOf('=');
-							if (i < 0)
+							if (i < 0) {
 								continue;
+							}
 							String key = token.substring(0, i);
 							String val = token.substring(i + 1);
 							h.put(key, val);
@@ -532,33 +557,42 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 					// read gradient
 					while (true) {
 						line = r.readLine();
-						if (line == null)
+						if (line == null) {
 							break;
-						if (line.startsWith("}"))
+						}
+						if (line.startsWith("}")) {
 							break;
+						}
 
 						StringTokenizer tk = new StringTokenizer(line);
-						if (tk.countTokens() != 2)
+						if (tk.countTokens() != 2) {
 							continue;
+						}
 
 						String token = tk.nextToken();
 						i = token.indexOf('=');
-						if (i < 0)
+						if (i < 0) {
 							continue;
-						if (!token.substring(0, i).equals("index"))
+						}
+						if (!token.substring(0, i).equals("index")) {
 							continue;
+						}
 						int index = Integer.parseInt(token.substring(i + 1));
-						if (index < 0)
+						if (index < 0) {
 							continue;
-						if (index >= 400)
+						}
+						if (index >= 400) {
 							continue;
+						}
 
 						token = tk.nextToken();
 						i = token.indexOf('=');
-						if (i < 0)
+						if (i < 0) {
 							continue;
-						if (!token.substring(0, i).equals("color"))
+						}
+						if (!token.substring(0, i).equals("color")) {
 							continue;
+						}
 						int color = Integer.parseInt(token.substring(i + 1));
 						v.addElement(new int[] { index, color });
 					}
@@ -607,8 +641,9 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 			while (true) {
 				ControlPoint cp = readControlPoint(r);
-				if (cp == null)
+				if (cp == null) {
 					break;
+				}
 				mycps.addElement(cp);
 			}
 			r.close();
@@ -630,11 +665,13 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 		while (true) {
 			line = r.readLine();
-			if (line == null)
+			if (line == null) {
 				return null;
+			}
 			int i = line.indexOf("<flame ");
-			if (i < 0)
+			if (i < 0) {
 				continue;
+			}
 			line = line.substring(i).trim();
 			break;
 		}
@@ -644,13 +681,16 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 		while (true) {
 			line = r.readLine();
-			if (line == null)
+			if (line == null) {
 				break;
-			if (line.indexOf("<") < 0)
+			}
+			if (line.indexOf("<") < 0) {
 				continue;
+			}
 
-			if (line.indexOf("</flame") >= 0)
+			if (line.indexOf("</flame") >= 0) {
 				break;
+			}
 
 			tag = new XmlTag(line.trim());
 			if (tag.getName().equals("xform")) {
@@ -659,23 +699,26 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 			} else if (tag.getName().equals("finalxform")) {
 				cp.addFinalXForm(tag);
 				appendUnknown(unknown, tag);
-			} else if (tag.getName().equals("color"))
+			} else if (tag.getName().equals("color")) {
 				cp.addColor(tag);
-			else if (tag.getName().equals("palette") && (!tag.isClosed())) {
+			} else if (tag.getName().equals("palette") && (!tag.isClosed())) {
 				while (true) {
 					line = r.readLine();
-					if (line == null)
+					if (line == null) {
 						break;
-					if (line.indexOf("</palette") >= 0)
+					}
+					if (line.indexOf("</palette") >= 0) {
 						break;
+					}
 					tag.appendData(line.trim());
 				}
 				cp.setPalette(tag.getInt("count", 0), tag.getData());
 			} else if (tag.getName().equals("colors")) {
 				while (true) {
 					line = r.readLine();
-					if (line == null)
+					if (line == null) {
 						break;
+					}
 					int k = line.indexOf("\"/>");
 					if (k > 0) {
 						tag.appendAttribute("data", line.substring(0, k).trim());
@@ -688,8 +731,9 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 			}
 		}
 
-		if (unknown.size() > 0)
+		if (unknown.size() > 0) {
 			cp.unknown = unknown;
+		}
 
 		return cp;
 
@@ -702,11 +746,13 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 		while (e.hasMoreElements()) {
 			String s = (String) e.nextElement();
 			int k = s.indexOf('_');
-			if (k > 0)
+			if (k > 0) {
 				s = s.substring(0, k);
+			}
 
-			if (!v.contains(s))
+			if (!v.contains(s)) {
 				v.addElement(s);
+			}
 		}
 	}
 
@@ -793,20 +839,22 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 		} catch (Exception ex) {
 		}
 
-		if (cp != null)
+		if (cp != null) {
 			addFlame(mycps, cp);
-		else {
+		} else {
 			int nc = cps.size();
-			for (int i = 0; i < nc; i++)
+			for (int i = 0; i < nc; i++) {
 				addFlame(mycps, (ControlPoint) cps.elementAt(i));
+			}
 		}
 
 		try {
 			File file = new File(filename);
 			String title = file.getName();
 			int k = title.indexOf('.');
-			if (k > 0)
+			if (k > 0) {
 				title = title.substring(0, k);
+			}
 
 			PrintWriter w = new PrintWriter(new FileWriter(file));
 
@@ -834,8 +882,9 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 		int n = v.size();
 		for (int i = n - 1; i >= 0; i--) {
 			ControlPoint oldcp = (ControlPoint) v.elementAt(i);
-			if (oldcp.name.equals(newcp.name))
+			if (oldcp.name.equals(newcp.name)) {
 				v.removeElementAt(i);
+			}
 		}
 
 		v.addElement(newcp);
@@ -846,10 +895,10 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 	public void mnuExitClick() {
 
-		if (Global.confirmExit)
+		if (Global.confirmExit) {
 			confirm("Do you really want to quit? All unsaved data will be lost!",
 					new QuitTask());
-		else {
+		} else {
 			quitApplication();
 			System.exit(0);
 		}
@@ -891,8 +940,9 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 	public void listViewChange(Object list) {
 		int index = getSelectedIndex(list);
-		if (index < 0)
+		if (index < 0) {
 			return;
+		}
 
 		Global.mainCP = (ControlPoint) cps.elementAt(index);
 
@@ -913,12 +963,15 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 	/*****************************************************************************/
 
 	public void updateWindows() {
-		if (Global.editor.visible())
+		if (Global.editor.visible()) {
 			Global.editor.updateDisplay();
-		if (Global.adjust.visible())
+		}
+		if (Global.adjust.visible()) {
 			Global.adjust.updateDisplay();
-		if (Global.mutate.visible())
+		}
+		if (Global.mutate.visible()) {
 			Global.mutate.updateDisplay();
+		}
 	}
 
 	/*****************************************************************************/
@@ -931,8 +984,9 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 		y = r.y;
 		while (true) {
 			component = getParent(component);
-			if (component == null)
+			if (component == null) {
 				break;
+			}
 			r = getRectangle(component, "bounds");
 			x += r.x;
 			y += r.y;
@@ -952,18 +1006,22 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 			g.setColor(grayc0);
 			int w = (bounds.width - 1) >> 3;
 			int h = (bounds.height - 1) >> 3;
-			for (int i = 0; i <= w; i++)
-				for (int j = 0; j <= h; j++)
-					if (((i + j) % 2) == 1)
+			for (int i = 0; i <= w; i++) {
+				for (int j = 0; j <= h; j++) {
+					if (((i + j) % 2) == 1) {
 						g.fillRect(i << 3, j << 3, 8, 8);
+					}
+				}
+			}
 		} else {
 			g.setColor(new Color(Global.mainCP.background[0],
 					Global.mainCP.background[1], Global.mainCP.background[2]));
 			g.fillRect(0, 0, bounds.width, bounds.height);
 		}
 
-		if (image != null)
+		if (image != null) {
 			g.drawImage(image, xview, yview, imagewidth, imageheight, null);
+		}
 
 	}
 
@@ -1017,8 +1075,9 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 	/*****************************************************************************/
 
 	public void updateUndo() {
-		while (history.size() > undoindex)
+		while (history.size() > undoindex) {
 			history.removeElement(history.elementAt(history.size() - 1));
+		}
 		saveFlame();
 		undoindex++;
 		updateUndoControls();
@@ -1036,19 +1095,22 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 		setBoolean(find("mnuPopupRedo"), "enabled",
 				undoindex < history.size() - 1);
 
-		if (Global.editor != null)
+		if (Global.editor != null) {
 			Global.editor.updateUndoControls(undoindex, history.size() - 1);
+		}
 
-		if (Global.adjust != null)
+		if (Global.adjust != null) {
 			Global.adjust.updateUndoControls(undoindex, history.size() - 1);
+		}
 
 	} // End of method updateUndo
 
 	/*****************************************************************************/
 
 	public void undo() {
-		if (undoindex == history.size())
+		if (undoindex == history.size()) {
 			saveFlame();
+		}
 
 		stopThread();
 
@@ -1063,8 +1125,9 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 	public void redo() {
 		// should not happen
-		if (undoindex >= history.size())
+		if (undoindex >= history.size()) {
 			return;
+		}
 
 		stopThread();
 
@@ -1097,14 +1160,18 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 	void redrawTimerTimer() {
 
-		if (fmousemovestate == msZoomWindowMove)
+		if (fmousemovestate == msZoomWindowMove) {
 			return;
-		if (fmousemovestate == msZoomOutWindowMove)
+		}
+		if (fmousemovestate == msZoomOutWindowMove) {
 			return;
-		if (fmousemovestate == msDragMove)
+		}
+		if (fmousemovestate == msDragMove) {
 			return;
-		if (fmousemovestate == msRotateMove)
+		}
+		if (fmousemovestate == msRotateMove) {
 			return;
+		}
 
 		timer.disable();
 
@@ -1244,8 +1311,9 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 				// measure
 				len = 0;
-				for (i = 0; i < 255; i++)
+				for (i = 0; i < 255; i++) {
 					len += diffcolor(clist, i, i + 1);
+				}
 
 				// improve
 				for (i = 1; i <= Global.tryLength; i++) {
@@ -1316,8 +1384,9 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 			Global.mainCP.cmapindex = -1;
 
 			Global.adjust.updateDisplay();
-			if (Global.mutate.visible())
+			if (Global.mutate.visible()) {
 				Global.mutate.updateDisplay();
+			}
 
 			timer.enable();
 		} catch (Exception ex) {
@@ -1394,19 +1463,21 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 		String ext;
 		boolean newrender;
 
-		if (Global.render.renderthread != null)
+		if (Global.render.renderthread != null) {
 			confirm("Do you want to abort the current render ?",
 					new RenderTask(false));
-		else
+		} else {
 			renderToDisk(false);
+		}
 
 	} // End of method mnuRenderClick
 
 	/*****************************************************************************/
 
 	void renderToDisk(boolean all) {
-		if (Global.render.renderthread != null)
+		if (Global.render.renderthread != null) {
 			Global.render.renderthread.terminate();
+		}
 
 		Global.render.resetControls();
 		Global.render.setTab(0);
@@ -1450,11 +1521,12 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 		String ext;
 		boolean newrender;
 
-		if (Global.render.renderthread != null)
+		if (Global.render.renderthread != null) {
 			confirm("Do you want to abort the current render ?",
 					new RenderTask(true));
-		else
+		} else {
 			renderToDisk(true);
+		}
 
 	} // End of method mnuRenderClick
 
@@ -1504,8 +1576,9 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 	void randomBatch() {
 		int b = Global.batchSize;
-		if (b == 0)
+		if (b == 0) {
 			b = 1;
+		}
 
 		cps = new Vector();
 
@@ -1537,12 +1610,15 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 			// count the number of variations in this group
 			int n = 0;
-			for (int i = 0; i < nv; i++)
-				if (XForm.getVariation(i).getGroup() == ig)
+			for (int i = 0; i < nv; i++) {
+				if (XForm.getVariation(i).getGroup() == ig) {
 					n++;
+				}
+			}
 
-			if (n == 0)
+			if (n == 0) {
 				break;
+			}
 
 			Object submenu = createImpl("menu");
 			setString(submenu, "text", "Group " + ig);
@@ -1550,7 +1626,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 			add(menu, submenu);
 
-			for (int i = 0; i < nv; i++)
+			for (int i = 0; i < nv; i++) {
 				if (XForm.getVariation(i).getGroup() == ig) {
 					Object item = createImpl("checkboxmenuitem");
 					setString(item, "text", XForm.getVariation(i).getName());
@@ -1561,6 +1637,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 					add(submenu, item);
 				}
+			}
 
 		}
 
@@ -1588,11 +1665,13 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 	void unselectItems(Object menu) {
 		Object items[] = getItems(menu);
-		for (int i = 0; i < items.length; i++)
-			if (getClass(items[i]) == "menu")
-				unselectItems(items[i]);
-			else if (getClass(items[i]) == "checkboxmenuitem")
-				setBoolean(items[i], "selected", false);
+		for (Object item : items) {
+			if (getClass(item) == "menu") {
+				unselectItems(item);
+			} else if (getClass(item) == "checkboxmenuitem") {
+				setBoolean(item, "selected", false);
+			}
+		}
 	}
 
 	/*****************************************************************************/
@@ -1607,8 +1686,9 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 	/*****************************************************************************/
 
 	public void mnuFullScreenClick() {
-		if (image == null)
+		if (image == null) {
 			return;
+		}
 
 		Global.fullscreen.cp.copy(Global.mainCP);
 		Global.fullscreen.center[0] = Global.mainCP.center[0];
@@ -1635,8 +1715,9 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 		Global.transforms = Global.mainCP.trianglesFromCP(Global.mainTriangles);
 
-		if (Global.adjust.visible())
+		if (Global.adjust.visible()) {
 			Global.adjust.updateDisplay();
+		}
 
 		resetLocation();
 
@@ -1692,8 +1773,9 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 		stopThread();
 		updateUndo();
 
-		for (int i = 0; i < Global.transforms; i++)
+		for (int i = 0; i < Global.transforms; i++) {
 			Global.mainCP.xform[i].color = i / (Global.transforms - 1);
+		}
 
 		timer.enable();
 
@@ -1707,8 +1789,9 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 		stopThread();
 		updateUndo();
 
-		for (int i = 0; i < Global.transforms; i++)
+		for (int i = 0; i < Global.transforms; i++) {
 			Global.mainCP.xform[i].color = Math.random();
+		}
 
 		timer.enable();
 
@@ -1797,8 +1880,9 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 			Object item = getItem(list, index);
 			confirm("Permanently delete flame '" + cp.name + "' ?",
 					new DeleteTask(index));
-		} else
+		} else {
 			deleteFlame(index);
+		}
 
 	} // End of method mnuItemDeleteClick
 
@@ -1938,8 +2022,9 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 		double scale;
 		int sgn;
 
-		if ((e.getX() == xdrag) && (e.getY() == ydrag))
+		if ((e.getX() == xdrag) && (e.getY() == ydrag)) {
 			return;
+		}
 
 		xdrag = e.getX();
 		ydrag = e.getY();
@@ -1948,8 +2033,9 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 		case msZoomWindowMove:
 		case msZoomOutWindowMove:
 			// erase previous selection
-			if (drawselection)
+			if (drawselection) {
 				drawZoomWindow();
+			}
 			click.bottom = ydrag;
 			click.right = xdrag;
 			dx = xdrag - click.left;
@@ -1985,8 +2071,9 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 			break;
 
 		case msRotateMove:
-			if (drawselection)
+			if (drawselection) {
 				drawRotateLines(rotateangle);
+			}
 			rotateangle = Math.atan2(ydrag - imageheight / 2, imagewidth / 2
 					- xdrag)
 					- clickangle;
@@ -2006,10 +2093,12 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 		case msZoomWindowMove:
 			drawZoomWindow();
 			fmousemovestate = msZoomWindow;
-			if (Math.abs(select.left - select.right) < 10)
+			if (Math.abs(select.left - select.right) < 10) {
 				return;
-			if (Math.abs(select.top - select.bottom) < 10)
+			}
+			if (Math.abs(select.top - select.bottom) < 10) {
 				return;
+			}
 			stopThread();
 			updateUndo();
 			scale = Global.mainCP.width * 1.0 / imagewidth;
@@ -2021,10 +2110,12 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 		case msZoomOutWindowMove:
 			drawZoomWindow();
 			fmousemovestate = msZoomOutWindow;
-			if (Math.abs(select.left - select.right) < 10)
+			if (Math.abs(select.left - select.right) < 10) {
 				return;
-			if (Math.abs(select.top - select.bottom) < 10)
+			}
+			if (Math.abs(select.top - select.bottom) < 10) {
 				return;
+			}
 			stopThread();
 			updateUndo();
 			scale = Global.mainCP.width * 1.0 / imagewidth;
@@ -2049,14 +2140,16 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 		case msRotateMove:
 			drawRotateLines(rotateangle);
 			fmousemovestate = msRotate;
-			if (rotateangle == 0)
+			if (rotateangle == 0) {
 				return;
+			}
 			stopThread();
 			updateUndo();
-			if (Global.rotationMode == 0)
+			if (Global.rotationMode == 0) {
 				Global.mainCP.rotate(rotateangle);
-			else
+			} else {
 				Global.mainCP.rotate(-rotateangle);
+			}
 			timer.enable();
 			updateWindows();
 			break;
@@ -2214,6 +2307,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 	/*****************************************************************************/
 	/*****************************************************************************/
 
+	@Override
 	public boolean destroy() {
 		if (Global.confirmExit) {
 			confirm("Do you really want to quit? All unsaved data will be lost!",
@@ -2249,8 +2343,9 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 	// ThreadTarget implementation
 
 	public void message(int index) {
-		if (index == WM_THREAD_COMPLETE)
+		if (index == WM_THREAD_COMPLETE) {
 			handleThreadCompletion();
+		}
 	}
 
 	/*****************************************************************************/
@@ -2270,20 +2365,24 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 	void restoreWindowPosition() {
 
-		if ((Global.windowX >= 0) && (Global.windowY >= 0))
+		if ((Global.windowX >= 0) && (Global.windowY >= 0)) {
 			launcher.setLocation(Global.windowX, Global.windowY);
+		}
 		launcher.setSize(Global.windowWidth, Global.windowHeight);
 
 	} // End of method restoreBackPanelSize
 
 	/*****************************************************************************/
 
+	@Override
 	protected void doLayout(Object component) {
 		super.doLayout(component);
 
-		if (component == find("BackPanel"))
-			if (timer != null)
+		if (component == find("BackPanel")) {
+			if (timer != null) {
 				backPanelResize();
+			}
+		}
 	}
 
 	/*****************************************************************************/
@@ -2291,8 +2390,9 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 	void backPanelResize() {
 
 		Rectangle bounds = getRectangle(find("BackPanel"), "bounds");
-		if ((bounds.width == panelwidth) && (bounds.height == panelheight))
+		if ((bounds.width == panelwidth) && (bounds.height == panelheight)) {
 			return;
+		}
 
 		panelwidth = bounds.width;
 		panelheight = bounds.height;
@@ -2332,7 +2432,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 		/*
 		 * resizeImage();
-		 * 
+		 *
 		 * timer.enable(); updateWindows();
 		 */
 
@@ -2343,8 +2443,9 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 	void stopThread() {
 		timer.disable();
 
-		if (renderthread != null)
+		if (renderthread != null) {
 			renderthread.terminate();
+		}
 
 	} // End of method stopThread
 
@@ -2435,13 +2536,15 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 	public void mnuPasteClick() {
 		Object list = find("ListView");
 		int index = getSelectedIndex(list);
-		if (index < 0)
+		if (index < 0) {
 			return;
+		}
 
 		String s = getClipboard();
 		int i = s.indexOf("<flame ");
-		if (i < 0)
+		if (i < 0) {
 			return;
+		}
 
 		s = s.substring(i);
 
@@ -2449,8 +2552,9 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 			BufferedReader r = new BufferedReader(new StringReader(s));
 			ControlPoint cp = readControlPoint(r);
 
-			if (cp == null)
+			if (cp == null) {
 				return;
+			}
 
 			updateUndo();
 			stopThread();
@@ -2482,8 +2586,9 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 		Rectangle bounds = getRectangle(find("BackPanel"), "bounds");
 
-		if (bounds == null)
+		if (bounds == null) {
 			return;
+		}
 
 		pw = bounds.width - 2;
 		ph = bounds.height - 2;
@@ -2518,10 +2623,12 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 	public void progress(double value) {
 
 		int ivalue = (int) (value * 100);
-		if (ivalue < 0)
+		if (ivalue < 0) {
 			ivalue = 0;
-		if (ivalue > 100)
+		}
+		if (ivalue > 100) {
 			ivalue = 100;
+		}
 
 		setInteger(find("Status1"), "value", ivalue);
 
@@ -2587,23 +2694,25 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 	/*****************************************************************************/
 
 	File[] getFiles(Transferable t) throws Exception {
-		File files[] = null;
 
 		DataFlavor flavors[] = t.getTransferDataFlavors();
 		int nf = flavors.length;
 		for (int i = 0; i < nf; i++) {
 			Object o = t.getTransferData(flavors[i]);
-			if (!(o instanceof java.util.List))
+			if (!(o instanceof List)) {
 				continue;
-			java.util.List list = (java.util.List) o;
-			Object a[] = list.toArray();
-			if (a[0] instanceof File) {
-				files = (File[]) a;
-				break;
+			}
+			List<?> list = (List<?>) o;
+			if (list.isEmpty()) {
+				continue;
+			}
+
+			if (list.get(0) instanceof File) {
+				return list.toArray(new File[list.size()]);
 			}
 		}
 
-		return files;
+		return null;
 
 	} // End of method getURL
 
@@ -2615,8 +2724,9 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 		for (int i = 0; i < files.length; i++) {
 			// should not occur
-			if (!files[i].exists())
+			if (!files[i].exists()) {
 				continue;
+			}
 
 			String fname = files[i].getAbsolutePath();
 			int k = fname.lastIndexOf('.');
@@ -2624,27 +2734,31 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 			if (ext.equals("flame")) {
 				Vector v = openXMLFile(fname);
-				if (newcps.size() == 0)
+				if (newcps.size() == 0) {
 					Global.openFile = fname;
+				}
 				appendFlames(v, newcps);
 			} else if (ext.equals("fla")) {
 				Vector v = openFLAFile(fname);
-				if (newcps.size() == 0)
+				if (newcps.size() == 0) {
 					Global.openFile = fname;
+				}
 				appendFlames(v, newcps);
-			} else if (ext.equals("upr"))
+			} else if (ext.equals("upr")) {
 				openUPRFile(fname);
-			else if (ext.equals("class"))
+			} else if (ext.equals("class")) {
 				XForm.installPlugin(files[i]);
-			else if (ext.equals("jpg")) {
+			} else if (ext.equals("jpg")) {
 				Vector v = openJPGFile(fname);
-				if (newcps.size() == 0)
+				if (newcps.size() == 0) {
 					Global.openFile = fname;
+				}
 				appendFlames(v, newcps);
 			} else if (ext.equals("png")) {
 				Vector v = openPNGFile(fname);
-				if (newcps.size() == 0)
+				if (newcps.size() == 0) {
 					Global.openFile = fname;
+				}
 				appendFlames(v, newcps);
 			} else if (ext.equals("ajs")) {
 				Global.script.openFile(fname, false);
@@ -2667,8 +2781,9 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 			checkUnknown();
 		}
 
-		if (scriptloaded)
+		if (scriptloaded) {
 			Global.script.btnRunClick();
+		}
 
 	} // End of method openFile
 
@@ -2676,8 +2791,9 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 	void appendFlames(Vector v, Vector newcps) {
 		int n = v.size();
-		for (int i = 0; i < n; i++)
+		for (int i = 0; i < n; i++) {
 			newcps.addElement(v.elementAt(i));
+		}
 	}
 
 	/*****************************************************************************/
@@ -2693,8 +2809,9 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 				int nu = cp.unknown.size();
 				for (int j = 0; j < nu; j++) {
 					String s = (String) cp.unknown.elementAt(j);
-					if (!unknown.contains(s))
+					if (!unknown.contains(s)) {
 						unknown.addElement(s);
+					}
 				}
 			}
 		}
@@ -2710,10 +2827,11 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 			k++;
 		}
 
-		if (k == 1)
+		if (k == 1) {
 			alert("Unknown variation : " + msg);
-		else if (k > 1)
+		} else if (k > 1) {
 			alert("Unknown variations : " + msg);
+		}
 
 	}
 
@@ -2740,8 +2858,9 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 		Object menu = find("mnuScript");
 
 		Object items[] = getItems(menu);
-		for (int i = 8; i < items.length; i++)
+		for (int i = 8; i < items.length; i++) {
 			remove(items[i]);
+		}
 
 		Color color = new Color(0xD1CCC6);
 
@@ -2750,8 +2869,9 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 			File f = (File) v.elementAt(i);
 			String title = f.getName();
 			int k = title.lastIndexOf('.');
-			if (k >= 0)
+			if (k >= 0) {
 				title = title.substring(0, k);
+			}
 
 			Object menuitem = createImpl("menuitem");
 			setString(menuitem, "text", title);
@@ -2770,14 +2890,16 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 	public void favoriteClick(Object menuitem) {
 		File f = (File) getProperty(menuitem, "file");
-		if (f == null)
+		if (f == null) {
 			return;
+		}
 
 		String path = f.getAbsolutePath();
 		String ext = "ajs";
 		int i = path.lastIndexOf('.');
-		if (i > 0)
+		if (i > 0) {
 			ext = path.substring(i + 1);
+		}
 
 		boolean mustconvert = ext.equals("asc");
 		Global.script.openFile(path, mustconvert);
@@ -2795,25 +2917,29 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 		int n = cps.size();
 		SortableControlPoint ss[] = new SortableControlPoint[n];
-		for (int i = 0; i < n; i++)
+		for (int i = 0; i < n; i++) {
 			ss[i] = new SortableControlPoint((ControlPoint) cps.elementAt(i),
 					option);
+		}
 
 		QuickSort.qsort(ss);
 
-		for (int i = 0; i < n; i++)
+		for (int i = 0; i < n; i++) {
 			cps.setElementAt(ss[i].cp, (option % 2) == 0 ? i : n - 1 - i);
+		}
 
 		updateFlameList();
 
 		int k = -1;
-		for (int i = 0; i < n; i++)
-			if (cps.elementAt(i) == o)
+		for (int i = 0; i < n; i++) {
+			if (cps.elementAt(i) == o) {
 				k = i;
+			}
+		}
 
-		if (k >= 0)
+		if (k >= 0) {
 			setBoolean(getItem(list, k), "selected", true);
-		else {
+		} else {
 			setBoolean(getItem(list, 0), "selected", true);
 			listViewChange(list);
 		}
@@ -2835,16 +2961,19 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 		long max = r.maxMemory();
 
 		String sfree = free + "";
-		while (sfree.length() < 10)
+		while (sfree.length() < 10) {
 			sfree = " " + sfree;
+		}
 
 		String stotal = total + "";
-		while (stotal.length() < 10)
+		while (stotal.length() < 10) {
 			stotal = " " + stotal;
+		}
 
 		String smax = max + "";
-		while (smax.length() < 10)
+		while (smax.length() < 10) {
 			smax = " " + smax;
+		}
 
 		System.out.print("MEMORY ");
 		System.out.print(sfree);
@@ -2862,12 +2991,14 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 		Toolkit tk = Toolkit.getDefaultToolkit();
 		Transferable t = tk.getSystemClipboard().getContents(null);
-		if (t == null)
+		if (t == null) {
 			return "";
+		}
 
 		try {
-			if (t.isDataFlavorSupported(DataFlavor.stringFlavor))
+			if (t.isDataFlavorSupported(DataFlavor.stringFlavor)) {
 				s = (String) t.getTransferData(DataFlavor.stringFlavor);
+			}
 		} catch (Exception ex) {
 		}
 
@@ -2895,13 +3026,14 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 		Object menubar = find("MainMenu");
 		Object menus[] = getItems(menubar);
-		for (int i = 0; i < menus.length; i++) {
-			int n = getCount(menus[i]);
+		for (Object menu : menus) {
+			int n = getCount(menu);
 			for (int j = 0; j < n; j++) {
-				Object item = getItem(menus[i], j);
+				Object item = getItem(menu, j);
 				Long L = (Long) get(item, "accelerator");
-				if (L == null)
+				if (L == null) {
 					continue;
+				}
 				long acc = L.longValue();
 				long mod = L.longValue() >> 32;
 				if ((mod & java.awt.Event.META_MASK) != 0) {
@@ -3035,6 +3167,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 			timerid = 0;
 		}
 
+		@Override
 		public void run() {
 			int oldid = 0;
 
@@ -3046,10 +3179,11 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 					}
 
 					// if still the same after 100 ms
-					if ((timerid > 0) && (timerid == oldid))
+					if ((timerid > 0) && (timerid == oldid)) {
 						redrawTimerTimer();
-					else
+					} else {
 						oldid = timerid;
+					}
 				}
 			}
 		}
