@@ -32,6 +32,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
@@ -91,7 +93,7 @@ public class XForm implements Constants {
 	}
 
 	static int nparams;
-	static URLClassLoader loader = null;
+	static ClassLoader loader = null;
 
 	static boolean sheep[] = null; // if variation is sheep compatible
 
@@ -274,7 +276,7 @@ public class XForm implements Constants {
 			return;
 		}
 
-		File dplugin = new File(Global.apopath, PLUGNAME);
+		final File dplugin = new File(Global.apopath, PLUGNAME);
 		if (!dplugin.exists()) {
 			return;
 		}
@@ -285,14 +287,17 @@ public class XForm implements Constants {
 			return;
 		}
 
-		loader = null;
-
-		try {
-			URL urls[] = new URL[] { dplugin.toURL() };
-			loader = new URLClassLoader(urls);
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
+		loader = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+			public ClassLoader run() {
+				try {
+					URL urls[] = new URL[] { dplugin.toURL() };
+					return new URLClassLoader(urls);
+				} catch (Exception ex) {
+					ex.printStackTrace();
+					return null;
+				}
+			}
+		});
 
 		if (loader == null) {
 			return;
