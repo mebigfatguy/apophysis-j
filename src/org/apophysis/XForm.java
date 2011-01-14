@@ -32,6 +32,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 public class XForm implements Constants {
@@ -296,7 +298,7 @@ public class XForm implements Constants {
 			return;
 		}
 
-		Vector vdup = new Vector();
+		List vdup = new ArrayList();
 
 		String filenames[] = dapo.list();
 		if (filenames == null) {
@@ -322,7 +324,7 @@ public class XForm implements Constants {
 					Variation v = (Variation) o;
 					int ind = getVariationIndex(v.getName());
 					if (ind >= 0) {
-						vdup.addElement(v);
+						vdup.add(v);
 					} else {
 						registerVariation(v);
 					}
@@ -343,7 +345,7 @@ public class XForm implements Constants {
 			String msg = "Duplicate variations ";
 			String sep = ": ";
 			for (int i = 0; i < nd; i++) {
-				Variation v = (Variation) vdup.elementAt(i);
+				Variation v = (Variation) vdup.get(i);
 				msg += sep + v.getName();
 				sep = ", ";
 			}
@@ -564,23 +566,23 @@ public class XForm implements Constants {
 		}
 
 		// build list of computations
-		Vector v = new Vector();
+		List v = new ArrayList();
 
 		if (needAngle) {
-			v.addElement(new AngleComputation());
+			v.add(new AngleComputation());
 		}
 		if (needLength) {
-			v.addElement(new LengthComputation());
+			v.add(new LengthComputation());
 		}
 		if (needSine) {
-			v.addElement(new SineComputation());
+			v.add(new SineComputation());
 		}
 
 		// pre-variations
 		for (int i = 0; i < nv; i++) {
 			if (vars[i] != 0) {
 				if (getVariation(i).getName().startsWith("pre_")) {
-					v.addElement(variations[i]);
+					v.add(variations[i]);
 				}
 			}
 		}
@@ -590,7 +592,7 @@ public class XForm implements Constants {
 			if (vars[i] != 0) {
 				if ((!getVariation(i).getName().startsWith("pre_"))
 						&& (!getVariation(i).getName().startsWith("post_"))) {
-					v.addElement(variations[i]);
+					v.add(variations[i]);
 				}
 			}
 		}
@@ -599,14 +601,14 @@ public class XForm implements Constants {
 		for (int i = 0; i < nv; i++) {
 			if (vars[i] != 0) {
 				if (getVariation(i).getName().startsWith("post_")) {
-					v.addElement(variations[i]);
+					v.add(variations[i]);
 				}
 			}
 		}
 
 		// post-computation
 		if (needPost()) {
-			v.addElement(new PostComputation());
+			v.add(new PostComputation());
 		}
 
 		// vector to array
@@ -614,7 +616,7 @@ public class XForm implements Constants {
 		ncomp = v.size();
 		computations = new Computation[ncomp];
 		for (int i = 0; i < ncomp; i++) {
-			computations[i] = (Computation) v.elementAt(i);
+			computations[i] = (Computation) v.get(i);
 		}
 
 	} // End of method prepare

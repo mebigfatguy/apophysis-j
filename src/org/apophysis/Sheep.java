@@ -35,9 +35,10 @@ import java.io.StringWriter;
 import java.net.Socket;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Sheep extends Thread {
 
@@ -83,7 +84,7 @@ public class Sheep extends Thread {
 		cp.adjustScale(1280, 960);
 		cp.hasFinalXform = false;
 
-		Vector vbad = new Vector();
+		List vbad = new ArrayList();
 
 		int nv = XForm.getNrVariations();
 
@@ -91,16 +92,20 @@ public class Sheep extends Thread {
 		for (int i = 0; i < cp.nxforms; i++) {
 			int kv = 0;
 			for (int j = 0; j < nv; j++) {
-				if (cp.xform[i].vars[j] != 0)
+				if (cp.xform[i].vars[j] != 0) {
 					kv++;
-				if (kv > 5)
+				}
+				if (kv > 5) {
 					cp.xform[i].vars[j] = 0;
+				}
 
 				if (cp.xform[i].vars[j] != 0) {
 					Variation variation = XForm.getVariation(j);
-					if (!variation.isSheepCompatible())
-						if (!vbad.contains(variation))
-							vbad.addElement(variation);
+					if (!variation.isSheepCompatible()) {
+						if (!vbad.contains(variation)) {
+							vbad.add(variation);
+						}
+					}
 				}
 			}
 		}
@@ -110,7 +115,7 @@ public class Sheep extends Thread {
 			String msg = "The flame contains variations not compatible ";
 			String sep = " : ";
 			for (int i = 0; i < nbad; i++) {
-				Variation variation = (Variation) vbad.elementAt(i);
+				Variation variation = (Variation) vbad.get(i);
 				msg += sep + variation.getName();
 				sep = ", ";
 			}
@@ -131,9 +136,10 @@ public class Sheep extends Thread {
 			ex.printStackTrace();
 		}
 
-		if (id > 0)
+		if (id > 0) {
 			Global.main.alert("Sheep succesfully posted to the server, id = "
 					+ id);
+		}
 
 	} // End of method send
 
@@ -260,17 +266,20 @@ public class Sheep extends Thread {
 
 		while (true) {
 			line = r.readLine();
-			if (line == null)
+			if (line == null) {
 				break;
+			}
 
 			line = line.trim();
-			if (line.length() == 0)
+			if (line.length() == 0) {
 				break;
+			}
 
 			if (line.startsWith("Location:")) {
 				i = line.indexOf("id=");
-				if (i > 0)
+				if (i > 0) {
 					id = Integer.parseInt(line.substring(i + 3).trim());
+				}
 			}
 		}
 
@@ -295,7 +304,7 @@ public class Sheep extends Thread {
 	/******************************************************************************/
 
 	static void getSheepVariations() {
-		Hashtable h = new Hashtable();
+		Map<String, Boolean> h = new HashMap<String, Boolean>();
 
 		try {
 
@@ -309,8 +318,9 @@ public class Sheep extends Thread {
 				url = new URL(loc);
 				con = url.openConnection();
 
-				if (cookies.length() > 0)
+				if (cookies.length() > 0) {
 					con.setRequestProperty("Cookie", cookies);
+				}
 				con.connect();
 
 				cookies = "";
@@ -318,13 +328,15 @@ public class Sheep extends Thread {
 				// get cookies
 				for (int i = 1; i < 999; i++) {
 					String header = con.getHeaderFieldKey(i);
-					if (header == null)
+					if (header == null) {
 						break;
+					}
 					if (header.equals("Set-Cookie")) {
 						String cookie = con.getHeaderField(i);
 						int j = cookie.indexOf(';');
-						if (j > 0)
+						if (j > 0) {
 							cookie = cookie.substring(0, j);
+						}
 						cookies += sep + cookie;
 						sep = ";";
 					}
@@ -334,54 +346,66 @@ public class Sheep extends Thread {
 				loc = con.getHeaderField("Location");
 				// System.out.println("loc1 : "+loc);
 
-				if (loc == null)
+				if (loc == null) {
 					break;
-				if (loc.length() == 0)
+				}
+				if (loc.length() == 0) {
 					break;
+				}
 			}
 
 			BufferedReader r = new BufferedReader(new InputStreamReader(
 					con.getInputStream()));
 			while (true) {
 				String line = r.readLine();
-				if (line == null)
+				if (line == null) {
 					break;
+				}
 				int i = line.indexOf("The complete list of");
-				if (i < 0)
+				if (i < 0) {
 					continue;
+				}
 				int j = line.indexOf("variations", i);
-				if (j < 0)
+				if (j < 0) {
 					continue;
+				}
 				break;
 			}
 
 			while (true) {
 				String line = r.readLine();
-				if (line == null)
+				if (line == null) {
 					break;
+				}
 				int i = line.indexOf("<ul>");
-				if (i >= 0)
+				if (i >= 0) {
 					break;
+				}
 			}
 
 			while (true) {
 				String line = r.readLine();
-				if (line == null)
+				if (line == null) {
 					break;
+				}
 				int i = line.indexOf("</ul>");
-				if (i >= 0)
+				if (i >= 0) {
 					break;
+				}
 
 				int j = line.indexOf("<li>");
-				if (j < 0)
+				if (j < 0) {
 					continue;
+				}
 				int k = line.indexOf("</li>", j);
-				if (k < 0)
+				if (k < 0) {
 					continue;
+				}
 
 				String vname = line.substring(j + 4, k);
-				if (vname.equals("gaussian"))
+				if (vname.equals("gaussian")) {
 					vname = "gaussian_blur";
+				}
 
 				h.put(vname, Boolean.TRUE);
 			}
@@ -396,16 +420,16 @@ public class Sheep extends Thread {
 		// update the compatibility table
 
 		for (int i = 0; i < XForm.getNrVariations(); i++) {
-			if (h.get(XForm.getVariation(i).getName()) != null)
+			if (h.get(XForm.getVariation(i).getName()) != null) {
 				XForm.sheep[i] = true;
+			}
 		}
 
 		// unknown variations
-		Enumeration keys = h.keys();
-		while (keys.hasMoreElements()) {
-			String key = (String) keys.nextElement();
-			if (XForm.getVariationIndex(key) < 0)
+		for (String key : h.keySet()) {
+			if (XForm.getVariationIndex(key) < 0) {
 				System.out.println("unknown sheep variation " + key);
+			}
 		}
 
 	} // End of method getSheepVariations

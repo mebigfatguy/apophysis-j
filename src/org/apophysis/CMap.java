@@ -400,7 +400,7 @@ class CMap {
 	/*****************************************************************************/
 
 	static String gradientFromPalette(int pal[][], String title) {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder(1024);
 
 		sb.append("gradient:\n");
 		sb.append(" title=\"");

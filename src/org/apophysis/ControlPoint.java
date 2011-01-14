@@ -29,7 +29,9 @@ package org.apophysis;
 
 import java.awt.Color;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 public class ControlPoint implements Constants {
@@ -1405,75 +1407,75 @@ public class ControlPoint implements Constants {
 
 		// set the distribution of variations
 
-		Vector v = new Vector();
+		List v = new ArrayList();
 		for (int i = 0; i < 7; i++) {
-			v.addElement(new Integer(-1)); // random variation
+			v.add(new Integer(-1)); // random variation
 		}
 		for (int i = 0; i < 4; i++) {
-			v.addElement(new Integer(0)); // linear ...
+			v.add(new Integer(0)); // linear ...
 		}
 		for (int i = 0; i < 3; i++) {
-			v.addElement(new Integer(1));
+			v.add(new Integer(1));
 		}
 		for (int i = 0; i < 3; i++) {
-			v.addElement(new Integer(2));
+			v.add(new Integer(2));
 		}
 		for (int i = 0; i < 2; i++) {
-			v.addElement(new Integer(3));
+			v.add(new Integer(3));
 		}
 		for (int i = 0; i < 2; i++) {
-			v.addElement(new Integer(4));
+			v.add(new Integer(4));
 		}
 		for (int i = 0; i < 2; i++) {
-			v.addElement(new Integer(5));
+			v.add(new Integer(5));
 		}
 		for (int i = 0; i < 2; i++) {
-			v.addElement(new Integer(6));
+			v.add(new Integer(6));
 		}
 		for (int i = 0; i < 2; i++) {
-			v.addElement(new Integer(7));
+			v.add(new Integer(7));
 		}
 		for (int i = 8; i < nv; i++) {
-			v.addElement(new Integer(i)); // others variations
+			v.add(new Integer(i)); // others variations
 		}
 
 		var_distrib = new int[v.size()];
 		for (int i = 0; i < v.size(); i++) {
-			var_distrib[i] = ((Integer) v.elementAt(i)).intValue();
+			var_distrib[i] = ((Integer) v.get(i)).intValue();
 		}
 
-		v = new Vector();
+		v = new ArrayList();
 		for (int i = 0; i < 3; i++) {
-			v.addElement(new Integer(0));
-		}
-		for (int i = 0; i < 3; i++) {
-			v.addElement(new Integer(1));
+			v.add(new Integer(0));
 		}
 		for (int i = 0; i < 3; i++) {
-			v.addElement(new Integer(2));
+			v.add(new Integer(1));
+		}
+		for (int i = 0; i < 3; i++) {
+			v.add(new Integer(2));
 		}
 		for (int i = 0; i < 2; i++) {
-			v.addElement(new Integer(3));
+			v.add(new Integer(3));
 		}
 		for (int i = 0; i < 2; i++) {
-			v.addElement(new Integer(4));
+			v.add(new Integer(4));
 		}
 		for (int i = 0; i < 2; i++) {
-			v.addElement(new Integer(5));
+			v.add(new Integer(5));
 		}
 		for (int i = 0; i < 2; i++) {
-			v.addElement(new Integer(6));
+			v.add(new Integer(6));
 		}
 		for (int i = 0; i < 1; i++) {
-			v.addElement(new Integer(5));
+			v.add(new Integer(5));
 		}
 		for (int i = 8; i < nv; i++) {
-			v.addElement(new Integer(i));
+			v.add(new Integer(i));
 		}
 
 		mixed_var_distrib = new int[v.size()];
 		for (int i = 0; i < v.size(); i++) {
-			mixed_var_distrib[i] = ((Integer) v.elementAt(i)).intValue();
+			mixed_var_distrib[i] = ((Integer) v.get(i)).intValue();
 		}
 
 	} // End of method fillVarDisturb

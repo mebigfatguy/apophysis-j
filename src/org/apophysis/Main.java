@@ -56,6 +56,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
@@ -2800,7 +2801,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 	void checkUnknown() {
 		// list of all unknown variations
-		Vector unknown = new Vector();
+		List unknown = new ArrayList();
 
 		int n = cps.size();
 		for (int i = 0; i < n; i++) {
@@ -2810,7 +2811,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 				for (int j = 0; j < nu; j++) {
 					String s = (String) cp.unknown.elementAt(j);
 					if (!unknown.contains(s)) {
-						unknown.addElement(s);
+						unknown.add(s);
 					}
 				}
 			}
@@ -2822,7 +2823,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 		int nu = unknown.size();
 		int k = 0;
 		for (int j = 0; j < nu; j++) {
-			msg += sep + (String) unknown.elementAt(j);
+			msg += sep + (String) unknown.get(j);
 			sep = ", ";
 			k++;
 		}
@@ -3208,7 +3209,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 			case 2:
 			case 3:
-				StringBuffer sb = new StringBuffer(cp.name);
+				StringBuilder sb = new StringBuilder(cp.name);
 				sb.reverse();
 				name = sb.toString();
 				break;

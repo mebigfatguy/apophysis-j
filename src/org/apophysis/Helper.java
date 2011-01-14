@@ -80,8 +80,9 @@ public class Helper extends MyThinlet implements Constants, Runnable {
 		for (int i = 0; i < n; i++) {
 			String t = getString(choices[i], "text");
 			int k = t.indexOf(":");
-			if (k < 0)
+			if (k < 0) {
 				continue;
+			}
 			titles[i] = t.substring(0, k);
 			names[i] = t.substring(k + 1);
 			setString(choices[i], "text", "  " + titles[i] + "  ");
@@ -94,10 +95,12 @@ public class Helper extends MyThinlet implements Constants, Runnable {
 	public void changeTopic(Object combo) {
 
 		int index = getInteger(combo, "selected");
-		if (index < 0)
+		if (index < 0) {
 			return;
-		if (names == null)
+		}
+		if (names == null) {
 			return;
+		}
 
 		setTopic(index);
 
@@ -106,11 +109,12 @@ public class Helper extends MyThinlet implements Constants, Runnable {
 	/*****************************************************************************/
 
 	public void setTopicByName(String name) {
-		for (int i = 0; i < names.length; i++)
+		for (int i = 0; i < names.length; i++) {
 			if (names[i].equals(name)) {
 				setTopic(i);
 				break;
 			}
+		}
 	} // End of method setTopicByName
 
 	/*****************************************************************************/
@@ -122,17 +126,18 @@ public class Helper extends MyThinlet implements Constants, Runnable {
 		try {
 			char buffer[] = new char[512];
 
-			String rname = "help/" + name + ".txt";
+			String rname = "/org/apophysis/help/" + name + ".txt";
 
 			InputStreamReader r = new InputStreamReader(Global.main.getClass()
 					.getResourceAsStream(rname));
 
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 
 			while (true) {
 				int n = r.read(buffer, 0, buffer.length);
-				if (n <= 0)
+				if (n <= 0) {
 					break;
+				}
 				sb.append(buffer, 0, n);
 			}
 			r.close();

@@ -32,7 +32,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Export extends MyThinlet implements Constants {
 
@@ -260,19 +261,19 @@ public class Export extends MyThinlet implements Constants {
 		Runtime runtime = Runtime.getRuntime();
 
 		// create environment variables
-		Vector v = new Vector();
-		v.addElement("verbose=1");
-		v.addElement("format=" + ext);
-		v.addElement("bits=" + bits);
-		v.addElement("nstrips=" + strips);
-		v.addElement("transparency=0");
-		v.addElement("out=" + filename);
-		v.addElement("enable_jpeg_comments=" + Global.jpegComment);
-		v.addElement("enable_png_comments=" + Global.jpegComment);
+		List v = new ArrayList();
+		v.add("verbose=1");
+		v.add("format=" + ext);
+		v.add("bits=" + bits);
+		v.add("nstrips=" + strips);
+		v.add("transparency=0");
+		v.add("out=" + filename);
+		v.add("enable_jpeg_comments=" + Global.jpegComment);
+		v.add("enable_png_comments=" + Global.jpegComment);
 
 		String env[] = new String[v.size()];
 		for (int i = 0; i < env.length; i++) {
-			env[i] = (String) v.elementAt(i);
+			env[i] = (String) v.get(i);
 		}
 
 		saveFlame(cp1, filename);

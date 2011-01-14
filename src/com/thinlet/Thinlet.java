@@ -4034,7 +4034,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 	 * @return
 	 */
 	private static String filter(String text, boolean multiline) {
-		StringBuffer filtered = new StringBuffer(text.length());
+		StringBuilder filtered = new StringBuilder(text.length());
 		for (int i = 0; i < text.length(); i++) {
 			char ckey = text.charAt(i);
 			if (ckey == '\r') {
@@ -6847,7 +6847,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 			Object current = null;
 			Hashtable attributelist = null;
 			Vector methods = null;
-			StringBuffer text = new StringBuffer();
+			StringBuilder text = new StringBuilder();
 			String encoding = null; // encoding value of xml declaration
 			for (int c = reader.read(); c != -1;) {
 				if (c == '<') {
@@ -7012,7 +7012,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 								}
 								while (quote != (c = reader.read())) {
 									if (c == '&') {
-										StringBuffer eb = new StringBuffer();
+										StringBuilder eb = new StringBuilder();
 										while (';' != (c = reader.read())) {
 											eb.append((char) c);
 										}

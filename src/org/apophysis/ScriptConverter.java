@@ -56,61 +56,73 @@ public class ScriptConverter {
 		// save comments
 		while (true) {
 			int i = sb.indexOf("{");
-			if (i < 0)
+			if (i < 0) {
 				break;
+			}
 			int j = sb.indexOf("}", i);
-			if (j < 0)
+			if (j < 0) {
 				break;
+			}
 			String comment = sb.substring(i + 1, j);
 			substitute(sb, i, j + 1, "/*" + comment + "*/");
 		}
 
 		while (true) {
 			int i = sb.indexOf("//");
-			if (i < 0)
+			if (i < 0) {
 				break;
+			}
 			int j = sb.indexOf("\n", i);
-			if (j < 0)
+			if (j < 0) {
 				break;
+			}
 			String comment = sb.substring(i + 2, j);
 			substitute(sb, i, j, "/* " + comment + " */");
 		}
 
-		while (processFormat(sb))
+		while (processFormat(sb)) {
 			;
+		}
 
 		// save literals
 		while (true) {
 			int i = sb.indexOf("'");
-			if (i < 0)
+			if (i < 0) {
 				break;
+			}
 			int j = sb.indexOf("'", i + 1);
-			if (j < 0)
+			if (j < 0) {
 				break;
+			}
 
 			StringBuffer sb2 = new StringBuffer(sb.substring(i, j + 1));
 			while (true) {
 				int k = sb2.indexOf("\\");
-				if (k < 0)
+				if (k < 0) {
 					break;
+				}
 				substitute(sb2, k, k + 1, "\\\\");
 			}
 			while (true) {
 				int k = sb2.indexOf("\n");
-				if (k < 0)
+				if (k < 0) {
 					break;
+				}
 				substitute(sb2, k, k + 1, "\\n");
 			}
 			String newlit = sb2.toString();
 			substitute(sb, i, j + 1, newlit);
 		}
 
-		while (processInputQuery(sb))
+		while (processInputQuery(sb)) {
 			;
-		while (processProcedure(sb))
+		}
+		while (processProcedure(sb)) {
 			;
-		while (processWith(sb))
+		}
+		while (processWith(sb)) {
 			;
+		}
 
 		processStructure(sb, "Flame", JSFlame.class);
 		processStructure(sb, "Transform", JSTransform.class);
@@ -131,22 +143,26 @@ public class ScriptConverter {
 		// process IF statements
 		while (true) {
 			int i = find(sb, "if");
-			if (i < 0)
+			if (i < 0) {
 				break;
+			}
 			int j = find(sb, "then");
-			if (i < 0)
+			if (i < 0) {
 				break;
+			}
 			int k = sb.indexOf("\n", j + 1);
 			int l = find(sb, "else", j + 1);
-			if ((l < k) && (l >= 0))
+			if ((l < k) && (l >= 0)) {
 				k = l;
+			}
 
 			// end of line
 			String stmt = sb.substring(j + 4, k).trim();
 			if (stmt.length() > 0) {
 				int kk = sb.indexOf("//", j + 1);
-				if ((kk >= 0) && (kk < l))
+				if ((kk >= 0) && (kk < l)) {
 					k = kk;
+				}
 				sb.replace(j + 4, k, "{ " + stmt + " }");
 			}
 
@@ -157,14 +173,16 @@ public class ScriptConverter {
 		// process ELSE statements
 		while (true) {
 			int i = find(sb, "else");
-			if (i < 0)
+			if (i < 0) {
 				break;
+			}
 
 			int j = sb.indexOf("\n", i + 1);
 
 			String stmt = sb.substring(i + 4, j).trim();
-			if (stmt.length() > 0)
+			if (stmt.length() > 0) {
 				sb.replace(i + 4, j, "{ " + stmt + " }");
+			}
 
 			substitute(sb, i, i + 4, "else");
 		}
@@ -172,8 +190,9 @@ public class ScriptConverter {
 		// process WHILE statements
 		while (true) {
 			int i = find(sb, "while");
-			if (i < 0)
+			if (i < 0) {
 				break;
+			}
 			int j = sb.indexOf("do", i);
 			substitute(sb, j, j + 2, ")");
 			substitute(sb, i, i + 5, "while(");
@@ -182,22 +201,26 @@ public class ScriptConverter {
 		// process FOR statements
 		while (true) {
 			int i = find(sb, "for");
-			if (i < 0)
+			if (i < 0) {
 				break;
+			}
 
 			int j = sb.indexOf(":=", i);
-			if (j < 0)
+			if (j < 0) {
 				break;
+			}
 			String index = sb.substring(i + 4, j).trim();
 
 			int k = find(sb, "to", j);
-			if (k < 0)
+			if (k < 0) {
 				break;
+			}
 			String start = sb.substring(j + 2, k).trim();
 
 			int l = find(sb, "do", k);
-			if (l < 0)
+			if (l < 0) {
 				break;
+			}
 
 			String limit = sb.substring(k + 2, l).trim();
 
@@ -209,50 +232,58 @@ public class ScriptConverter {
 		}
 
 		// process CASE statements
-		while (processCaseStatement(sb))
+		while (processCaseStatement(sb)) {
 			;
+		}
 
 		// process DELETE statements
-		while (processDeleteStatement(sb))
+		while (processDeleteStatement(sb)) {
 			;
+		}
 
 		replaceWord(sb, "begin", "{");
 		replaceWord(sb, "end", "}");
 
 		while (true) {
 			int i = find(sb, "inc");
-			if (i < 0)
+			if (i < 0) {
 				break;
-			if (i + 3 >= sb.length())
+			}
+			if (i + 3 >= sb.length()) {
 				break;
+			}
 			if (sb.charAt(i + 3) == '(') {
 				int j = sb.indexOf(")", i + 3);
-				if (j < 0)
+				if (j < 0) {
 					substitute(sb, i, i + 3, "inc");
-				else {
+				} else {
 					String index = sb.substring(i + 4, j);
 					substitute(sb, i, j + 1, index + "++");
 				}
-			} else
+			} else {
 				substitute(sb, i, i + 3, "inc");
+			}
 		}
 
 		while (true) {
 			int i = find(sb, "dec");
-			if (i < 0)
+			if (i < 0) {
 				break;
-			if (i + 3 >= sb.length())
+			}
+			if (i + 3 >= sb.length()) {
 				break;
+			}
 			if (sb.charAt(i + 3) == '(') {
 				int j = sb.indexOf(")", i + 3);
-				if (j < 0)
+				if (j < 0) {
 					substitute(sb, i, i + 3, "dec");
-				else {
+				} else {
 					String index = sb.substring(i + 4, j);
 					substitute(sb, i, j + 1, index + "--");
 				}
-			} else
+			} else {
 				substitute(sb, i, i + 3, "dec");
+			}
 		}
 
 		replaceString(sb, "<=", "<=");
@@ -276,11 +307,13 @@ public class ScriptConverter {
 		// put final substitutions back
 		while (true) {
 			int i = sb.indexOf("<@");
-			if (i < 0)
+			if (i < 0) {
 				break;
+			}
 			int j = sb.indexOf("@>", i + 2);
-			if (j < 0)
+			if (j < 0) {
 				break;
+			}
 			String key = sb.substring(i, j + 2);
 			String val = (String) sub.get(key);
 			sb.replace(i, j + 2, val);
@@ -304,8 +337,9 @@ public class ScriptConverter {
 
 		while (true) {
 			int i = find(sb, s1);
-			if (i < 0)
+			if (i < 0) {
 				break;
+			}
 			substitute(sb, i, i + s1.length(), s2);
 		}
 
@@ -317,8 +351,9 @@ public class ScriptConverter {
 
 		while (true) {
 			int i = sb.indexOf(s1);
-			if (i < 0)
+			if (i < 0) {
 				break;
+			}
 			substitute(sb, i, i + s1.length(), s2);
 		}
 
@@ -348,44 +383,52 @@ public class ScriptConverter {
 	static boolean processFormat(StringBuffer sb) {
 		int i = find(sb, "Format");
 		System.out.println("format i=" + i);
-		if (i < 0)
+		if (i < 0) {
 			return false;
+		}
 
 		int j = immediateIndexOf(sb, "(", i + 6);
 		System.out.println("format j=" + j);
-		if (j < 0)
+		if (j < 0) {
 			return false;
+		}
 
 		int k = immediateIndexOf(sb, "'", j + 1);
 		System.out.println("format k=" + k);
-		if (k < 0)
+		if (k < 0) {
 			return false;
+		}
 
 		int l = sb.indexOf("'", k + 1);
 		System.out.println("format l=" + l);
-		if (l < 0)
+		if (l < 0) {
 			return false;
+		}
 
 		String fmt = sb.substring(k + 1, l);
 
 		int p = immediateIndexOf(sb, ",", l + 1);
-		if (p < 0)
+		if (p < 0) {
 			return false;
+		}
 
 		int m = immediateIndexOf(sb, "[", p + 1);
 		System.out.println("format m=" + m);
-		if (m < 0)
+		if (m < 0) {
 			return false;
+		}
 
 		int n = sb.indexOf("]", m + 1);
 		System.out.println("format n=" + n);
-		if (n < 0)
+		if (n < 0) {
 			return false;
+		}
 
 		int o = immediateIndexOf(sb, ")", n + 1);
 		System.out.println("format o=" + o);
-		if (o < 0)
+		if (o < 0) {
 			return false;
+		}
 
 		String args = sb.substring(m + 1, n);
 
@@ -404,12 +447,14 @@ public class ScriptConverter {
 
 	static int immediateIndexOf(StringBuffer sb, String what, int start) {
 		int i = sb.indexOf(what, start);
-		if (i < 0)
+		if (i < 0) {
 			return i;
+		}
 
 		// if something between start and i
-		if (sb.substring(start, i).trim().length() > 0)
+		if (sb.substring(start, i).trim().length() > 0) {
 			return -1;
+		}
 		return i;
 	}
 
@@ -417,20 +462,24 @@ public class ScriptConverter {
 
 	static boolean processInputQuery(StringBuffer sb) {
 		int i = find(sb, "InputQuery");
-		if (i < 0)
+		if (i < 0) {
 			return false;
+		}
 
 		int j = sb.indexOf(",", i + 1);
-		if (j < 0)
+		if (j < 0) {
 			return false;
+		}
 
 		int k = sb.indexOf(",", j + 1);
-		if (k < 0)
+		if (k < 0) {
 			return false;
+		}
 
 		int l = sb.indexOf(")", k + 1);
-		if (k < 0)
+		if (k < 0) {
 			return false;
+		}
 
 		String call = sb.substring(i, l + 1);
 		String varname = sb.substring(k + 1, l).trim();
@@ -448,14 +497,16 @@ public class ScriptConverter {
 
 	static boolean processProcedure(StringBuffer sb) {
 		int i = find(sb, "procedure");
-		if (i < 0)
+		if (i < 0) {
 			return false;
+		}
 
 		int j = find(sb, "begin", i + 1);
-		if (j < 0)
+		if (j < 0) {
 			return false;
+		}
 
-		StringBuffer sdef = new StringBuffer(sb.substring(i + 9, j).trim());
+		StringBuilder sdef = new StringBuilder(sb.substring(i + 9, j).trim());
 		int k = sdef.indexOf("(");
 		int l = sdef.indexOf(")", k + 1);
 
@@ -476,15 +527,18 @@ public class ScriptConverter {
 			sb.replace(i + 9, j, sdef.toString() + "\n");
 		} else {
 			k = i + 9;
-			while (sb.charAt(k) == ' ')
+			while (sb.charAt(k) == ' ') {
 				k++;
+			}
 
 			// beginning of the name
 			l = k;
 			k++;
 			while (isInName(sb.charAt(k)))
+			 {
 				k++;
 			// end of the name
+			}
 
 			// save name of no-arg function to check calls later
 			String funcname = sb.substring(l, k).trim();
@@ -500,14 +554,18 @@ public class ScriptConverter {
 	/*****************************************************************************/
 
 	static boolean isInName(char c) {
-		if ((c >= 'a') && (c <= 'z'))
+		if ((c >= 'a') && (c <= 'z')) {
 			return true;
-		if ((c >= 'A') && (c <= 'Z'))
+		}
+		if ((c >= 'A') && (c <= 'Z')) {
 			return true;
-		if ((c >= '0') && (c <= '9'))
+		}
+		if ((c >= '0') && (c <= '9')) {
 			return true;
-		if (c == '_')
+		}
+		if (c == '_') {
 			return true;
+		}
 		return false;
 	}
 
@@ -518,8 +576,9 @@ public class ScriptConverter {
 
 		while (true) {
 			j = s.indexOf(":");
-			if (j < 0)
+			if (j < 0) {
 				break;
+			}
 			k = s.indexOf(";", j + 1);
 			if (k < 0) {
 				// last argument
@@ -536,35 +595,40 @@ public class ScriptConverter {
 
 	static boolean processWith(StringBuffer sb) {
 		int i = find(sb, "with");
-		if (i < 0)
+		if (i < 0) {
 			return false;
+		}
 
 		int j = find(sb, "do", i);
-		if (j < 0)
+		if (j < 0) {
 			return false;
+		}
 
 		int k = find(sb, "begin", j);
-		if (k < 0)
+		if (k < 0) {
 			return false;
+		}
 
 		int l = find(sb, "end", k);
-		if (l < 0)
+		if (l < 0) {
 			return false;
+		}
 
 		String var = sb.substring(i + 4, j).trim();
 		StringBuffer sblock = new StringBuffer(sb.substring(k + 5, l));
 		String block = sb.substring(k + 5, l);
 
-		if (var.equals("Flame"))
+		if (var.equals("Flame")) {
 			processFields(sblock, var, JSFlame.class);
-		else if (var.equals("Transform"))
+		} else if (var.equals("Transform")) {
 			processFields(sblock, var, JSTransform.class);
-		else if (var.equals("Options"))
+		} else if (var.equals("Options")) {
 			processFields(sblock, var, JSOptions.class);
-		else if (var.equals("Renderer"))
+		} else if (var.equals("Renderer")) {
 			processFields(sblock, var, JSRenderer.class);
-		else if (var.equals("TStringList"))
+		} else if (var.equals("TStringList")) {
 			processFields(sblock, var, JSStringList.class);
+		}
 
 		sb.replace(k + 5, l, sblock.toString());
 		sb.replace(i, j + 2, "");
@@ -593,29 +657,34 @@ public class ScriptConverter {
 
 	static boolean processCaseStatement(StringBuffer sb) {
 		int i = find(sb, "case");
-		if (i < 0)
+		if (i < 0) {
 			return false;
+		}
 
 		int j = find(sb, "of");
-		if (j < 0)
+		if (j < 0) {
 			return false;
+		}
 
 		String control = sb.substring(i + 4, j).trim().toString();
 
 		int k = find(sb, "end", j + 1);
-		if (k < 0)
+		if (k < 0) {
 			return false;
+		}
 
 		StringBuffer sblock = new StringBuffer(sb.substring(j + 2, k));
 		int l = 0;
 		String sbreak = "";
 		while (true) {
 			int i1 = sblock.indexOf("\n", l);
-			if (i1 < 0)
+			if (i1 < 0) {
 				break;
+			}
 			int i2 = sblock.indexOf(":", i1);
-			if (i2 < 0)
+			if (i2 < 0) {
 				break;
+			}
 			sblock.replace(i1, i1 + 1, sbreak + "\ncase ");
 			sbreak = "break";
 			l = i2 + 4;
@@ -634,24 +703,29 @@ public class ScriptConverter {
 
 	static boolean processDeleteStatement(StringBuffer sb) {
 		int i = find(sb, "delete");
-		if (i < 0)
+		if (i < 0) {
 			return false;
+		}
 
 		int j = sb.indexOf("(", i + 1);
-		if (j < 0)
+		if (j < 0) {
 			return false;
+		}
 
 		int k = sb.indexOf(",", j + 1);
-		if (k < 0)
+		if (k < 0) {
 			return false;
+		}
 
 		int l = sb.indexOf(",", k + 1);
-		if (l < 0)
+		if (l < 0) {
 			return false;
+		}
 
 		int m = sb.indexOf(")", l + 1);
-		if (m < 0)
+		if (m < 0) {
 			return false;
+		}
 
 		String varname = sb.substring(j + 1, k).trim();
 		String from = sb.substring(k + 1, l).trim();
@@ -671,14 +745,16 @@ public class ScriptConverter {
 
 	static void getNiladicFunctions() {
 		Method m[] = Script.class.getDeclaredMethods();
-		for (int i = 0; i < m.length; i++) {
-			String name = m[i].getName();
-			if (!name.startsWith("_"))
+		for (Method element : m) {
+			String name = element.getName();
+			if (!name.startsWith("_")) {
 				continue;
-			Class c[] = m[i].getParameterTypes();
-			if (c.length > 0)
+			}
+			Class c[] = element.getParameterTypes();
+			if (c.length > 0) {
 				continue;
-			System.out.println("NILADIC " + m[i].getName());
+			}
+			System.out.println("NILADIC " + element.getName());
 			name = name.substring(1);
 			functions.addElement(name);
 		}
@@ -708,34 +784,42 @@ public class ScriptConverter {
 			int i3 = sb.indexOf(word3, istart);
 			int i4 = sb.indexOf(word4, istart);
 			int i5 = sb.indexOf(word5, istart);
-			if ((i0 >= 0) && (i0 < i))
+			if ((i0 >= 0) && (i0 < i)) {
 				i = i0;
-			if ((i1 >= 0) && (i1 < i))
+			}
+			if ((i1 >= 0) && (i1 < i)) {
 				i = i1;
-			if ((i2 >= 0) && (i2 < i))
+			}
+			if ((i2 >= 0) && (i2 < i)) {
 				i = i2;
-			if ((i3 >= 0) && (i3 < i))
+			}
+			if ((i3 >= 0) && (i3 < i)) {
 				i = i3;
-			if ((i4 >= 0) && (i4 < i))
+			}
+			if ((i4 >= 0) && (i4 < i)) {
 				i = i4;
-			if ((i5 >= 0) && (i5 < i))
+			}
+			if ((i5 >= 0) && (i5 < i)) {
 				i = i5;
+			}
 			if (i == 999999) {
 				i = -1;
 				break;
 			}
 
-			if (i > 0)
+			if (i > 0) {
 				if (Character.isLetterOrDigit(sb.charAt(i - 1))) {
 					istart = i + l;
 					continue;
 				}
+			}
 
-			if (i + l < sb.length())
+			if (i + l < sb.length()) {
 				if (Character.isLetterOrDigit(sb.charAt(i + l))) {
 					istart = i + l;
 					continue;
 				}
+			}
 
 			break;
 		}
@@ -752,14 +836,16 @@ public class ScriptConverter {
 		try {
 			Method methods[] = Script.class.getDeclaredMethods();
 			for (int i = 0; i < methods.length; i++) {
-				if (!methods[i].getName().startsWith("_"))
+				if (!methods[i].getName().startsWith("_")) {
 					continue;
+				}
 				Class params[] = methods[i].getParameterTypes();
 				String myname = methods[i].getName().substring(1);
-				if (params.length == 0)
+				if (params.length == 0) {
 					replaceWord(sb, myname, myname + "()");
-				else
+				} else {
 					replaceWord(sb, myname, myname);
+				}
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();

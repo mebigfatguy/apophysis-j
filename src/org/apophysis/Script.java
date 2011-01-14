@@ -89,12 +89,14 @@ public class Script extends MyThinlet implements Constants {
 
 		console = find("Console");
 
-		for (int i = 0; i < triangles.length; i++)
+		for (int i = 0; i < triangles.length; i++) {
 			triangles[i] = new Triangle();
+		}
 	}
 
 	/*****************************************************************************/
 
+	@Override
 	public boolean destroy() {
 		hide();
 		return false;
@@ -102,6 +104,7 @@ public class Script extends MyThinlet implements Constants {
 
 	/*****************************************************************************/
 
+	@Override
 	public void show() {
 		super.show();
 
@@ -148,15 +151,17 @@ public class Script extends MyThinlet implements Constants {
 			BufferedReader r = new BufferedReader(new FileReader(file));
 			while (true) {
 				String line = r.readLine();
-				if (line == null)
+				if (line == null) {
 					break;
+				}
 				sb.append(line);
 				sb.append('\n');
 			}
 			r.close();
 
-			if (mustconvert)
+			if (mustconvert) {
 				ScriptConverter.convert(sb);
+			}
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}
@@ -169,8 +174,9 @@ public class Script extends MyThinlet implements Constants {
 
 	void loadScript(String script, String title) {
 		int i = title.lastIndexOf('.');
-		if (i > 0)
+		if (i > 0) {
 			title = title.substring(0, i);
+		}
 		scriptName = title;
 		launcher.setTitle(scriptName);
 
@@ -201,8 +207,9 @@ public class Script extends MyThinlet implements Constants {
 		File file = new File(filename);
 		scriptName = file.getName();
 		int i = scriptName.lastIndexOf('.');
-		if (i >= 0)
+		if (i >= 0) {
 			scriptName = scriptName.substring(0, i);
+		}
 
 		try {
 			PrintWriter w = new PrintWriter(new FileWriter(filename));
@@ -218,8 +225,9 @@ public class Script extends MyThinlet implements Constants {
 	/*****************************************************************************/
 
 	public void btnRunClick() {
-		if (runner != null)
+		if (runner != null) {
 			return;
+		}
 
 		runner = new Runner();
 		runner.start();
@@ -229,8 +237,9 @@ public class Script extends MyThinlet implements Constants {
 	/*****************************************************************************/
 
 	public void btnStopClick() {
-		if (scope == null)
+		if (scope == null) {
 			return;
+		}
 
 		runner = null;
 
@@ -249,34 +258,37 @@ public class Script extends MyThinlet implements Constants {
 	/*****************************************************************************/
 
 	String getPrefixScript() {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 
 		// expose all the methods starting with _
 		try {
 			Method methods[] = this.getClass().getDeclaredMethods();
 			for (int i = 0; i < methods.length; i++) {
-				if (!methods[i].getName().startsWith("_"))
+				if (!methods[i].getName().startsWith("_")) {
 					continue;
+				}
 				Class params[] = methods[i].getParameterTypes();
 				Class answer = methods[i].getReturnType();
 
 				String myname = methods[i].getName().substring(1);
 
 				String paren;
-				if (params.length == 0)
+				if (params.length == 0) {
 					paren = "()";
-				else {
+				} else {
 					paren = "(";
-					for (int j = 1; j < params.length; j++)
+					for (int j = 1; j < params.length; j++) {
 						paren += "a" + j + ",";
+					}
 					paren += "a" + params.length + ")";
 				}
 				sb.append("function ");
 				sb.append(myname);
 				sb.append(paren);
 				sb.append(" { ");
-				if (answer != null)
+				if (answer != null) {
 					sb.append("return ");
+				}
 				sb.append("__me._");
 				sb.append(myname);
 				sb.append(paren);
@@ -295,13 +307,15 @@ public class Script extends MyThinlet implements Constants {
 	/*****************************************************************************/
 
 	String getLibraryScript() {
-		if (Global.defLibrary.equals(""))
+		if (Global.defLibrary.equals("")) {
 			return "";
+		}
 
 		String ext = "ajs";
 		int i = Global.defLibrary.lastIndexOf('.');
-		if (i > 0)
+		if (i > 0) {
 			ext = Global.defLibrary.substring(i + 1).toLowerCase();
+		}
 
 		return readScript(new File(Global.defLibrary), ext.equals("asc"));
 
@@ -312,9 +326,11 @@ public class Script extends MyThinlet implements Constants {
 	int countLines(String s) {
 		int n = 0;
 		int l = s.length();
-		for (int i = 0; i < l; i++)
-			if (s.charAt(i) == '\n')
+		for (int i = 0; i < l; i++) {
+			if (s.charAt(i) == '\n') {
 				n++;
+			}
+		}
 
 		return n;
 	}
@@ -322,7 +338,7 @@ public class Script extends MyThinlet implements Constants {
 	/*****************************************************************************/
 
 	String getPostfixScript() {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 
 		/*
 		 * sb.append("} \n"); // end of myrun function definition
@@ -342,8 +358,9 @@ public class Script extends MyThinlet implements Constants {
 		js2java();
 
 		cp.trianglesFromCP(triangles);
-		for (int i = 0; i < cp.nxforms; i++)
+		for (int i = 0; i < cp.nxforms; i++) {
 			triangles[i].rotate(radians);
+		}
 		triangles[M1].rotate(radians);
 		cp.getFromTriangles(triangles, cp.nxforms);
 
@@ -381,8 +398,9 @@ public class Script extends MyThinlet implements Constants {
 
 	public void _Multiply(double a, double b, double c, double d) {
 		js2java();
-		if ((_at_ < 0) || (_at_ >= cp.nxforms))
+		if ((_at_ < 0) || (_at_ >= cp.nxforms)) {
 			return;
+		}
 
 		cp.xform[_at_].multiply(a, b, c, d);
 
@@ -426,8 +444,9 @@ public class Script extends MyThinlet implements Constants {
 
 	public void _Scale(double a) {
 		js2java();
-		if ((_at_ < 0) || (_at_ >= cp.nxforms))
+		if ((_at_ < 0) || (_at_ >= cp.nxforms)) {
 			return;
+		}
 
 		cp.xform[_at_].scale(a);
 
@@ -438,8 +457,9 @@ public class Script extends MyThinlet implements Constants {
 
 	public void _Translate(double a, double b) {
 		js2java();
-		if ((_at_ < 0) || (_at_ >= cp.nxforms))
+		if ((_at_ < 0) || (_at_ >= cp.nxforms)) {
 			return;
+		}
 
 		cp.xform[_at_].translate(a, b);
 
@@ -453,8 +473,9 @@ public class Script extends MyThinlet implements Constants {
 
 		_at_ = index;
 
-		if ((_at_ >= 0) && (_at_ <= cp.nxforms))
+		if ((_at_ >= 0) && (_at_ <= cp.nxforms)) {
 			transform.java2js(cp, _at_);
+		}
 
 		java2js();
 
@@ -490,11 +511,13 @@ public class Script extends MyThinlet implements Constants {
 	public void _DeleteTransform() {
 		js2java();
 		if (cp.nxforms > 0) {
-			for (int i = _at_; i <= cp.nxforms; i++)
+			for (int i = _at_; i <= cp.nxforms; i++) {
 				cp.xform[i].copy(cp.xform[i + 1]);
+			}
 			cp.nxforms--;
-			if (_at_ >= cp.nxforms)
+			if (_at_ >= cp.nxforms) {
 				_at_ = cp.nxforms - 1;
+			}
 
 			java2js();
 		}
@@ -549,8 +572,9 @@ public class Script extends MyThinlet implements Constants {
 	/*****************************************************************************/
 
 	public void _Preview() {
-		if (runner == null)
+		if (runner == null) {
 			return;
+		}
 
 		if (cp.nxforms > 0) {
 			js2java();
@@ -632,8 +656,9 @@ public class Script extends MyThinlet implements Constants {
 
 	public void _SetFlameFile(String filename) throws Exception {
 		File file = new File(filename);
-		if (!file.exists())
+		if (!file.exists()) {
 			throw new IOException("File not found");
+		}
 		cpf = Global.main.readXML(new FileReader(filename));
 	}
 
@@ -679,8 +704,9 @@ public class Script extends MyThinlet implements Constants {
 			} catch (Exception ex) {
 			}
 			Object dialog = Global.main.find("opendialog");
-			if (dialog == null)
+			if (dialog == null) {
 				break;
+			}
 		}
 
 		return Global.opendialog.filename;
@@ -726,9 +752,11 @@ public class Script extends MyThinlet implements Constants {
 
 	public int _VariationIndex(String name) {
 		int nv = XForm.getNrVariations();
-		for (int i = 0; i < nv; i++)
-			if (XForm.getVariation(i).getName().equals(name))
+		for (int i = 0; i < nv; i++) {
+			if (XForm.getVariation(i).getName().equals(name)) {
 				return i;
+			}
+		}
 		return -1;
 	}
 
@@ -736,10 +764,11 @@ public class Script extends MyThinlet implements Constants {
 
 	public String _VariationName(int index) {
 		int nv = XForm.getNrVariations();
-		if ((index >= 0) && (index < nv))
+		if ((index >= 0) && (index < nv)) {
 			return XForm.getVariation(index).getName();
-		else
+		} else {
 			return "";
+		}
 	}
 
 	/*****************************************************************************/
@@ -779,8 +808,9 @@ public class Script extends MyThinlet implements Constants {
 	/*****************************************************************************/
 
 	public String _GetSaveFileName(String filename) {
-		if (filename == null)
+		if (filename == null) {
 			filename = "";
+		}
 		Global.savedialog = new SaveDialog(Global.main, Global.browserPath,
 				filename, null);
 		Global.savedialog.show();
@@ -794,8 +824,9 @@ public class Script extends MyThinlet implements Constants {
 			} catch (Exception ex) {
 			}
 			Object dialog = Global.main.find("savedialog");
-			if (dialog == null)
+			if (dialog == null) {
 				break;
+			}
 		}
 
 		return Global.savedialog.filename;
@@ -848,10 +879,12 @@ public class Script extends MyThinlet implements Constants {
 	/*****************************************************************************/
 
 	public String _Copy(String s, int from, int len) {
-		if (from < 0)
+		if (from < 0) {
 			from = 0;
-		if (from + len > s.length())
+		}
+		if (from + len > s.length()) {
 			len = s.length() - from;
+		}
 		return s.substring(from, from + len);
 	}
 
@@ -1020,8 +1053,9 @@ public class Script extends MyThinlet implements Constants {
 	void java2js() {
 		flame.cp.copy(cp);
 		flame.java2js();
-		if ((_at_ >= 0) && (_at_ <= cp.nxforms))
+		if ((_at_ >= 0) && (_at_ <= cp.nxforms)) {
 			transform.java2js(cp, _at_);
+		}
 		options.java2js();
 
 		int nv = XForm.getNrVariations();
@@ -1070,41 +1104,50 @@ public class Script extends MyThinlet implements Constants {
 		Object o;
 
 		o = ScriptableObject.getProperty(scope, "UpdateFlame");
-		if (o instanceof Boolean)
+		if (o instanceof Boolean) {
 			updateflame = ((Boolean) o).booleanValue();
+		}
 
 		o = ScriptableObject.getProperty(scope, "SelectedTransform");
-		if (o instanceof Integer)
+		if (o instanceof Integer) {
 			Global.editor.selectedTriangle = ((Integer) o).intValue();
+		}
 
 		o = ScriptableObject.getProperty(scope, "ActiveTransform");
-		if (o instanceof Integer)
+		if (o instanceof Integer) {
 			_at_ = ((Integer) o).intValue();
+		}
 
 		o = ScriptableObject.getProperty(scope, "BatchIndex");
-		if (o instanceof Integer)
+		if (o instanceof Integer) {
 			Global.randomIndex = ((Integer) o).intValue();
+		}
 
 		o = ScriptableObject.getProperty(scope, "DateCode");
-		if (o instanceof String)
+		if (o instanceof String) {
 			Global.randomDate = (String) o;
+		}
 
 		o = ScriptableObject.getProperty(scope, "LimitVibrancy");
-		if (o instanceof Boolean)
+		if (o instanceof Boolean) {
 			Global.limitVibrancy = ((Boolean) o).booleanValue();
+		}
 
 		o = ScriptableObject.getProperty(scope, "ResetLocation");
-		if (o instanceof Boolean)
+		if (o instanceof Boolean) {
 			resetlocation = ((Boolean) o).booleanValue();
+		}
 
 		o = ScriptableObject.getProperty(scope, "Transform");
-		if (o instanceof JSTransform)
+		if (o instanceof JSTransform) {
 			transform = (JSTransform) o;
+		}
 
 		flame.js2java();
 		cp.copy(flame.cp);
-		if ((_at_ >= 0) && (_at_ <= cp.nxforms))
+		if ((_at_ >= 0) && (_at_ <= cp.nxforms)) {
 			transform.js2java(cp, _at_);
+		}
 
 		options.js2java();
 	} // End of method js2java
@@ -1140,8 +1183,9 @@ public class Script extends MyThinlet implements Constants {
 
 			cp.copy(Global.mainCP);
 			_at_ = Global.editor.selectedTriangle;
-			if ((_at_ < 0) || (_at_ >= Global.mainCP.nxforms))
+			if ((_at_ < 0) || (_at_ >= Global.mainCP.nxforms)) {
 				_at_ = 0;
+			}
 
 			renderer.Width = 320;
 			renderer.Height = 240;
@@ -1171,17 +1215,20 @@ public class Script extends MyThinlet implements Constants {
 			Global.transforms = Global.mainCP.nxforms;
 			Global.main.updateWindows();
 
-			if (resetlocation)
+			if (resetlocation) {
 				Global.main.resetLocation();
+			}
 
-			if (updateflame)
+			if (updateflame) {
 				Global.main.timer.enable();
+			}
 
 		} catch (WrappedException wex) {
 			Throwable t = wex.getWrappedException();
 			errmsg = getMessage(t);
-			if (errmsg == null)
+			if (errmsg == null) {
 				errmsg = getMessage(wex);
+			}
 			lineno = getLineNumber(t, nprefix);
 			if (!(t instanceof ExitException)) {
 				_print(errmsg + " (line " + lineno + ")");
@@ -1211,11 +1258,15 @@ public class Script extends MyThinlet implements Constants {
 	int getLineNumber(Throwable t, int nprefix) {
 
 		StackTraceElement s[] = t.getStackTrace();
-		for (int i = 0; i < s.length; i++)
-			if (s[i].getFileName().equals("<cmd>"))
-				if (s[i].getLineNumber() > 0)
-					if (s[i].getLineNumber() > nprefix)
-						return s[i].getLineNumber() - nprefix;
+		for (StackTraceElement element : s) {
+			if (element.getFileName().equals("<cmd>")) {
+				if (element.getLineNumber() > 0) {
+					if (element.getLineNumber() > nprefix) {
+						return element.getLineNumber() - nprefix;
+					}
+				}
+			}
+		}
 
 		return 0;
 	}
@@ -1224,12 +1275,14 @@ public class Script extends MyThinlet implements Constants {
 
 	String getMessage(Throwable t) {
 		String msg = t.getMessage();
-		if (msg == null)
+		if (msg == null) {
 			return null;
+		}
 
 		int i = msg.indexOf("(");
-		if (i > 0)
+		if (i > 0) {
 			msg = msg.substring(0, i);
+		}
 
 		return msg;
 	}
@@ -1312,9 +1365,11 @@ public class Script extends MyThinlet implements Constants {
 		int pos = getInteger(textarea, "end");
 		char c[] = getString(textarea, "text").toCharArray();
 		int line = 1;
-		for (int i = 0; i < pos; i++)
-			if (c[i] == '\n')
+		for (int i = 0; i < pos; i++) {
+			if (c[i] == '\n') {
 				line++;
+			}
+		}
 
 		showStatus("Line " + line);
 	}
@@ -1330,10 +1385,11 @@ public class Script extends MyThinlet implements Constants {
 	void clearTransform() {
 		js2java();
 		cp.xform[_at_].clear();
-		if (_at_ < cp.nxforms)
+		if (_at_ < cp.nxforms) {
 			cp.xform[_at_].density = 0.5;
-		else
+		} else {
 			cp.xform[_at_].density = 1.0;
+		}
 		java2js();
 	}
 
@@ -1400,8 +1456,9 @@ public class Script extends MyThinlet implements Constants {
 
 			String ext = "ajs";
 			int i = Global.opendialog.filename.lastIndexOf('.');
-			if (i > 0)
+			if (i > 0) {
 				ext = Global.opendialog.filename.substring(i + 1);
+			}
 
 			boolean mustconvert = ext.equals("asc");
 			openFile(Global.opendialog.filename, mustconvert);
@@ -1426,6 +1483,7 @@ public class Script extends MyThinlet implements Constants {
 
 	class Runner extends Thread {
 
+		@Override
 		public void run() {
 			executeScript();
 		}
