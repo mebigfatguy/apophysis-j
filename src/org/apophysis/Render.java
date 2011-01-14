@@ -299,10 +299,6 @@ public class Render extends MyThinlet implements Constants, ThreadTarget {
 
 		File file = new File(filename);
 		File dir = new File(file.getParent());
-		if (dir == null) {
-			alert("Invalid file name or directory");
-			return;
-		}
 
 		if (renderall) {
 			int k = filename.lastIndexOf('.');
