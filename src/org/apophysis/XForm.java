@@ -298,7 +298,7 @@ public class XForm implements Constants {
 			return;
 		}
 
-		List vdup = new ArrayList();
+		List<Variation> vdup = new ArrayList<Variation>();
 
 		String filenames[] = dapo.list();
 		if (filenames == null) {
@@ -318,7 +318,7 @@ public class XForm implements Constants {
 			String cname = filenames[i].substring(0, k);
 
 			try {
-				Class klass = loader.loadClass(pname + "." + cname);
+				Class<?> klass = loader.loadClass(pname + "." + cname);
 				Object o = klass.newInstance();
 				if (o instanceof Variation) {
 					Variation v = (Variation) o;
@@ -345,7 +345,7 @@ public class XForm implements Constants {
 			String msg = "Duplicate variations ";
 			String sep = ": ";
 			for (int i = 0; i < nd; i++) {
-				Variation v = (Variation) vdup.get(i);
+				Variation v = vdup.get(i);
 				msg += sep + v.getName();
 				sep = ", ";
 			}
@@ -407,7 +407,7 @@ public class XForm implements Constants {
 
 		Object o = null;
 		try {
-			Class klass = loader.loadClass(pname + "." + cname);
+			Class<?> klass = loader.loadClass(pname + "." + cname);
 			o = klass.newInstance();
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -455,13 +455,13 @@ public class XForm implements Constants {
 	/****************************************************************************/
 
 	public static void registerVariation(Variation variation) {
-		registered_variations.addElement(variation);
+		registered_variations.add(variation);
 	}
 
 	/****************************************************************************/
 
 	public static Variation getVariation(int index) {
-		return (Variation) registered_variations.elementAt(index);
+		return (Variation) registered_variations.get(index);
 	}
 
 	/****************************************************************************/
@@ -566,7 +566,7 @@ public class XForm implements Constants {
 		}
 
 		// build list of computations
-		List v = new ArrayList();
+		List<Computation> v = new ArrayList<Computation>();
 
 		if (needAngle) {
 			v.add(new AngleComputation());
@@ -616,7 +616,7 @@ public class XForm implements Constants {
 		ncomp = v.size();
 		computations = new Computation[ncomp];
 		for (int i = 0; i < ncomp; i++) {
-			computations[i] = (Computation) v.get(i);
+			computations[i] = v.get(i);
 		}
 
 	} // End of method prepare

@@ -332,7 +332,7 @@ public class Browser extends MyThinlet implements Constants {
 				}
 
 				String name = line.substring(0, line.length() - 1).trim();
-				v.addElement(new SortableString(name));
+				v.add(new SortableString(name));
 			}
 			r.close();
 
@@ -340,7 +340,7 @@ public class Browser extends MyThinlet implements Constants {
 
 			int n = v.size();
 			for (int i = 0; i < n; i++) {
-				SortableString s = (SortableString) v.elementAt(i);
+				SortableString s = (SortableString) v.get(i);
 				Object item = createImpl("item");
 				setString(item, "text", s.string);
 				add(list, item);

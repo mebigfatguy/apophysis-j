@@ -261,7 +261,7 @@ public class Export extends MyThinlet implements Constants {
 		Runtime runtime = Runtime.getRuntime();
 
 		// create environment variables
-		List v = new ArrayList();
+		List<String> v = new ArrayList<String>();
 		v.add("verbose=1");
 		v.add("format=" + ext);
 		v.add("bits=" + bits);
@@ -273,7 +273,7 @@ public class Export extends MyThinlet implements Constants {
 
 		String env[] = new String[v.size()];
 		for (int i = 0; i < env.length; i++) {
-			env[i] = (String) v.get(i);
+			env[i] = v.get(i);
 		}
 
 		saveFlame(cp1, filename);

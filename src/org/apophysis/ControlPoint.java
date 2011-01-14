@@ -30,9 +30,8 @@ package org.apophysis;
 import java.awt.Color;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
-import java.util.Vector;
+import java.util.Map;
 
 public class ControlPoint implements Constants {
 
@@ -105,7 +104,7 @@ public class ControlPoint implements Constants {
 	public double fangle;
 	public boolean fTwoColorDimensions;
 
-	public Vector unknown; // name of unknown variations
+	public List<String> unknown; // name of unknown variations
 
 	XForm propTable[] = new XForm[PROP_TABLE_SIZE];
 
@@ -231,7 +230,7 @@ public class ControlPoint implements Constants {
 
 	/*****************************************************************************/
 
-	public ControlPoint(Hashtable h, Vector v) {
+	public ControlPoint(Map<String, String> h, List<int[]> v) {
 		this();
 
 		name = getHashString(h, "title", name);
@@ -295,7 +294,7 @@ public class ControlPoint implements Constants {
 		// convert gradient to colormap
 
 		for (int i = 0; i < v.size(); i++) {
-			int x[] = (int[]) v.elementAt(i);
+			int x[] = v.get(i);
 			int ind = x[0];
 			int col = x[1];
 			ind = (int) (ind * 255 / 399 + 0.5);
@@ -308,8 +307,8 @@ public class ControlPoint implements Constants {
 
 	/*****************************************************************************/
 
-	int getHashInt(Hashtable h, String key, int value) {
-		String s = (String) h.get(key);
+	int getHashInt(Map<String, String> h, String key, int value) {
+		String s = h.get(key);
 		if (s == null) {
 			return value;
 		} else {
@@ -317,8 +316,8 @@ public class ControlPoint implements Constants {
 		}
 	}
 
-	double getHashDouble(Hashtable h, String key, double value) {
-		String s = (String) h.get(key);
+	double getHashDouble(Map<String, String> h, String key, double value) {
+		String s = h.get(key);
 		if (s == null) {
 			return value;
 		} else {
@@ -326,8 +325,8 @@ public class ControlPoint implements Constants {
 		}
 	}
 
-	String getHashString(Hashtable h, String key, String value) {
-		String s = (String) h.get(key);
+	String getHashString(Map<String, String> h, String key, String value) {
+		String s = h.get(key);
 		if (s == null) {
 			return value;
 		} else {
@@ -1407,75 +1406,75 @@ public class ControlPoint implements Constants {
 
 		// set the distribution of variations
 
-		List v = new ArrayList();
+		List<Integer> v = new ArrayList<Integer>();
 		for (int i = 0; i < 7; i++) {
-			v.add(new Integer(-1)); // random variation
+			v.add(Integer.valueOf(-1)); // random variation
 		}
 		for (int i = 0; i < 4; i++) {
-			v.add(new Integer(0)); // linear ...
+			v.add(Integer.valueOf(0)); // linear ...
 		}
 		for (int i = 0; i < 3; i++) {
-			v.add(new Integer(1));
+			v.add(Integer.valueOf(1));
 		}
 		for (int i = 0; i < 3; i++) {
-			v.add(new Integer(2));
+			v.add(Integer.valueOf(2));
 		}
 		for (int i = 0; i < 2; i++) {
-			v.add(new Integer(3));
+			v.add(Integer.valueOf(3));
 		}
 		for (int i = 0; i < 2; i++) {
-			v.add(new Integer(4));
+			v.add(Integer.valueOf(4));
 		}
 		for (int i = 0; i < 2; i++) {
-			v.add(new Integer(5));
+			v.add(Integer.valueOf(5));
 		}
 		for (int i = 0; i < 2; i++) {
-			v.add(new Integer(6));
+			v.add(Integer.valueOf(6));
 		}
 		for (int i = 0; i < 2; i++) {
-			v.add(new Integer(7));
+			v.add(Integer.valueOf(7));
 		}
 		for (int i = 8; i < nv; i++) {
-			v.add(new Integer(i)); // others variations
+			v.add(Integer.valueOf(i)); // others variations
 		}
 
 		var_distrib = new int[v.size()];
 		for (int i = 0; i < v.size(); i++) {
-			var_distrib[i] = ((Integer) v.get(i)).intValue();
+			var_distrib[i] = (v.get(i)).intValue();
 		}
 
-		v = new ArrayList();
+		v = new ArrayList<Integer>();
 		for (int i = 0; i < 3; i++) {
-			v.add(new Integer(0));
-		}
-		for (int i = 0; i < 3; i++) {
-			v.add(new Integer(1));
+			v.add(Integer.valueOf(0));
 		}
 		for (int i = 0; i < 3; i++) {
-			v.add(new Integer(2));
+			v.add(Integer.valueOf(1));
+		}
+		for (int i = 0; i < 3; i++) {
+			v.add(Integer.valueOf(2));
 		}
 		for (int i = 0; i < 2; i++) {
-			v.add(new Integer(3));
+			v.add(Integer.valueOf(3));
 		}
 		for (int i = 0; i < 2; i++) {
-			v.add(new Integer(4));
+			v.add(Integer.valueOf(4));
 		}
 		for (int i = 0; i < 2; i++) {
-			v.add(new Integer(5));
+			v.add(Integer.valueOf(5));
 		}
 		for (int i = 0; i < 2; i++) {
-			v.add(new Integer(6));
+			v.add(Integer.valueOf(6));
 		}
 		for (int i = 0; i < 1; i++) {
-			v.add(new Integer(5));
+			v.add(Integer.valueOf(5));
 		}
 		for (int i = 8; i < nv; i++) {
-			v.add(new Integer(i));
+			v.add(Integer.valueOf(i));
 		}
 
 		mixed_var_distrib = new int[v.size()];
 		for (int i = 0; i < v.size(); i++) {
-			mixed_var_distrib[i] = ((Integer) v.get(i)).intValue();
+			mixed_var_distrib[i] = (v.get(i)).intValue();
 		}
 
 	} // End of method fillVarDisturb

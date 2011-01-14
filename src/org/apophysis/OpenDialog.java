@@ -47,8 +47,8 @@ public class OpenDialog {
 
 	private File curdir = null;
 
-	private Vector dirs = new Vector();
-	private Vector filters = new Vector();
+	private final Vector dirs = new Vector();
+	private final Vector filters = new Vector();
 	private String patterns[] = { "*.*" };
 
 	File roots[] = null;
@@ -62,25 +62,29 @@ public class OpenDialog {
 		this.task = task;
 
 		roots = File.listRoots();
-		if (roots != null)
-			if (roots.length <= 1)
+		if (roots != null) {
+			if (roots.length <= 1) {
 				roots = null;
+			}
+		}
 
-		if (roots != null)
+		if (roots != null) {
 			root = new File("");
+		}
 
 		File file = new File(path);
-		if (file.exists())
+		if (file.exists()) {
 			setDirectory(file);
-		else
+		} else {
 			setDirectory(new File(System.getProperty("user.dir")));
+		}
 
 	}
 
 	/******************************************************************************/
 
 	public void addFilter(String title, String pattern) {
-		filters.addElement(new String[] { title, pattern });
+		filters.add(new String[] { title, pattern });
 	}
 
 	/******************************************************************************/
@@ -91,7 +95,7 @@ public class OpenDialog {
 		thinlet.removeAll(combo);
 
 		for (int i = 0; i < filters.size(); i++) {
-			String s[] = (String[]) filters.elementAt(i);
+			String s[] = (String[]) filters.get(i);
 
 			Object choice = Thinlet.createImpl("choice");
 			thinlet.setString(choice, "text", s[0]);
@@ -107,14 +111,15 @@ public class OpenDialog {
 
 	public void changeDirectory(Object list) {
 		int index = thinlet.getSelectedIndex(list);
-		File dir = (File) dirs.elementAt(index);
+		File dir = (File) dirs.get(index);
 		setDirectory(dir);
 		updateDirs();
 
-		if (curdir == root)
+		if (curdir == root) {
 			updateDrives();
-		else
+		} else {
 			updateFiles();
+		}
 	} // End of method changeDirectory
 
 	/******************************************************************************/
@@ -125,28 +130,33 @@ public class OpenDialog {
 		curdir = dir;
 
 		while (true) {
-			dirs.insertElementAt(dir, 0);
+			dirs.add(0, dir);
 			String sparent = dir.getParent();
-			if (sparent == null)
+			if (sparent == null) {
 				break;
+			}
 			dir = new File(sparent);
 		}
 
 		int i = getRootIndex(dir);
-		if (i >= 0)
-			dirs.insertElementAt(root, 0);
+		if (i >= 0) {
+			dirs.add(0, root);
+		}
 
 	} // End of method setDirectory
 
 	/******************************************************************************/
 
 	int getRootIndex(File dir) {
-		if (roots == null)
+		if (roots == null) {
 			return -1;
+		}
 
-		for (int i = 0; i < roots.length; i++)
-			if (roots[i].equals(dir))
+		for (int i = 0; i < roots.length; i++) {
+			if (roots[i].equals(dir)) {
 				return i;
+			}
+		}
 
 		return -1;
 	}
@@ -165,16 +175,17 @@ public class OpenDialog {
 		thinlet.removeAll(dirlist);
 
 		for (int i = 0; i < dirs.size(); i++) {
-			File dir = (File) dirs.elementAt(i);
+			File dir = (File) dirs.get(i);
 
 			Object choice = Thinlet.createImpl("choice");
 
 			int j = getRootIndex(dir);
-			if (j < 0)
+			if (j < 0) {
 				thinlet.setString(choice, "text", dir.getName()
 						+ File.separator);
-			else
+			} else {
 				thinlet.setString(choice, "text", dir.getAbsolutePath());
+			}
 
 			thinlet.add(dirlist, choice);
 		}
@@ -189,9 +200,9 @@ public class OpenDialog {
 		Object filelist = thinlet.find("openfilelist");
 		thinlet.removeAll(filelist);
 
-		for (int i = 0; i < roots.length; i++) {
+		for (File root2 : roots) {
 			Object item = Thinlet.createImpl("item");
-			thinlet.setString(item, "text", roots[i].getAbsolutePath());
+			thinlet.setString(item, "text", root2.getAbsolutePath());
 			thinlet.add(filelist, item);
 		}
 
@@ -205,12 +216,13 @@ public class OpenDialog {
 		thinlet.removeAll(filelist);
 
 		String filenames[] = curdir.list();
-		if (filenames != null)
-			for (int i = 0; i < filenames.length; i++) {
-				if (filenames[i].startsWith("."))
+		if (filenames != null) {
+			for (String filename2 : filenames) {
+				if (filename2.startsWith(".")) {
 					continue;
+				}
 
-				File file = new File(curdir, filenames[i]);
+				File file = new File(curdir, filename2);
 
 				if (file.isDirectory()) {
 					Object item = Thinlet.createImpl("item");
@@ -220,8 +232,8 @@ public class OpenDialog {
 					continue;
 				}
 
-				for (int j = 0; j < patterns.length; j++) {
-					if (match(file.getName().toLowerCase(), patterns[j])) {
+				for (String pattern : patterns) {
+					if (match(file.getName().toLowerCase(), pattern)) {
 						Object item = Thinlet.createImpl("item");
 						thinlet.setString(item, "text", file.getName());
 						thinlet.add(filelist, item);
@@ -229,6 +241,7 @@ public class OpenDialog {
 					}
 				}
 			}
+		}
 
 	} // End of method updateFiles
 
@@ -249,8 +262,9 @@ public class OpenDialog {
 	public void openFile(Object list) {
 
 		Object item = thinlet.getSelectedItem(list);
-		if (item == null)
+		if (item == null) {
 			return;
+		}
 
 		String fname = thinlet.getString(item, "text");
 
@@ -266,10 +280,11 @@ public class OpenDialog {
 			File dir = new File(curdir, fname);
 			setDirectory(dir);
 			updateDirs();
-			if (curdir == root)
+			if (curdir == root) {
 				updateDrives();
-			else
+			} else {
 				updateFiles();
+			}
 		} else {
 			// close the dialog and return the name of the file
 
@@ -277,8 +292,9 @@ public class OpenDialog {
 
 			File file = new File(curdir, fname);
 			filename = file.getAbsolutePath();
-			if (task != null)
+			if (task != null) {
 				task.execute();
+			}
 		}
 
 	}
@@ -293,18 +309,20 @@ public class OpenDialog {
 	public void changeType(Object list) {
 		int index = thinlet.getSelectedIndex(list);
 
-		String s[] = (String[]) filters.elementAt(index);
+		String s[] = (String[]) filters.get(index);
 
 		StringTokenizer tk = new StringTokenizer(s[1], ";");
 
 		patterns = new String[tk.countTokens()];
-		for (int i = 0; i < patterns.length; i++)
+		for (int i = 0; i < patterns.length; i++) {
 			patterns[i] = tk.nextToken().toLowerCase();
+		}
 
-		if (curdir == root)
+		if (curdir == root) {
 			updateDrives();
-		else
+		} else {
 			updateFiles();
+		}
 
 	}
 
@@ -335,21 +353,24 @@ public class OpenDialog {
 
 	boolean match(char name[], char pattern[], int in, int ip) {
 
-		if ((in == name.length) & (ip == pattern.length))
+		if ((in == name.length) & (ip == pattern.length)) {
 			return true;
-		else if (ip == pattern.length)
+		} else if (ip == pattern.length) {
 			return false;
-		else if (pattern[ip] == '*') {
-			for (int i = in; i <= name.length; i++)
-				if (match(name, pattern, i, ip + 1))
+		} else if (pattern[ip] == '*') {
+			for (int i = in; i <= name.length; i++) {
+				if (match(name, pattern, i, ip + 1)) {
 					return true;
+				}
+			}
 			return false;
-		} else if (in == name.length)
+		} else if (in == name.length) {
 			return false;
-		else if (name[in] == pattern[ip])
+		} else if (name[in] == pattern[ip]) {
 			return match(name, pattern, in + 1, ip + 1);
-		else
+		} else {
 			return false;
+		}
 	}
 
 	/******************************************************************************/

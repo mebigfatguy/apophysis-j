@@ -57,9 +57,10 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -120,7 +121,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 	Color grayf0 = new Color(0xF0, 0xF0, 0xF0);
 	Color grayc0 = new Color(0xC0, 0xC0, 0xC0);
 
-	Vector cps;
+	List<ControlPoint> cps;
 
 	int splitpos = 160;
 
@@ -128,7 +129,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 	int yview = 0;
 
 	// for undo / redo
-	Vector history;
+	Vector<ControlPoint> history;
 	int undoindex;
 
 	// for drag and drop
@@ -152,7 +153,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 		// Global.readSettings();
 
-		history = new Vector();
+		history = new Vector<ControlPoint>();
 		undoindex = 0;
 
 		droptarget = new DropTarget(this, this);
@@ -293,12 +294,12 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 	/*****************************************************************************/
 
-	Vector openFLAFile(String filename) {
+	List<ControlPoint> openFLAFile(String filename) {
 		ControlPoint cp = new ControlPoint();
 		String temp = null;
 		int ixform = 0;
 
-		Vector newcps = new Vector();
+		List<ControlPoint> newcps = new Vector<ControlPoint>();
 
 		try {
 			BufferedReader r = new BufferedReader(new FileReader(filename));
@@ -449,7 +450,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 			}
 
 			if (cp.nxforms > 0) {
-				newcps.addElement(cp);
+				newcps.add(cp);
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -461,7 +462,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 	/*****************************************************************************/
 
-	Vector openJPGFile(String filename) {
+	List<ControlPoint> openJPGFile(String filename) {
 		String comment = CommentExtractor.readJpegComment(filename);
 		if (comment.length() == 0) {
 			// try to open the corresponding flame file
@@ -475,7 +476,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 		} else {
 			int i = comment.indexOf("<flame");
 			if (i < 0) {
-				return new Vector();
+				return new Vector<ControlPoint>();
 			}
 
 			if (i > 0) {
@@ -488,7 +489,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 	/*****************************************************************************/
 
-	Vector openPNGFile(String filename) {
+	List<ControlPoint> openPNGFile(String filename) {
 		String comment = CommentExtractor.readPngComment(filename);
 		if (comment.length() == 0) {
 			// try to open the corresponding flame file
@@ -502,7 +503,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 		} else {
 			int i = comment.indexOf("<flame");
 			if (i < 0) {
-				return new Vector();
+				return new Vector<ControlPoint>();
 			}
 
 			if (i > 0) {
@@ -518,7 +519,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 	void openUPRFile(String filename) {
 		int i;
 
-		cps = new Vector();
+		cps = new Vector<ControlPoint>();
 
 		try {
 			BufferedReader r = new BufferedReader(new FileReader(filename));
@@ -531,7 +532,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 				if (line.trim().endsWith("{")) {
 					// read parameters
-					Hashtable h = new Hashtable();
+					Map<String, String> h = new Hashtable<String, String>();
 					while (true) {
 						line = r.readLine();
 						if (line == null) {
@@ -554,7 +555,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 						}
 					}
 
-					Vector v = new Vector();
+					List<int[]> v = new Vector<int[]>();
 					// read gradient
 					while (true) {
 						line = r.readLine();
@@ -595,10 +596,10 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 							continue;
 						}
 						int color = Integer.parseInt(token.substring(i + 1));
-						v.addElement(new int[] { index, color });
+						v.add(new int[] { index, color });
 					}
 					ControlPoint cp = new ControlPoint(h, v);
-					cps.addElement(cp);
+					cps.add(cp);
 				}
 			}
 
@@ -623,8 +624,8 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 	/*****************************************************************************/
 
-	Vector openXMLFile(String filename) {
-		Vector v = new Vector();
+	List<ControlPoint> openXMLFile(String filename) {
+		List<ControlPoint> v = new Vector<ControlPoint>();
 		try {
 			v = readXML(new FileReader(filename));
 		} catch (Exception ex) {
@@ -634,8 +635,8 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 	/*****************************************************************************/
 
-	Vector readXML(Reader reader) {
-		Vector mycps = new Vector();
+	List<ControlPoint> readXML(Reader reader) {
+		List<ControlPoint> mycps = new Vector<ControlPoint>();
 
 		try {
 			BufferedReader r = new BufferedReader(reader);
@@ -645,7 +646,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 				if (cp == null) {
 					break;
 				}
-				mycps.addElement(cp);
+				mycps.add(cp);
 			}
 			r.close();
 
@@ -662,7 +663,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 	ControlPoint readControlPoint(BufferedReader r) throws Exception {
 		ControlPoint cp = null;
 		String line = null;
-		Vector unknown = new Vector();
+		List<String> unknown = new Vector<String>();
 
 		while (true) {
 			line = r.readLine();
@@ -742,17 +743,17 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 	/*****************************************************************************/
 
-	void appendUnknown(Vector v, XmlTag tag) {
-		Enumeration e = tag.getUnreclaimedKeys();
-		while (e.hasMoreElements()) {
-			String s = (String) e.nextElement();
+	void appendUnknown(List<String> v, XmlTag tag) {
+		Iterator<String> e = tag.getUnreclaimedKeys();
+		while (e.hasNext()) {
+			String s = e.next();
 			int k = s.indexOf('_');
 			if (k > 0) {
 				s = s.substring(0, k);
 			}
 
 			if (!v.contains(s)) {
-				v.addElement(s);
+				v.add(s);
 			}
 		}
 	}
@@ -771,7 +772,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 		int ncp = cps.size();
 		for (int i = 0; i < ncp; i++) {
-			ControlPoint cp = (ControlPoint) cps.elementAt(i);
+			ControlPoint cp = cps.get(i);
 
 			Object item = createImpl("item");
 			setString(item, "text", cp.name);
@@ -834,7 +835,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 	/*****************************************************************************/
 
 	public void saveXMLFile(ControlPoint cp, String filename) {
-		Vector mycps = new Vector();
+		List<ControlPoint> mycps = new Vector<ControlPoint>();
 		try {
 			mycps = readXML(new FileReader(filename));
 		} catch (Exception ex) {
@@ -845,7 +846,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 		} else {
 			int nc = cps.size();
 			for (int i = 0; i < nc; i++) {
-				addFlame(mycps, (ControlPoint) cps.elementAt(i));
+				addFlame(mycps, cps.get(i));
 			}
 		}
 
@@ -863,7 +864,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 			int nc = mycps.size();
 			for (int i = 0; i < nc; i++) {
-				cp = (ControlPoint) mycps.elementAt(i);
+				cp = mycps.get(i);
 				cp.save(w);
 			}
 
@@ -878,17 +879,17 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 	/*****************************************************************************/
 
-	void addFlame(Vector v, ControlPoint newcp) {
+	void addFlame(List<ControlPoint> v, ControlPoint newcp) {
 		// check if flame already exists
 		int n = v.size();
 		for (int i = n - 1; i >= 0; i--) {
-			ControlPoint oldcp = (ControlPoint) v.elementAt(i);
+			ControlPoint oldcp = v.get(i);
 			if (oldcp.name.equals(newcp.name)) {
-				v.removeElementAt(i);
+				v.remove(i);
 			}
 		}
 
-		v.addElement(newcp);
+		v.add(newcp);
 
 	} // End of method addFlame
 
@@ -915,7 +916,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 			return;
 		}
 
-		ControlPoint cp = (ControlPoint) cps.elementAt(index);
+		ControlPoint cp = cps.get(index);
 
 		ask("Name of the flame :", cp.name, new FlameRenameTask(index));
 
@@ -925,7 +926,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 	void renameFlame(int index, String newname) {
 
-		ControlPoint cp = (ControlPoint) cps.elementAt(index);
+		ControlPoint cp = cps.get(index);
 		cp.name = newname;
 
 		updateFlameList();
@@ -945,7 +946,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 			return;
 		}
 
-		Global.mainCP = (ControlPoint) cps.elementAt(index);
+		Global.mainCP = cps.get(index);
 
 		clearUndo();
 
@@ -1045,14 +1046,14 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 	void saveFlame() {
 		ControlPoint cp = new ControlPoint();
 		cp.clone(Global.mainCP);
-		history.addElement(cp);
+		history.add(cp);
 
 	} // End of method saveFlame
 
 	/*****************************************************************************/
 
 	void loadFlame(int index) {
-		Global.mainCP = (ControlPoint) history.elementAt(index);
+		Global.mainCP = history.get(index);
 
 		center[0] = Global.mainCP.center[0];
 		center[1] = Global.mainCP.center[1];
@@ -1077,7 +1078,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 	public void updateUndo() {
 		while (history.size() > undoindex) {
-			history.removeElement(history.elementAt(history.size() - 1));
+			history.removeElement(history.get(history.size() - 1));
 		}
 		saveFlame();
 		undoindex++;
@@ -1581,14 +1582,14 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 			b = 1;
 		}
 
-		cps = new Vector();
+		cps = new Vector<ControlPoint>();
 
 		for (int i = 0; i < b; i++) {
 			ControlPoint cp = ControlPoint.randomFlame(Global.mainCP);
 			Global.randomIndex++;
 			cp.name = Global.randomPrefix + Global.randomDate + "-"
 					+ Global.randomIndex;
-			cps.addElement(cp);
+			cps.add(cp);
 		}
 
 		Global.openFile = "";
@@ -1877,7 +1878,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 		boolean ok;
 
 		if (Global.confirmDelete) {
-			ControlPoint cp = (ControlPoint) cps.elementAt(index);
+			ControlPoint cp = cps.get(index);
 			Object item = getItem(list, index);
 			confirm("Permanently delete flame '" + cp.name + "' ?",
 					new DeleteTask(index));
@@ -1890,7 +1891,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 	/*****************************************************************************/
 
 	void deleteFlame(int index) {
-		cps.removeElementAt(index);
+		cps.remove(index);
 
 		updateFlameList();
 
@@ -1916,7 +1917,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 			return;
 		}
 
-		ControlPoint cp = (ControlPoint) cps.elementAt(index);
+		ControlPoint cp = cps.get(index);
 
 		ask("Name of the flame :", cp.name, new FlameRenameTask(index));
 
@@ -2566,7 +2567,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 			Object item = getItem(list, index);
 			setString(item, "text", cp.name);
-			cps.setElementAt(Global.mainCP, index);
+			cps.set(index, Global.mainCP);
 			setStatus(cp.name);
 
 			timer.enable();
@@ -2721,7 +2722,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 	public void openFiles(File files[]) {
 		boolean scriptloaded = false;
-		Vector newcps = new Vector();
+		List<ControlPoint> newcps = new Vector<ControlPoint>();
 
 		for (int i = 0; i < files.length; i++) {
 			// should not occur
@@ -2734,13 +2735,13 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 			String ext = (k < 0) ? "" : fname.toLowerCase().substring(k + 1);
 
 			if (ext.equals("flame")) {
-				Vector v = openXMLFile(fname);
+				List<ControlPoint> v = openXMLFile(fname);
 				if (newcps.size() == 0) {
 					Global.openFile = fname;
 				}
 				appendFlames(v, newcps);
 			} else if (ext.equals("fla")) {
-				Vector v = openFLAFile(fname);
+				List<ControlPoint> v = openFLAFile(fname);
 				if (newcps.size() == 0) {
 					Global.openFile = fname;
 				}
@@ -2750,13 +2751,13 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 			} else if (ext.equals("class")) {
 				XForm.installPlugin(files[i]);
 			} else if (ext.equals("jpg")) {
-				Vector v = openJPGFile(fname);
+				List<ControlPoint> v = openJPGFile(fname);
 				if (newcps.size() == 0) {
 					Global.openFile = fname;
 				}
 				appendFlames(v, newcps);
 			} else if (ext.equals("png")) {
-				Vector v = openPNGFile(fname);
+				List<ControlPoint> v = openPNGFile(fname);
 				if (newcps.size() == 0) {
 					Global.openFile = fname;
 				}
@@ -2790,10 +2791,10 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 	/*****************************************************************************/
 
-	void appendFlames(Vector v, Vector newcps) {
+	void appendFlames(List<ControlPoint> v, List<ControlPoint> newcps) {
 		int n = v.size();
 		for (int i = 0; i < n; i++) {
-			newcps.addElement(v.elementAt(i));
+			newcps.add(v.get(i));
 		}
 	}
 
@@ -2801,15 +2802,15 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 	void checkUnknown() {
 		// list of all unknown variations
-		List unknown = new ArrayList();
+		List<String> unknown = new ArrayList<String>();
 
 		int n = cps.size();
 		for (int i = 0; i < n; i++) {
-			ControlPoint cp = (ControlPoint) cps.elementAt(i);
+			ControlPoint cp = cps.get(i);
 			if (cp.unknown != null) {
 				int nu = cp.unknown.size();
 				for (int j = 0; j < nu; j++) {
-					String s = (String) cp.unknown.elementAt(j);
+					String s = cp.unknown.get(j);
 					if (!unknown.contains(s)) {
 						unknown.add(s);
 					}
@@ -2823,7 +2824,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 		int nu = unknown.size();
 		int k = 0;
 		for (int j = 0; j < nu; j++) {
-			msg += sep + (String) unknown.get(j);
+			msg += sep + unknown.get(j);
 			sep = ", ";
 			k++;
 		}
@@ -2854,7 +2855,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 	/*****************************************************************************/
 
 	public void updateFavorites() {
-		Vector v = Global.readFavorites();
+		List<File> v = Global.readFavorites();
 
 		Object menu = find("mnuScript");
 
@@ -2867,7 +2868,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 		int n = v.size();
 		for (int i = 0; i < n; i++) {
-			File f = (File) v.elementAt(i);
+			File f = v.get(i);
 			String title = f.getName();
 			int k = title.lastIndexOf('.');
 			if (k >= 0) {
@@ -2914,26 +2915,26 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 		Object list = find("ListView");
 		int index = getSelectedIndex(list);
 
-		Object o = (index >= 0) ? cps.elementAt(index) : null;
+		Object o = (index >= 0) ? cps.get(index) : null;
 
 		int n = cps.size();
 		SortableControlPoint ss[] = new SortableControlPoint[n];
 		for (int i = 0; i < n; i++) {
-			ss[i] = new SortableControlPoint((ControlPoint) cps.elementAt(i),
+			ss[i] = new SortableControlPoint(cps.get(i),
 					option);
 		}
 
 		QuickSort.qsort(ss);
 
 		for (int i = 0; i < n; i++) {
-			cps.setElementAt(ss[i].cp, (option % 2) == 0 ? i : n - 1 - i);
+			cps.set((option % 2) == 0 ? i : n - 1 - i, ss[i].cp);
 		}
 
 		updateFlameList();
 
 		int k = -1;
 		for (int i = 0; i < n; i++) {
-			if (cps.elementAt(i) == o) {
+			if (cps.get(i) == o) {
 				k = i;
 			}
 		}

@@ -28,6 +28,7 @@
 package org.apophysis;
 
 import java.io.File;
+import java.util.List;
 import java.util.Vector;
 
 import com.thinlet.Thinlet;
@@ -45,8 +46,7 @@ public class SaveDialog {
 
 	public String filename = null;
 
-	Vector dirs = new Vector();
-	Vector filters = new Vector();
+	List<File> dirs = new Vector<File>();
 	String pattern = "*.*";
 
 	String defaultname;
@@ -67,12 +67,15 @@ public class SaveDialog {
 		this.task = task;
 
 		roots = File.listRoots();
-		if (roots != null)
-			if (roots.length <= 1)
+		if (roots != null) {
+			if (roots.length <= 1) {
 				roots = null;
+			}
+		}
 
-		if (roots != null)
+		if (roots != null) {
 			root = new File("");
+		}
 
 		setDirectory(new File(path));
 	}
@@ -82,50 +85,56 @@ public class SaveDialog {
 	public void changeDirectory(Object list) {
 		int index = thinlet.getSelectedIndex(list);
 		System.out.println("index=" + index);
-		File dir = (File) dirs.elementAt(index);
+		File dir = dirs.get(index);
 		System.out.println("dir=" + dir);
 
 		setDirectory(dir);
 		updateDirs();
 
-		if (curdir == root)
+		if (curdir == root) {
 			updateDrives();
-		else
+		} else {
 			updateFiles();
+		}
 
 	} // End of method changeDirectory
 
 	/******************************************************************************/
 
 	void setDirectory(File dir) {
-		dirs.removeAllElements();
+		dirs.clear();
 
 		curdir = dir;
 
 		while (true) {
-			dirs.insertElementAt(dir, 0);
+			dirs.add(0, dir);
 			String sparent = dir.getParent();
-			if (sparent == null)
+			if (sparent == null) {
 				break;
+			}
 			dir = new File(sparent);
 		}
 
 		int i = getRootIndex(dir);
 
-		if (i >= 0)
-			dirs.insertElementAt(root, 0);
+		if (i >= 0) {
+			dirs.add(0, root);
+		}
 
 	} // End of method setDirectory
 
 	/******************************************************************************/
 
 	int getRootIndex(File dir) {
-		if (roots == null)
+		if (roots == null) {
 			return -1;
+		}
 
-		for (int i = 0; i < roots.length; i++)
-			if (roots[i].equals(dir))
+		for (int i = 0; i < roots.length; i++) {
+			if (roots[i].equals(dir)) {
 				return i;
+			}
+		}
 
 		return -1;
 	}
@@ -145,16 +154,17 @@ public class SaveDialog {
 		System.out.println("updatedirs dirssize=" + dirs.size());
 
 		for (int i = 0; i < dirs.size(); i++) {
-			File dir = (File) dirs.elementAt(i);
+			File dir = dirs.get(i);
 
 			Object choice = Thinlet.createImpl("choice");
 
 			int j = getRootIndex(dir);
-			if (j < 0)
+			if (j < 0) {
 				thinlet.setString(choice, "text", dir.getName()
 						+ File.separator);
-			else
+			} else {
 				thinlet.setString(choice, "text", dir.getAbsolutePath());
+			}
 			thinlet.add(dirlist, choice);
 		}
 
@@ -168,9 +178,9 @@ public class SaveDialog {
 		Object filelist = thinlet.find("savefilelist");
 		thinlet.removeAll(filelist);
 
-		for (int i = 0; i < roots.length; i++) {
+		for (File root2 : roots) {
 			Object item = Thinlet.createImpl("item");
-			thinlet.setString(item, "text", roots[i].getAbsolutePath());
+			thinlet.setString(item, "text", root2.getAbsolutePath());
 			thinlet.add(filelist, item);
 		}
 
@@ -188,16 +198,17 @@ public class SaveDialog {
 
 		String filenames[] = curdir.list();
 
-		for (int i = 0; i < filenames.length; i++) {
-			if (filenames[i].startsWith("."))
+		for (String filename2 : filenames) {
+			if (filename2.startsWith(".")) {
 				continue;
+			}
 
-			File file = new File(curdir, filenames[i]);
+			File file = new File(curdir, filename2);
 			if (file.isDirectory()) {
 				Object item = Thinlet.createImpl("item");
 				thinlet.setString(item, "text", file.getName() + File.separator);
 				thinlet.add(filelist, item);
-			} else if (filenames[i].endsWith(exts)) {
+			} else if (filename2.endsWith(exts)) {
 				Object item = Thinlet.createImpl("item");
 				thinlet.setString(item, "text", file.getName());
 				thinlet.setBoolean(item, "enabled", false);
@@ -238,11 +249,12 @@ public class SaveDialog {
 		File file = new File(curdir, s);
 		String path = file.getAbsolutePath();
 
-		if (file.exists())
+		if (file.exists()) {
 			thinlet.confirm(warning + " " + file.getName() + " ?",
 					new SaveTask(path));
-		else
+		} else {
 			finish(path);
+		}
 
 	} // End of method ok
 
@@ -253,8 +265,9 @@ public class SaveDialog {
 
 		filename = path;
 
-		if (task != null)
+		if (task != null) {
 			task.execute();
+		}
 	}
 
 	/******************************************************************************/
@@ -262,13 +275,15 @@ public class SaveDialog {
 	public void listClick(Object list) {
 		Object item = thinlet.getSelectedItem(list);
 		if (item == null)
+		 {
 			return;
 		// if(!thinlet.getBoolean(item,"enabled")) return;
+		}
 
 		String dname = thinlet.getString(item, "text");
-		if (dname.endsWith(File.separator))
+		if (dname.endsWith(File.separator)) {
 			thinlet.setString(thinlet.find("saveok"), "text", "  Open  ");
-		else {
+		} else {
 			int i = dname.lastIndexOf('.');
 			String extd = (i >= 0) ? dname.substring(i + 1) : "";
 			String sname = thinlet.getString(thinlet.find("savefield"), "text");
@@ -278,8 +293,9 @@ public class SaveDialog {
 			if ((extd.length() > 0) && extd.equals(exts)) {
 				thinlet.setString(thinlet.find("savefield"), "text", dname);
 				thinlet.setInteger(thinlet.find("savefield"), "start", 0);
-				if (i >= 0)
+				if (i >= 0) {
 					thinlet.setInteger(thinlet.find("savefield"), "end", i);
+				}
 			}
 			thinlet.setString(thinlet.find("saveok"), "text", "  Save  ");
 			thinlet.requestFocus(thinlet.find("savefield"));
@@ -290,11 +306,13 @@ public class SaveDialog {
 
 	public void listDoubleClick(Object list) {
 		Object item = thinlet.getSelectedItem(list);
-		if (item == null)
+		if (item == null) {
 			return;
+		}
 
-		if (!thinlet.getBoolean(item, "enabled"))
+		if (!thinlet.getBoolean(item, "enabled")) {
 			return;
+		}
 
 		File dir = null;
 
@@ -310,10 +328,11 @@ public class SaveDialog {
 		setDirectory(dir);
 		updateDirs();
 
-		if (curdir == root)
+		if (curdir == root) {
 			updateDrives();
-		else
+		} else {
 			updateFiles();
+		}
 
 	}
 
@@ -332,16 +351,18 @@ public class SaveDialog {
 
 		thinlet.setString(field, "text", defaultname);
 		int i = defaultname.lastIndexOf('.');
-		if (i > 0)
+		if (i > 0) {
 			thinlet.setInteger(field, "end", i);
+		}
 		thinlet.requestFocus(field);
 
 		updateDirs();
 
-		if (curdir == root)
+		if (curdir == root) {
 			updateDrives();
-		else
+		} else {
 			updateFiles();
+		}
 
 	} // End of method execute
 
@@ -355,21 +376,24 @@ public class SaveDialog {
 
 	boolean match(char name[], char pattern[], int in, int ip) {
 
-		if ((in == name.length) & (ip == pattern.length))
+		if ((in == name.length) & (ip == pattern.length)) {
 			return true;
-		else if (in == name.length)
+		} else if (in == name.length) {
 			return false;
-		else if (ip == pattern.length)
+		} else if (ip == pattern.length) {
 			return false;
-		else if (pattern[ip] == '*') {
-			for (int i = in; i < name.length; i++)
-				if (match(name, pattern, i, ip + 1))
+		} else if (pattern[ip] == '*') {
+			for (int i = in; i < name.length; i++) {
+				if (match(name, pattern, i, ip + 1)) {
 					return match(name, pattern, i + 1, ip + 2);
+				}
+			}
 			return false;
-		} else if (name[in] == pattern[ip])
+		} else if (name[in] == pattern[ip]) {
 			return match(name, pattern, in + 1, ip + 1);
-		else
+		} else {
 			return false;
+		}
 	}
 
 	/******************************************************************************/
@@ -379,10 +403,11 @@ public class SaveDialog {
 		int k = savename.lastIndexOf('.');
 		String newexts = (k >= 0) ? savename.substring(k) : "";
 		if (!newexts.equals(exts)) {
-			if (curdir == root)
+			if (curdir == root) {
 				updateDrives();
-			else
+			} else {
 				updateFiles();
+			}
 		}
 	}
 

@@ -27,6 +27,7 @@
 
 package org.apophysis;
 
+import java.util.List;
 import java.util.Vector;
 
 public class QuickSort {
@@ -34,8 +35,9 @@ public class QuickSort {
 	/*****************************************************************************/
 
 	public static void qsort(MySortable a[]) {
-		if (a.length >= 1)
+		if (a.length >= 1) {
 			qsort(a, 0, a.length - 1);
+		}
 	}
 
 	/*****************************************************************************/
@@ -50,7 +52,6 @@ public class QuickSort {
 		MySortable parking;
 		int newLowIndex;
 		int newHighIndex;
-		int compareResult;
 
 		lowToHighIndex = lowIndex;
 		highToLowIndex = highIndex;
@@ -93,23 +94,26 @@ public class QuickSort {
 			}
 		}
 
-		if (lowIndex < newHighIndex)
+		if (lowIndex < newHighIndex) {
 			qsort(a, lowIndex, newHighIndex);
-		if (newLowIndex < highIndex)
+		}
+		if (newLowIndex < highIndex) {
 			qsort(a, newLowIndex, highIndex);
+		}
 
 	} // End of method qsort
 
 	/*****************************************************************************/
 
-	public static void qsort(Vector v) {
-		if (v.size() >= 1)
+	public static void qsort(List<MySortable> v) {
+		if (v.size() >= 1) {
 			qsort(v, 0, v.size() - 1);
+		}
 	}
 
 	/*****************************************************************************/
 
-	private static void qsort(Vector v, int lowIndex, int highIndex) {
+	private static void qsort(List<MySortable> v, int lowIndex, int highIndex) {
 		int lowToHighIndex;
 		int highToLowIndex;
 		int pivotIndex;
@@ -119,7 +123,6 @@ public class QuickSort {
 		MySortable parking;
 		int newLowIndex;
 		int newHighIndex;
-		int compareResult;
 
 		lowToHighIndex = lowIndex;
 		highToLowIndex = highIndex;
@@ -162,33 +165,35 @@ public class QuickSort {
 			}
 		}
 
-		if (lowIndex < newHighIndex)
+		if (lowIndex < newHighIndex) {
 			qsort(v, lowIndex, newHighIndex);
-		if (newLowIndex < highIndex)
+		}
+		if (newLowIndex < highIndex) {
 			qsort(v, newLowIndex, highIndex);
+		}
 
 	} // End of method qsort
 
 	/*****************************************************************************/
 
-	private static void set(Vector v, MySortable e, int index) {
-		v.setElementAt(e, index);
+	private static void set(List<MySortable> v, MySortable e, int index) {
+		v.set(index, e);
 	}
 
 	/*****************************************************************************/
 
-	private static MySortable get(Vector v, int index) {
-		return (MySortable) v.elementAt(index);
+	private static MySortable get(List<MySortable> v, int index) {
+		return v.get(index);
 	}
 
 	/*****************************************************************************/
 
-	public static void invert(Vector v) {
+	public static void invert(Vector<MySortable> v) {
 		int n = v.size();
 		for (int i = 0; i < n / 2; i++) {
-			Object o = v.elementAt(i);
-			v.setElementAt(v.elementAt(n - 1 - i), i);
-			v.setElementAt(o, n - 1 - i);
+			MySortable o = v.get(i);
+			v.set(i, v.get(n - 1 - i));
+			v.set(n - 1 - i, o);
 		}
 	}
 

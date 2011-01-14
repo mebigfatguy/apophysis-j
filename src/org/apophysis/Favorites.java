@@ -28,7 +28,7 @@
 package org.apophysis;
 
 import java.io.File;
-import java.util.Vector;
+import java.util.List;
 
 public class Favorites extends MyThinlet implements Constants {
 
@@ -38,7 +38,7 @@ public class Favorites extends MyThinlet implements Constants {
 	/*****************************************************************************/
 	// FIELDS
 
-	Vector scripts = null;
+	List<File> scripts = null;
 
 	Object listview = null;
 
@@ -80,11 +80,12 @@ public class Favorites extends MyThinlet implements Constants {
 
 		int n = scripts.size();
 		for (int i = 0; i < n; i++) {
-			File f = (File) scripts.elementAt(i);
+			File f = scripts.get(i);
 			String title = f.getName();
 			int k = title.lastIndexOf('.');
-			if (k >= 0)
+			if (k >= 0) {
 				title = title.substring(0, k);
+			}
 
 			Object item = createImpl("item");
 			setString(item, "text", title);
@@ -107,7 +108,7 @@ public class Favorites extends MyThinlet implements Constants {
 	/*****************************************************************************/
 
 	void addScript(String filename) {
-		scripts.addElement(new File(filename));
+		scripts.add(new File(filename));
 		updateList();
 	}
 
@@ -115,10 +116,11 @@ public class Favorites extends MyThinlet implements Constants {
 
 	public void btnRemoveClick() {
 		int index = getSelectedIndex(listview);
-		if (index < 0)
+		if (index < 0) {
 			return;
+		}
 
-		scripts.removeElementAt(index);
+		scripts.remove(index);
 		updateList();
 	}
 
@@ -126,12 +128,13 @@ public class Favorites extends MyThinlet implements Constants {
 
 	public void btnMoveUpClick() {
 		int index = getSelectedIndex(listview);
-		if (index <= 0)
+		if (index <= 0) {
 			return;
+		}
 
-		File f = (File) scripts.elementAt(index);
-		scripts.removeElementAt(index);
-		scripts.insertElementAt(f, index - 1);
+		File f = scripts.get(index);
+		scripts.remove(index);
+		scripts.add(index - 1, f);
 		updateList();
 
 		Object item = getItem(listview, index - 1);
@@ -144,12 +147,13 @@ public class Favorites extends MyThinlet implements Constants {
 		int index = getSelectedIndex(listview);
 
 		System.out.println("down index=" + index);
-		if (index == scripts.size() - 1)
+		if (index == scripts.size() - 1) {
 			return;
+		}
 
-		File f = (File) scripts.elementAt(index);
-		scripts.removeElementAt(index);
-		scripts.insertElementAt(f, index + 1);
+		File f = scripts.get(index);
+		scripts.remove(index);
+		scripts.add(index + 1, f);
 		updateList();
 
 		Object item = getItem(listview, index + 1);

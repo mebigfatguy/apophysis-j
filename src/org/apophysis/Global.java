@@ -39,6 +39,8 @@ import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Vector;
 
@@ -309,25 +311,27 @@ public class Global implements Constants {
 		b = Math.sqrt((x - x2) * (x - x2) + (y - y2) * (y - y2));
 		e = Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
 
-		if ((a * a + e * e) < b * b)
+		if ((a * a + e * e) < b * b) {
 			return a;
-		else if ((b * b + e * e) < a * a)
+		} else if ((b * b + e * e) < a * a) {
 			return b;
-		else if (e != 0) {
+		} else if (e != 0) {
 			c = (b * b - a * a - e * e) / (-2 * e);
-			if ((a * a - c * c) < 0.0)
+			if ((a * a - c * c) < 0.0) {
 				return 0.0;
-			else
+			} else {
 				return Math.sqrt(a * a - c * c);
-		} else
+			}
+		} else {
 			return a;
+		}
 	}
 
 	/*****************************************************************************/
 	/*****************************************************************************/
 	// PREFERENCES
 
-	static Hashtable values = new Hashtable();
+	static Map<String, String> values = new Hashtable<String, String>();
 
 	/*****************************************************************************/
 
@@ -343,12 +347,14 @@ public class Global implements Constants {
 			BufferedReader r = new BufferedReader(new FileReader(f));
 			while (true) {
 				String line = r.readLine();
-				if (line == null)
+				if (line == null) {
 					break;
+				}
 
 				int i = line.indexOf('=');
-				if (i < 0)
+				if (i < 0) {
 					continue;
+				}
 
 				String key = line.substring(0, i).trim();
 				String val = line.substring(i + 1).trim();
@@ -521,10 +527,12 @@ public class Global implements Constants {
 		windowWidth = getInt("Window.Width", 660);
 		windowHeight = getInt("Window.Height", 552);
 
-		if (windowWidth < 400)
+		if (windowWidth < 400) {
 			windowWidth = 400;
-		if (windowHeight < 300)
+		}
+		if (windowHeight < 300) {
 			windowHeight = 300;
+		}
 
 		panelWidth = getInt("Panel.Width", 100);
 		panelHeight = getInt("Panel.Height", 100);
@@ -542,23 +550,29 @@ public class Global implements Constants {
 			for (int i = 0; i < nv; i++) {
 				String vname = XForm.getVariation(i).getName();
 				variations[i] = getBoolean("Variation." + vname, false);
-				if (variations[i])
+				if (variations[i]) {
 					ns++;
+				}
 			}
-			if (ns == 0)
+			if (ns == 0) {
 				variationOptions = 0;
+			}
 		}
 
 		if (variationOptions >= 0) {
 			// translate old format
-			if (variationOptions == 0)
+			if (variationOptions == 0) {
 				variationOptions = 262143;
+			}
 
-			for (int i = 0; i < nv; i++)
+			for (int i = 0; i < nv; i++) {
 				variations[i] = false;
-			for (int i = 0; i < 64; i++)
-				if (i < nv)
+			}
+			for (int i = 0; i < 64; i++) {
+				if (i < nv) {
 					variations[i] = ((variationOptions >> i) & 1) != 0;
+				}
+			}
 		}
 
 	} // End of method readSettings
@@ -734,8 +748,9 @@ public class Global implements Constants {
 			int nv = XForm.getNrVariations();
 			for (int i = 0; i < nv; i++) {
 				String vname = XForm.getVariation(i).getName();
-				if (variations[i])
+				if (variations[i]) {
 					writeBoolean(w, "Variation." + vname, true);
+				}
 			}
 
 			w.close();
@@ -748,57 +763,61 @@ public class Global implements Constants {
 	/*****************************************************************************/
 
 	static boolean getBoolean(String key, boolean value) {
-		String s = (String) values.get(key);
-		if (s == null)
+		String s = values.get(key);
+		if (s == null) {
 			return value;
-		else
+		} else {
 			return Integer.parseInt(s) != 0;
+		}
 	}
 
 	/*****************************************************************************/
 
 	static double getDouble(String key, double value) {
-		String s = (String) values.get(key);
-		if (s == null)
+		String s = values.get(key);
+		if (s == null) {
 			return value;
-		else
+		} else {
 			return Double.valueOf(s).doubleValue();
+		}
 	}
 
 	/*****************************************************************************/
 
 	static int getInt(String key, int value) {
-		String s = (String) values.get(key);
-		if (s == null)
+		String s = values.get(key);
+		if (s == null) {
 			return value;
-		else
+		} else {
 			return Integer.parseInt(s);
+		}
 	}
 
 	/*****************************************************************************/
 
 	static long getLong(String key, long value) {
-		String s = (String) values.get(key);
-		if (s == null)
+		String s = values.get(key);
+		if (s == null) {
 			return value;
-		else
+		} else {
 			return Long.parseLong(s);
+		}
 	}
 
 	/*****************************************************************************/
 
 	static String getString(String key, String value) {
-		String s = (String) values.get(key);
-		if (s == null)
+		String s = values.get(key);
+		if (s == null) {
 			return value;
-		else
+		} else {
 			return s;
+		}
 	}
 
 	/*****************************************************************************/
 
-	static void writeBoolean(PrintWriter w, String key, boolean value)
-			throws IOException {
+	static void writeBoolean(PrintWriter w, String key, boolean value) {
 		w.print(key);
 		w.print("=");
 		w.print(value ? "1" : "0");
@@ -807,8 +826,7 @@ public class Global implements Constants {
 
 	/*****************************************************************************/
 
-	static void writeInt(PrintWriter w, String key, int value)
-			throws IOException {
+	static void writeInt(PrintWriter w, String key, int value) {
 		w.print(key);
 		w.print("=");
 		w.print(value);
@@ -817,8 +835,7 @@ public class Global implements Constants {
 
 	/*****************************************************************************/
 
-	static void writeBoolean(PrintWriter w, String key, String value)
-			throws IOException {
+	static void writeBoolean(PrintWriter w, String key, String value) {
 		w.print(key);
 		w.print("=");
 		w.print(value);
@@ -854,20 +871,22 @@ public class Global implements Constants {
 
 	/*****************************************************************************/
 
-	static Vector readFavorites() {
-		Vector v = new Vector();
+	static List<File> readFavorites() {
+		List<File> v = new Vector<File>();
 
 		try {
 			File f = new File(apopath, FAVNAME);
 			BufferedReader r = new BufferedReader(new FileReader(f));
 			while (true) {
 				String line = r.readLine();
-				if (line == null)
+				if (line == null) {
 					break;
+				}
 
 				File fs = new File(line.trim());
-				if (fs.exists())
-					v.addElement(fs);
+				if (fs.exists()) {
+					v.add(fs);
+				}
 			}
 			r.close();
 		} catch (FileNotFoundException fnfex) {
@@ -881,14 +900,14 @@ public class Global implements Constants {
 
 	/*****************************************************************************/
 
-	static void writeFavorites(Vector v) {
+	static void writeFavorites(List<File> v) {
 
 		try {
 			File f = new File(apopath, FAVNAME);
 			PrintWriter w = new PrintWriter(new FileWriter(f));
 			int n = v.size();
 			for (int i = 0; i < n; i++) {
-				File fs = (File) v.elementAt(i);
+				File fs = v.get(i);
 				w.println(fs.getAbsolutePath());
 			}
 			w.close();
@@ -900,32 +919,35 @@ public class Global implements Constants {
 
 	/*****************************************************************************/
 
-	public static Vector readPresets() {
-		Vector v = new Vector();
+	public static List<Preset> readPresets() {
+		List<Preset> v = new Vector<Preset>();
 
 		try {
 			File file = new File(apopath, PRSTNAME);
 			BufferedReader r = new BufferedReader(new FileReader(file));
 			while (true) {
 				String line = r.readLine();
-				if (line == null)
+				if (line == null) {
 					break;
+				}
 
 				line = line.trim();
 				if (line.endsWith("{")) {
 					line = line.substring(0, line.length() - 1).trim();
-					Vector w = new Vector();
-					w.addElement(line);
+					List<String> w = new Vector<String>();
+					w.add(line);
 					while (true) {
 						line = r.readLine();
-						if (line == null)
+						if (line == null) {
 							break;
-						if (line.startsWith("}"))
+						}
+						if (line.startsWith("}")) {
 							break;
-						w.addElement(line.trim());
+						}
+						w.add(line.trim());
 					}
 					Preset preset = new Preset(w);
-					v.addElement(preset);
+					v.add(preset);
 				}
 			}
 			r.close();
@@ -940,14 +962,14 @@ public class Global implements Constants {
 
 	/*****************************************************************************/
 
-	public static void writePresets(Vector v) {
+	public static void writePresets(List<Preset> v) {
 		try {
 			File f = new File(apopath, PRSTNAME);
 			PrintWriter w = new PrintWriter(new FileWriter(f));
 
 			int n = v.size();
 			for (int i = 0; i < n; i++) {
-				Preset preset = (Preset) v.elementAt(i);
+				Preset preset = v.get(i);
 				preset.write(w);
 			}
 
@@ -961,16 +983,18 @@ public class Global implements Constants {
 	/*****************************************************************************/
 
 	public static void copyFile(File filesrc, File filedst) throws IOException {
-		if (!filesrc.exists())
+		if (!filesrc.exists()) {
 			throw new IOException("Cannot copy " + filesrc.getName());
+		}
 
 		byte buffer[] = new byte[512];
 		FileInputStream is = new FileInputStream(filesrc);
 		FileOutputStream os = new FileOutputStream(filedst);
 		while (true) {
 			int n = is.read(buffer);
-			if (n <= 0)
+			if (n <= 0) {
 				break;
+			}
 			os.write(buffer, 0, n);
 		}
 		is.close();

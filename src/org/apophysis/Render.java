@@ -29,7 +29,7 @@ package org.apophysis;
 
 import java.awt.Toolkit;
 import java.io.File;
-import java.util.Vector;
+import java.util.List;
 
 public class Render extends MyThinlet implements Constants, ThreadTarget {
 
@@ -67,7 +67,7 @@ public class Render extends MyThinlet implements Constants, ThreadTarget {
 	StringBuffer sb = new StringBuffer();
 	int nlines = 0;
 
-	Vector presets = null;
+	List<Preset> presets = null;
 
 	/*****************************************************************************/
 
@@ -84,6 +84,7 @@ public class Render extends MyThinlet implements Constants, ThreadTarget {
 
 	/*****************************************************************************/
 
+	@Override
 	public boolean destroy() {
 		hide();
 		return false;
@@ -91,10 +92,12 @@ public class Render extends MyThinlet implements Constants, ThreadTarget {
 
 	/*****************************************************************************/
 
+	@Override
 	public void show() {
 
-		if (renderall)
+		if (renderall) {
 			launcher.setTitle("Render all flames");
+		}
 
 		presets = Global.readPresets();
 
@@ -213,7 +216,7 @@ public class Render extends MyThinlet implements Constants, ThreadTarget {
 
 		int np = presets.size();
 		for (int i = 0; i < np; i++) {
-			Preset preset = (Preset) presets.elementAt(i);
+			Preset preset = presets.get(i);
 
 			Object choice = createImpl("choice");
 			setString(choice, "text", preset.name);
@@ -237,8 +240,9 @@ public class Render extends MyThinlet implements Constants, ThreadTarget {
 
 		String s = getString(find("txtFilename"), "text");
 		File file = new File(s);
-		if (file.getParent() != null)
+		if (file.getParent() != null) {
 			Global.renderPath = file.getParent();
+		}
 
 		sb = new StringBuffer();
 
@@ -261,11 +265,12 @@ public class Render extends MyThinlet implements Constants, ThreadTarget {
 
 		index++;
 		if ((index < Global.main.cps.size()) && !canceled) {
-			cp.copy((ControlPoint) Global.main.cps.elementAt(index));
+			cp.copy(Global.main.cps.get(index));
 			renderOne();
 		} else {
-			if (Global.playSoundOnRenderComplete)
+			if (Global.playSoundOnRenderComplete) {
 				playSound();
+			}
 			resetControls();
 		}
 
@@ -346,8 +351,9 @@ public class Render extends MyThinlet implements Constants, ThreadTarget {
 		setString(find("btnCancel"), "text", " Cancel ");
 		setBoolean(find("btnCancel"), "enabled", true);
 
-		if (nlines > 1000)
+		if (nlines > 1000) {
 			sb.setLength(0);
+		}
 
 		zoom = cp.zoom;
 		center[0] = cp.center[0];
@@ -408,9 +414,9 @@ public class Render extends MyThinlet implements Constants, ThreadTarget {
 	/*****************************************************************************/
 
 	public void btnCancelClick() {
-		if (renderthread == null)
+		if (renderthread == null) {
 			hide();
-		else {
+		} else {
 			canceled = true;
 			renderthread.terminate();
 		}
@@ -436,19 +442,23 @@ public class Render extends MyThinlet implements Constants, ThreadTarget {
 				output("Error saving image ! \n");
 			}
 
-			if (!renderall)
-				if (Global.playSoundOnRenderComplete)
+			if (!renderall) {
+				if (Global.playSoundOnRenderComplete) {
 					playSound();
+				}
+			}
 
-			if (Global.showRenderStats)
+			if (Global.showRenderStats) {
 				renderthread.showBigStats();
-			else
+			} else {
 				renderthread.showSmallStats();
+			}
 
 			renderthread = null;
 
-			if (!renderall)
+			if (!renderall) {
 				resetControls();
+			}
 		}
 
 		else if (msg == WM_THREAD_TERMINATE) {
@@ -456,12 +466,14 @@ public class Render extends MyThinlet implements Constants, ThreadTarget {
 
 			output("Aborted !\n");
 
-			if (!renderall)
+			if (!renderall) {
 				resetControls();
+			}
 		}
 
-		if (renderall)
+		if (renderall) {
 			loop();
+		}
 
 	} // End of method message
 
@@ -469,10 +481,11 @@ public class Render extends MyThinlet implements Constants, ThreadTarget {
 
 	public void cmbPresetChange(Object combo) {
 		int index = getSelectedIndex(combo);
-		if (index < 0)
+		if (index < 0) {
 			return;
+		}
 
-		Preset preset = (Preset) presets.elementAt(index);
+		Preset preset = presets.get(index);
 
 		oversample = preset.oversample;
 		setString(find("txtOversample"), "text", "" + oversample);
@@ -496,8 +509,9 @@ public class Render extends MyThinlet implements Constants, ThreadTarget {
 
 		File file = new File(filename);
 		String path = file.getParent();
-		if (path == null)
+		if (path == null) {
 			path = Global.browserPath;
+		}
 
 		Task task = new FilenameTask();
 		Global.savedialog = new SaveDialog(this, path, file.getName(), task);
@@ -516,8 +530,9 @@ public class Render extends MyThinlet implements Constants, ThreadTarget {
 	/*****************************************************************************/
 
 	void savePreset() {
-		if (_answer.equals(""))
+		if (_answer.equals("")) {
 			return;
+		}
 
 		Preset preset = new Preset();
 
@@ -536,7 +551,7 @@ public class Render extends MyThinlet implements Constants, ThreadTarget {
 		preset.memory = 64;
 
 		deletePreset(_answer);
-		presets.addElement(preset);
+		presets.add(preset);
 		listPresets();
 
 		setString(find("cmbPreset"), "text", preset.name);
@@ -560,9 +575,9 @@ public class Render extends MyThinlet implements Constants, ThreadTarget {
 
 		int np = presets.size();
 		for (int i = 0; i < np; i++) {
-			Preset preset = (Preset) presets.elementAt(i);
+			Preset preset = presets.get(i);
 			if (preset.name.equals(name)) {
-				presets.removeElementAt(i);
+				presets.remove(i);
 				listPresets();
 				return;
 			}
@@ -574,8 +589,9 @@ public class Render extends MyThinlet implements Constants, ThreadTarget {
 
 	public void widthChanged(Object combo, int option) {
 		int index = getSelectedIndex(combo);
-		if ((index < 0) && (option == 0))
+		if ((index < 0) && (option == 0)) {
 			return;
+		}
 
 		try {
 			int w = Integer.parseInt(getString(combo, "text"));
@@ -595,8 +611,9 @@ public class Render extends MyThinlet implements Constants, ThreadTarget {
 	public void heightChanged(Object combo, int option) {
 		int index = getSelectedIndex(combo);
 		System.out.println("index=" + index + " option=" + option);
-		if ((index < 0) && (option == 0))
+		if ((index < 0) && (option == 0)) {
 			return;
+		}
 
 		try {
 			int h = Integer.parseInt(getString(combo, "text"));
@@ -635,8 +652,9 @@ public class Render extends MyThinlet implements Constants, ThreadTarget {
 	/*****************************************************************************/
 
 	public void btnPauseClick(Object button) {
-		if (renderthread == null)
+		if (renderthread == null) {
 			return;
+		}
 
 		if (paused) {
 			renderthread.unpause();
@@ -685,22 +703,25 @@ public class Render extends MyThinlet implements Constants, ThreadTarget {
 		if (file.exists()) {
 			Sound sound = new Sound(file);
 			sound.play();
-		} else
+		} else {
 			Toolkit.getDefaultToolkit().beep();
+		}
 	}
 
 	/*****************************************************************************/
 
 	public void progress(double value) {
 
-		if (renderall)
+		if (renderall) {
 			value = (index + value) / Global.main.cps.size();
+		}
 
 		int i = (int) (100 * value);
-		if (i < 0)
+		if (i < 0) {
 			i = 0;
-		else if (i > 100)
+		} else if (i > 100) {
 			i = 100;
+		}
 
 		setInteger(find("ProgressBar"), "value", i);
 

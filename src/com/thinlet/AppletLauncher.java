@@ -49,7 +49,7 @@ public class AppletLauncher extends Applet implements Runnable {
 	 */
 	public void run() {
 		try {
-			Class thinletclass = Class.forName(getParameter("class"));
+			Class<?> thinletclass = Class.forName(getParameter("class"));
 			try {
 				content = (Thinlet) thinletclass.getConstructor(
 						new Class[] { Applet.class }).newInstance(

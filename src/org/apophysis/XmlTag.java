@@ -27,8 +27,9 @@
 
 package org.apophysis;
 
-import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 public class XmlTag {
@@ -49,7 +50,7 @@ public class XmlTag {
 	// FIELDS
 
 	String name = null;
-	Hashtable attributes = new Hashtable();
+	Map<String, String> attributes = new Hashtable<String, String>();
 	boolean closed = false;
 
 	StringBuffer data = new StringBuffer();
@@ -68,90 +69,96 @@ public class XmlTag {
 		for (int i = 0; i < c.length; i++) {
 			switch (state) {
 			case ST_WNAME:
-				if (c[i] == ' ')
+				if (c[i] == ' ') {
 					continue;
-				else if (c[i] == '\t')
+				} else if (c[i] == '\t') {
 					continue;
-				else if (c[i] != '<')
+				} else if (c[i] != '<') {
 					throw new Exception("Not a XML tag");
-				else {
+				} else {
 					name = "";
 					state = ST_NAME;
 				}
 				break;
 
 			case ST_NAME:
-				if (c[i] == '>')
+				if (c[i] == '>') {
 					i = c.length;
-				else if (c[i] == ' ')
+				} else if (c[i] == ' ') {
 					state = ST_WATTR;
-				else
+				} else {
 					name = name + c[i];
+				}
 				break;
 
 			case ST_WATTR:
-				if (c[i] == '>')
+				if (c[i] == '>') {
 					i = c.length; // exit the loop
-				else if (c[i] == '/') {
+				} else if (c[i] == '/') {
 					closed = true;
 					state = ST_WCLOSE;
-				} else if (c[i] == ' ')
+				} else if (c[i] == ' ') {
 					continue;
-				else if (c[i] == '\t')
+				} else if (c[i] == '\t') {
 					continue;
-				else {
+				} else {
 					attr = "" + c[i];
 					state = ST_ATTR;
 				}
 				break;
 
 			case ST_ATTR:
-				if (c[i] == ' ')
+				if (c[i] == ' ') {
 					state = ST_WEQUAL;
-				else if (c[i] == '\t')
+				} else if (c[i] == '\t') {
 					state = ST_WEQUAL;
-				else if (c[i] == '=')
+				} else if (c[i] == '=') {
 					state = ST_WVALUE;
-				else
+				} else {
 					attr = attr + c[i];
+				}
 				break;
 
 			case ST_WEQUAL:
-				if (c[i] == ' ')
+				if (c[i] == ' ') {
 					continue;
-				else if (c[i] == '\t')
+				} else if (c[i] == '\t') {
 					continue;
-				else if (c[i] == '=')
+				} else if (c[i] == '=') {
 					state = ST_WVALUE;
-				else
+				} else {
 					throw new Exception("Bad attribute " + attr);
+				}
 				break;
 
 			case ST_WVALUE:
-				if (c[i] == ' ')
+				if (c[i] == ' ') {
 					continue;
-				else if (c[i] == '\t')
+				} else if (c[i] == '\t') {
 					continue;
-				else if (c[i] == '"') {
+				} else if (c[i] == '"') {
 					value = "";
 					state = ST_VALUE;
-				} else
+				} else {
 					throw new Exception("Bad attribute " + attr);
+				}
 				break;
 
 			case ST_VALUE:
 				if (c[i] == '"') {
 					attributes.put(attr, value);
 					state = ST_WATTR;
-				} else
+				} else {
 					value = value + c[i];
+				}
 				break;
 
 			case ST_WCLOSE:
-				if (c[i] == '>')
+				if (c[i] == '>') {
 					i = c.length;
-				else
+				} else {
 					throw new Exception("Not closed");
+				}
 				break;
 			}
 
@@ -183,9 +190,10 @@ public class XmlTag {
 	/******************************************************************************/
 
 	public String getAttribute(String attr) {
-		String s = (String) attributes.get(attr);
-		if (s != null)
+		String s = attributes.get(attr);
+		if (s != null) {
 			attributes.remove(attr);
+		}
 		return s;
 	}
 
@@ -199,21 +207,19 @@ public class XmlTag {
 
 	public void appendAttribute(String attr, String data) {
 		String old = getAttribute(attr);
-		if (old == null)
+		if (old == null) {
 			putAttribute(attr, data);
-		else
+		} else {
 			putAttribute(attr, old + data);
+		}
 	}
 
 	/******************************************************************************/
 
 	void print() {
 		System.out.println("xml tag name = " + name);
-		Enumeration keys = attributes.keys();
-		while (keys.hasMoreElements()) {
-			String attr = (String) keys.nextElement();
-			String value = (String) attributes.get(attr);
-			System.out.println("     " + attr + " = " + value);
+		for (Map.Entry<String, String> entry : attributes.entrySet()) {
+			System.out.println("     " + entry.getKey() + " = " + entry.getValue());
 		}
 
 	} // End of method print
@@ -222,15 +228,17 @@ public class XmlTag {
 
 	double[] getDoubles(String name) {
 		String s = getAttribute(name);
-		if (s == null)
+		if (s == null) {
 			return null;
+		}
 
 		StringTokenizer tk = new StringTokenizer(s);
 		int n = tk.countTokens();
 
 		double dd[] = new double[n];
-		for (int i = 0; i < n; i++)
+		for (int i = 0; i < n; i++) {
 			dd[i] = Double.valueOf(tk.nextToken()).doubleValue();
+		}
 
 		return dd;
 	}
@@ -239,36 +247,39 @@ public class XmlTag {
 
 	double getDouble(String name, double value) {
 		String s = getAttribute(name);
-		if (s == null)
+		if (s == null) {
 			return value;
-		else
+		} else {
 			return Double.valueOf(s).doubleValue();
+		}
 	}
 
 	/*****************************************************************************/
 
 	int getInt(String name, int value) {
 		String s = getAttribute(name);
-		if (s == null)
+		if (s == null) {
 			return value;
-		else
+		} else {
 			return Integer.parseInt(s);
+		}
 	}
 
 	/*****************************************************************************/
 
 	String getString(String name, String value) {
 		String s = getAttribute(name);
-		if (s == null)
+		if (s == null) {
 			return value;
-		else
+		} else {
 			return s;
+		}
 	}
 
 	/*****************************************************************************/
 
-	Enumeration getUnreclaimedKeys() {
-		return attributes.keys();
+	Iterator<String> getUnreclaimedKeys() {
+		return attributes.keySet().iterator();
 	}
 
 	/*****************************************************************************/

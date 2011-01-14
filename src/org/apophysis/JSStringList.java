@@ -31,7 +31,7 @@ public class JSStringList implements Constants {
 	/*****************************************************************************/
 
 	public void Add(String line) {
-		lines.addElement(line);
+		lines.add(line);
 		updateFields();
 	}
 
@@ -41,7 +41,7 @@ public class JSStringList implements Constants {
 		Count = lines.size();
 		Strings = new String[Count];
 		for (int i = 0; i < Count; i++)
-			Strings[i] = (String) lines.elementAt(i);
+			Strings[i] = (String) lines.get(i);
 	}
 
 	/*****************************************************************************/
@@ -51,7 +51,7 @@ public class JSStringList implements Constants {
 			PrintWriter w = new PrintWriter(new FileWriter(filename));
 			int n = lines.size();
 			for (int i = 0; i < n; i++)
-				w.println((String) lines.elementAt(i));
+				w.println((String) lines.get(i));
 			w.close();
 		} catch (IOException ex) {
 			ex.printStackTrace();
@@ -68,7 +68,7 @@ public class JSStringList implements Constants {
 			String line = r.readLine();
 			if (line == null)
 				break;
-			lines.addElement(line);
+			lines.add(line);
 		}
 		r.close();
 

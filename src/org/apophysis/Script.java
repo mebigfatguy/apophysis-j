@@ -35,6 +35,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import org.mozilla.javascript.Context;
@@ -73,8 +75,8 @@ public class Script extends MyThinlet implements Constants {
 	Runner runner = null;
 
 	ControlPoint cp = new ControlPoint();
-	Hashtable cps = new Hashtable();
-	Vector cpf = new Vector();
+	Map<Integer, ControlPoint> cps = new Hashtable<Integer, ControlPoint>();
+	List<ControlPoint> cpf = new Vector<ControlPoint>();
 
 	Triangle triangles[] = new Triangle[NXFORMS + 2];
 
@@ -267,8 +269,8 @@ public class Script extends MyThinlet implements Constants {
 				if (!methods[i].getName().startsWith("_")) {
 					continue;
 				}
-				Class params[] = methods[i].getParameterTypes();
-				Class answer = methods[i].getReturnType();
+				Class<?>[] params = methods[i].getParameterTypes();
+				Class<?> answer = methods[i].getReturnType();
 
 				String myname = methods[i].getName().substring(1);
 
@@ -421,7 +423,7 @@ public class Script extends MyThinlet implements Constants {
 	/*****************************************************************************/
 
 	public void _GetFlame(int index) {
-		ControlPoint tcp = (ControlPoint) cps.get(new Integer(index));
+		ControlPoint tcp = cps.get(new Integer(index));
 		if (tcp != null) {
 			js2java();
 			cp.copy(tcp);
@@ -432,7 +434,7 @@ public class Script extends MyThinlet implements Constants {
 	/*****************************************************************************/
 
 	public void _LoadFlame(int index) {
-		ControlPoint tcp = (ControlPoint) Global.main.cps.elementAt(index);
+		ControlPoint tcp = Global.main.cps.get(index);
 		if (tcp != null) {
 			js2java();
 			cp.copy(tcp);
@@ -638,8 +640,8 @@ public class Script extends MyThinlet implements Constants {
 	/*****************************************************************************/
 
 	public void _Morph(int a, int b, double c) {
-		ControlPoint cpa = (ControlPoint) cps.get(new Integer(a));
-		ControlPoint cpb = (ControlPoint) cps.get(new Integer(b));
+		ControlPoint cpa = cps.get(new Integer(a));
+		ControlPoint cpb = cps.get(new Integer(b));
 
 		if ((cpa != null) && (cpb != null)) {
 			cp.interpolateX(cpa, cpb, c);

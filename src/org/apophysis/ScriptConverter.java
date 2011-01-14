@@ -30,6 +30,8 @@ package org.apophysis;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -41,17 +43,17 @@ public class ScriptConverter {
 	/*****************************************************************************/
 	// FIELDS
 
-	static Hashtable sub; // substitution table
+	static Map<String, String> sub; // substitution table
 	static StringBuffer sb;
 
-	static Vector functions;
+	static List<String> functions;
 
 	/*****************************************************************************/
 
 	static void convert(StringBuffer stringbuffer) {
 		sb = stringbuffer;
-		sub = new Hashtable();
-		functions = new Vector();
+		sub = new Hashtable<String, String>();
+		functions = new Vector<String>();
 
 		// save comments
 		while (true) {
@@ -300,7 +302,7 @@ public class ScriptConverter {
 		// check calls to no-arg functions
 		int nf = functions.size();
 		for (int i = 0; i < nf; i++) {
-			String funcname = (String) functions.elementAt(i);
+			String funcname = functions.get(i);
 			replaceWord(sb, funcname, funcname + "()");
 		}
 
@@ -315,7 +317,7 @@ public class ScriptConverter {
 				break;
 			}
 			String key = sb.substring(i, j + 2);
-			String val = (String) sub.get(key);
+			String val = sub.get(key);
 			sb.replace(i, j + 2, val);
 		}
 
@@ -361,7 +363,7 @@ public class ScriptConverter {
 
 	/*****************************************************************************/
 
-	static void processStructure(StringBuffer sb, String sname, Class klass) {
+	static void processStructure(StringBuffer sb, String sname, Class<?> klass) {
 
 		try {
 			Field fields[] = klass.getDeclaredFields();
@@ -542,7 +544,7 @@ public class ScriptConverter {
 
 			// save name of no-arg function to check calls later
 			String funcname = sb.substring(l, k).trim();
-			functions.addElement(funcname);
+			functions.add(funcname);
 		}
 
 		sb.replace(i, i + 9, "function ");
@@ -639,7 +641,7 @@ public class ScriptConverter {
 
 	/*****************************************************************************/
 
-	static void processFields(StringBuffer sb, String varname, Class klass) {
+	static void processFields(StringBuffer sb, String varname, Class<?> klass) {
 		try {
 			Field fields[] = klass.getDeclaredFields();
 			int nf = fields.length;
@@ -750,13 +752,13 @@ public class ScriptConverter {
 			if (!name.startsWith("_")) {
 				continue;
 			}
-			Class c[] = element.getParameterTypes();
+			Class<?>[] c = element.getParameterTypes();
 			if (c.length > 0) {
 				continue;
 			}
 			System.out.println("NILADIC " + element.getName());
 			name = name.substring(1);
-			functions.addElement(name);
+			functions.add(name);
 		}
 
 	}
@@ -839,7 +841,7 @@ public class ScriptConverter {
 				if (!methods[i].getName().startsWith("_")) {
 					continue;
 				}
-				Class params[] = methods[i].getParameterTypes();
+				Class<?>[] params = methods[i].getParameterTypes();
 				String myname = methods[i].getName().substring(1);
 				if (params.length == 0) {
 					replaceWord(sb, myname, myname + "()");

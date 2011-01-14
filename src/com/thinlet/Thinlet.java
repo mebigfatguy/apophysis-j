@@ -53,6 +53,8 @@ import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
@@ -131,7 +133,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 			WHEEL_MASK = AWTEvent.class.getField("MOUSE_WHEEL_EVENT_MASK")
 					.getLong(null);
 			MOUSE_WHEEL = MouseEvent.class.getField("MOUSE_WHEEL").getInt(null);
-			Class hintsclass = Class.forName("java.awt.RenderingHints");
+			Class<?> hintsclass = Class.forName("java.awt.RenderingHints");
 			TXT_AA = new Object[] {
 					hintsclass.getField("KEY_TEXT_ANTIALIASING").get(null),
 					hintsclass.getField("VALUE_TEXT_ANTIALIAS_ON").get(null) };
@@ -6619,11 +6621,11 @@ public class Thinlet extends Container implements Runnable, Serializable {
 		Object table = get(component, ":bind");
 		if (value != null) {
 			if (table == null) {
-				set(component, ":bind", table = new Hashtable());
+				set(component, ":bind", table = new Hashtable<Object, Object>());
 			}
-			((Hashtable) table).put(key, value);
+			((Hashtable<Object, Object>) table).put(key, value);
 		} else if (table != null) {
-			((Hashtable) table).remove(key);
+			((Hashtable<Object, Object>) table).remove(key);
 		}
 	}
 
@@ -6639,7 +6641,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 	 */
 	public Object getProperty(Object component, Object key) {
 		Object table = get(component, ":bind");
-		return (table != null) ? ((Hashtable) table).get(key) : null;
+		return (table != null) ? ((Hashtable<Object, Object>) table).get(key) : null;
 	}
 
 	/*****************************************************************************/
@@ -6700,7 +6702,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 		parse(inputstream, 'S', handler);
 	}
 
-	public void startElement(String name, Hashtable attributelist) {
+	public void startElement(String name, Hashtable<String, String> attributelist) {
 	}
 
 	public void characters(String text) {
@@ -6845,8 +6847,8 @@ public class Thinlet extends Container implements Runnable, Serializable {
 		try {
 			Object[] parentlist = null;
 			Object current = null;
-			Hashtable attributelist = null;
-			Vector methods = null;
+			Map<String, String> attributelist = null;
+			List<Object> methods = null;
 			StringBuilder text = new StringBuilder();
 			String encoding = null; // encoding value of xml declaration
 			for (int c = reader.read(); c != -1;) {
@@ -7063,7 +7065,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 											new String(text.toString()));
 								} else { // SAX parser
 									if (attributelist == null) {
-										attributelist = new Hashtable();
+										attributelist = new Hashtable<String, String>();
 									}
 									attributelist.put(new String(key),
 											new String(text.toString()));
@@ -7104,15 +7106,15 @@ public class Thinlet extends Container implements Runnable, Serializable {
 	/**
 	 *
 	 */
-	private void finishParse(Vector methods, Object root, Object handler) {
+	private void finishParse(List<Object> methods, Object root, Object handler) {
 		if (methods == null) {
 			return;
 		}
 
 		for (int i = 0; i < methods.size(); i += 3) {
-			Object component = methods.elementAt(i);
-			Object[] definition = (Object[]) methods.elementAt(i + 1);
-			String value = (String) methods.elementAt(i + 2);
+			Object component = methods.get(i);
+			Object[] definition = (Object[]) methods.get(i + 1);
+			String value = (String) methods.get(i + 2);
 			finishParse(component, definition, value, root, handler);
 		}
 	}
@@ -7122,7 +7124,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 	public void finishParse(Object component, Object definition[],
 			String value, Object root, Object handler) {
 		if ("method" == definition[0]) {
-			Class first = null;
+			Class<?> first = null;
 			if ("draw" == definition[1]) {
 				first = Graphics.class;
 			} else if ("press" == definition[1]) {
@@ -7229,8 +7231,8 @@ public class Thinlet extends Container implements Runnable, Serializable {
 	 * @throws java.lang.IllegalArgumentException
 	 */
 
-	private Vector addAttribute(Object component, String key, String value,
-			String encoding, Vector lasts) throws UnsupportedEncodingException {
+	private List<Object> addAttribute(Object component, String key, String value,
+			String encoding, List<Object> lasts) throws UnsupportedEncodingException {
 		// replace value found in the bundle
 		if ((resourcebundle != null) && value.startsWith("i18n.")) {
 			value = resourcebundle.getString(value.substring(5));
@@ -7264,11 +7266,11 @@ public class Thinlet extends Container implements Runnable, Serializable {
 		} else if (("method" == definition[0])
 				|| ("component" == definition[0])) {
 			if (lasts == null) {
-				lasts = new Vector();
+				lasts = new Vector<Object>();
 			}
-			lasts.addElement(component);
-			lasts.addElement(definition);
-			lasts.addElement(value);
+			lasts.add(component);
+			lasts.add(definition);
+			lasts.add(value);
 		} else if ("property" == definition[0]) {
 			StringTokenizer st = new StringTokenizer(value, ";");
 			while (st.hasMoreTokens()) {
@@ -7636,7 +7638,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 	}
 
 	public void setMethod(Object component, String key, String value,
-			Object root, Object handler, Class first) {
+			Object root, Object handler, Class<?> first) {
 		key = (String) getDefinition(getClass(component), key, "method")[1];
 		Object[] method = getMethod(component, value, root, handler, first);
 		set(component, key, method);
@@ -7659,7 +7661,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 	}
 
 	private Object[] getMethod(Object component, String value, Object root,
-			Object handler, Class first) {
+			Object handler, Class<?> first) {
 
 		StringTokenizer st = new StringTokenizer(value, "(, \r\n\t)");
 		String methodname = st.nextToken();
@@ -7668,7 +7670,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 		Object[] data = (first == null) ? new Object[2 + 3 * n]
 				: new Object[2 + 3 * (n + 1)];
 
-		Class[] parametertypes;
+		Class<?>[] parametertypes;
 		int j = 0;
 
 		if (first == null) {

@@ -28,7 +28,7 @@
 package org.apophysis;
 
 import java.io.PrintWriter;
-import java.util.Vector;
+import java.util.List;
 
 public class Preset implements Constants {
 
@@ -55,36 +55,36 @@ public class Preset implements Constants {
 	Preset() {
 	}
 
-	Preset(Vector v) {
+	Preset(List<String> v) {
 		String line;
 
-		name = (String) v.elementAt(0);
+		name = v.get(0);
 
-		line = (String) v.elementAt(1);
+		line = v.get(1);
 		width = Integer.parseInt(line);
 
-		line = (String) v.elementAt(2);
+		line = v.get(2);
 		height = Integer.parseInt(line);
 
-		line = (String) v.elementAt(3);
+		line = v.get(3);
 		density = Double.valueOf(line).doubleValue();
 
-		line = (String) v.elementAt(4);
+		line = v.get(4);
 		filter_radius = Double.valueOf(line).doubleValue();
 
-		line = (String) v.elementAt(5);
+		line = v.get(5);
 		oversample = Integer.parseInt(line);
 
-		line = (String) v.elementAt(6);
+		line = v.get(6);
 		format = line;
 
-		line = (String) v.elementAt(7);
+		line = v.get(7);
 		limitmem = line.equals("true");
 
-		line = (String) v.elementAt(8);
+		line = v.get(8);
 		indexmem = Integer.parseInt(line);
 
-		line = (String) v.elementAt(9);
+		line = v.get(9);
 		memory = Integer.parseInt(line);
 
 	}

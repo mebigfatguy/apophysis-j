@@ -84,7 +84,7 @@ public class Sheep extends Thread {
 		cp.adjustScale(1280, 960);
 		cp.hasFinalXform = false;
 
-		List vbad = new ArrayList();
+		List<Variation> vbad = new ArrayList<Variation>();
 
 		int nv = XForm.getNrVariations();
 
@@ -115,7 +115,7 @@ public class Sheep extends Thread {
 			String msg = "The flame contains variations not compatible ";
 			String sep = " : ";
 			for (int i = 0; i < nbad; i++) {
-				Variation variation = (Variation) vbad.get(i);
+				Variation variation = vbad.get(i);
 				msg += sep + variation.getName();
 				sep = ", ";
 			}
