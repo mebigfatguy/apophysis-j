@@ -152,13 +152,15 @@ public class XForm implements Constants {
 
 		vars = new double[nv];
 		vars[0] = 1.0;
-		for (int i = 1; i < nv; i++)
+		for (int i = 1; i < nv; i++) {
 			vars[i] = 0.0;
+		}
 
 		// compute the total number of parameters
 		nparams = 0;
-		for (int i = 0; i < nv; i++)
+		for (int i = 0; i < nv; i++) {
 			nparams += getVariation(i).getNrParameters();
+		}
 
 		pvalues = new double[nparams];
 		/*
@@ -199,7 +201,7 @@ public class XForm implements Constants {
 		symmetry = tag.getDouble("symmetry", symmetry);
 
 		double coefs[] = tag.getDoubles("coefs");
-		if (coefs != null)
+		if (coefs != null) {
 			if (coefs.length == 6) {
 				c00 = coefs[0];
 				c01 = coefs[1];
@@ -208,9 +210,10 @@ public class XForm implements Constants {
 				c20 = coefs[4];
 				c21 = coefs[5];
 			}
+		}
 
 		coefs = tag.getDoubles("post");
-		if (coefs != null)
+		if (coefs != null) {
 			if (coefs.length == 6) {
 				p00 = coefs[0];
 				p01 = coefs[1];
@@ -219,21 +222,25 @@ public class XForm implements Constants {
 				p20 = coefs[4];
 				p21 = coefs[5];
 			}
+		}
 
 		int nv = getNrVariations();
-		for (int i = 0; i < nv; i++)
+		for (int i = 0; i < nv; i++) {
 			vars[i] = 0;
+		}
 
 		int ivar1 = tag.getInt("var1", -1);
-		if ((ivar1 >= 0) && (ivar1 < nv))
+		if ((ivar1 >= 0) && (ivar1 < nv)) {
 			vars[ivar1] = 1.0;
+		}
 
 		coefs = tag.getDoubles("var");
 		if (coefs != null) {
 			int kv = coefs.length;
 			if (kv <= nv) {
-				for (int i = 0; i < kv; i++)
+				for (int i = 0; i < kv; i++) {
 					vars[i] = coefs[i];
+				}
 			}
 		}
 
@@ -261,17 +268,20 @@ public class XForm implements Constants {
 	/*****************************************************************************/
 
 	public static void registerPluginVariations(Main main) {
-		if (Global.apopath == null)
+		if (Global.apopath == null) {
 			return;
+		}
 
 		File dplugin = new File(Global.apopath, PLUGNAME);
-		if (!dplugin.exists())
+		if (!dplugin.exists()) {
 			return;
+		}
 
 		String pname = (new SPoint()).getClass().getPackage().getName();
 		File dapo = new File(dplugin, pname);
-		if (!dapo.exists())
+		if (!dapo.exists()) {
 			return;
+		}
 
 		loader = null;
 
@@ -282,22 +292,26 @@ public class XForm implements Constants {
 			ex.printStackTrace();
 		}
 
-		if (loader == null)
+		if (loader == null) {
 			return;
+		}
 
 		Vector vdup = new Vector();
 
 		String filenames[] = dapo.list();
-		if (filenames == null)
+		if (filenames == null) {
 			return;
+		}
 		int nf = filenames.length;
 		for (int i = 0; i < nf; i++) {
 			int k = filenames[i].indexOf('.');
-			if (k < 0)
+			if (k < 0) {
 				continue;
+			}
 			String ext = filenames[i].substring(k + 1);
-			if (!ext.equals("class"))
+			if (!ext.equals("class")) {
 				continue;
+			}
 
 			String cname = filenames[i].substring(0, k);
 
@@ -307,10 +321,11 @@ public class XForm implements Constants {
 				if (o instanceof Variation) {
 					Variation v = (Variation) o;
 					int ind = getVariationIndex(v.getName());
-					if (ind >= 0)
+					if (ind >= 0) {
 						vdup.addElement(v);
-					else
+					} else {
 						registerVariation(v);
+					}
 				}
 			} catch (Throwable err) {
 				err.printStackTrace();
@@ -319,8 +334,9 @@ public class XForm implements Constants {
 		}
 
 		sheep = new boolean[registered_variations.size()];
-		for (int i = 0; i < sheep.length; i++)
+		for (int i = 0; i < sheep.length; i++) {
 			sheep[i] = false;
+		}
 
 		int nd = vdup.size();
 		if (nd > 0) {
@@ -341,27 +357,33 @@ public class XForm implements Constants {
 
 	public static void installPlugin(File file) {
 		int k = file.getName().indexOf('.');
-		if (k < 0)
+		if (k < 0) {
 			return;
+		}
 		String ext = file.getName().substring(k + 1);
-		if (!ext.equals("class"))
+		if (!ext.equals("class")) {
 			return;
+		}
 		String cname = file.getName().substring(0, k);
 
-		if (loader == null)
+		if (loader == null) {
 			return;
+		}
 
-		if (Global.apopath == null)
+		if (Global.apopath == null) {
 			return;
+		}
 
 		File dplugin = new File(Global.apopath, PLUGNAME);
-		if (!dplugin.exists())
+		if (!dplugin.exists()) {
 			return;
+		}
 
 		String pname = (new SPoint()).getClass().getPackage().getName();
 		File dapo = new File(dplugin, pname);
-		if (!dapo.exists())
+		if (!dapo.exists()) {
 			return;
+		}
 
 		File fdest = new File(dapo, file.getName());
 		if (fdest.exists()) {
@@ -377,8 +399,9 @@ public class XForm implements Constants {
 		}
 
 		// if we couldnt copy the file
-		if (!fdest.exists())
+		if (!fdest.exists()) {
 			return;
+		}
 
 		Object o = null;
 		try {
@@ -393,12 +416,13 @@ public class XForm implements Constants {
 			String vname = v.getName();
 
 			int nv = getNrVariations();
-			for (int i = 0; i < nv; i++)
+			for (int i = 0; i < nv; i++) {
 				if (getVariation(i).getName().equals(vname)) {
 					fdest.delete();
 					Global.main.alert("Variation " + vname + " already exists");
 					return;
 				}
+			}
 
 			Global.main.alert("Variation " + vname
 					+ " installed, will be available after program restart");
@@ -418,9 +442,11 @@ public class XForm implements Constants {
 
 	public static int getVariationIndex(String name) {
 		int n = registered_variations.size();
-		for (int i = 0; i < n; i++)
-			if (getVariation(i).getName().equals(name))
+		for (int i = 0; i < n; i++) {
+			if (getVariation(i).getName().equals(name)) {
 				return i;
+			}
+		}
 		return -1;
 	}
 
@@ -449,10 +475,11 @@ public class XForm implements Constants {
 		int nv = getNrVariations();
 		for (int i = 0; i < nv; i++) {
 			int np = XForm.getVariation(i).getNrParameters();
-			if (index < k + np)
+			if (index < k + np) {
 				return XForm.getVariation(i).getParameterName(index - k);
-			else
+			} else {
 				k += np;
+			}
 		}
 
 		return "";
@@ -466,8 +493,9 @@ public class XForm implements Constants {
 		String name;
 		double value;
 
-		if (xform == null)
+		if (xform == null) {
 			return;
+		}
 
 		vars = new double[xform.vars.length];
 		System.arraycopy(xform.vars, 0, vars, 0, vars.length);
@@ -514,63 +542,80 @@ public class XForm implements Constants {
 
 		int kp = 0;
 
-		for (int i = 0; i < nv; i++)
+		for (int i = 0; i < nv; i++) {
 			if (vars[i] != 0) {
 				needAngle = needAngle || getVariation(i).needAngle();
 				needLength = needLength || getVariation(i).needLength();
 				needSine = needSine || getVariation(i).needSine();
 
-				if (variations[i] == null)
+				if (variations[i] == null) {
 					variations[i] = getVariation(i).getNewInstance();
+				}
 				int np = getVariation(i).getNrParameters();
-				for (int j = 0; j < np; j++)
+				for (int j = 0; j < np; j++) {
 					variations[i].setParameterValue(j, pvalues[kp++]);
+				}
 
 				variations[i].prepare(this, vars[i]);
 			} else {
 				variations[i] = null;
 				kp += getVariation(i).getNrParameters();
 			}
+		}
 
 		// build list of computations
 		Vector v = new Vector();
 
-		if (needAngle)
+		if (needAngle) {
 			v.addElement(new AngleComputation());
-		if (needLength)
+		}
+		if (needLength) {
 			v.addElement(new LengthComputation());
-		if (needSine)
+		}
+		if (needSine) {
 			v.addElement(new SineComputation());
+		}
 
 		// pre-variations
-		for (int i = 0; i < nv; i++)
-			if (vars[i] != 0)
-				if (getVariation(i).getName().startsWith("pre_"))
+		for (int i = 0; i < nv; i++) {
+			if (vars[i] != 0) {
+				if (getVariation(i).getName().startsWith("pre_")) {
 					v.addElement(variations[i]);
+				}
+			}
+		}
 
 		// normal variations
-		for (int i = 0; i < nv; i++)
-			if (vars[i] != 0)
+		for (int i = 0; i < nv; i++) {
+			if (vars[i] != 0) {
 				if ((!getVariation(i).getName().startsWith("pre_"))
-						&& (!getVariation(i).getName().startsWith("post_")))
+						&& (!getVariation(i).getName().startsWith("post_"))) {
 					v.addElement(variations[i]);
+				}
+			}
+		}
 
 		// post-variations
-		for (int i = 0; i < nv; i++)
-			if (vars[i] != 0)
-				if (getVariation(i).getName().startsWith("post_"))
+		for (int i = 0; i < nv; i++) {
+			if (vars[i] != 0) {
+				if (getVariation(i).getName().startsWith("post_")) {
 					v.addElement(variations[i]);
+				}
+			}
+		}
 
 		// post-computation
-		if (needPost())
+		if (needPost()) {
 			v.addElement(new PostComputation());
+		}
 
 		// vector to array
 
 		ncomp = v.size();
 		computations = new Computation[ncomp];
-		for (int i = 0; i < ncomp; i++)
+		for (int i = 0; i < ncomp; i++) {
 			computations[i] = (Computation) v.elementAt(i);
+		}
 
 	} // End of method prepare
 
@@ -584,14 +629,17 @@ public class XForm implements Constants {
 
 		if (computations != null) {
 			int n = computations.length;
-			for (int i = 0; i < n; i++)
+			for (int i = 0; i < n; i++) {
 				System.out.println("computation" + i + " = "
 						+ computations[i].getClass());
+			}
 		}
 
-		if (vars != null)
-			for (int i = 0; i < 20; i++)
+		if (vars != null) {
+			for (int i = 0; i < 20; i++) {
 				System.out.print(vars[i] + " ");
+			}
+		}
 		System.out.println("");
 	}
 
@@ -614,12 +662,15 @@ public class XForm implements Constants {
 	public boolean isNotNull() {
 		int nv = getNrVariations();
 
-		for (int i = 1; i < nv; i++)
-			if (vars[i] != 0)
+		for (int i = 1; i < nv; i++) {
+			if (vars[i] != 0) {
 				return true;
+			}
+		}
 
-		if (vars[0] != 1)
+		if (vars[0] != 1) {
 			return true;
+		}
 
 		return (c00 != 1) || (c01 != 0) || (c10 != 0) || (c11 != 0)
 				|| (c20 != 0) || (c21 != 0);
@@ -636,8 +687,9 @@ public class XForm implements Constants {
 		fpx = 0;
 		fpy = 0;
 
-		for (int i = 0; i < ncomp; i++)
+		for (int i = 0; i < ncomp; i++) {
 			computations[i].compute(this);
+		}
 
 		xyc[0] = fpx;
 		xyc[1] = fpy;
@@ -655,8 +707,9 @@ public class XForm implements Constants {
 		fpx = 0;
 		fpy = 0;
 
-		for (int i = 0; i < ncomp; i++)
+		for (int i = 0; i < ncomp; i++) {
 			computations[i].compute(this);
+		}
 
 		toxyc[0] = fpx;
 		toxyc[1] = fpy;
@@ -675,8 +728,9 @@ public class XForm implements Constants {
 		fpx = 0;
 		fpy = 0;
 
-		for (int i = 0; i < ncomp; i++)
+		for (int i = 0; i < ncomp; i++) {
 			computations[i].compute(this);
+		}
 
 		xyc[0] = fpx;
 		xyc[1] = fpy;
@@ -693,8 +747,9 @@ public class XForm implements Constants {
 		fpx = 0;
 		fpy = 0;
 
-		for (int i = 0; i < ncomp; i++)
+		for (int i = 0; i < ncomp; i++) {
 			computations[i].compute(this);
+		}
 
 		xy[0] = fpx;
 		xy[1] = fpy;
@@ -712,8 +767,9 @@ public class XForm implements Constants {
 		fpx = 0;
 		fpy = 0;
 
-		for (int i = 0; i < ncomp; i++)
+		for (int i = 0; i < ncomp; i++) {
 			computations[i].compute(this);
+		}
 
 		xyc2[0] = fpx;
 		xyc2[1] = fpy;
@@ -850,8 +906,9 @@ public class XForm implements Constants {
 		p21 = 0;
 
 		vars[0] = 1;
-		for (int i = 1; i < vars.length; i++)
+		for (int i = 1; i < vars.length; i++) {
 			vars[i] = 0;
+		}
 
 	} // End of method clear
 
@@ -861,18 +918,20 @@ public class XForm implements Constants {
 		w.print("   <" + tagname + " ");
 
 		// plpl weight is forbidden for finalxform
-		if (tagname != "finalxform")
+		if (!"finalxform".equals(tagname)) {
 			w.print("weight=\"" + density + "\" ");
+		}
 
 		w.print("color=\"" + color + "\" ");
 
 		// plpl symmetry is missing
-		if (symmetry != 0)
+		if (symmetry != 0) {
 			w.print("symmetry=\"" + symmetry + "\" ");
+		}
 
 		int kp = 0;
 
-		for (int i = 0; i < vars.length; i++)
+		for (int i = 0; i < vars.length; i++) {
 			if (vars[i] != 0) {
 				Variation variation = getVariation(i);
 				w.print(variation.getName() + "=\"" + vars[i] + "\" ");
@@ -882,8 +941,10 @@ public class XForm implements Constants {
 					w.print(pname + "=\"" + pvalues[kp] + "\" ");
 					kp++;
 				}
-			} else
+			} else {
 				kp += getVariation(i).getNrParameters();
+			}
+		}
 
 		w.print("coefs=\"" + c00 + " " + c01 + " " + c10 + " " + c11 + " "
 				+ c20 + " " + c21 + "\" ");
@@ -918,18 +979,21 @@ public class XForm implements Constants {
 	static int randomVariation() {
 		int nv = getNrVariations();
 		int ns = 0;
-		for (int i = 0; i < nv; i++)
+		for (int i = 0; i < nv; i++) {
 			ns += Global.variations[i] ? 1 : 0;
+		}
 
 		// if not variation authorized, return linear
-		if (ns == 0)
+		if (ns == 0) {
 			return 0;
+		}
 
 		int k = 0;
 		while (true) {
 			k = (int) (Math.random() * nv);
-			if (isAuthorized(k))
+			if (isAuthorized(k)) {
 				break;
+			}
 		}
 		return k;
 	}
@@ -943,16 +1007,18 @@ public class XForm implements Constants {
 		int nv = XForm.getNrVariations();
 
 		int np = 0;
-		for (int i = 0; i < nv; i++)
+		for (int i = 0; i < nv; i++) {
 			if (vars[i] == 0) {
 				variations[i] = null;
 				np += XForm.getVariation(i).getNrParameters();
 			} else {
 				variations[i] = XForm.getVariation(i).getNewInstance();
 				int kp = XForm.getVariation(i).getNrParameters();
-				for (int k = 0; k < kp; k++)
+				for (int k = 0; k < kp; k++) {
 					pvalues[np++] = variations[i].getParameterValue(k);
+				}
 			}
+		}
 
 	} // End of method updateParameterValues
 

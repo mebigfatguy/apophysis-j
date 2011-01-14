@@ -176,7 +176,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 
 	/**
 	 * Sets the 9 colors used for components, and repaints the whole UI
-	 * 
+	 *
 	 * @param background
 	 *            the backround of panels (dialogs, desktops), and disabled
 	 *            controls, not editable texts, lines between list items (the
@@ -237,7 +237,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 	 * Sets the only one font used everywhere, and revalidates the whole UI.
 	 * Scrollbar width/height, spinbox, and combobox button width, and slider
 	 * size is the same as the font height
-	 * 
+	 *
 	 * @param font
 	 *            the default font is <i>SansSerif</i>, <i>plain</i>, and
 	 *            <i>12pt</i>
@@ -666,7 +666,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 
 	/**
 	 * Scroll tabs to make the selected one visible
-	 * 
+	 *
 	 * @param component
 	 *            a tabbedpane
 	 */
@@ -829,7 +829,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 
 	/**
 	 * Pop up the list of choices for the given combobox
-	 * 
+	 *
 	 * @param combobox
 	 * @return the created combolist
 	 */
@@ -982,7 +982,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 
 	/**
 	 * Lays out a popupmenu
-	 * 
+	 *
 	 * @param menu
 	 *            menubar's menu, menu's menu, or component's popupmenu
 	 *            including items
@@ -1187,7 +1187,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 	 * Set viewport (:port) bounds excluding borders, view position and content
 	 * size (:view), horizontal (:horizontal), and vertical (:vertical)
 	 * scrollbar bounds
-	 * 
+	 *
 	 * @param component
 	 *            scrollable widget
 	 * @param contentwidth
@@ -1206,7 +1206,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 	 * @param topgap
 	 *            (lower half of panel title)
 	 * @return true if scrollpane is required, otherwise false
-	 * 
+	 *
 	 *         list: 0, 0, 0, 0, true, 0 | table: header, ... | dialog: header,
 	 *         3, 3, 3, true, 0 title-border panel: header / 2, 0, 0, 0, true,
 	 *         head
@@ -1283,7 +1283,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 
 	/**
 	 * Gets the preferred size of the root component
-	 * 
+	 *
 	 * @return a dimension object indicating the root component's preferred size
 	 */
 	@Override
@@ -1292,7 +1292,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 	}
 
 	/**
-	 * 
+	 *
 	 * @throws java.lang.IllegalArgumentException
 	 */
 	private Dimension getPreferredSize(Object component) {
@@ -2483,9 +2483,9 @@ public class Thinlet extends Container implements Runnable, Serializable {
 
 		boolean hneed = (horizontal != null);
 		boolean vneed = (vertical != null);
-		if (("panel" != classname)
-				&& ("dialog" != classname)
-				&& (("textarea" != classname) || getBoolean(component,
+		if ((!"panel".equals(classname))
+				&& (!"dialog".equals(classname))
+				&& ((!"textarea".equals(classname)) || getBoolean(component,
 						"border", true))) {
 			paintRect(g, port.x - 1, port.y - 1, port.width + (vneed ? 1 : 2),
 					port.height + (hneed ? 1 : 2), enabled ? c_border
@@ -2566,7 +2566,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 
 	/**
 	 * Paint scrollable content
-	 * 
+	 *
 	 * @param component
 	 *            a panel
 	 */
@@ -3042,7 +3042,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 
 	/**
 	 * Paint component icon and text (using default or custom font)
-	 * 
+	 *
 	 * @param mnemonic
 	 *            find mnemonic index and underline text
 	 */
@@ -3223,7 +3223,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 	 * This component can be traversed using Tab or Shift-Tab keyboard focus
 	 * traversal, although 1.4 replaced this method by <i>isFocusable</i>, so
 	 * 1.4 compilers write deprecation warning
-	 * 
+	 *
 	 * @return true as focus-transverable component, overwrites the default
 	 *         false value
 	 */
@@ -3904,7 +3904,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 	/**
 	 * Process keyboard events for textfield, passwordfield, textarea, combobox,
 	 * and spinbox
-	 * 
+	 *
 	 * @param multiline
 	 *            true for textarea, otherwise false
 	 * @param hidden
@@ -4156,7 +4156,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 	/**
 	 * Search for the next/first appropriate item starting with the collected
 	 * string or the given single character
-	 * 
+	 *
 	 * @param keychar
 	 *            the last typed character
 	 * @param component
@@ -4257,7 +4257,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 
 	/**
 	 * Select all the items
-	 * 
+	 *
 	 * @param component
 	 *            a list/tree/table
 	 * @param selected
@@ -4282,7 +4282,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 
 	/**
 	 * Select a single given item, deselect others
-	 * 
+	 *
 	 * @param component
 	 *            a list/tree/table
 	 * @param row
@@ -4339,7 +4339,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 
 	/**
 	 * Update the lead item of a list/tree/table, repaint, and scroll
-	 * 
+	 *
 	 * @param component
 	 *            a list, tree, or table
 	 * @param oldlead
@@ -4362,7 +4362,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 
 	/**
 	 * Update the lead item of a combolist, repaint, and scroll
-	 * 
+	 *
 	 * @param component
 	 *            a combobox drop down list
 	 * @param part
@@ -5020,7 +5020,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 	/**
 	 * Calculate the given point in a component relative to the thinlet desktop
 	 * and set as reference value
-	 * 
+	 *
 	 * @param component
 	 *            a widget
 	 * @param x
@@ -5080,7 +5080,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 
 	/**
 	 * Find the next item after the given
-	 * 
+	 *
 	 * @param component
 	 *            a list/tree/table widget
 	 * @param item
@@ -5423,7 +5423,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 	/**
 	 * Overwrite this method to handle exceptions thrown by the invoked custom
 	 * methods
-	 * 
+	 *
 	 * @param throwable
 	 *            the thrown exception by the bussiness logic
 	 */
@@ -5777,7 +5777,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 
 	/**
 	 * Layout and paint the given component later
-	 * 
+	 *
 	 * @param component
 	 */
 	private void validate(Object component) {
@@ -5790,7 +5790,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 
 	/**
 	 * Repaint the given component's area later
-	 * 
+	 *
 	 * @param component
 	 *            a visible widget inside thinlet desktop
 	 */
@@ -5803,7 +5803,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 
 	/**
 	 * Repaint the given component's area later
-	 * 
+	 *
 	 * @param component
 	 * @param x
 	 * @param y
@@ -5828,7 +5828,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 	/**
 	 * Requests that both the <i>Thinlet</i> component, and the given widget get
 	 * the input focus
-	 * 
+	 *
 	 * @param component
 	 *            a focusable widget inside visible and enabled parents, and
 	 *            tabbedpane's selected tab
@@ -5845,7 +5845,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 
 	/**
 	 * Request focus for the given component
-	 * 
+	 *
 	 * @param component
 	 *            a focusable component
 	 * @return true if the focusowner was changed, otherwise false
@@ -5968,7 +5968,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 
 	/**
 	 * Check whether the given widget can become focusowner
-	 * 
+	 *
 	 * @param component
 	 *            check this widget
 	 * @param forced
@@ -6009,7 +6009,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 
 	/**
 	 * Creates a new component
-	 * 
+	 *
 	 * @param classname
 	 *            the widget type (e.g. <i>button</i>)
 	 * @return a new component, every component is simply an <i>Object</i>
@@ -6027,7 +6027,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 
 	/**
 	 * Gets the type of the given component
-	 * 
+	 *
 	 * @param component
 	 *            a widget
 	 * @return the class name of the component (e.g. <i>button</i>)
@@ -6038,7 +6038,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 
 	/**
 	 * Get the topmost component
-	 * 
+	 *
 	 * @return the root object (it is a <i>desktop</i>), never <i>null</i>
 	 */
 	public Object getDesktop() {// #
@@ -6092,7 +6092,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 
 	/**
 	 * Gets the count of subcomponents in the list of the given component
-	 * 
+	 *
 	 * @param component
 	 *            a widget
 	 * @return the number of components in this component
@@ -6103,7 +6103,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 
 	/**
 	 * Gets the parent of this component
-	 * 
+	 *
 	 * @param component
 	 *            a widget
 	 * @return the parent container of this component or item
@@ -6114,7 +6114,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 
 	/**
 	 * Gets the index of the first selected item in the given component
-	 * 
+	 *
 	 * @param component
 	 *            a widget (combobox, tabbedpane, list, table, header, or tree)
 	 * @return the first selected index or -1
@@ -6141,7 +6141,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 
 	/**
 	 * Gets the first selected item of the given component
-	 * 
+	 *
 	 * @param component
 	 *            a widget (combobox, tabbedpane, list, table, header or tree)
 	 * @return the first selected item or null
@@ -6170,7 +6170,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 	/**
 	 * Gets the selected item of the given component (list, table, or tree) when
 	 * multiple selection is allowed
-	 * 
+	 *
 	 * @param component
 	 *            a widget
 	 * @return the array of selected items, or a 0 length array
@@ -6197,7 +6197,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 	private Object findNextItem(Object component, String classname, Object item) {
 		if (item == null) { // first item
 			return get(component, ":comp");
-		} else if ("tree" == classname) { // next tree node
+		} else if ("tree".equals(classname)) { // next tree node
 			Object next = get(item, ":comp");
 			if ((next == null) || !getBoolean(item, "expanded", true)) { // no
 																			// subnode
@@ -6216,7 +6216,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 
 	/**
 	 * Removes all the components from this container's specified list
-	 * 
+	 *
 	 * @param component
 	 *            the specified container
 	 */
@@ -6242,7 +6242,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 	/**
 	 * Returns the subcomponent of the given component's specified list at the
 	 * given index
-	 * 
+	 *
 	 * @param component
 	 *            a specified container
 	 * @param index
@@ -6255,7 +6255,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 
 	/**
 	 * Gets all the components in this container
-	 * 
+	 *
 	 * @param component
 	 *            a specified container
 	 * @return an array of all the components in this container
@@ -6302,7 +6302,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 
 	/**
 	 * Adds the specified component to the root desktop
-	 * 
+	 *
 	 * @param component
 	 *            a widget to be added
 	 */
@@ -6312,7 +6312,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 
 	/**
 	 * Adds the specified component to the end of the specified container
-	 * 
+	 *
 	 * @param parent
 	 *            a container
 	 * @param component
@@ -6324,7 +6324,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 
 	/**
 	 * Adds the specified component to the container at the given position
-	 * 
+	 *
 	 * @param parent
 	 *            a container
 	 * @param component
@@ -6363,7 +6363,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 	/**
 	 * Remove the specified component from its parent list, or delete
 	 * component's popupmenu or table's header
-	 * 
+	 *
 	 * @param component
 	 *            the component to be removed
 	 */
@@ -6388,7 +6388,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 
 	/**
 	 * Delete the give component from its parent list
-	 * 
+	 *
 	 * @param parent
 	 * @param component
 	 */
@@ -6410,7 +6410,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 
 	/**
 	 * Finds the first component from the root desktop by a specified name value
-	 * 
+	 *
 	 * @param name
 	 *            parameter value identifies the widget
 	 * @return the first suitable component, or null
@@ -6421,7 +6421,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 
 	/**
 	 * Finds the first component from the specified component by a name
-	 * 
+	 *
 	 * @param component
 	 *            the widget is searched inside this component
 	 * @param name
@@ -6462,7 +6462,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 	 * F4): - check: menuitem, checkboxmenuitem - path: see above, and menubar,
 	 * and menu items menubar F10: check menubar only button enter, escape:
 	 * check button only
-	 * 
+	 *
 	 * @param component
 	 * @param parent
 	 *            check upwards if true
@@ -6607,7 +6607,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 	 * component. <i>Null</i> value removes the property. Use the parameter tag
 	 * in the xml resource to bind a string value, the format is:
 	 * <i>parameter='key=value'</i>
-	 * 
+	 *
 	 * @param component
 	 *            the hashtable is binded to this component
 	 * @param key
@@ -6629,7 +6629,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 
 	/**
 	 * Returns the value of the property with the specified key.
-	 * 
+	 *
 	 * @param component
 	 *            searches the hashtable of this component
 	 * @param key
@@ -6647,7 +6647,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 	/**
 	 * Creates a component (and its subcomponents, and properties) from the
 	 * given xml resource
-	 * 
+	 *
 	 * @param path
 	 *            is relative to your thinlet instance or the classpath (if the
 	 *            path starts with an <i>/</i> character), or a full URL
@@ -6739,7 +6739,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 	/**
 	 * Set a bundle used in parse method, it replaces the parameter values
 	 * starting with the 'i18n.' string with a value found in the given bundle
-	 * 
+	 *
 	 * @param resourcebundle
 	 *            a bundle for the next parsing or null to remove the current
 	 *            one
@@ -6751,7 +6751,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param inputstream
 	 * @param validate
 	 *            parse GUI from xml if true
@@ -6770,7 +6770,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 	 * parentlist = null; Object current = null; Hashtable attributelist = null;
 	 * Vector methods = (validate && !dom) ? new Vector() : null; StringBuffer
 	 * text = new StringBuffer(); String encoding = null;
-	 * 
+	 *
 	 * for (int c = reader.read(); c != -1;) { if (c == '<') { if ((c =
 	 * reader.read()) == '/') { //endtag if (text.length() > 0) { if
 	 * (text.charAt(text.length() - 1) == ' ') { text.setLength(text.length() -
@@ -7160,7 +7160,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 	/**
 	 * Add the component to the parent's ':comp' list, and set its ':parent' or
 	 * set single components
-	 * 
+	 *
 	 * @param index
 	 *            add at the specified index
 	 * @throws java.lang.IllegalArgumentException
@@ -7225,7 +7225,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 
 	/*****************************************************************************
 	 * /**
-	 * 
+	 *
 	 * @throws java.lang.IllegalArgumentException
 	 */
 
@@ -7338,7 +7338,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 	}
 
 	/**
-	 * 
+	 *
 	 * @throws java.lang.IllegalArgumentException
 	 */
 	private static Object[] getDefinition(Object classname, String key,
@@ -7351,7 +7351,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 					if (attributes != null) {
 						for (Object[] attribute : attributes) {
 							if (attribute[1].equals(key)) {
-								if ((type != null) && (type != attribute[0])) {
+								if ((type != null) && (!type.equals(attribute[0]))) {
 									throw new IllegalArgumentException(
 											attribute[0].toString());
 								}
@@ -7476,7 +7476,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 
 	/**
 	 * Get the AWT component of the given (currently <i>bean</i>) widget
-	 * 
+	 *
 	 * @param component
 	 *            a <i>bean</i> widget
 	 * @param key
@@ -7497,7 +7497,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 
 	/**
 	 * Set custom font on a component
-	 * 
+	 *
 	 * @param component
 	 *            component to use the custom font
 	 * @param font
@@ -7520,7 +7520,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 	 * background color, and not a new gradient. Also, Color.brighter() will be
 	 * used for highlight, and Color.darker() will be used for pressed or not
 	 * selected.
-	 * 
+	 *
 	 * @param component
 	 *            component to use for custom color
 	 * @param key
@@ -7542,7 +7542,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 
 	/**
 	 * Set the AWT component for the given (currently <i>bean</i>) widget
-	 * 
+	 *
 	 * @param component
 	 *            a <i>bean</i> widget
 	 * @param key
@@ -7612,7 +7612,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 
 	/**
 	 * Sets a new event handler method for a component
-	 * 
+	 *
 	 * @param component
 	 *            the target component
 	 * @param key
@@ -7859,7 +7859,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 	private boolean setString(Object component, String key, String value,
 			String defaultvalue) {
 		if (allI18n && (langResource != null)
-				&& ((key == "text") || (key == "tooltip"))) {
+				&& (("text".equals(key)) || ("tooltip".equals(key)))) {
 			putProperty(component, "i18n." + key, null); // for I18N
 		}
 		return set(component, key, value); // use defaultvalue
@@ -7880,7 +7880,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 	 * This implementation allows applications to switch language resources on
 	 * the fly, without rebuilding/reloading components that use them. <br />
 	 * The pseudo-code is as follows:
-	 * 
+	 *
 	 * <ul>
 	 * <li>if langResource and langResourceDefault are null, don't translate
 	 * anything, no matter what other settings are. This behaviour provides
@@ -7902,10 +7902,10 @@ public class Thinlet extends Container implements Runnable, Serializable {
 	 * </ul>
 	 * </li>
 	 * </ul>
-	 * 
+	 *
 	 * The "translate" step is applied only to values from "text" and "tooltip"
 	 * properties (for now), and is applied as follows:
-	 * 
+	 *
 	 * <ul>
 	 * <li>use the value of "text" or "tooltip" as a lookup key</li>
 	 * <li>use langResource to lookup the result value
@@ -7921,11 +7921,11 @@ public class Thinlet extends Container implements Runnable, Serializable {
 	 * </li>
 	 * <li>cache the result value, if any</li>
 	 * </ul>
-	 * 
+	 *
 	 * If translated value is found successfully, it is cached in the component.
 	 * This cache is gradually flushed when setLangResource is called. Cached
 	 * value is also flushed when setString() is called on a component.
-	 * 
+	 *
 	 * @param res
 	 *            resource bundle containing localized texts for "text" and
 	 *            "tooltip"
@@ -7947,7 +7947,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 	/**
 	 * Set default language resource bundle. Resources from this bundle will be
 	 * used if they are missing in the current bundle.
-	 * 
+	 *
 	 * @param res
 	 *            resource bundle containing default localized texts for "text"
 	 *            and "tooltip"
@@ -7973,7 +7973,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 	 * specific component. If set to "false", do not translate unless explicitly
 	 * requested by setting <code>i18n="true"</code> on a specific component. <br />
 	 * Default value is "false", to provide backwards compatibility.
-	 * 
+	 *
 	 * @param val
 	 *            if "true", translate by default; if "false", do not translate
 	 *            by default.
@@ -8012,7 +8012,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 	}
 
 	/**
-	 * 
+	 *
 	 * @throws java.lang.IllegalArgumentException
 	 */
 	private boolean setChoice(Object component, String key, String value,
@@ -8099,7 +8099,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 
 	/**
 	 * Creates an image, and loads it immediately by default
-	 * 
+	 *
 	 * @param path
 	 *            is relative to your thinlet instance or the classpath (if the
 	 *            path starts with <i>'/'</i> character), or a full URL
@@ -8113,7 +8113,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 	 * Creates an image from the specified resource. To speed up loading the
 	 * same images use a cache (a simple hashtable). And flush the resources
 	 * being used by an image when you won't use it henceforward
-	 * 
+	 *
 	 * @param path
 	 *            is relative to your thinlet instance or the classpath, or an
 	 *            URL
@@ -8168,7 +8168,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 	 * This method is called by the FrameLauncher if the window was closing, or
 	 * AppletLauncher's destroy method. Overwrite it to e.g. save the
 	 * application changes.
-	 * 
+	 *
 	 * @return true to exit, and false to keep the frame and continue the
 	 *         application
 	 */
