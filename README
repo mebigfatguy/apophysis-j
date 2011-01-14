@@ -1,1 +1,13 @@
 apophysis-j is a port in java of the famous fractal flame editor apophysis for Windows. It is based on the version 2.07 beta of apophysis. It should run on any machine equipped with a decent java environment (1.4 or higher) and bring the capabilities of this wonderful program to mac and linux users at last.
+
+Written/Ported by Jean-Francois Bouzereau
+Now also maintained by Dave Brosius
+
+based on Apophysis ( http://www.apophysis.org )
+Apophysis Copyright (C) 2001-2004 Mark Townsend
+Apophysis Copyright (C) 2005-2006 Ronald Hordijk, Piotr Borys, Peter Sdobnov
+Apophysis Copyright (C) 2007 Piotr Borys, Peter Sdobnov
+
+based on Flam3 ( http://www.flam3.com )
+Copyright (C) 1992-2006  Scott Draves <source@flam3.com>
+
