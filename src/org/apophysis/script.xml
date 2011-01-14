@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<panel name="Script" columns="1" >
+
+<!-- --------------------------------------------------------------------- -->
+
+<splitpane orientation="vertical" divider="350"  name="Splitter"
+	weightx="1" weighty="1" halign="fill" valign="fill" >
+
+
+	<panel weightx="1" weighty="1" name="BackPanel"
+		halign="fill" valign="fill" left="5"
+		>
+
+		<textarea name="Editor" weightx="1" weighty="1"
+			font="Courier bold 12"			
+			halign="fill" valign="fill"
+			caret="caretChange(this)"
+			/>
+
+		<panel weightx="0" weighty="0"
+			halign="right" valign="top"
+			columns="1"
+			>
+
+			<button name="btnNew" icon="images/main0.gif"
+				tooltip="New"
+				background="#D1CCC6"
+				action="btnNewClick()"
+				/>
+			<button name="btnOpen" icon="images/main1.gif"
+				tooltip="Open"
+				background="#D1CCC6"
+				action="btnOpenClick()"
+				/>
+			<button name="btnSave" icon="images/main2.gif"
+				tooltip="Save"
+				background="#D1CCC6"
+				action="btnSaveClick()"
+				/>
+			<button name="btnRun" icon="images/main43.gif"
+				tooltip="Run"
+				background="#D1CCC6"
+				action="btnRunClick()"
+				/>
+			<button name="btnStop" icon="images/main36.gif"
+				tooltip="Stop"
+				background="#D1CCC6"
+				enabled="false"
+				action="btnStopClick()"
+				/>
+			<button name="btnBreak" icon="images/main37.gif"
+				enabled="false"
+				background="#D1CCC6"
+				tooltip="Break"
+				/>
+			<button name="btnHelp" icon="images/help.gif"
+				tooltip="Help"
+				background="#D1CCC6"
+				action="btnHelpClick()"
+				/>
+			
+		</panel>
+	</panel>
+
+	<panel weightx="1" weighty="0" halign="fill" valign="bottom"
+		left="5" right="5" gap="5" bottom="5"
+		columns="1"
+		>
+
+		<textarea name="Console" weightx="1" weighty="1"
+			font="Courier 12"
+			editable="false"
+			halign="fill" valign="fill"
+			/>
+
+		<label name="StatusBar" weightx="1" weighty="0"
+			halign="fill" valign="bottom"
+			font="SansSerif 14"
+			text="  "
+			/>
+	</panel>
+
+</splitpane>
+
+</panel>

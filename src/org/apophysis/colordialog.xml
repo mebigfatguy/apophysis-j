@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dialog name="colordialog" columns="1" width="320" height="400" modal="true"
+	background="#D1CCC6" 
+	>
+
+	<panel weightx="1" weighty="1" halign="fill" valign="fill"
+		top="5" bottom="5" left="5" right="5" gap="10"
+		columns="2"
+		>
+
+		<canvas name="huecanvas" width="258" height="258"
+			weightx="0" weighty="0" halign="fill" valign="fill"
+			draw="drawHueCanvas(this.bounds)"
+			press="pressHueCanvas()"
+			drag="pressHueCanvas()"
+			/>
+
+		<canvas name="bricanvas" width="28" height="258"
+			weightx="0" weighty="0" halign="fill" valign="fill"
+			draw="drawBriCanvas(this.bounds)"
+			press="pressBriCanvas()"
+			drag="pressBriCanvas()"
+			/>
+
+	</panel>
+
+	<panel weightx="2" weighty="1" halign="fill" valign="fill"
+		top="5" bottom="5" left="5" right="5" gap="10"
+		columns="2"
+		>
+		
+		<canvas name="colcanvas" weightx="1" weighty="1"
+			halign="fill" valign="fill"
+			draw="drawColCanvas(this.bounds)"
+			/>
+
+		<panel weightx="1" weighty="1" halign="fill" valign="fill"
+			columns="4"
+			top="5" bottom="5" gap="5"
+			>
+
+			<label text="Hue" 
+				weightx="1" weighty="1" halign="right" valign="fill"
+				/>
+			<textfield name="huefield"
+				weightx="1" weighty="1" halign="fill" valign="fill"
+				columns="5"
+				perform="enterHSB()"
+				/>
+
+			<label text="Red"
+				weightx="1" weighty="1" halign="right" valign="fill"
+				/>
+			<textfield name="redfield"
+				weightx="1" weighty="1" halign="fill" valign="fill"
+				columns="5"
+				perform="enterRGB()"
+				/>
+
+			<label text="Sat"
+				weightx="1" weighty="1" halign="right" valign="fill"
+				/>
+			<textfield name="satfield"
+				weightx="1" weighty="1" halign="fill" valign="fill"
+				columns="5"
+				perform="enterHSB()"
+				/>
+
+			<label text="Green"
+				weightx="1" weighty="1" halign="right" valign="fill"
+				/>
+			<textfield name="greenfield"
+				weightx="1" weighty="1" halign="fill" valign="fill"
+				columns="5"
+				perform="enterRGB()"
+				/>
+
+			<label text="Bright"
+				weightx="1" weighty="1" halign="right" valign="fill"
+				/>
+			<textfield name="brifield"
+				weightx="1" weighty="1" halign="fill" valign="fill"
+				columns="5"
+				perform="enterHSB()"
+				/> 
+
+			<label text="Blue"
+				weightx="1" weighty="1" halign="right" valign="fill"
+				/>
+			<textfield name="bluefield"
+				weightx="1" weighty="1" halign="fill" valign="fill"
+				columns="5"
+				perform="enterRGB()"
+				/>
+		</panel>
+
+	</panel>
+
+	<panel weightx="1" weighty="1" halign="fill" valign="fill"
+		columns="2"
+		gap="100" left="50" right="50" top="5" bottom="10"
+		>
+
+		<button text="    OK    "
+			weightx="1" weighty="1" halign="fill" valign="fill"
+			action="ok()"
+			/>
+
+		<button text=" Cancel "
+			weightx="1" weighty="1" halign="fill" valign="fill"
+			action="cancel()"
+			/>
+
+	</panel>
+
+</dialog>
+

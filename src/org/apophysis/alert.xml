@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dialog name="alertdialog" columns="1" width="500" height="140"
+	 modal="true">
+
+	<panel columns="2" weightx="1" weighty="1" gap="30"
+		left="10" right="10" top="30" bottom="20">
+
+		<label  icon="images/error.gif"  weightx="0"
+			halign="left" />
+		<label  name="alertmessage" weightx="1" weighty="1" 
+			halign="fill" valign="center" />
+	</panel>
+
+	<panel columns="3" weightx="1" gap="100"
+		left="50" right="50" top="20" bottom="30">
+		
+		<label text=" " weightx="1" />
+		<button text="    OK    " type="default" width="160"
+			halign="fill"	
+			action="closeAlert()"/>
+		<label text=" " weightx="1" />
+	</panel>
+</dialog>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<panel name="fullscreen" columns="1" width="600" height="500" >
+
+	<label text="full screen ..." />
+	
+</panel>

@@ -1,0 +1,850 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<panel name="editor" columns="1" width="582" height="575" >
+
+
+	<panel name="EditorToolBar" weightx="1" weighty="0"
+		halign="fill" valign="top">
+
+		<button name="btResetAll" 
+			tooltip="New blank flame"
+			action="mnuResetAllClick()"
+			background="#D1CCC6"
+			icon="images/editor0.gif" />
+
+		<button name="btAdd" 
+			tooltip="Add a new triangle"
+			action="mnuAddClick()"
+			background="#D1CCC6"
+			icon="images/editor1.gif" />
+
+		<button name="btDuplicate" 
+			tooltip="Duplicate the selected triangle"
+			action="mnuDupClick()"
+			background="#D1CCC6"
+			icon="images/editor2.gif" />
+
+		<button name="btDelete" 
+			tooltip="Delete the selected triangle"
+			action="mnuDeleteClick()"
+			background="#D1CCC6"
+			icon="images/editor3.gif" />
+			
+
+		<label text=" "  />
+
+		<button name="btUndo"  
+			tooltip="Undo (Ctrl+Z)"
+			action="undo()"
+			background="#D1CCC6"
+			icon="images/editor4.gif" />
+
+		<button name="btRedo" 
+			tooltip="Redo (Ctrl+Y)"
+			action="redo()"
+			background="#D1CCC6"
+			icon="images/editor5.gif" />
+
+		<label text=" "  />
+
+		<togglebutton name="tbSelect" 
+			tooltip="Select mode"
+			background="#D1CCC6"
+			action="tbSelectClick(this)"
+			icon="images/editor6.gif" />
+
+		<togglebutton name="tbMove" 
+			group="mode"
+			tooltip="Move triangle"
+			background="#D1CCC6"
+			action="tbMoveClick()"
+			icon="images/editor7.gif" />
+
+		<togglebutton name="tbRotate" 
+			group="mode"
+			tooltip="Rotate triangle"
+			background="#D1CCC6"
+			action="tbRotateClick()"
+			icon="images/editor8.gif" />
+
+		<togglebutton name="tbScale" 
+			group="mode"
+			tooltip="Scale triangle"
+			background="#D1CCC6"
+			action="tbScaleClick()"
+			icon="images/editor9.gif" />
+
+		<label text=" "  />
+
+		<togglebutton name="tbPivotMode" 
+			tooltip="Toggle world pivot mode"
+			background="#D1CCC6"
+			action="btnPivotModeClick()"
+			icon="images/editor15.gif" />
+
+		<button name="tbRotate90CCW" 
+			tooltip="Rotate triangle 90° counter-clockwise"
+			background="#D1CCC6"
+			action="btTrgRotateLeft90Click()"
+			icon="images/editor17.gif" />
+
+		<button name="tbTotate90CW" 
+			tooltip="Rotate triangle 90° clockwise"
+			background="#D1CCC6"
+			action="btTrgRotateRight90Click()"
+			icon="images/editor18.gif" />
+
+		<button name="tbFlipHorz" 
+			tooltip="Flip horizontal"
+			background="#D1CCC6"
+			action="mnuFlipHorizontalClick()"
+			icon="images/editor10.gif" />
+
+		<button name="tbFlipVert" 
+			tooltip="Flip vertical"
+			background="#D1CCC6"
+			action="mnuFlipVerticalClick()"
+			icon="images/editor11.gif" />
+
+		<label text=" "  />
+
+		<togglebutton name="tbVarPreview" 
+			tooltip="Show/hide variation preview"
+			background="#D1CCC6"
+			action="tbVarPreviewClick(this)"
+			icon="images/editor14.gif" />
+
+		<label text=" "  />
+
+		<togglebutton name="tbPostXswap" 
+			tooltip="Enable post-triangle editing"
+			background="#D1CCC6"
+			action="mnuPostXswapClick()"
+			icon="images/editor29.gif" />
+
+		<togglebutton name="tbEnableFinalXform" 
+			tooltip="Show final Xform"
+			background="#D1CCC6"
+			action="tbEnableFinalXformClick(this)"
+			icon="images/editor24.gif" />
+
+		<label text="" >
+		<popupmenu name="TrianglePopup"
+			>
+			<menuitem text="Reset triangle"
+				background="#D1CCC6"
+				icon="images/editor20.gif"
+				action="mnuResetTriangleClick()"
+				/>
+			<separator/>
+			<menuitem text="Duplicate"
+				background="#D1CCC6"
+				icon="images/editor2.gif"
+				action="mnuDupClick()"
+				/>
+			<menuitem text="Delete"
+				background="#D1CCC6"
+				icon="images/editor3.gif"
+				action="mnuDeleteClick()"
+				/>
+			<menuitem text="Add"
+				background="#D1CCC6"
+				icon="images/editor1.gif"
+				action="mnuAddClick()"
+				/>
+			<separator/>
+			<menuitem text="Copy triangle coordinates"
+				background="#D1CCC6"
+				icon="images/editor26.gif"
+				action="btCopyTriangleClick()"
+				/>
+			<menuitem text="Paste triangle coordinates"
+				background="#D1CCC6"
+				icon="images/editor27.gif"
+				action="btPasteTriangleClick()"
+				/>
+			<separator/>
+			<menuitem text="Rotate triangle 90° CCW"
+				background="#D1CCC6"
+				icon="images/editor17.gif"
+				action="btTrgRotateLeft90Click()"
+				/>
+			<menuitem text="Rotate triangle 90° CW"
+				background="#D1CCC6"
+				icon="images/editor18.gif"
+				action="btTrgRotateRight90Click()"
+				/>
+			<menuitem text="Flip Horizontal"
+				background="#D1CCC6"
+				icon="images/editor10.gif"
+				action="mnuFlipHorizontalClick()"
+				/>
+			<menuitem text="Flip Vertical"
+				background="#D1CCC6"
+				icon="images/editor11.gif"
+				action="mnuFlipVerticalClick()"
+				/>
+			<separator/>
+			<menuitem text="Reset position"
+				background="#D1CCC6"
+				icon="images/editor21.gif"
+				action="btnOcoefsClick()"
+				/>
+			<menuitem text="Reset rotation"
+				background="#D1CCC6"
+				icon="images/editor22.gif"
+				action="mnuResetRotationClick()"
+				/>
+			<menuitem text="Reset scale"
+				background="#D1CCC6"
+				icon="images/editor23.gif"
+				action="mnuResetScaleClick()"
+				/>
+		</popupmenu>
+		</label>
+
+		<menubar weightx="0" weighty="0" name="dummymenu">
+			<menu text=""  background="#D1CCC6" >
+				<menuitem accelerator="META Z" action="undo()"
+					enabled="false" name="mnuDummyUndo" />
+				<menuitem accelerator="META Y" action="redo()"
+					enabled="false" name="mnuDummyRedo" />
+			</menu>	
+		</menubar>
+
+	</panel>
+
+	<panel columns="2"  gap="5"
+		weightx="1" weighty="1" halign="fill" valign="fill" >
+
+		<popupmenu name="EditorPopup"
+			>
+			<menuitem text="Undo" enabled="false"
+				name="mnuUndo"
+				icon="images/editor4.gif"
+				background="#D1CCC6"
+				action="undo()"
+				/>
+			<menuitem text="Redo" enabled="false"
+				name="mnuRedo"
+				icon="images/editor5.gif"
+				background="#D1CCC6"
+				action="redo()"
+				/>
+			<separator/>
+			<menuitem text="Add transform" 
+				icon="images/editor1.gif"
+				background="#D1CCC6"
+				action="mnuAddClick()"
+				/>
+			<separator/>
+			<menuitem text="Auto Zoom"
+				icon="images/editor19.gif"
+				background="#D1CCC6"
+				action="mnuAutoZoomClick()"
+				/>
+			<checkboxmenuitem text="Show Variation Preview"
+				name="mnuVarPreview"
+				icon="images/editor14.gif"
+				background="#D1CCC6"
+				action="mnuVarPreviewClick(this)"
+				/>
+			<separator/>
+			<checkboxmenuitem text="Select Mode"
+				name="mnuSelect"
+				icon="images/editor6.gif"
+				background="#D1CCC6"
+				action="mnuSelectClick(this)"
+				/>
+			<checkboxmenuitem text="Extended edit mode"
+				name="mnuExtendedEdit"
+				icon="images/editor25.gif"
+				background="#D1CCC6"
+				action="mnuExtendedEditClick(this)"
+				/>
+			<checkboxmenuitem text="Lock tranform axes"
+				name="mnuAxisLock"
+				icon="images/editor16.gif"
+				background="#D1CCC6"
+				action="mnuAxisLockClick(this)"
+				/>
+			<checkboxmenuitem text="Post-triangle editing"
+				name="mnuPostXswap"
+				icon="images/editor29.gif"
+				background="#D1CCC6"
+				action="mnuPostXswapClick()"
+				/>
+			<separator/>
+			<menuitem text="Flip All Vertical"
+				icon="images/editor13.gif"
+				background="#D1CCC6"
+				action="mnuFlipAllVerticalClick()"
+				/>
+			<menuitem text="Flip All Horizontal"
+				icon="images/editor12.gif"
+				background="#D1CCC6"
+				action="mnuFlipAllHorizontalClick()"
+				/>
+		</popupmenu>
+
+		<canvas name="TriangleView" weightx="1" weighty="1"
+			halign="fill" valign="fill"
+			draw="triangleViewPaint(this.bounds)"
+			press="triangleViewMouseDown(this.bounds)"
+			move="triangleViewMouseMove(this.bounds)"
+			release="triangleViewMouseUp(this.bounds)"
+			drag="triangleViewMouseDrag(this.bounds)"
+			key="triangleViewKeyPress()"
+			/>
+
+		<panel columns="1" gap="5" right="5"
+			weightx="0" weighty="1" halign="fill" valign="fill" >
+
+			<popupmenu name="PreviewPopup"
+				>
+				<checkboxmenuitem text="Low Quality"
+					name="LowQuality"
+					group="PreviewQuality"
+					background="#D1CCC6"
+					action="mnuLowQualityClick(this)"
+					/>
+				<checkboxmenuitem text="Medium Quality"
+					name="MediumQuality"
+					group="PreviewQuality"
+					background="#D1CCC6"
+					action="mnuMediumQualityClick(this)"
+					/>
+				<checkboxmenuitem text="High Quality"
+					name="HighQuality"
+					group="PreviewQuality"
+					background="#D1CCC6"
+					action="mnuHighQualityClick(this)"
+					/>
+				<separator/>
+				<checkboxmenuitem text="Auto reset location"
+					name="chkResetLocation"
+					background="#D1CCC6"
+					action="mnuResetLocationClick(this)"
+					/>
+			</popupmenu>
+
+			<canvas name="PrevPnl" weightx="1" weighty="0"
+				halign="fill" valign="fill"
+				width="230" height="130"
+				draw="drawPreviewPanel(this.bounds)"
+				press="pressPreviewPanel(this,this.bounds)"
+				/>
+
+			<panel columns="1"
+				 weightx="1" weighty="1" halign="fill" valign="fill">
+
+				<panel name="ControlPanel" columns="2"
+					top="5" bottom="5" gap="5"
+					weightx="1" weighty="0"
+					halign="center" valign="fill" 
+					>
+					<label text="Transform" />
+					<combobox name="cbTransforms" editable="false" 
+						foreground="#FFFFFF" background="#000000"
+						action="cbTransformsChange(this)" >
+					</combobox>
+				</panel>
+
+				<tabbedpane weightx="1" weighty="1" halign="fill" valign="fill">
+					<tab text="Triangle" >
+						<panel columns="1" weightx="1" weighty="1"
+							halign="fill" valign="fill" >
+
+							<panel columns="3" weightx="1" weighty="0"
+								top="5" gap="5" bottom="5"
+								halign="center" valign="fill">
+
+								<label name="LabelA" text="X:" />
+								<textfield name="txtAx"
+									perform="cornerEditKeyPress()"
+									/>
+								<textfield name="txtAy"
+									perform="cornerEditKeyPress()"
+									/>
+							
+								<label name="LabelC" text="Y:" />
+								<textfield name="txtCx" 
+									perform="cornerEditKeyPress()"
+									/>
+								<textfield name="txtCy" 
+									perform="cornerEditKeyPress()"
+									/>
+
+								<label name="LabelB" text="O:" />
+								<textfield name="txtBx" 
+									perform="cornerEditKeyPress()"
+									/>
+								<textfield name="txtBy" 
+									perform="cornerEditKeyPress()"
+									/>
+							</panel>
+
+							<separator />
+
+							<panel columns="5" weightx="1" weighty="0"
+								top="5" gap="5" bottom="5"
+								halign="center" valign="fill">
+				
+								<button name="btTrgRotateLeft90"
+									background="#D1CCC6"
+									icon="images/left90.gif"
+									tooltip="Rotate triangle 90 ° counter clockwise"
+									action="btTrgRotateLeft90Click()"
+									/>
+								<button name="btTrgRotateLeft"
+									background="#D1CCC6"
+									icon="images/rotateleft.gif"
+									tooltip="Rotate triangle counter clockwise"
+									action="btTrgRotateLeftClick()"
+									/>
+								<combobox name="txtTrgRotateValue"
+									text="5" columns="6"
+									>
+									<choice text="5" />
+									<choice text="15" />
+									<choice text="30" />
+									<choice text="45" />
+									<choice text="60" />
+									<choice text="90" />
+									<choice text="120" />
+									<choice text="180" />
+								</combobox>
+								<button name="btTrgRotateRight"
+									background="#D1CCC6"
+									icon="images/rotateright.gif"
+									tooltip="Rotate triangle clockwise"
+									action="btTrgRotateRightClick()"
+									/>
+								<button name="btTrgRotateRight90"
+									background="#D1CCC6"
+									icon="images/right90.gif"
+									tooltip="Rotate triangle 90° clockwise"
+									action="btTrgRotateRight90Click()"
+									/>
+
+								<button name="btTrgMoveUp"
+									background="#D1CCC6"
+									icon="images/moveup.gif"
+									action="btTrgMoveUpClick()"
+									/>
+								<button name="btTrgMoveDown"
+									background="#D1CCC6"
+									icon="images/movedown.gif"
+									action="btTrgMoveDownClick()"
+									/>
+								<combobox name="txtTrgMoveValue"
+									text="1" columns="6"
+									>
+									<choice text="1" />
+									<choice text="0.5" />
+									<choice text="0.25" />
+									<choice text="0.1" />
+									<choice text="0.05" />
+									<choice text="0.025" />
+									<choice text="0.01" />
+								</combobox>
+								<button name="btTrgMoveLeft"
+									background="#D1CCC6"
+									icon="images/moveleft.gif"
+									action="btTrgMoveLeftClick()"
+									/>
+								<button name="btTrgMoveRight"
+									background="#D1CCC6"
+									icon="images/moveright.gif"
+									action="btTrgMoveRightClick()"
+									/>
+
+								<label text="" />
+								<button name="btTrgScaleDown"
+									background="#D1CCC6"
+									icon="images/scaledown.gif"
+									action="btTrgScaleClick(-1)"
+									/>
+								<combobox name="txtTrgScaleValue"
+									text="200" columns="6"
+									>
+									<choice text="110" />
+									<choice text="125" />
+									<choice text="150" />
+									<choice text="175" />
+									<choice text="200" />	
+								</combobox>
+								<button name="btTrgScaleUp"
+									background="#D1CCC6"
+									icon="images/scaleup.gif"	
+									action="btTrgScaleClick(1)"
+									/>
+								<label text="" />
+									
+							</panel>
+
+							<separator />
+
+							<panel columns="6" 
+								top="5" gap="0" bottom="5"
+								halign="center" valign="fill"
+								>
+
+	
+								<button name="btCopyTriangle"
+									icon="images/editor26.gif"
+									background="#D1CCC6"
+									tooltip="Copy triangle coordinates"
+									action="btCopyTriangleClick()"
+									/>
+								<button name="btPasteTriangle"
+									icon="images/editor27.gif"
+									background="#D1CCC6"
+									tooltip="Paste triangle coordinates"
+									action="btPasteTriangleClick()"
+									/>
+								<togglebutton name="btExtendedEdit"
+									icon="images/editor25.gif"
+									background="#D1CCC6"
+									tooltip="Enable extended edit mode"
+									action="btExtendedEditClick(this)"
+									/>
+								<togglebutton name="btAxisLock"
+									icon="images/editor16.gif"
+									background="#D1CCC6"
+									tooltip="Lock transform axes"
+									action="btAxisLockClick(this)"
+									/>
+								<togglebutton name="btAutoWeights"
+									icon="images/editor28.gif"
+									background="#D1CCC6"
+									tooltip="Auto-balance weights"
+									/>
+								<togglebutton name="btPostXswap"
+									icon="images/editor29.gif"
+									background="#D1CCC6"
+									tooltip="Enable post-triangle editing"
+									/>
+							</panel>
+
+							<separator />
+
+							<panel columns="2" weightx="1" weighty="0"
+								halign="center" valign="fill"
+								top="5" gap="5" bottom="5" >
+
+								<textfield name="editPivotX"
+									perform="pivotValidate()"
+									/>
+								<textfield name="editPivotY"
+									perform="pivotValidate()"
+									/>
+							</panel>
+
+							<panel columns="3" weightx="1" weighty="1"
+								halign="center" valign="top"
+								top="5" gap="5" bottom="5">
+								<button name="btnResetPivot" text="Reset"
+									action="btnResetPivotClick()"
+									tooltip="Reset pivot point to (0,0)"
+									/>
+								<button name="btnPivotMode"
+									text="Local Pivot"
+									tooltip="Toggle pivot point mode"
+									action="btnPivotModeClick()"
+									/>
+								<button name="btnPickPivot" text="Pick"
+									tooltip="Pick pivot point using mouse"
+									action="btnPickPivotClick()"
+									/>
+									
+							</panel>
+
+						</panel>
+					</tab>
+
+					<tab text="Xform">
+						<panel columns="1" weightx="1" weighty="1"
+							halign="fill" valign="fill" >
+
+							<panel columns="3" weightx="1" weighty="0"
+								halign="center" valign="fill"
+								top="5" gap="5" bottom="5" >
+
+								<button name="btnXcoefs" text="X"
+									tooltip="Reset vector X"
+									action="btnXcoefsClick()"
+									/>
+								<textfield name="txtA"
+									perform="coefValidate()"
+									/>
+								<textfield name="txtB"
+									perform="coefValidate()"
+									/>
+
+								<button name="btnYcoefs" text="Y"
+									tooltip="Reset vector Y"
+									action="btnYcoefsClick()"
+									/>
+								<textfield name="txtC"
+									perform="coefValidate()"
+									/>
+								<textfield name="txtD"
+									perform="coefValidate()"
+									/>
+
+								<button name="btnOcoefs" text="O"
+									tooltip="Reset vector O"
+									action="btnOcoefsClick()"
+									/>
+								<textfield name="txtE"
+									perform="coefValidate()"
+									/>
+								<textfield name="txtF"
+									perform="coefValidate()"
+									/>
+
+								<button name="btnResetCoefs" 
+									text="Reset transform"
+									tooltip="Reset all vectors to default"
+									action="btnResetCoefsClick()"
+									colspan="3"
+									/>
+							</panel>
+
+							<separator />
+
+							<panel columns="2" weightx="1" weighty="0"
+								halign="center" valign="fill"
+								top="5" gap="5" bottom="5"
+								>
+
+								<checkbox name="btnCoefsRect"
+									text="Rectangular"
+									group="xformunit"
+									selected="true"
+									action="btnCoefsModeClick()"
+									/>
+								<checkbox name="btnCoefsPolar"
+									text="Polar (deg)"
+									group="xformunit"
+									action="btnCoefsModeClick()"
+									/>
+							</panel>
+
+							<separator />
+
+							<panel columns="3" weightx="1" weighty="0"
+								halign="center" valign="fill"
+								top="5" gap="5" bottom="5"
+								>
+
+								<button name="btnXpost" text="X"
+									action="btnXpostClick()"
+									/>
+								<textfield name="txtPost00"
+									perform="postValidate()"
+									/>
+								<textfield name="txtPost01"
+									perform="postValidate()"
+									/>
+	
+								<button name="btnYpost" text="Y"
+									action="btnYpostClick()"
+									/>
+								<textfield name="txtPost10"
+									perform="postValidate()"
+									/>
+								<textfield name="txtPost11"
+									perform="postValidate()"
+									/>
+
+								<button name="btnOpost" text="O"
+									action="btnOpostClick()"
+									/>
+								<textfield name="txtPost20"
+									perform="postValidate()"
+									/>
+								<textfield name="txtPost21"
+									perform="postValidate()"
+									/>
+
+								<button name="btnResetPostCoefs"
+									text="Reset post-transform"
+									action="btnResetPostCoefsClick()"
+									colspan="3"
+									/>
+
+							</panel>
+
+							<separator />
+
+							<panel columns="2" weightx="1" weighty="0"
+								halign="center" valign="fill"
+								top="5" gap="5" bottom="5"
+								>
+
+								<label text="Weight :"
+									weightx="1" halign="fill"
+									alignment="right"
+									/>
+
+								<textfield name="txtP"
+									perform="txtPValidate(this)"
+									/>
+
+								<checkbox name="chkEnabled"
+									colspan="2"
+									text="Enabled"
+									action="chkEnabledClick(this)"
+									/>
+							</panel>
+
+							<separator />
+
+						</panel>
+
+					</tab>
+
+					<tab text="Var.">
+						<panel name="varlist" columns="2" 
+						top="5"	gap="2"
+						scrollable="true"
+						weightx="1" weighty="1"
+						halign="fill" valign="fill"
+						/>
+					</tab>
+
+					<tab text="Param.">
+						<panel name="paramlist" columns="2" 
+						top="5" gap="2"
+						scrollable="true"
+						weightx="1" weighty="1"
+						halign="fill" valign="fill"
+						/>
+					</tab>
+
+					<tab text="Colors">
+
+						<panel columns="1"	weightx="1" weighty="1"
+							halign="fill" valign="fill" >
+
+							<panel columns="2" weightx="1" weighty="0"
+								halign="fill" valign="fill"
+								left="10" right="10"
+								top="5" gap="5" bottom="5"
+								>
+
+								<label text="Transform color" alignment="left"
+									colspan="2"
+									/>
+								<label  name="pnlColor"
+									text="          "
+									weightx="1" halign="fill"
+									/>
+								<textfield name="txtColor"
+									weightx="1" halign="fill"
+									columns="7"
+									perform="txtColorChange(this)"
+									/>
+								<slider colspan="2" orientation="horizontal"
+									name="scrollColor"
+									action="scrollColorChange(this)"
+									perform="updateColor()"
+									minimum="0"
+									maximum="1000"
+									/>
+							</panel>
+
+							<separator />
+								
+							<panel columns="2" weightx="1" weighty="0"
+								halign="fill" valign="fill"
+								left="10" right="10"
+								top="5" gap="5" bottom="5"
+								>
+
+								<label text="Symmetry" alignment="left"
+									colspan="2"		
+									/>
+								<label name="pnlSymmetry"
+									weightx="1" halign="fill"
+									text="          "
+									/>
+								<textfield name="txtSymmetry"
+									weightx="1" halign="fill"
+									columns="7"
+									perform="txtSymmetryChange(this)"
+									/>
+								<slider colspan="2" orientation="horizontal"
+									name="scrollSymmetry"
+									action="scrollSymmetryChange(this)"
+									perform="updateSymmetry()"
+									minimum="-1000"
+									maximum="1000"
+									/>	
+							</panel>
+
+							<separator />
+
+							<panel columns="2" weightx="1" weighty="1"
+								halign="fill" valign="fill"
+								gap="5" left="10" right="10"
+								>
+
+								<label text=" " colspan="2" />
+								<label text="Variation preview"
+									weightx="1"
+									alignment="left"
+									colspan="2"
+									/>
+
+								<label text="Range" />
+								<slider name="trkVarPreviewRange"
+									minimum="1" maximum="10"
+									value="1"
+									tooltip="Range: "
+									perform="trkVarPreviewChange(this,0)"
+									/>
+
+								<label text="Density" />
+								<slider name="trkVarPreviewDensity"
+									minimum="1" maximum="5"
+									value="1"
+									tooltip="Density: "
+									perform="trkVarPreviewChange(this,1)"
+									/>
+
+								<label text="Depth" />
+								<slider name="trkVarPreviewDepth"
+									minimum="1" maximum="5"
+									value="1"
+									tooltip="Depth: "
+									perform="trkVarPreviewChange(this,2)"
+									/>
+							</panel>
+
+						</panel>
+					</tab>
+				</tabbedpane>
+			</panel>
+
+		</panel>
+
+	</panel>
+
+	<panel columns="2" weightx="1" weighty="0"
+        halign="fill" valign="bottom" >
+
+		<canvas name="StatusBar" weightx="1" weighty="0"
+			halign="fill" valign="fill"
+			draw="drawStatusBar(this.bounds)"
+			/>
+
+		<label text=" " weightx="0" weighty="1"
+			halign="right" valign="fill"
+			font="Helvetica 18"
+			/>
+
+	</panel>
+	
+</panel>

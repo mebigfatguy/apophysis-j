@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<panel name="mutate" columns="1" width="370" height="381" >
+
+
+	<panel columns="3" top="10" left="5" gap="5" right="5" bottom="10"
+		weightx="1" weighty="0" halign="center" valign="fill"
+		>
+
+		<popupmenu name="PreviewPopup"
+			>
+			<checkboxmenuitem text="Low Quality"
+				name="LowQuality"
+				group="PreviewQuality"
+				background="#D1CCC6"
+				action="mnuLowQualityClick(this)"
+				/>
+			<checkboxmenuitem text="Medium Quality"
+				name="MediumQuality"
+				group="PreviewQuality"
+				background="#D1CCC6"
+				action="mnuMediumQualityClick(this)"
+				/>
+			<checkboxmenuitem text="High Quality"
+				name="HighQuality"
+				group="PreviewQuality"
+				background="#D1CCC6"
+				action="mnuHighQualityClick(this)"
+				/>
+			<separator/>
+			<menuitem text="Previous"
+				background="#D1CCC6"
+				action="mnuBackClick()"
+				/>
+		</popupmenu>
+
+
+		<canvas name="Image1"
+			width="106" height="78"
+			draw="drawImage(this.bounds,1)"
+			press="mutantClick(1,this,this.bounds)"
+			/>
+
+		<canvas name="Image2"
+			width="106" height="78"
+			draw="drawImage(this.bounds,2)"
+			press="mutantClick(2,this,this.bounds)"
+			/>
+
+		<canvas name="Image3"
+			width="106" height="78"
+			draw="drawImage(this.bounds,3)"
+			press="mutantClick(3,this,this.bounds)"
+			/>
+
+		<canvas name="Image8"
+			width="106" height="78"
+			draw="drawImage(this.bounds,8)"
+			press="mutantClick(8,this,this.bounds)"
+			/>
+
+		<canvas name="Image0"
+			width="106" height="78"
+			draw="drawImage(this.bounds,0)"
+			press="imageClick(this,this.bounds)"
+			/>
+
+		<canvas name="Image4"
+			width="106" height="78"
+			draw="drawImage(this.bounds,4)"
+			press="mutantClick(4,this,this.bounds)"
+			/>
+
+		<canvas name="Image7"
+			width="106" height="78"
+			draw="drawImage(this.bounds,7)"
+			press="mutantClick(7,this,this.bounds)"
+			/>
+
+		<canvas name="Image6"
+			width="106" height="78"
+			draw="drawImage(this.bounds,6)"
+			press="mutantClick(6,this,this.bounds)"
+			/>
+
+		<canvas name="Image5"
+			width="106" height="78"
+			draw="drawImage(this.bounds,5)"
+			press="mutantClick(5,this,this.bounds)"
+			/>
+	</panel>
+
+
+	<panel name="GroupBox2" weightx="1" weighty="1"
+		halign="fill" valign="fill"
+		columns="1"
+		gap="10" left="10" right="10"
+		>
+
+		<panel columns="3" weightx="1" weighty="0"
+			halign="fill" valign="fill"
+			gap="5"
+			>
+
+			<label name="Label2" text="Speed :" 
+				weightx="0" weighty="1"
+				/>
+			<slider name="scrollTime" weightx="2" weighty="1"
+				orientation="horizontal"	
+				minimum="0" maximum="50" value="1"
+				action="scrollTimeChanging(this)"
+				perform="scrollTimeChanged(this)"
+				/>
+			<textfield name="lblTime" text=" "
+				columns="2" editable="false"
+				weightx="1" weighty="1"
+				/>
+		</panel>
+
+		<panel columns="2" weightx="1" weighty="0"
+			halign="fill" valign="fill"
+			gap="5"
+			>
+
+			<label name="Label1" text="Trend :" weightx="0"
+				/>
+
+			<combobox name="cmbTrend" weightx="1" halign="fill"
+				editable="false"
+				action="cmbTrendChange(this)"
+				>
+			</combobox>
+
+		</panel>
+		
+		<panel columns="1" weightx="1" weighty="1"
+			halign="fill" valign="fill"
+			gap="5" left="10"
+			>
+			<checkbox name="chkMaintainSymmetry" text="Maintain Symmetry"
+				weightx="1" halign="left"
+				action="chkMaintainSymmetryChange(this)"
+				/>
+			<checkbox name="chkResetLocation" text="Reset Location"
+				action="chkResetLocationChange(this)"
+				weightx="1" halign="left"
+				/>
+			<checkbox name="chkSameNumber" text="Same no. of transforms"
+				action="chkSameNumberChange(this)"
+				weightx="1" halign="left"
+				/>
+		</panel>
+	</panel>
+
+</panel>

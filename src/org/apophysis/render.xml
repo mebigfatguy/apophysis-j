@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<panel name="render" columns="1" width="463" height="390" >
+
+	<tabbedpane weightx="1" weighty="1" halign="fill" valign="fill"
+		name="PageCtrl"
+		placement="top" selected="0" >
+
+		<tab name="TabSettings" text=" Settings ">
+
+			<panel weightx="1" weighty="1"
+				halign="fill" valign="fill"
+				left="5" right="5" top="10" bottom="5" gap="15"
+				columns="1"
+				>
+
+				<panel name="GroupBox5"
+					weightx="1" halign="fill"
+					columns="3" gap="5"
+					>
+
+					<combobox name="cmbPreset"
+						weightx="1"  halign="fill"
+						editable="false"
+						action="cmbPresetChange(this)"
+						/>
+
+					<button name="btnSavePreset"  icon="images/main2.gif"
+						tooltip="savepreset"
+						action="btnSavePresetClick()"
+						/>
+	
+					<button name="btnDeletePreset" icon="images/main9.gif"
+						tooltip="Delete preset"
+						action="btnDeletePresetClick()"
+						/>
+				</panel>
+
+				<separator />
+
+				<panel name="GroupBox1"
+					weightx="1" halign="fill"
+					columns="3" gap="5"
+					>
+
+					<label colspan="3" text="Destination" />
+					<label text="File name :"
+						/>
+
+					<textfield name="txtFilename"
+						weightx="1" halign="fill"
+						/>
+
+					<button name="btnBrowse" icon="images/browser.gif"
+						action="btnBrowseClick()"
+						/>
+				</panel>
+
+				<separator />
+
+				<panel 
+					weightx="1" halign="fill"
+					columns="3" gap="5"
+					>
+
+					<panel name="GroupBox2"
+						weightx="1" halign="fill"
+						columns="2" gap="5"
+						>
+
+						<label text="Image size"
+							colspan="2" weightx="1" halign="fill"
+							/>
+						<label text="Width :" 
+							weightx="1" halign="fill" alignment="right"
+							/>
+						<combobox name="cbWidth"
+							weightx="1" halign="fill"
+							action="widthChanged(this,0)"
+							perform="widthChanged(this,1)"
+							>
+							<choice text="320" />
+							<choice text="640" />
+							<choice text="800" />
+							<choice text="1024" />
+							<choice text="1280" />
+							<choice text="1600" />
+							<choice text="1920" />
+							<choice text="2048" />
+							<choice text="2560" />
+							<choice text="3200" />
+						</combobox>
+			
+						<label text="Height :"
+							weightx="1" halign="fill" alignment="right"
+							/>
+
+						<combobox name="cbHeight"
+							weightx="1" halign="fill"
+							action="heightChanged(this,0)"
+							perform="heightChanged(this,1)"
+							>
+							<choice text="200" />
+							<choice text="240" />
+							<choice text="480" />
+							<choice text="600" />
+							<choice text="768" />
+							<choice text="1024" />
+							<choice text="1200" />
+							<choice text="1920" />
+							<choice text="2048" />
+							<choice text="2400" />
+						</combobox>	
+
+						<checkbox colspan="2" text="Maintain aspect ratio"
+							selected="true"
+							name="chkMaintain"
+							/>
+					</panel>	
+
+					<separator />
+
+					<panel name="GroupBox3"
+						weightx="1" weighty="1"
+						halign="fill" valign="fill"
+						columns="2" gap="5"
+						>
+
+						<label text="Rendering"
+							colspan="2" weightx="1" halign="fill"
+							/>
+
+						<label text="Quality :"
+							weightx="1" halign="fill" alignment="right"
+							/>
+						<textfield name="txtDensity"
+							weightx="1" halign="fill"
+							perform="paramChanged()"
+							/>
+
+						<label text="Filter radius :"
+							weightx="1" halign="fill" alignment="right"
+							/>
+						<textfield name="txtFilterRadius"
+							weightx="1" halign="fill"
+							perform="paramChanged()"
+							/>
+
+							
+						<label text="Oversample :"
+							weightx="1" halign="fill" alignment="right"
+							/>
+						<textfield name="txtOversample"
+							weightx="1" halign="fill"
+							perform="paramChanged()"
+							/>
+
+		,			</panel>
+				</panel>
+				
+				<separator />
+
+				<panel name="GroupBox4"
+					weightx="1" weighty="1" halign="fill" valign="fill"
+					gap="5"  left="10" right="10"
+					columns="3"
+					>
+
+					<panel weightx="1" weighty="1" halign="fill" valign="fill"
+						columns="2" gap="5"
+						>
+						<label text="Memory usage" 
+							/>
+
+						<button name="btnHelp" text="  Help  "
+							action="btnHelpClick()"
+							/>
+
+						<label colspan="2" text=" "/>
+
+						<label text="Max bits per sample :"
+							weightx="2" halign="fill" alignment="left"
+							/>
+						<label name="lblMaxbits"
+							weightx="1" halign="fill" alignment="right"
+							/>
+
+						<label text="Memory available :"
+							weightx="2" halign="fill" alignment="left"
+							/>
+						<label name="lblPhysical"
+							weightx="1" halign="fill" alignment="right"
+							/>
+	
+						<label text="Memory required :"
+							weightx="2" halign="fill" alignment="left"
+							/>
+						<label name="lblApproxMem"
+							weightx="1" halign="fill" alignment="right"
+							/>	
+						</panel>
+
+						<separator/>
+
+						<panel weightx="1" weighty="1" halign="fill"
+								halign="fill" valign="fill"
+								columns="2" gap="5" left="10" right="10"
+							>
+
+						<checkbox name="chkWatermark" text="Watermark"
+							colspan="2"
+							/>
+
+						<label text=" " />
+
+						<checkbox name="chkComment"	 colspan="2"
+							text="Flame definition in image comments"
+							action="chkCommentClick(this)"
+							/>
+
+						<checkbox name="chkPassword" colspan="2"
+							text="Encrypted with password"
+							colspan="2" 
+							/>
+
+						</panel>	
+	
+				</panel>	
+			</panel>
+		</tab>
+
+		<tab name="TabOutput" text=" Output " >
+
+			<textarea name="output" weightx="1" weighty="1"
+				halign="fill" valign="fill" 
+				font="Courier 12"
+				editable="false"
+				/>
+		</tab>
+
+	</tabbedpane>
+
+	<panel  columns="1" weightx="1" weighty="0"
+		halign="fill" valign="bottom"
+		left="5" right="5" top="5" bottom="5" gap="5"
+		>
+
+		<panel columns="4" weightx="1" weighty="1"
+			halign="right" valign="fill"
+			gap="5"
+			>
+
+			<label text=" " weightx="1" halign="fill" />
+
+			<button name="btnPause" text=" Pause "
+				action="btnPauseClick(this)"
+				/>
+
+			<button name="btnRender" text=" Render "
+				action="btnRenderClick()"
+				/>
+
+			<button name="btnCancel" text=" Cancel "
+				action="btnCancelClick()"
+				/>
+		</panel>
+
+		<progressbar name="ProgressBar"
+			weightx="1" weighty="1"
+			halign="fill" valign="fill"
+			minimum="0" maximum="100" value="0"
+			orientation="horizontal"
+			foreground="#8080FF"
+			/>
+
+		<label name="StatusBar"  text=" "
+			weightx="1" weighty="1"
+			halign="fill" valign="fill"
+			alignment="center"
+			/>	
+	</panel>
+	
+</panel>

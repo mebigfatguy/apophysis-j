@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dialog name="opendialog" columns="1" width="400" height="300" modal="true"
+	background="#D1CCC6" 
+	left="10" right="10" >
+
+	<panel weightx="1" weighty="0" 
+		top="5" bottom="5">
+
+		<combobox name="opendirlist" editable="false" 
+			action="changeDirectory(this)"
+			halign="center" valign="center" >
+		</combobox>
+
+	</panel>
+
+	<list name="openfilelist" weightx="1" weighty="1"
+		action="changeFile(this)"
+		perform="openFile(this)"
+		halign="fill" valign="fill" />
+
+
+	<panel columns="2" weightx="1" weighty="0" 
+		gap="50" top="10" bottom="10"
+		halign="fill" valign="fill" >
+
+		<panel weightx="1" weighty="1">
+			<combobox name="opentypelist" editable="false" 
+				action="changeType(this)"
+				halign="center" valign="center" >
+			</combobox>
+		</panel>
+
+		<panel columns="2"  weightx="1" weighty="0" gap="10" >
+
+			<button name="opencancel" text=" Cancel "
+				weightx="1" weighty="1"
+				halign="center" valign="center"
+				action="cancel()"
+				/>
+
+			<button name="openok" text="  Open  "
+				weightx="1" weighty="1"
+				halign="center" valign="center"
+				action="ok()"
+				/>
+		</panel>
+
+	</panel>
+	
+</dialog>

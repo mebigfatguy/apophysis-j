@@ -1,0 +1,19 @@
+The memory needed to render an image depends upon its dimension and the
+square of the oversample.  The time needed depends upon the quality.
+
+When double-clicking on a jar file, the java virtual machine is started
+with a defaut memory limit of about 60MB, which is not sufficient
+to render large images.
+
+If you want to control the memory usage, you have to launch the program
+from the command line.  For example, to request a limit of 200MB:
+
+java -Xmx200m -jar apophysis-j-NN.jar
+
+(where NN is the version number of the program)
+
+Currently, the only buffer type available is 32bit integers.
+If the "max bits per sample" exceeds 32, it means that some counters
+might overflow, and that some pixels of the final image might be wrong.
+
+

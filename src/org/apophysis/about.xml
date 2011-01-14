@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dialog name="aboutdialog" columns="1" width="340" height="440" 
+	resizable="false" modal="false"
+	left="10" right="20" top="20" bottom="20" gap="5" >
+
+	<panel columns="2" weightx="1" weighty="1"
+		halign="fill" valign="fill" gap="10"
+		>
+
+		<label text="apophysis-j" font="SansSerif 24"
+			name="aboutname"
+			weightx="1" weighty="1" halign="fill" valign="fill"
+			alignment="right"
+			/>
+
+		<label text="version x.x" font="SansSerif 10"
+			name="aboutversion"
+			weightx="1" weighty="1" halign="fill" valign="fill"
+			/>
+
+	</panel>
+
+	<separator />
+
+	<label text="Copyright © 2008 Jean-François Bouzereau"
+		weightx="1" weighty="1" halign="fill" valign="fill"
+		alignment="right"
+		font="SansSerif 10"
+		/>
+
+	<label text="http://membres.lycos.fr/jfbouzereau/apophysis.html"
+		weightx="1" weighty="1" halign="fill" valign="fill"
+		alignment="right"
+		foreground="#0000FF"
+		font="SansSerif 10"
+		/>
+	
+	<separator />
+
+	<label text="Apophysis - fractal flame editor"
+		weightx="1" weighty="1" halign="fill" valign="fill"
+		font="SansSerif bold 10"
+		/>
+
+	<label text="Copyright © 2001-2004 Mark Townsend"
+		weightx="1" weighty="1" halign="fill" valign="fill"
+		alignment="right"
+		font="SansSerif 10"
+		/>
+
+	<label text="Copyright © 2005-2007 Peter 'Zueuk' Sdobnov"
+		weightx="1" weighty="1" halign="fill" valign="fill"
+		alignment="right"
+		font="SansSerif 10"
+		/>
+
+	<label text="Piotr 'utak3r' Borys , Ronald Hordijk"
+		weightx="1" weighty="1" halign="fill" valign="fill"
+		alignment="right"
+		font="SansSerif 10"
+		/>
+
+	<label text="http://sourceforge.net/projects/apophysis/"
+		foreground="#0000FF"
+		weightx="1" weighty="1" halign="fill" valign="fill"
+		alignment="right"
+		font="SansSerif 10"
+		/>
+
+	<separator />
+
+	<label text="flame - cosmic recursive fractal flames"
+		weightx="1" weighty="1" halign="fill" valign="fill"
+		font="SansSerif bold 10"
+		/>
+	
+	<label text="Copyright © 1992-2007 Scott Draves"
+		weightx="1" weighty="1" halign="fill" valign="fill"
+		alignment="right"
+		font="SansSerif 10"
+		/>
+
+	<label text="http://www.flam3.com"	
+		foreground="#0000FF"
+		weightx="1" weighty="1" halign="fill" valign="fill"
+		alignment="right"
+		font="SansSerif 10"
+		/>
+
+	<separator />
+
+	<label text="thinlet - GUI toolkit"
+		weightx="1" weighty="1" halign="fill" valign="fill"
+		font="SansSerif bold 10"
+		/>
+	
+"	<label text="Copyright © 2002-2003 Robert Bajzat"
+		weightx="1" weighty="1" halign="fill" valign="fill"
+		alignment="right"
+		font="SansSerif 10"
+		/>
+
+	<label text="http://www.thinlet.com"	
+		foreground="#0000FF"
+		weightx="1" weighty="1" halign="fill" valign="fill"
+		alignment="right"
+		font="SansSerif 10"
+		/>
+
+	<separator />
+
+	<label text="rhino - javascript for java"
+		weightx="1" weighty="1" halign="fill" valign="fill"
+		font="SansSerif bold 10"
+		/>
+	
+	<label text="Copyright © 1997-1999 The initial Developer"
+		weightx="1" weighty="1" halign="fill" valign="fill"
+		alignment="right"
+		font="SansSerif 10"
+		/>
+
+	<label text="http://www.mozilla.org/rhino/"	
+		foreground="#0000FF"
+		weightx="1" weighty="1" halign="fill" valign="fill"
+		alignment="right"
+		font="SansSerif 10"
+		/>
+
+	<separator />
+
+	<panel columns="1" weightx="1" weighty="0"
+		halign="fill" valign="center"
+		top="10" bottom="10"
+		>
+
+		<button text="   OK   " 
+			action="closeAbout()"
+			weightx="1" weighty="1" halign="center" valign="fill"
+			/>
+
+	</panel>
+
+	
+</dialog>

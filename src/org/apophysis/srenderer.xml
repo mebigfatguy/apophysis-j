@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<panel name="Renderer" columns="1"  columns="1"
+	weightx="1" weighty="1" halign="fill" valign="fill"
+	left="5" right="5" top="20" bottom="5" gap="5"
+	>
+
+	<progressbar  name="ProgressBar" weightx="1" weighty="1"
+		halign="fill" valign="fill"
+		foreground="#8080FF"
+		minimum="0" maximum="100" value="0"
+		/>
+
+	<label name="ProgressMessage" weightx="1" weighty="1"
+		text=" "
+		halign="fill" valign="fill"
+		alignment="center"
+		/>
+
+	<button name="btnCancel" text="  Cancel  "
+		weightx="1" weighty="1" halign="center" valign="fill"
+		action="btnCancelClick()"
+		/>
+
+</panel>

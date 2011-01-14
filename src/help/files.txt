@@ -1,0 +1,15 @@
+List of standard files supported by apophysis-j :
+
+*.fla        reads apophysis 1 flame files
+*.flame      reads and writes apophysis 2 flame files
+*.upr        reads ultrafractal flame files
+*.ugr        reads ultrafractal gradient files
+*.asc        reads and converts on-the-fly apophysis script files
+
+
+
+In addition, apophysis-j can also manage the following files :
+
+*.ajs        reads and writes apophysis-j javascript files
+*.jpg        writes as comment and extracts from comment flame description 
+*.png        writes as comment and extracts from comment flame description

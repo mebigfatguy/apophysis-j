@@ -1,0 +1,895 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<panel name="options" columns="1" width="463" height="390" >
+
+	<tabbedpane weightx="1" weighty="1" halign="fill" valign="fill"
+		name="Tabs"
+		placement="top" selected="0" >
+
+		<tab name="GeneralPage" text=" General ">
+
+			<panel weightx="1" weighty="1" halign="fill" valign="fill"
+				left="10" right="10" top="20" bottom="20" gap="20"
+				columns="3"
+				>
+
+				<panel weightx="1" weighty="1" halign="fill" valign="fill"
+					columns="1" gap="5" right="10"
+					>
+
+					<label text="Internal buffer depth" />
+					<combobox name="cbInternalBitsPerSample"
+						selected="0"
+						editable="false" >
+						<choice text="32-bit integer"   />
+						<choice text="32-bit float" enabled="false" />
+						<choice text="48-bit integer" enabled="false" />
+						<choice text="64-bit integer" enabled="false" />
+					</combobox>
+
+
+					<label text="   " />
+					<label text="JPEG quality" />
+					<combobox name="txtJPEGQuality" >
+						<choice text="60" />
+						<choice text="80" />
+						<choice text="100" />
+						<choice text="120" />
+					</combobox>
+
+					<label text=" " />
+
+					<label text="Flame encryption password :" />
+					<textfield columns="30" name="txtCommentPassword" />
+
+					<label text=" " />
+
+					<panel columns="2" gap="5">
+						<label text="Watermark file :" />
+						<combobox name="cmbWatermark" columns="15"
+							weightx="1" halign="fill"
+							editable="false" >
+							<choice text="Top left" />
+							<choice text="Top center" />
+							<choice text="Top right" />
+							<choice text="Middle left" />
+							<choice text="Middle center" />
+							<choice text="Middle right" />
+							<choice text="Bottom left" />
+							<choice text="Bottom center" />
+							<choice text="Bottom right" />
+						</combobox>
+					</panel>
+
+					<panel columns="2" weightx="1" halign="fill"
+						gap="5" >
+						<textfield columns="30" name="txtWatermark"
+							weightx="1" halign="fill"
+							/>
+						<button text="" icon="images/browser.gif"
+							weightx="0" halign="right"	
+							action="btnBrowseWatermarkClick()"
+							/>
+					</panel>
+				</panel>
+
+				<separator />
+
+				<panel weightx="1" weighty="1" halign="fill" valign="fill"
+					columns="1" left="10" right="10" top="20" gap="10"
+					>
+
+					<panel columns="2" weightx="1" halign="fill"
+						gap="5" >
+						<checkbox text="Play sound on render complete" 
+							name="chkPlaysound"
+							weightx="1" halign="left" />
+						<button text="" icon="images/play.gif" 
+							action="btnPlayClick()"
+							weightx="0" halign="right" />
+					</panel>
+				
+					<panel columns="2" weightx="1" halign="fill"
+						gap="5" >
+						<textfield columns="30" name="txtSoundFile"
+							weightx="1" halign="fill"
+							/>
+						<button text="" icon="images/browser.gif"
+							action="btnBrowseSoundClick()"
+							weightx="0" halign="right"	
+							/>
+					</panel>
+
+					<panel columns="1" weightx="1" halign="fill"
+						gap="10"
+						>
+						<checkbox text="Show extended statistics" 
+							name="chkShowRenderStats" 
+							/>
+						<separator weightx="1" halign="fill" />
+						<checkbox text="Confirm delete"
+							name="chkConfirmDel"
+							/>
+						<checkbox text="Confirm exit"
+							name="chkConfirmExit"
+							/>
+						<checkbox text="Confirm stop render"
+							name="chkConfirmStopRender"
+							/>
+						<checkbox text="Save gradient in old format"
+							name="chkOldPaletteFormat"
+							/>
+
+						<separator/>
+
+						<label text="Multithreading" />
+						<combobox name="cbNrThreads">
+							<choice text="Off" />
+							<choice text="2" />
+							<choice text="4" />
+							<choice text="8" />
+						</combobox>
+
+					</panel>	
+
+				</panel>
+			</panel>
+		</tab>
+
+		<tab name="EditorPage" text=" Editor " >
+
+			<panel weightx="1" weighty="1" halign="fill" valign="fill"	
+				left="5" right="5" top="20" bottom="0" gap="10"
+				columns="3"
+				>
+
+				<panel weightx="1" weighty="1" halign="fill" valign="fill"
+					left="5" right="5" top="0" bottom="0" gap="7"
+					columns="1"
+					>
+
+					<label text="Editor graph" weightx="1" halign="fill"
+						alignment="left"
+						/>
+				
+					<checkbox text="Use transform color" weightx="1"
+						halign="fill"
+						name="chkUseXFormColor"
+						/>
+				
+					<checkbox text="Helper lines" weightx="1"
+						halign="fill"
+						name="chkHelpers"
+						/>
+
+					<checkbox text="Show both types of transforms"
+						weightx="1"	 halign="fill"
+						name="chkShowAllXforms"
+						/>
+
+					<separator />
+
+					<panel weightx="1" weighty="1" halign="fill"
+						valign="fill" columns="2"
+						gap="5"
+						>
+
+						<label text="Background"  weightx="1" halign="fill"
+							/>
+
+						<label text="Grid colors" weightx="1" halign="fill"
+							/>
+
+						<button weightx="1" halign="fill" text=" "
+							name="btnBackgroundColor"
+							action="changeColor(this)"
+							/>
+
+						<panel columns="2" gap="2" 	weightx="1" halign="fill"
+							>
+							<button weightx="1" halign="fill" text=" "
+								name="btnGridColor1"
+								action="changeColor(this)"
+								/>
+							<button weightx="1" halign="fill" text=" "
+								name="btnGridColor2"
+								action="changeColor(this)"
+								/>
+						</panel>
+
+						<label text="Reference" weightx="1" halign="fill"
+							/>
+
+						<label text="Helpers" weightx="1" halign="fill"
+							/>
+
+						<button weightx="1" halign="fill" text=" "
+							name="btnReferenceColor"
+							action="changeColor(this)"
+							/>
+
+						<button weightx="1" halign="fill" text=" "
+							name="btnHelperColor"
+							action="changeColor(this)"
+							/>
+					</panel>
+				
+`				</panel>
+
+				<separator />
+	
+				<panel weightx="2" weighty="1" halign="fill" valign="fill"
+					left="5" top="0" right="5" bottom="0" gap="7"
+					columns="1"
+					>
+
+					<label text="Reference Triangle" weightx="1"
+						halign="fill"
+						/>
+
+					<checkbox text="Normal" weightx="1"
+						name="referencemode0"
+						group="referencemode"
+						/>
+
+					<checkbox text="Proportional" weightx="1"
+						name="referencemode1"
+						group="referencemode"
+						/>
+
+					<checkbox text="Wandering (old-style)" weightx="1"
+						name="referencemode2"
+						group="referencemode"
+						/>
+
+					<separator />
+
+					<label text="Editor defaults"
+						/>
+
+					<checkbox text="Extended edit mode"
+						name="chkExtendedEdit"
+						/>
+
+					<checkbox text="Lock transform axis"
+						name="chkAxisLock"
+						/>
+
+					<separator />
+
+					<label text="Double-click on variation"
+						/>
+
+					<checkbox text="Reset value to zero" 
+						group="doubleclick"
+						name="doubleclick0"
+						/>
+
+	,				<checkbox text="Reset value to zero, if zero set to 1"
+						group="doubleclick"
+						name="doubleclick1"
+						/>
+		,			
+				</panel>
+			</panel>
+		</tab>
+
+		<tab name="DisplayPage" text=" Display " >
+
+			<panel weightx="1" weighty="1" halign="fill" valign="fill"
+				left="5" right="5" top="20" bottom="0" gap="10"
+				columns="3"
+				>
+
+				<panel columns="2" weightx="1" weighty="1" 
+					halign="fill" valign="top"
+					left="5" right="5" top="0" bottom="0" gap="7"
+					>
+
+					<label colspan="2" text="Rendering" 
+						weightx="1" halign="fill" alignment="left" />
+
+					<label text="Quality :"	
+						weightx="1" halign="fill" alignment="right" />
+					<textfield  name="txtSampleDensity"
+						/>
+
+					<label text="Gamma :"
+						weightx="1" halign="fill" alignment="right" />
+					<textfield name="txtGamma"
+						/>
+
+					<label text="Brightness :"
+						weightx="1" halign="fill" alignment="right" />
+					<textfield name="txtBrightness"
+						/>
+
+					<label text="Vibrancy :"
+						weightx="1" halign="fill" alignment="right" />
+					<textfield name="txtVibrancy"
+						/>
+
+	
+					<label text="Oversample :"	
+						weightx="1" halign="fill" alignment="right" />
+					<textfield name="txtOversample"
+						/>
+
+					<label text="Filter radius :"	
+						weightx="1" halign="fill" alignment="right" />
+					<textfield name="txtFilterRadius"
+						/>
+
+					<separator colspan="2" />
+
+					<label colspan="2" text="PNG transparency" />
+
+					<checkbox
+						text="Disabled" group="png"
+						/>
+					<checkbox
+						text="Enabled" group="png"
+						/>
+				</panel>
+
+				<separator />
+
+				<panel weightx="1" weighty="1" halign="fill" valign="fill"
+					left="5" right="5" top="0" bottom="0" gap="7"
+					columns="2"
+					>
+					
+					<label text="Preview density" colspan="2"
+						/>
+			
+	
+					<label text="Low quality :"
+						weightx="1"  halign="fill"  alignment="right"
+						/>
+					<textfield name="txtLowQuality"
+						/>
+
+					<label text="Medium quality :"
+						weightx="1"  halign="fill"  alignment="right"
+						/>
+					<textfield name="txtMediumQuality"
+						/>
+			
+					<label text="High quality :"	
+						weightx="1"  halign="fill"  alignment="right"
+						/>
+					<textfield name="txtHighQuality"
+						/>
+			
+					<separator colspan="2" />
+
+					<label colspan="2" text="Main Window Preview"
+						/>
+
+					<checkbox colspan="2" text="Show Transparency" 
+						/>
+
+					<separator colspan="2" />
+
+					<panel colspan="2" weightx="1" weighty="1"
+						halign="fill" valign="fill" columns="3"
+						gap="5"
+						>
+
+						<panel weightx="1" weighty="1"
+							halign="fill" valign="fill"
+							gap="7" columns="1"
+							>
+							<label text="Rotation mode :" 
+								/>
+
+							<checkbox text="Rotate image" group="rotation"
+								name="rotationmode0"
+								group="rotationmode"
+								/>
+
+							<checkbox text="Rotate frame" group="rotation"
+								name="rotationmode1"
+								group="rotationmode"
+								/>
+						</panel>
+
+						<separator />
+
+						<panel weightx="1" weighty="1"
+							halign="fill" valign="fill"
+							gap="7" columns="1"
+							>
+
+							<label text="Zooming mode :"
+								/>
+
+							<checkbox text="Preserve quality" group="zoom"
+								name="zoomingmode0"
+								group="zoomingmode"
+								/>
+
+							<checkbox text="Preserve speed" group="zoom"
+								name="zoomingmode1"
+								group="zoomingmode"
+								/>
+						</panel>
+					</panel>	
+						
+				</panel>
+
+			</panel>
+		</tab>
+
+		<tab name="RandomPage" text=" Random " >
+
+			<panel weightx="1" weighty="1" halign="fill" valign="fill"
+				left="10" right="10" top="20" bottom="20" gap="20"
+				columns="3"
+				>
+
+				<panel weightx="1" weighty="1" halign="fill" valign="fill"
+					columns="2"
+					gap="10"
+					>
+
+					<label colspan="2" weightx="1" halign="fill"
+						text="Number of transforms"
+						alignment="left"
+						/>
+					
+					<label text="Minimum :" weightx="1" halign="fill"
+						/>
+					<spinbox weightx="1"  name="udMinXForms"
+						editable="false"
+						minimum="1" maximum="12"
+						action="udMinChange(udMinXForms,udMaxXForms)"
+						/>
+					
+					<label text="Maximum :" weightx="1" halign="fill"	
+						/>
+					<spinbox weightx="1" name="udMaxXForms"
+						editable="false"
+						minimum="1" maximum="12"
+						action="udMaxChange(udMinXForms,udMaxXForms)"
+						/>
+
+					<separator colspan="2" />
+
+					<label colspan="2" weightx="1" halign="fill"
+						text="Forced symmetry"
+						alignment="left"
+						/>
+
+					<label text="Type :"
+						/>
+					<combobox  weightx="1"
+						editable="false"
+						name="cmbSymType"
+						action="cmbSymTypeChange()"
+						>
+						<choice text="None" />
+						<choice text="Bilateral" />
+						<choice text="Rotational" />
+						<choice text="Dihedral" />
+					</combobox>
+				
+					<label text="Order :"
+						/>
+					<spinbox weightx="1"
+						editable="false"
+						name="udSymOrder"
+						/>	
+				
+					<label text="Limit :"
+						/>
+					<spinbox weightx="1"
+						editable="false"
+						name="udSymNVars"
+						/>	
+				</panel>
+
+				<separator />
+
+				<panel columns="1" weightx="1" weighty="1"
+					halign="fill" valign="fill"
+					gap="10"
+					columns="2"
+					>
+
+					<label colspan="2" weightx="1" halign="fill"
+						alignment="left"
+						text="Mutation transforms"
+						/>
+
+					<label text="Minimum :" weightx="1"
+						/>
+					<spinbox weightx="1"
+						editable="false" minimum="1" maximum="12"
+						name="udMinMutate"
+						action="minMutateChange()"
+						/>
+
+					<label text="Maximum :" weightx="1"
+						/>
+					<spinbox  weightx="1"
+						editable="false" minimum="1" maximum="12"
+						name="udMaxMutate"
+						action="maxMutateChange()"
+						/>
+
+					<separator colspan="2" />
+
+					<label colspan="2" weightx="1" halign="fill"
+						alignment="left"
+						text="Random batch"
+						/>
+
+					<label text="Batch size :" weightx="1"
+						/>
+					<spinbox  weightx="1"
+						editable="false"
+						minimum="1" maximum="100"
+						name="udBatchSize"
+						/>
+
+					<label text="Title prefix :" weightx="1"
+						/>
+					<textfield weightx="1"
+						name="txtRandomPrefix"
+						/>
+
+					<separator colspan="2" />
+	
+					<checkbox text="Keep background color"
+						colspan="2"
+						/>	
+
+				</panel>
+			</panel>
+		</tab>
+
+		<tab name="VariationsPage" text=" Variations " >
+			
+			<panel weightx="2" weighty="1" halign="fill" valign="fill"
+				columns="4" left="5" right="5" top="10" bottom="0"
+				gap="5"
+				>
+
+				<panel columns="1" weightx="1"  gap="10" >
+					<label text="Total : " weightx="1"
+						name="varTotal"
+						weighty="0" valign="top" />
+					<label text="Enabled : " weightx="1" 
+						name="varEnabled"
+						weighty="0" valign="top" />
+				</panel>
+
+				<separator />
+
+				<panel name="VariationPanel" scrollable="true"
+					weightx="3" weighty="1" halign="fill" valign="fill"	
+					columns="2"
+					/>
+
+				<panel weightx="2" weighty="0" halign="right" valign="bottom"
+					left="5" right="5" top="0" bottom="10" gap="10"
+					columns="1"
+					>
+			
+					<button text=" Sheep "
+						tooltip="Variations compatible with sheep server"
+						action="btnSheepClick()"
+						/>	
+					<button text="Set All"
+						action="btnSetAllClick()"
+						/>
+					<button text="Clear All"
+						action="btnClearAllClick()"
+						/>
+				</panel>
+			</panel>
+		</tab>
+
+		<tab name="TabSheet1" text=" Gradient " >
+
+			<panel columns="3" weightx="1" weighty="1"
+				halign="fill" valign="fill"
+				left="5" right="5" top="10" bottom="0" gap="10"
+				>
+
+				<panel columns="1" weightx="1" weighty="1"
+					halign="fill" valign="fill"
+					left="5" right="5" top="0" bottom="0" gap="5"
+					>
+				
+					<label text="On random flame "
+						weightx="1" halign="fill" alignment="left"
+						/>
+
+					<checkbox text="Use random preset"
+						group="grpGradient" name="grpGradient0"
+						/>
+					<checkbox text="Use default"
+						group="grpGradient" name="grpGradient1"
+						/>
+					<checkbox text="Use current"
+						group="grpGradient" name="grpGradient2"
+						/>
+					<checkbox text="Randomize"
+						group="grpGradient" name="grpGradient3"
+						/>
+					<checkbox text="Random from a file"
+						group="grpGradient" name="grpGradient4"
+						/>
+
+
+					<panel columns="2" weightx="1" weighty="1"
+						halign="fill" valign="fill" gap="5"
+						>
+
+						<textfield 
+							name="txtGradients"
+							weightx="1" halign="fill" 
+							/>
+						<button icon="images/browser.gif"
+							action="btnGradientsClick()"
+							/>
+					</panel>					
+					<separator />
+
+					<label text=" " />
+				
+					<label text="Smooth palette"
+						weightx="1" halign="fill" alignment="left"
+						/>
+	
+					<panel columns="2" weightx="1" weighty="1"
+						halign="fill" valign="fill" gap="5"
+						columns="2"
+						>
+						<label text="# of tries :" 
+							/>
+						<textfield  weightx="1" halign="fill"
+							name="txtNumTries"
+							columns="5"
+							/>
+						<label text="Try length :" 
+							/>
+						<textfield weightx="1" halign="fill"
+							name="txtTryLength"
+							columns="5"
+							/>
+					</panel>
+				
+						
+				</panel>
+
+				<separator />
+
+				<panel weightx="1" weighty="1" halign="fill" valign="fill"
+					left="5" right="5" top="0" bottom="0" gap="10"
+					columns="4"
+					>
+
+					<label colspan="4" text="Randomize"
+						weightx="1" halign="fill" alignment="left"
+						/>
+
+					<label colspan="3" text="Minimum number of nodes :"
+						weightx="1" halign="fill" alignment="right"
+						/>
+
+					<spinbox editable="false"
+						name="udMinNodes"
+						action="udMinChange(udMinNodes,udMaxNodes)"
+						columns="5" minimum="2" maximum="64"
+						/>
+
+					<label colspan="3" text="Maximum number of nodes :"
+						weightx="1" halign="fill" alignment="right"
+						/>
+
+					<spinbox editable="false"
+						name="udMaxNodes"
+						action="udMaxChange(udMinNodes,udMaxNodes)"
+						columns="5" minimum="2" maximum="64"
+						/>
+
+					<label text="Hue between :" 
+						weightx="1" halign="fill" alignment="right"
+						/>
+					<spinbox editable="false"
+						columns="5" minimum="0" maximum="600"
+						name="udMinHue"
+						action="udMinChange(udMinHue,udMaxHue)"
+						/>
+					<label text=" and " />
+					<spinbox editable="false"
+						columns="5" minimum="0" maximum="600"	
+						name="udMaxHue"
+						action="udMaxChange(udMinHue,udMaxHue)"
+						/>
+
+					<label text="Saturation between :" 
+						weightx="1" halign="fill" alignment="right"
+						/>
+					<spinbox editable="false"
+						columns="5" minimum="0" maximum="100"
+						name="udMinSat"
+						action="udMinChange(udMinSat,udMaxSat)"
+						/>
+					<label text=" and " />
+					<spinbox editable="false"
+						columns="5" minimum="0" maximum="100"	
+						name="udMaxSat"
+						action="udMaxChange(udMinSat,udMaxSat)"
+						/>
+
+					<label text="Luminance between :" 
+						weightx="1" halign="fill" alignment="right"
+						/>
+					<spinbox editable="false"
+						columns="5" minimum="0" maximum="100"
+						name="udMinLum"
+						action="udMinChange(udMinLum,udMaxLum)"
+						/>
+					<label text=" and " />
+					<spinbox editable="false"
+						columns="5" minimum="0" maximum="100"	
+						name="udMaxLum"
+						action="udMaxChange(udMinLum,udMaxLum)"
+						/>
+
+				
+				</panel>
+			</panel>
+		</tab>
+
+		<tab name="SheepPage" text=" Sheep " >
+			<panel columns="2" weightx="1" weighty="1"
+				halign="fill" valign="top" 
+				left="5" right="5" gap="10" top="10"
+				>
+
+				<label text="Credit" colspan="2"
+					weightx="1" weighty="0" halign="fill" valign="fill"
+					alignment="left"
+					/>
+
+				<label text="Nick :"
+					weightx="1" weighty="0" halign="fill" valign="fill"
+					alignment="right"
+					/>
+				<textfield name="txtNick" 
+					weightx="1" weighty="0" halign="fill" valign="fill"
+					columns="30"
+					/>
+
+				<label text="URL :"
+					weightx="1" weighty="0" halign="fill" valign="fill"
+					alignment="right"
+					/>
+				<textfield name="txtURL"
+					weightx="1" weighty="0" halign="fill" valign="fill"
+					columns="30"
+					/>
+
+				<label text="Password :"
+					weightx="1" weighty="0" halign="fill" valign="fill"
+					alignment="right"
+					/>
+				<textfield name="txtPassword"
+					weightx="1" weighty="0" halign="fill" valign="fill"
+					columns="30"
+					/>
+				
+				<separator colspan="2" />
+
+				<label colspan="2" text="Server"
+					weightx="1" weighty="0" halign="fill" valign="fill"
+					alignment="left"	
+					/>
+
+				<label text="Address :"
+					weightx="1" weighty="0" halign="fill" valign="fill"
+					alignment="right"
+					/>
+				<textfield name="txtAddress"
+					weightx="1" weighty="0" halign="fill" valign="fill"
+					columns="30"
+					/>	
+			</panel>
+		</tab>
+
+		<tab name="TabSheet6" text=" UPR " >
+		</tab>
+
+		<tab name="PathsPage" text=" Paths " >
+
+			<panel columns="3"
+				top="10" bottom="10" left="5" right="5" gap="10"
+				weightx="1" weighty="0" halign="fill" valign="top" >
+
+				<label text="Default parameter file" alignment="left"
+					font="SansSerif 12"
+					colspan="3" weightx="1" halign="fill" />
+				<label text="File name:" alignment="right"
+					font="SansSerif 12"
+					weightx="0" halign="fill" valign="fill" />
+				<textfield name="txtParameter" 
+					weightx="1" halign="fill" valign="fill" />
+				<button icon="images/browser.gif"
+					action="btnParameterClick()"
+					weightx="0" halign="fill" valign="fill" />
+
+				<separator colspan="3" />
+
+				<label text="Smooth palette file" alignment="left"
+					font="SansSerif 12"
+					colspan="3" weightx="1" halign="fill" />
+				<label text="File name:" alignment="right"
+					font="SansSerif 12"
+					weightx="0" halign="fill" valign="fill" />
+				<textfield name="txtSmooth" 
+					weightx="1" halign="fill" valign="fill" />
+				<button icon="images/browser.gif"
+					action="btnSmoothClick()"
+					weightx="0" halign="fill" valign="fill" />
+
+				<separator colspan="3" />
+
+				<label text="Function library" alignment="left"
+					font="SansSerif 12"
+					colspan="3" weightx="1" halign="fill" />
+				<label text="File name:" alignment="right"
+					font="SansSerif 12"
+					weightx="0" halign="fill" valign="fill" />
+				<textfield name="txtLibrary" 
+					weightx="1" halign="fill" valign="fill" />
+				<button name="btnLibrary" icon="images/browser.gif"
+					action="btnLibraryClick()"
+					weightx="0" halign="fill" valign="fill" />
+				
+
+				<separator colspan="3" />
+
+				<label text="Export renderer" alignment="left"
+					font="SansSerif 12"
+					colspan="3" weightx="1" halign="fill" />
+				<label text="File name:" alignment="right"
+					font="SansSerif 12"
+					weightx="0" halign="fill" valign="fill" />
+				<textfield name="txtRenderer" 
+					weightx="1" halign="fill" valign="fill" />
+				<button name="btnRenderer" icon="images/browser.gif"
+					action="btnRendererClick()"
+					weightx="0" halign="fill" valign="fill" />
+
+			</panel>
+
+		</tab>
+
+	</tabbedpane>
+
+
+	<panel columns="3" weightx="1" weighty="0" 
+		halign="fill" valign="bottom"
+		gap="10" left="10" right="10"
+		top="20" bottom="20"
+		>
+
+		<label text=" " weightx="1" halign="fill" />
+		
+		<button name="btnOK" text="    OK    "
+			action="btnOKClick()"
+			weightx="0"
+			/>
+
+		<button name="btnCancel" text=" Cancel "
+			action="btnCancelClick()"
+			weightx="0"
+			/>
+			
+	</panel>
+	
+</panel>

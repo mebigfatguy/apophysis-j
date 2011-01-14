@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<panel name="export" columns="1" width="600" height="500" >
+
+	<panel name="GroupBox1" weightx="1" weighty="0"
+		columns="3"
+		halign="fill" valign="top"
+		top="10" bottom="10" left="5" right="5" gap="5"
+		>
+
+		<label text="File name :" weightx="0" halign="right"
+			/>
+
+		<textfield name="txtFilename" weightx="1" halign="fill"
+			/>
+
+		<button name="btnBrowse" icon="images/browser.gif"
+			weightx="0" halign="fill"
+			action="btnBrowseClick()"
+			/>
+	</panel>
+
+	<separator />
+
+	<panel weightx="1" weighty="0" halign="fill" valign="top"
+			columns="3" >
+
+		<panel name="GroupBox2" weightx="1" weighty="0"
+			columns="2"
+			halign="fill" valign="fill"
+			top="10" bottom="10" left="10" right="10" gap="5"
+			>
+
+			<label text="Width :" weightx="1" weighty="1"
+				halign="fill" valign="fill"
+				/>
+
+			<combobox name="cbWidth" weightx="1" weighty="1"
+				halign="fill" valign="fill"
+				selected="0"
+				>
+				<choice text="320" />
+				<choice text="640" />
+				<choice text="800" />
+				<choice text="1024" />
+				<choice text="1280" />
+				<choice text="1600" />
+				<choice text="1920" />
+				<choice text="2048" />
+				<choice text="2560" />
+				<choice text="3200" />
+			</combobox>
+
+			<label text="Height :" weightx="1" weighty="1"
+				halign="fill" valign="fill"
+				/>
+
+			<combobox name="cbHeight" weightx="1" weighty="1"
+				halign="fill" valign="fill"
+				selected="0"
+				>
+				<choice text="200" />
+				<choice text="240" />
+				<choice text="480" />
+				<choice text="600" />
+				<choice text="768" />
+				<choice text="1024" />
+				<choice text="1200" />
+				<choice text="2048" />
+				<choice text="2400" />
+			</combobox>
+
+			<checkbox text="Maintain aspect ratio"
+				colspan="2" weightx="1" weighty="1"
+				halign="left" valign="fill"
+				name="chkMaintain"
+				/>
+
+		</panel>
+
+		<separator />
+
+		<panel name="GroupBox3" weightx="1" weighty="0"
+			columns="2"
+			halign="fill" valign="fill"
+			top="10" bottom="10" left="10" right="10" gap="5"
+			>
+
+			<label text="Quality :" weightx="1" weighty="1"
+				halign="fill" valign="fill"
+				/>
+	
+			<textfield name="txtDensity" weightx="1" weighty="1"
+				halign="fill" valign="fill"
+				/>
+
+			<label text="Filter radius :" weightx="1" weighty="1"
+				halign="fill" valign="fill"
+				/>
+			
+			<textfield name="txtFilterRadius" weightx="1" weighty="1"
+				halign="fill" valign="fill"
+				/>
+
+			<label text="Oversample :" weightx="1" weighty="1"
+				halign="fill" valign="fill"
+				/>
+
+			<spinbox name="udOversample" weightx="1" weighty="1"
+				editable="false"
+				halign="fill" valign="fill"
+				minimum="1" maximum="4" value="2" step="1"
+				text="2"
+				/>
+			
+		</panel>
+
+	</panel>
+
+	<separator />
+
+	<panel name="GroupBox4" weightx="1" weighty="0"
+		halign="fill" valign="fill"
+		top="10" bottom="10" left="10" right="10" gap="5"
+		columns="4"
+		>
+
+		<label text="Buffer depth" weightx="1" weighty="1"
+			halign="fill" valign="fill"
+			/>
+
+		<combobox name="cmbDepth" weightx="1" weighty="1"
+			halign="fill" valign="fill"
+			editable="false"
+			selected="0"
+			>
+			<choice text="16-bit" />
+			<choice text="32-bit" />
+			<choice text="32-bit float" />
+			<choice text="64-bit" />
+		</combobox>
+		
+		<label text="Gamma thresh." weightx="1" weighty="1"
+			halign="fill" valign="fill"
+			/>
+
+		<textfield name="txtGammaThreshold" weightx="1" weighty="1"
+			halign="fill" valign="fill"
+			/> 
+
+		<label text="Strips" weightx="1" weighty="1"
+			halign="fill" valign="fill"
+			/>
+
+		<spinbox name="udStrips" weightx="1" weighty="1"
+			editable="false"
+			halign="fill" valign="fill"
+			minimum="1" maximum="512" step="1" value="1"
+			text="1"
+			/>
+
+		<label text="Estim. curve" weightx="1" weighty="1"
+			halign="fill" valign="fill"
+			/>
+		<textfield name="txtEstimatorCurve" weightx="1" weighty="1"
+			halign="fill" valign="fill"
+			/>
+
+		<label text="Estim. radius" weightx="1" weighty="1"
+			halign="fill" valign="fill"
+			/>
+		
+		<textfield name="txtEstimator" weightx="1" weighty="1"
+			halign="fill" valign="fill"
+			/>
+		<label text="Estim. minimun" weightx="1" weighty="1"
+			halign="fill" valign="fill"
+			/>
+		<textfield name="txtEstimatorMin" weightx="1" weighty="1"
+			halign="fill" valign="fill"
+			/>
+		
+	</panel>
+
+	<separator />
+	
+	<panel weightx="0" weighty="0" halign="fill" valign="top"
+		top="20" bottom="20" left="100" right="100" gap="100"
+		columns="2"
+		>
+
+		<button text="  OK   " name="btnOK"
+			weightx="1" weighty="1" halign="fill" valign="fill"
+			action="btnOKClick()"
+			/>
+			
+		<button text=" Cancel " name="btnCancel"
+			weightx="1" weighty="1" halign="fill" valign="fill"
+			action="btnCancelClick()"
+			/>
+	
+	</panel>
+
+	<separator />
+
+	<panel weightx="1" weighty="1" halign="fill" valign="fill"
+		left="5" right="5" top="5" bottom="5" gap="3"
+		background="0,78,152"
+		columns="1"
+		>
+
+		<label text="WARNING !" foreground="#FF0000"
+			weightx="1" weighty="0"
+			font="SansSerif 18"
+			halign="center" valign="fill"
+			/>
+
+		<label text="To render your fractals properly using the 'export' function,"
+			weightx="1" weighty="0"
+			halign="center" valign="fill"
+			foreground="#FFFF00"
+			/>
+
+		<label text="You need to download the latest version of FLAM3 from"
+			weightx="1" weighty="0"
+			halign="center" valign="fill"
+			foreground="#FFFF00"
+			/>
+
+		<label text="http://www.flam3.com"	
+			weightx="1" weighty="0"
+			halign="center" valign="fill"
+			foreground="#0000FF"
+			/>
+	
+	</panel>
+
+</panel>

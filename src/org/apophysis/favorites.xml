@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<panel name="Favorites" columns="1" 
+	weightx="1" weighty="1" halign="fill" valign="fill"
+	left="5" top="5" right="5"
+	>
+
+
+	<panel columns="2" name="PageControl" weightx="1" weighty="1"
+		halign="fill" valign="fill"
+		>
+
+		<list name="ListView" weightx="1" weighty="1"
+			halign="fill" valign="fill"
+			/>
+
+		<panel columns="1" weightx="0" weighty="1"
+			halign="right" valign="fill"
+			left="5" right="5" gap="5"
+			>
+
+			<button name="btnAdd" text="  Add "
+				weightx="1" weighty="0" halign="fill" valign="fill"
+				action="btnAddClick()"
+				/>
+			<button name="btnRemove" text=" Remove"
+				action="btnRemoveClick()"
+				weightx="1" weighty="0" halign="fill" valign="fill"
+				/>
+			<button name="btnMoveUp" text=" Move Up"
+				weightx="1" weighty="0" halign="fill" valign="fill"
+				action="btnMoveUpClick()"
+				/>
+			<button name="btnMoveDown" text=" Move Down"
+				weightx="1" weighty="0" halign="fill" valign="fill"
+				action="btnMoveDownClick()"
+				/>
+		</panel>
+	</panel>	
+
+	<panel columns="3" weightx="1" weighty="0"
+		halign="fill" valign="fill"
+		top="10" bottom="10" left="5" right="5" gap="5"
+		>
+	
+		<label text=" " weightx="1" halign="fill" />
+	
+		<button name="btnOK" text="   OK   "
+			weightx="0" weighty="1" halign="right" valign="fill"
+			action="btnOKClick()"
+			/>
+		<button name="btnCancel" text="  Cancel  "
+			weightx="0" weighty="1" halign="right" valign="fill"
+			action="btnCancelClick()"
+			/>	
+	</panel>
+</panel>

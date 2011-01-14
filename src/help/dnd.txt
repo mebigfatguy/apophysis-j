@@ -1,0 +1,11 @@
+Apophysis-j supports drag and drop from the destop. The action
+taken depends upon the file type :
+
+*.flame   the content of the file is loaded into the main list
+*.fla     the content of the file is loaded into the main list
+*.upr     the content of the file is loaded into the main list
+*.class   if a valid pluging, it is installed into the plugin directory
+*.jpg     the flame description is extracted from the comment
+*.png     the flame description is extracted from the comment
+*.ajs     the script is loaded into the script editor and executed
+*.asc     the script is converted, loaded and executed

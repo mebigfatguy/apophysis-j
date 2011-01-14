@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<panel name="browser" columns="1" width="600" height="500" 
+	left="5" top="5" >
+
+	<list name="ListView" weightx="1" weighty="1" 
+		halign="fill" valign="fill"
+		action="listViewChange(this)"
+		perform="listViewOpen(this)"
+		/>
+
+	<panel columns="2" weightx="1" weighty="0"
+		gap="5" left="5" top="5" bottom="5"
+		halign="fill" valign="fill"
+		>
+
+		<canvas name="pnlPreview"  weightx="1" weighty="0"
+			halign="fill" valign="fill"
+			draw="drawPreview(this.bounds)"
+			/>
+
+		<panel columns="1" weightx="0" weighty="0"
+			halign="left" valign="center"
+			top="10" left="10"  bottom="10" right="30"
+			>
+
+			<button name="btnDefGradient" icon="images/browser.gif"
+				tooltip="Open..."
+				action="btnDefGradientClick()"
+				/>
+
+		</panel>
+
+	</panel>
+
+</panel>

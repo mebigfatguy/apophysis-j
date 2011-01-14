@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<panel name="Helper" columns="1" weightx="1" weighty="1"
+	left="5" right="5" top="5" bottom="5" gap="5"
+	halign="fill" valign="fill">
+
+<!-- --------------------------------------------------------------------- -->
+
+	<panel weightx="1" weighty="0" halign="fill" valign="top"
+		>
+		<combobox weightx="1" weighty="0" halign="center" valign="center"
+			editable="false" name="cmbTopic"
+			action="changeTopic(this)"
+			>
+			<choice text="Introduction:introduction" />
+			<choice text="Files:files" />
+			<choice text="Drag and drop:dnd" />
+			<choice text="Memory usage:memory" />
+			<choice text="Plugins:plugins" />
+			<choice text="Scripting:scripting" />
+			<choice text="Scripting reference:reference" />
+		</combobox>
+	</panel>
+
+	<textarea name="Display" weightx="1" weighty="1"
+		halign="fill" valign="fill"
+		font="Courier 12" editable="false"
+		/>
+
+	<panel weightx="1" weighty="0" halign="fill" valign="bottom"
+		top="10" bottom="10"
+		>
+		<button text="  Close  " 
+			weightx="1" weighty="0" halign="center" valign="center"
+			action="btnCloseClick()"
+			/>
+	</panel>
+
+</panel>

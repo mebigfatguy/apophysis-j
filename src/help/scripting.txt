@@ -1,0 +1,27 @@
+Apophysis-j can be scripted through javascript, since it is a
+more natural and versatile language to be associated with java.
+
+Be aware of the differences between pascal and javascript:
+
+        PASCAL            JAVASCRIPT
+
+         :=                   =
+        True                 true
+        False                false
+         =                    ==
+         <>                   !=
+         and                  &&
+         or                   ||
+         not                  !  
+         mod                  %
+         div                  /
+     for i:=1 to n        for(i=1;i<=n;i++)
+        begin                 {
+         end                  }
+        exit                exit()
+       inc(x)                x++
+       dec(x)                x--
+         x^y                pow(x,y)
+	   
+
+

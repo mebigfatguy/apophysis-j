@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dialog name="entrydialog" columns="1" width="420" height="180" modal="true"
+	background="#D1CCC6" 
+	left="10" right="10" >
+
+	<panel weightx="1" weighty="1" columns="2"
+		valign="top" halign="fill"
+		left="10" right="10" gap="5" top="5" bottom="5"
+		>
+
+		<label colspan="2" text="File name :"
+			weightx="1" weighty="1" halign="fill" valign="fill"
+			alignment="left"
+			/>
+		<textfield name="FileField" columns="48"
+			/>
+		<button icon="images/main1.gif"
+			action="chooseFile()"
+			/>
+
+		<label colspan="2" text=" " />
+
+		<label colspan="2" text="Title :" 
+			weightx="1" weighty="1" halign="fill" valign="fill"
+			alignment="left" />
+		<textfield name="EntryField" columns="48"
+			/>
+		<label text=" "/>
+	</panel>
+
+	<panel weightx="1" weighty="0" columns="3"
+		valign="bottom" halign="fill"
+		left="10" right="10" gap="5" top="5" bottom="5"
+		>
+		<label text=" " weightx="1" weighty="1"
+			/>
+		<button text="  Save  " weightx="0" weighty="1"
+			type="default"
+			action="save()"
+			/>
+		<button text=" Cancel " weightx="0" weighty="1"
+			action="cancel()"
+			/>
+	</panel>
+	
+</dialog>

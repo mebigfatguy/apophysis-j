@@ -1,0 +1,18 @@
+                      WELCOME TO APOPHYSIS-J
+
+Apophysis-j is a port of the fractal flame editor Apophysis to java.
+As such, it should run on any machine equipped with a java runtime
+environment (jre) 1.4 or higher.
+
+
+
+
+Official site :  http://membres.lycos.fr/jfbouzereau/apophysis.html
+
+Mailing list  :  http://tech.groups.yahoo.com/group/Apophysis-j/
+
+Resources     :  http://apophysis-j.deviantart.com
+
+
+
+

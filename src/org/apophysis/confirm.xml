@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dialog name="confirmdialog" columns="1" width="480" height="140" modal="true"
+	>
+
+	<panel columns="2" weightx="1" weighty="1" gap="30"
+		left="50" right="50" top="30" bottom="20">
+
+		<label  icon="images/question.gif"  weightx="0"
+			halign="left" />
+		<label  name="question" weightx="1" weighty="1" 
+			halign="fill" valign="center" />
+	</panel>
+
+	<panel columns="2" weightx="1" gap="150"
+		left="100" right="100" top="20" bottom="30">
+		<button text="  No  " type="cancel" weightx="1"
+			action="cancelConfirm()"/>
+		<button text="  Yes  " type="default" weightx="1"
+			action="acceptConfirm()"/>
+	</panel>
+</dialog>

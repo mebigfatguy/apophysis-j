@@ -1,0 +1,457 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<panel name="adjust" columns="1" width="600" height="500" >
+
+	<panel columns="3" weightx="1" weighty="0" halign="fill" valign="fill"
+		left="5" top="5" right="5" bottom="20"
+		>
+
+			<panel weightx="1" weighty="3" halign="left" valign="top"
+				>
+				<button	name="btnUndo" icon="images/adjust1.gif"
+					halign="left" weightx="0"
+					action="undo()"
+					/>
+				<button name="btnRedo" icon="images/adjust2.gif"
+					halign="left" weightx="0"
+					action="redo()"
+					/>
+			</panel>
+
+			<panel columns="2" weightx="1" weighty="3"
+				halign="fill" valign="fill"
+				>
+
+				<popupmenu name="PreviewPopup"
+					>
+					<checkboxmenuitem text="Low Quality"
+						name="LowQuality"
+						group="PreviewQuality"
+						background="#D1CCC6"
+						action="mnuLowQualityClick(this)"
+						/>
+					<checkboxmenuitem text="Medium Quality"
+						name="MediumQuality"
+						group="PreviewQuality"
+						background="#D1CCC6"
+						action="mnuMediumQualityClick(this)"
+						/>
+					<checkboxmenuitem text="High Quality"
+						name="HighQuality"
+						group="PreviewQuality"
+						background="#D1CCC6"
+						action="mnuHighQualityClick(this)"
+						/>
+					<separator/>
+					<checkboxmenuitem text="Instant Preview"
+						background="#D1CCC6"
+						/>	
+				</popupmenu>
+
+				<canvas name="PrevPnl"  weightx="1" weighty="1"
+					draw="drawPreviewImage(this.bounds)"
+					press="pressPreview(this,this.bounds)"
+					width="160" height="120"
+					halign="center" valign="center"
+					/>
+			</panel>
+
+			<panel weightx="0" weighty="3"  halign="right" valign="top"
+				columns="2" gap="5"
+				>
+				<label text="Scale "
+					halign="right" weightx="0"
+					/>
+				<textfield  name="editPPU" columns="10"
+					halign="right" valign="fill" weightx="0"
+					perform="editPPUValidate(this)"
+					/>
+
+				<label text="Time "
+					halign="right" weightx="0"
+					/>
+				<textfield name="txtTime" columns="10"
+					halign="right" valign="fill" weightx="0"
+					perform="timeChanged(this)"
+					/>
+			</panel>
+
+	</panel>
+
+
+	<tabbedpane weightx="1" weighty="1" halign="fill" valign="fill"
+		name="PageControl"
+		placement="top" selected="1" >
+
+
+		<tab name="TabSheet1" text="  Camera  " icon="images/main18.gif" >
+			<panel weightx="1" weighty="1" halign="fill" valign="fill"
+				columns="3" top="20" gap="5" bottom="5" >
+
+				<label text="Zoom :" weightx="1" alignment="right"
+					/>
+				<slider name="scrollZoom" weightx="5"
+					action="scrollZoomChange(this)"
+					perform="scrollEnd()"
+					minimum="-3000"
+					maximum="3000"
+					value="0"
+					/>
+				<textfield name="txtZoom" weightx="1" 
+					perform="txtCameraChange()"
+					/>
+
+				<label text="X position :" weightx="1" alignment="right"
+					/>
+				<slider name="scrollCenterX" weightx="5"
+					action="scrollCenterXChange(this)"
+					perform="scrollEnd()"
+					minimum="-10000"
+					maximum="10000"
+					value="0"
+					/>
+				<textfield name="txtCenterX" weightx="1"
+					perform="txtCameraChange()"
+					/>
+
+				<label text="Y position :" weightx="1" alignment="right"
+					/>
+				<slider name="scrollCenterY" weightx="5"
+					action="scrollCenterYChange(this)"
+					perform="scrollEnd()"
+					minimum="-10000"
+					maximum="10000"
+					value="0"
+					/>
+				<textfield name="txtCenterY" weightx="1"
+					perform="txtCameraChange()"
+					/>
+
+				<label text="Rotation :" weightx="1" alignment="right"
+					/>
+				<slider name="scrollAngle" weightx="5"
+					action="scrollAngleChange(this)"
+					perform="scrollEnd()"
+					minimum="-36000"
+					maximum="36000"
+					value="0"
+					/>
+				<textfield name="txtAngle" weightx="1"
+					perform="txtCameraChange()"
+					/>
+			</panel>
+		</tab>
+
+		<tab name="TabSheet2" text="  Rendering  " icon="images/main35.gif" >
+	
+			<panel columns="1" >	
+				<panel  weightx="1" weighty="1" halign="fill" valign="fill"
+					columns="3" top="20" gap="5" bottom="5" >
+				
+						<label text="Gamma :" weightx="1" alignment="right"
+							/>	
+						<slider name="scrollGamma" weightx="5"
+							action="scrollGammaChange(this)"
+							perform="scrollEnd()"
+							minimum="100"
+							maximum="500"
+							value="500"
+							/>
+						<textfield name="txtGamma" weightx="1"
+							perform="txtRenderChange()"
+							/>
+	
+						<label text="Brightness :" weightx="1" alignment="right"
+							/>	
+						<slider name="scrollBrightness" weightx="5"
+							action="scrollBrightnessChange(this)"
+							perform="scrollEnd()"
+							minimum="0"
+							maximum="10000"
+							value="0"
+							/>
+						<textfield name="txtBrightness" weightx="1"
+							perform="txtRenderChange()"
+							/>
+
+						<label text="Vibrancy :" weightx="1" alignment="right"
+							/>
+						<slider name="scrollVibrancy" weightx="5"
+							action="scrollVibrancyChange(this)"
+							perform="scrollEnd()"
+							minimum="0"
+							maximum="100"
+							value="0"
+							/>
+						<textfield name="txtVibrancy" weightx="1"
+							perform="txtRenderChange()"
+							/>
+
+				</panel>
+
+				<separator />
+
+				<panel weightx="1" weighty="1" halign="left" valign="top"
+					left="10" right="10"
+					columns="3" top="5" gap="5" bottom="5">
+
+					<label text="Background" 
+						weightx="1" halign="fill" />
+
+					<button name="btnBackground" text="            "
+						weightx="1" halign="fill"
+						action="btnBackgroundClick()"
+						/>
+
+					<checkbox name="chkTransparent" text="Transparent"
+						/>	
+				</panel>
+
+			</panel>
+
+		</tab>
+
+		<tab name="TabSheet3" text="  Gradient  " icon="images/main11.gif" >
+
+			<panel weightx="1" weighty="1" halign="fill" valign="fill"
+				columns="1" top="20" gap="5" bottom="5" left="5" right="5" >
+
+				<popupmenu name="GradientPopup" >
+					<menuitem text="Randomize" 
+						background="#D1CCC6"
+						action="mnuRandomizeClick()"
+						/>
+					<separator/>
+					<menuitem text="Invert"
+						background="#D1CCC6"
+						action="mnuInvertClick()"
+						/>
+					<menuitem text="Reverse"
+						background="#D1CCC6"
+						action="mnuReverseClick()"
+						/>
+					<separator/>
+					<menuitem text="Smooth palette..."
+						background="#D1CCC6"
+						action="mnuSmoothPaletteClick()"
+						/>
+					<menuitem text="Gradient browser..."
+						background="#D1CCC6"
+						action="mnuOpenClick()"
+						/>
+					<separator/>
+					<menuitem text="Save Gradient..."
+						background="#D1CCC6"
+						action="mnuSaveGradientClick()"
+						/>
+					<menuitem text="Save as Map file..."
+						background="#D1CCC6"
+						action="mnuSaveMapClick()"
+						/>
+					<separator/>
+					<menuitem text="Save as Default"
+						background="#D1CCC6"
+						action="mnuSaveDefaultClick()"
+						/>
+					<separator/>
+					<menuitem text="Copy"
+						background="#D1CCC6"
+						action="mnuCopyClick()"
+						/>
+					<menuitem text="Paste"
+						background="#D1CCC6"
+						action="mnuPasteClick()"
+						/>
+				</popupmenu>
+
+				<canvas name="GradientImage"
+					weightx="1"  weighty="1"
+					halign="fill" valign="fill"
+					draw="drawGradientImage(this.bounds)"
+					press="pressGradientImage(this,this.bounds)"
+					/>
+
+				<panel columns="4" weightx="1" weighty="0"
+					halign="fill" valign="top"
+					top="5" gap="5" bottom="5" >
+
+					<label text="Scroll mode : " 
+						weightx="0" alignment="right" />
+	
+					<combobox name="btnMenu" editable="false"
+						selected="0"
+						action="btnMenuClick(this)"
+						weightx="0" halign="left" >
+						<choice text="Rotate" />
+						<choice text="-" enabled="false" />
+						<choice text="Hue" />
+						<choice text="Saturation" />
+						<choice text="Brightness" />
+						<choice text="Contrast" />
+						<choice text="-" enabled="false" />
+						<choice text="Blur" />
+						<choice text="Frequency" />
+					</combobox>
+
+					<slider name="ScrollBar" orientation="horizontal"
+						weightx="1" halign="fill"
+						action="scrollBarChange(this)"
+						perform="scrollEnd()"
+						minimum="-128" maximum="128" value="0"
+						/>
+
+					<label name="lblVal" weightx="0" text="0"
+						width="60" height="18" />
+				</panel>
+
+				<panel columns="3" weightx="1" weighty="0"
+					halign="fill" valign="top"
+					top="5" gap="5" bottom="5" >
+	
+					<button name="btnColorPreset" text="Preset"
+						weightx="0"
+						tooltip="Choose random preset"
+						action="btnColorPresetClick()"
+						/>
+					<combobox name="cmbPalette"  weightx="1" halign="fill"
+						editable="false"
+						action="cmbPaletteChange(this)"
+						/>
+		
+					<panel columns="4" weightx="0" weighty="1"
+						halign="right" valign="top" >
+							
+						<button name="btnCopy"
+							tooltip="Copy gradient to clipboard"
+							icon="images/adjust6.gif"
+							action="mnuCopyClick()"
+							/>
+						<button name="btnPaste"
+							tooltip="Paste gradient from clipboard"
+							icon="images/adjust5.gif"
+							action="mnuPasteClick()"
+							/>
+						<button name="btnOpen"
+							tooltip="Open gradient browser"
+							icon="images/adjust3.gif"
+							action="btnOpenClick()"
+							/>
+						<button name="btnSmoothPalette"
+							tooltip="Smooth palette"
+							icon="images/adjust4.gif"
+							action="mnuSmoothGradientClick()"
+							/>
+					</panel>
+				</panel>
+
+			</panel>
+		</tab>
+
+		<tab name="TabSheet4" text="  Image size  " icon="images/main51.gif" >
+
+			<panel weightx="1" weighty="1" halign="fill"  valign="fill"
+				top="20" left="5" right="5" bottom="0" gap="10"
+				columns="5"
+				>
+
+				<panel name="Bevel2" weightx="2" halign="fill"
+					gap="10" columns="2"
+					>
+
+					<label text="Width" weightx="1" halign="fill"
+						alignment="right"
+						/>
+					<combobox name="txtWidth" weightx="1" halign="fill"
+						action="widthChanged(this,0)"
+						perform="widthChanged(this,1)"
+						>
+						<choice text="512" />
+						<choice text="640" />
+						<choice text="800" />
+						<choice text="1024" />
+						<choice text="1280" />
+					</combobox>
+
+					<label text="Height" weightx="1" halign="fill"
+						alignment="right"
+						/>
+
+					<combobox name="txtHeight" weightx="1" halign="fill"
+						action="heightChanged(this,0)"
+						perform="heightChanged(this,1)"
+						>
+						<choice text="384" />
+						<choice text="400" />
+						<choice text="480" />
+						<choice text="512" />
+						<choice text="600" />
+						<choice text="768" />
+						<choice text="960" />
+						<choice text="1024" />
+					</combobox>
+
+					<button text=" Apply " name="btnApplySize"
+						weightx="0" halign="center"
+						colspan="2"
+						action="btnApplySizeClick()"
+						/>	
+
+				</panel>
+
+				<separator />
+
+				<panel name="Bevel1" weightx="2" halign="fill"
+					gap="10" columns="2"
+					>
+
+					<button name="btnPreset1" weightx="1" halign="fill"
+						text="512 x 384" 
+						action="btnPresetClick(1)"
+						/>
+					<button name="btnSet1" weightx="1" halign="fill"
+						text="Set"
+						action="btnSetClick(1)"
+						/>	
+
+					<button name="btnPreset2" weightx="1" halign="fill"
+						text="512 x 384" 
+						action="btnPresetClick(2)"
+						/>
+					<button name="btnSet2" weightx="1" halign="fill"
+						text="Set"
+						action="btnSetClick(2)"
+						/>	
+
+					<button name="btnPreset3" weightx="1" halign="fill"
+						text="512 x 384" 
+						action="btnPresetClick(3)"
+						/>
+					<button name="btnSet3" weightx="1" halign="fill"
+						text="Set"
+						action="btnSetClick(3)"
+						/>	
+				</panel>
+
+				<separator />
+
+				<panel name="Bevel3" weightx="1" halign="fill"
+					gap="5" columns="1"
+					>
+					<checkbox text="Resize main window" name="chkResizeMain"
+						weightx="1" halign="left"
+						action="chkResizeMainClick(this)"
+						/>
+
+					<checkbox name="chkMaintainRatio"
+						text="Maintain aspect ratio"
+						weightx="1" halign="left"
+						action="chkMaintainRatioClick(this)"
+						/>
+					<label text=" " />
+
+				</panel>
+			</panel>
+		</tab>
+
+	</tabbedpane>
+	
+</panel>
