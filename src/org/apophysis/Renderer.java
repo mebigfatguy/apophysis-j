@@ -143,10 +143,11 @@ public class Renderer implements Constants {
 	/*****************************************************************************/
 
 	public void setMinDensity(double q) {
-		if (q < fcp.sample_density)
+		if (q < fcp.sample_density) {
 			fmindensity = q;
-		else
+		} else {
 			fmindensity = fcp.sample_density;
+		}
 	}
 
 	/*****************************************************************************/
@@ -158,10 +159,11 @@ public class Renderer implements Constants {
 	/*****************************************************************************/
 
 	public Image getTransparentImage() {
-		if (fstop > 0)
+		if (fstop > 0) {
 			return null;
-		else
+		} else {
 			return imager.getTransparentImage();
+		}
 	}
 
 	/*****************************************************************************/
@@ -224,16 +226,18 @@ public class Renderer implements Constants {
 		camY1 = corner_y + fcp.height / ppuy + t3;
 
 		camW = camX1 - camX0;
-		if (Math.abs(camW) > 0.01)
+		if (Math.abs(camW) > 0.01) {
 			xsize = 1. / camW;
-		else
+		} else {
 			xsize = 1;
+		}
 
 		camH = camY1 - camY0;
-		if (Math.abs(camH) > 0.01)
+		if (Math.abs(camH) > 0.01) {
 			ysize = 1. / camH;
-		else
+		} else {
 			ysize = 1;
+		}
 
 		bws = (bucketwidth - 0.5) * xsize;
 		bhs = (bucketheight - 0.5) * ysize;
@@ -293,8 +297,6 @@ public class Renderer implements Constants {
 	/*****************************************************************************/
 
 	public void initBuffers() {
-		long oldfree, oldtotal, newfree, newtotal;
-		Runtime runtime = Runtime.getRuntime();
 
 		try {
 			if (buckets != null) {
@@ -302,8 +304,9 @@ public class Renderer implements Constants {
 					buckets = null;
 					System.gc();
 				} else {
-					for (int i = 0; i < bucketsize; i++)
+					for (int i = 0; i < bucketsize; i++) {
 						buckets[i] = 0;
+					}
 				}
 			}
 			if (buckets == null) {
@@ -331,10 +334,11 @@ public class Renderer implements Constants {
 			System.gc();
 		}
 
-		if (buckets == null)
+		if (buckets == null) {
 			fstop = 1;
-		else
+		} else {
 			imager.setBucketData(buckets, bucketwidth, bucketheight, 32);
+		}
 
 	} // End of method initBuffers
 
@@ -352,8 +356,9 @@ public class Renderer implements Constants {
 	/*****************************************************************************/
 
 	public void render() {
-		if (fcp.nxforms <= 0)
+		if (fcp.nxforms <= 0) {
 			return;
+		}
 		fstop = 0;
 
 		imager.setCP(fcp);
@@ -361,14 +366,17 @@ public class Renderer implements Constants {
 
 		computeBufferSize();
 
-		if (bucketwidth <= 0)
+		if (bucketwidth <= 0) {
 			return;
-		if (bucketheight <= 0)
+		}
+		if (bucketheight <= 0) {
 			return;
+		}
 
 		initBuffers();
-		if (fstop != 0)
+		if (fstop != 0) {
 			return;
+		}
 
 		createColorMap();
 
@@ -377,8 +385,9 @@ public class Renderer implements Constants {
 
 		createCamera();
 
-		if (!frenderover)
+		if (!frenderover) {
 			clearBuckets();
+		}
 
 		long now = System.currentTimeMillis();
 		setPixels();
@@ -391,8 +400,10 @@ public class Renderer implements Constants {
 		}
 
 		if (fstop == 1)
+		 {
 			freeBuckets();
 		// freeBuckets();
+		}
 
 		return;
 
@@ -401,8 +412,9 @@ public class Renderer implements Constants {
 	/*****************************************************************************/
 
 	public void clearBuckets() {
-		for (int i = 0; i < bucketsize * 4; i++)
+		for (int i = 0; i < bucketsize * 4; i++) {
 			buckets[i] = 0;
+		}
 
 	} // End of method clearBuckets
 
@@ -456,12 +468,14 @@ public class Renderer implements Constants {
 			propTable[j].nextPoint(p);
 
 			px = p[0] - camX0;
-			if ((px < 0) || (px > camW))
+			if ((px < 0) || (px > camW)) {
 				continue;
+			}
 
 			py = p[1] - camY0;
-			if ((py < 0) || (py > camH))
+			if ((py < 0) || (py > camH)) {
 				continue;
+			}
 
 			int ix = (int) (bhs * py + 0.5);
 			int iy = (int) (bws * px + 0.5);
@@ -473,10 +487,12 @@ public class Renderer implements Constants {
 			buckets[ind + 2] += incr * colormap[ic][2];
 			buckets[ind + 3] += incr;
 
-			if (false)
-				if (firstp)
+			if (false) {
+				if (firstp) {
 					System.out.println("p = " + p[0] + " " + p[1] + " " + p[2]
 							+ " ix=" + ix + " iy=" + iy);
+				}
+			}
 			firstp = false;
 			nu++;
 		}
@@ -502,12 +518,14 @@ public class Renderer implements Constants {
 			propTable[j].nextPoint(p);
 
 			px = p[0] * cosa + p[1] * sina + rcx;
-			if ((px < 0) || (px > camW))
+			if ((px < 0) || (px > camW)) {
 				continue;
+			}
 
 			py = p[1] * cosa - p[0] * sina + rcy;
-			if ((py < 0) || (py > camH))
+			if ((py < 0) || (py > camH)) {
 				continue;
+			}
 
 			int ix = (int) (bhs * py + 0.5);
 			int iy = (int) (bws * px + 0.5);
@@ -543,12 +561,14 @@ public class Renderer implements Constants {
 			finalXform.nextPointTo(p, q);
 
 			px = q[0] - camX0;
-			if ((px < 0) || (px > camW))
+			if ((px < 0) || (px > camW)) {
 				continue;
+			}
 
 			py = q[1] - camY0;
-			if ((py < 0) || (py > camH))
+			if ((py < 0) || (py > camH)) {
 				continue;
+			}
 
 			int ix = (int) (bhs * py + 0.5);
 			int iy = (int) (bws * px + 0.5);
@@ -584,12 +604,14 @@ public class Renderer implements Constants {
 			finalXform.nextPointTo(p, q);
 
 			px = q[0] * cosa + q[1] * sina + rcx;
-			if ((px < 0) || (px > camW))
+			if ((px < 0) || (px > camW)) {
 				continue;
+			}
 
 			py = q[1] * cosa - q[0] * sina + rcy;
-			if ((py < 0) || (py > camH))
+			if ((py < 0) || (py > camH)) {
 				continue;
+			}
 
 			int ix = (int) (bhs * py + 0.5);
 			int iy = (int) (bws * px + 0.5);
@@ -610,26 +632,27 @@ public class Renderer implements Constants {
 		int nsamples;
 		int iproc;
 
-		long time1 = System.currentTimeMillis();
-
 		if (fcp.fangle == 0) {
-			if (useFinalXform)
+			if (useFinalXform) {
 				iproc = 0;
-			else
+			} else {
 				iproc = 1;
+			}
 		} else {
-			if (useFinalXform)
+			if (useFinalXform) {
 				iproc = 2;
-			else
+			} else {
 				iproc = 3;
+			}
 		}
 
 		nsamples = (int) Math.round(sample_density * nrslices * bucketsize
 				/ (oversample * oversample));
 
 		fnumbatches = Math.round(nsamples / (fcp.nbatches * SUB_BATCH_SIZE));
-		if (fnumbatches == 0)
+		if (fnumbatches == 0) {
 			fnumbatches = 1;
+		}
 
 		/*
 		 * fminbatches =
@@ -659,14 +682,16 @@ public class Renderer implements Constants {
 		if (fcp.width < 150) {
 			// preview
 			incr = (int) (fnumbatches / 100.0);
-			if (incr == 0)
+			if (incr == 0) {
 				incr = 1;
+			}
 			fnumbatches = fnumbatches / incr;
 		} else if (fnumbatches > 50) {
 			incr = 2;
 			fnumbatches = fnumbatches / incr;
-		} else if (fnumbatches < 1)
+		} else if (fnumbatches < 1) {
 			fnumbatches = 1;
+		}
 
 		// System.out.println("incr="+incr+" batches="+fnumbatches);
 
@@ -699,8 +724,9 @@ public class Renderer implements Constants {
 					}
 				}
 
-				if ((i % 0xFF) == 0)
+				if ((i % 0xFF) == 0) {
 					progress(i * 1.0 / fnumbatches);
+				}
 
 				switch (iproc) {
 				case 0:
@@ -733,8 +759,6 @@ public class Renderer implements Constants {
 		fcp.actual_density = fcp.actual_density + fcp.sample_density;
 
 		progress(1);
-
-		long time2 = System.currentTimeMillis();
 
 		if (out != null) {
 			try {
@@ -769,11 +793,14 @@ public class Renderer implements Constants {
 	/*****************************************************************************/
 
 	public void setDebug(boolean debug) {
-		if (false)
+		if (false) {
 			this.debug = debug;
-		if (false)
-			if (imager != null)
+		}
+		if (false) {
+			if (imager != null) {
 				imager.setDebug(debug);
+			}
+		}
 	}
 
 	/*****************************************************************************/

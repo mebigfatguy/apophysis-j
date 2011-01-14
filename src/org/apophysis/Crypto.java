@@ -46,9 +46,6 @@ public class Crypto {
 	/*****************************************************************************/
 	// FIELDS
 
-	private String algorithm;
-	private final byte[] salt;
-	private final int iterationCount;
 	private final Cipher cipher;
 	private final SecretKey key;
 	private final PBEParameterSpec pbeParamSpec;
@@ -65,8 +62,6 @@ public class Crypto {
 
 	public Crypto(String algorithm, byte[] salt, int iterationCount,
 			char[] password) throws GeneralSecurityException {
-		this.salt = salt;
-		this.iterationCount = iterationCount;
 		cipher = Cipher.getInstance(algorithm);
 		pbeParamSpec = new PBEParameterSpec(salt, iterationCount);
 

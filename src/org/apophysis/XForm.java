@@ -491,9 +491,6 @@ public class XForm implements Constants {
 	/****************************************************************************/
 
 	public void copy(XForm xform) {
-		int i, j;
-		String name;
-		double value;
 
 		if (xform == null) {
 			return;
@@ -971,8 +968,6 @@ public class XForm implements Constants {
 	/****************************************************************************/
 
 	static void authorizeVariation(int index, boolean ok) {
-		int msk = (1 << index);
-		int val = ((ok ? 1 : 0) << index);
 		Global.variations[index] = ok;
 	}
 

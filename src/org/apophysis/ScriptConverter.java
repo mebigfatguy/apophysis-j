@@ -618,7 +618,6 @@ public class ScriptConverter {
 
 		String var = sb.substring(i + 4, j).trim();
 		StringBuffer sblock = new StringBuffer(sb.substring(k + 5, l));
-		String block = sb.substring(k + 5, l);
 
 		if (var.equals("Flame")) {
 			processFields(sblock, var, JSFlame.class);

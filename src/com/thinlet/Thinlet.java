@@ -5838,7 +5838,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 	 */
 	public boolean requestFocus(Object component) { // #
 		if (isFocusable(component, true)) {
-			boolean b = setFocus(component);
+			setFocus(component);
 			repaint(component);
 			return true;
 		}

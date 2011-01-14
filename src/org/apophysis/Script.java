@@ -787,7 +787,7 @@ public class Script extends MyThinlet implements Constants {
 		double y = cp.center[1];
 		cp.calcBoundBox();
 		cp.center[0] = x;
-		cp.center[1] = x;
+		cp.center[1] = y;
 		java2js();
 	}
 

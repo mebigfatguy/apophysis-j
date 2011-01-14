@@ -118,22 +118,25 @@ public class Imager implements Constants {
 		filtersize = fw + 1;
 
 		// make sure same parity
-		if ((filtersize + foversample) % 2 == 1)
+		if ((filtersize + foversample) % 2 == 1) {
 			filtersize++;
+		}
 
-		if (fw > 0.0)
+		if (fw > 0.0) {
 			adjust = (1.0 * FILTER_CUTOFF * filtersize) / fw;
-		else
+		} else {
 			adjust = 1.0;
+		}
 
 		filter = new double[filtersize][filtersize];
 
-		for (i = 0; i < filtersize; i++)
+		for (i = 0; i < filtersize; i++) {
 			for (j = 0; j < filtersize; j++) {
 				ii = ((2.0 * i + 1.0) / filtersize - 1.0) * adjust;
 				jj = ((2.0 * j + 1.0) / filtersize - 1.0) * adjust;
 				filter[i][j] = Math.exp(-2.0 * (ii * ii + jj * jj));
 			}
+		}
 
 		normalizeFilter();
 
@@ -143,13 +146,17 @@ public class Imager implements Constants {
 
 	void normalizeFilter() {
 		double t = 0;
-		for (int i = 0; i < filtersize; i++)
-			for (int j = 0; j < filtersize; j++)
+		for (int i = 0; i < filtersize; i++) {
+			for (int j = 0; j < filtersize; j++) {
 				t += filter[i][j];
+			}
+		}
 
-		for (int i = 0; i < filtersize; i++)
-			for (int j = 0; j < filtersize; j++)
+		for (int i = 0; i < filtersize; i++) {
+			for (int j = 0; j < filtersize; j++) {
 				filter[i][j] /= t;
+			}
+		}
 
 	} // End of method normalizeFilter
 
@@ -169,7 +176,7 @@ public class Imager implements Constants {
 		double alpha, gamma;
 		int i, j, ii, jj;
 		int ri, gi, bi;
-		int ai, ia;
+		int ai;
 		double ls;
 		double fp[] = new double[4];
 		int vib, notvib;
@@ -177,17 +184,17 @@ public class Imager implements Constants {
 		double filtervalue;
 		double lsa[] = new double[1025];
 		double sample_density;
-		int gutter_width;
 		double k1, k2;
 		double area;
 		int bx, by;
 
 		int pixeltot, pixelzero;
 
-		if (fcp.gamma == 0)
+		if (fcp.gamma == 0) {
 			gamma = fcp.gamma;
-		else
+		} else {
 			gamma = 1 / fcp.gamma;
+		}
 
 		vib = (int) (fcp.vibrancy * 256 + 0.5);
 		notvib = 256 - vib;
@@ -200,12 +207,11 @@ public class Imager implements Constants {
 
 		pixelzero = 0;
 
-		gutter_width = bucketwidth - foversample * fcp.width;
-
 		double p2 = Math.pow(2.0, fcp.zoom);
 		sample_density = fcp.actual_density * p2 * p2;
-		if (sample_density == 0)
+		if (sample_density == 0) {
 			sample_density = 0.001;
+		}
 
 		k1 = (fcp.contrast * BRIGHT_ADJUST * fcp.brightness * 268 * PREFILTER_WHITE) / 256.0;
 
@@ -228,9 +234,10 @@ public class Imager implements Constants {
 		}
 
 		lsa[0] = 0;
-		for (i = 1; i <= 1024; i++)
+		for (i = 1; i <= 1024; i++) {
 			lsa[i] = (k1 * Math.log(1 + fcp.white_level * i * k2) / Math
 					.log(10)) / (fcp.white_level * i);
+		}
 
 		ls = 0;
 		ai = 0;
@@ -252,15 +259,16 @@ public class Imager implements Constants {
 
 		for (i = 0; i < fcp.height; i++) {
 			bx = 0;
-			if ((i % 7) == 0)
+			if ((i % 7) == 0) {
 				progress(i * 1.0 / fcp.height);
+			}
 
 			int irow = (yoffset + i) * width;
 
 			for (j = 0; j < fcp.width; j++) {
 				if (filtersize > 1) {
 					fp[0] = fp[1] = fp[2] = fp[3] = 0;
-					for (ii = 0; ii < filtersize; ii++)
+					for (ii = 0; ii < filtersize; ii++) {
 						for (jj = 0; jj < filtersize; jj++) {
 							filtervalue = filter[ii][jj];
 
@@ -272,6 +280,7 @@ public class Imager implements Constants {
 							fp[2] += filtervalue * ls * buckets[ind + iBlue];
 							fp[3] += filtervalue * ls * buckets[ind + iCount];
 						}
+					}
 
 					fp[0] /= PREFILTER_WHITE;
 					fp[1] /= PREFILTER_WHITE;
@@ -301,8 +310,9 @@ public class Imager implements Constants {
 						if (ai <= 0) {
 							pixels[irow + j] = pixelzero;
 							continue;
-						} else if (ai > 255)
+						} else if (ai > 255) {
 							ai = 255;
+						}
 					} else {
 						pixels[irow + j] = pixelzero;
 						continue;
@@ -324,22 +334,25 @@ public class Imager implements Constants {
 					// ignoring background color in transparent renders
 
 					ri = (ri * 255) / ai;
-					if (ri < 0)
+					if (ri < 0) {
 						ri = 0;
-					else if (ri > 255)
+					} else if (ri > 255) {
 						ri = 255;
+					}
 
 					gi = (gi * 255) / ai;
-					if (gi < 0)
+					if (gi < 0) {
 						gi = 0;
-					else if (gi > 255)
+					} else if (gi > 255) {
 						gi = 255;
+					}
 
 					bi = (bi * 255) / ai;
-					if (bi < 0)
+					if (bi < 0) {
 						bi = 0;
-					else if (bi > 255)
+					} else if (bi > 255) {
 						bi = 255;
+					}
 
 					pixels[irow + j] = rbits[ri] | gbits[gi] | bbits[bi]
 							| abits[ai];
@@ -352,11 +365,11 @@ public class Imager implements Constants {
 						alpha = Math.pow(fp[3], gamma);
 						ls = vib * alpha / fp[3];
 						ai = (int) (alpha * 256 + 0.5);
-						if (ai < 0)
+						if (ai < 0) {
 							ai = 0;
-						else if (ai > 255)
+						} else if (ai > 255) {
 							ai = 255;
-						ia = 255 - ai;
+						}
 					} else {
 						pixels[irow + j] = pixeltot;
 						continue;
@@ -375,20 +388,23 @@ public class Imager implements Constants {
 						bi = (int) (ls * fp[2] + 0.5);
 					}
 
-					if (ri < 0)
+					if (ri < 0) {
 						ri = 0;
-					else if (ri > 255)
+					} else if (ri > 255) {
 						ri = 255;
+					}
 
-					if (gi < 0)
+					if (gi < 0) {
 						gi = 0;
-					else if (gi > 255)
+					} else if (gi > 255) {
 						gi = 255;
+					}
 
-					if (bi < 0)
+					if (bi < 0) {
 						bi = 0;
-					else if (bi > 255)
+					} else if (bi > 255) {
 						bi = 255;
+					}
 
 					pixels[irow + j] = rbits[ri] | gbits[gi] | bbits[bi]
 							| abits[ai];
@@ -420,8 +436,9 @@ public class Imager implements Constants {
 
 		String format = "jpg";
 		int i = filename.lastIndexOf(".");
-		if (i > 0)
+		if (i > 0) {
 			format = filename.substring(i + 1);
+		}
 
 		Color bg = new Color(fcp.background[0], fcp.background[1],
 				fcp.background[2]);
@@ -432,8 +449,9 @@ public class Imager implements Constants {
 		g.setColor(bg);
 		g.fillRect(0, 0, width, height);
 		g.drawImage(getImage(), 0, 0, null);
-		if (watermark)
+		if (watermark) {
 			drawWatermark(g, width, height);
+		}
 		g.dispose();
 
 		// ImageIO.write(bimage,format,new File(filename));
@@ -472,8 +490,9 @@ public class Imager implements Constants {
 		if ((encrypt) && (Global.passwordText.length() > 0)) {
 			try {
 				if ((Global.crypto == null)
-						|| !Global.crypto.password.equals(Global.passwordText))
+						|| !Global.crypto.password.equals(Global.passwordText)) {
 					Global.crypto = new Crypto(Global.passwordText);
+				}
 				byte e[] = Global.crypto.encode(sw.toString().getBytes());
 				sw.close();
 
@@ -485,8 +504,9 @@ public class Imager implements Constants {
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
-		} else
+		} else {
 			s = sw.toString();
+		}
 
 		return s;
 
@@ -495,11 +515,13 @@ public class Imager implements Constants {
 	/*****************************************************************************/
 
 	void drawWatermark(Graphics g, int width, int height) {
-		if (Global.watermarkFile.length() == 0)
+		if (Global.watermarkFile.length() == 0) {
 			return;
+		}
 		File file = new File(Global.watermarkFile);
-		if (!file.exists())
+		if (!file.exists()) {
 			return;
+		}
 
 		Image wimage = null;
 
@@ -508,8 +530,9 @@ public class Imager implements Constants {
 		} catch (Exception ex) {
 		}
 
-		if (wimage == null)
+		if (wimage == null) {
 			return;
+		}
 
 		wimage = makeImageTransparent(wimage);
 
@@ -586,8 +609,9 @@ public class Imager implements Constants {
 
 	public Image getImage() {
 
-		if (pixels == null)
+		if (pixels == null) {
 			return null;
+		}
 
 		MemoryImageSource source = new MemoryImageSource(width, height, pixels,
 				0, width);
@@ -611,9 +635,11 @@ public class Imager implements Constants {
 		try {
 			pg.grabPixels();
 
-			for (int i = 0; i < pixels.length; i++)
-				if (pixels[i] == 0xFF000000)
+			for (int i = 0; i < pixels.length; i++) {
+				if (pixels[i] == 0xFF000000) {
 					pixels[i] = 0;
+				}
+			}
 
 			newimage = Toolkit.getDefaultToolkit().createImage(
 					new MemoryImageSource(w, h, pg.getColorModel(), pixels, 0,
@@ -622,10 +648,11 @@ public class Imager implements Constants {
 			ex.printStackTrace();
 		}
 
-		if (newimage != null)
+		if (newimage != null) {
 			return newimage;
-		else
+		} else {
 			return oldimage;
+		}
 
 	} // End of method makeImageTransparent
 

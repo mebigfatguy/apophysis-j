@@ -239,8 +239,6 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 		updateFavorites();
 
-		int nv = XForm.getNrVariations();
-
 		int quality = (int) Global.defSampleDensity;
 		setString(find("tbQualityBox"), "text", "" + quality);
 
@@ -330,7 +328,6 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 					}
 
 					tk = new StringTokenizer(line);
-					int n = tk.countTokens();
 					while (tk.hasMoreTokens()) {
 						temp = tk.nextToken();
 						if (temp.equals("time")) {
@@ -1267,9 +1264,8 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 		int original[] = new int[256];
 		int clist[] = new int[256];
 		int len = 0, len_best = 0, as_is = 0, swapd = 0;
-		int p, total, j, rand, tryit, i0, i1, x, y, i, iw, ih;
+		int p, rand, tryit, i0, i1, x, y, i, iw, ih;
 
-		total = Global.numTries * Global.tryLength / 100;
 		p = 0;
 
 		try {
@@ -1462,8 +1458,6 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 	/*****************************************************************************/
 
 	public void mnuRenderClick() {
-		String ext;
-		boolean newrender;
 
 		if (Global.render.renderthread != null) {
 			confirm("Do you want to abort the current render ?",
@@ -1520,8 +1514,6 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 	/*****************************************************************************/
 
 	public void mnuRenderAllClick() {
-		String ext;
-		boolean newrender;
 
 		if (Global.render.renderthread != null) {
 			confirm("Do you want to abort the current render ?",
@@ -1875,11 +1867,8 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 			return;
 		}
 
-		boolean ok;
-
 		if (Global.confirmDelete) {
 			ControlPoint cp = cps.get(index);
-			Object item = getItem(list, index);
 			confirm("Permanently delete flame '" + cp.name + "' ?",
 					new DeleteTask(index));
 		} else {
@@ -2021,7 +2010,6 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 	public void imageMouseDrag(MouseEvent e, Rectangle bounds) {
 		double dx, dy, cx, cy;
-		double scale;
 		int sgn;
 
 		if ((e.getX() == xdrag) && (e.getY() == ydrag)) {
@@ -2162,7 +2150,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 	/*****************************************************************************/
 
 	void drawZoomWindow() {
-		int dx, dy, cx, cy;
+		int dx, dy;
 		int l, r, t, b;
 
 		Point pos = getPositionInDesktop(canvas);

@@ -253,6 +253,7 @@ public class Editor extends MyThinlet implements Constants, ThreadTarget {
 
 	/*****************************************************************************/
 
+	@Override
 	public boolean destroy() {
 		hide();
 		return false;
@@ -260,6 +261,7 @@ public class Editor extends MyThinlet implements Constants, ThreadTarget {
 
 	/*****************************************************************************/
 
+	@Override
 	public void show() {
 		super.show();
 
@@ -315,12 +317,9 @@ public class Editor extends MyThinlet implements Constants, ThreadTarget {
 
 	public void triangleViewPaint(Graphics g, Rectangle bounds) {
 		double ix, iy, sc;
-		double dx, dy;
 		int width, height;
-		int a_x, a_y, b_x, b_y, c_x, c_y, d_x, d_y, e_x, e_y, f_x, f_y;
-		int n, tc, tn;
-		double d, d1;
-		double tx, ty;
+		int a_x, a_y, b_x, b_y, c_x, c_y;
+		int n;
 		int ax, ay;
 		double gridX1, gridX2, gridY1, gridY2, gi, gstep;
 		int gp;
@@ -902,7 +901,6 @@ public class Editor extends MyThinlet implements Constants, ThreadTarget {
 		} else {
 			g.setColor(Color.black);
 			g.fillRect(0, 0, bounds.width, bounds.height);
-			Font sfont = g.getFont();
 			g.setFont(pfont);
 			g.setColor(Color.white);
 			FontMetrics fm = g.getFontMetrics();
@@ -1523,9 +1521,6 @@ public class Editor extends MyThinlet implements Constants, ThreadTarget {
 		showCoordinates(fmove[0], fmove[1]);
 
 		int mt = mouseOverTriangle;
-		int mc = mouseOverCorner;
-		int me = mouseOverEdge;
-		int mw = mouseOverWidget;
 
 		mouseOverTriangle = -1;
 		mouseOverEdge = -1;
@@ -1954,8 +1949,6 @@ public class Editor extends MyThinlet implements Constants, ThreadTarget {
 	/*****************************************************************************/
 
 	void updateParameterList() {
-		Object list = find("paramlist");
-
 		int kp = 0;
 
 		int nv = XForm.getNrVariations();
@@ -2384,7 +2377,6 @@ public class Editor extends MyThinlet implements Constants, ThreadTarget {
 	/*****************************************************************************/
 
 	public void cornerEditExit() {
-		String s;
 
 		try {
 			Global.mainTriangles[selectedTriangle].x[0] = Double.valueOf(
@@ -2421,7 +2413,6 @@ public class Editor extends MyThinlet implements Constants, ThreadTarget {
 	/*****************************************************************************/
 
 	public void coefValidate() {
-		double newval;
 
 		String s00 = getString(find("txtA"), "text");
 		String s01 = getString(find("txtB"), "text");
@@ -2518,7 +2509,6 @@ public class Editor extends MyThinlet implements Constants, ThreadTarget {
 	/*****************************************************************************/
 
 	public void postValidate() {
-		double newval;
 
 		String s00 = getString(find("txtPost00"), "text");
 		String s01 = getString(find("txtPost01"), "text");

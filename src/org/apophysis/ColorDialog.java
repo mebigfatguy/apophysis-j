@@ -181,7 +181,6 @@ public class ColorDialog {
 			red = Integer.parseInt(getString(find("redfield"), "text"));
 			green = Integer.parseInt(getString(find("greenfield"), "text"));
 			blue = Integer.parseInt(getString(find("bluefield"), "text"));
-			Color color = new Color(red, green, blue);
 			Color.RGBtoHSB(red, green, blue, hsb);
 
 			updateFields();

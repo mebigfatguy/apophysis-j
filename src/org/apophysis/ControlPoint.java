@@ -955,7 +955,6 @@ public class ControlPoint implements Constants {
 
 		int ii, min, max, rnd;
 		double r, s, theta, phi;
-		boolean skip;
 
 		ControlPoint cp = new ControlPoint();
 
@@ -1257,16 +1256,11 @@ public class ControlPoint implements Constants {
 		double deltax, minx, maxx;
 		double deltay, miny, maxy;
 		int cntminx, cntmaxx, cntminy, cntmaxy;
-		double px, py, sina, cosa;
 		int limitoutside;
-		XForm finalXform;
 
 		JulianVariation.npt = 0;
 
-		cosa = Math.cos(fangle);
-		sina = Math.sin(fangle);
-
-		finalXform = prepare(propTable);
+		prepare(propTable);
 
 		iterateXY(points);
 
@@ -1737,10 +1731,8 @@ public class ControlPoint implements Constants {
 
 	void interpolateX(ControlPoint cp1, ControlPoint cp2, double tm) {
 		double c0, c1;
-		float r[] = new float[3];
 		float s[] = new float[3];
 		float t[] = new float[3];
-		double v1, v2;
 		int nxforms1, nxforms2;
 
 		if ((cp2.time - cp1.time) > 1e-6) {

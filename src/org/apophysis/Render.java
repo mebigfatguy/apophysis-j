@@ -279,8 +279,7 @@ public class Render extends MyThinlet implements Constants, ThreadTarget {
 	/*****************************************************************************/
 
 	void renderOne() {
-		int icurrflame;
-		String path, ext;
+		String ext;
 
 		imagewidth = Integer.parseInt(getString(find("cbWidth"), "text"));
 		imageheight = Integer.parseInt(getString(find("cbHeight"), "text"));

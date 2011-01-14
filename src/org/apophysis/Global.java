@@ -539,7 +539,6 @@ public class Global implements Constants {
 
 		// get old format
 		int nv = XForm.getNrVariations();
-		int ne = 0; // number of enabled variations
 		variations = new boolean[nv];
 
 		// variationOptions = getLong("VariationOptions",262143)

@@ -158,6 +158,7 @@ public class Adjust extends MyThinlet implements Constants, ThreadTarget {
 
 	/*****************************************************************************/
 
+	@Override
 	public boolean destroy() {
 		hide();
 		return false;
@@ -165,6 +166,7 @@ public class Adjust extends MyThinlet implements Constants, ThreadTarget {
 
 	/*****************************************************************************/
 
+	@Override
 	public void show() {
 
 		super.show();
@@ -388,9 +390,9 @@ public class Adjust extends MyThinlet implements Constants, ThreadTarget {
 			int g = backupal[i][1];
 			int b = backupal[i][2];
 
-			r = (int) (r + value * (r - 127) / 100);
-			g = (int) (g + value * (g - 127) / 100);
-			b = (int) (b + value * (b - 127) / 100);
+			r = (r + value * (r - 127) / 100);
+			g = (g + value * (g - 127) / 100);
+			b = (b + value * (b - 127) / 100);
 
 			if (r > 255) {
 				r = 255;
