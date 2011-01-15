@@ -753,19 +753,19 @@ public class Adjust extends MyThinlet implements Constants, ThreadTarget {
 
 		try {
 			s = getString(find("txtGamma"), "text");
-			cp.gamma = Double.valueOf(s).doubleValue();
+			cp.gamma = Double.parseDouble(s);
 		} catch (Exception ex) {
 		}
 
 		try {
 			s = getString(find("txtBrightness"), "text");
-			cp.brightness = Double.valueOf(s).doubleValue();
+			cp.brightness = Double.parseDouble(s);
 		} catch (Exception ex) {
 		}
 
 		try {
 			s = getString(find("txtVibrancy"), "text");
-			cp.vibrancy = Double.valueOf(s).doubleValue();
+			cp.vibrancy = Double.parseDouble(s);
 		} catch (Exception ex) {
 		}
 
@@ -852,8 +852,7 @@ public class Adjust extends MyThinlet implements Constants, ThreadTarget {
 
 	public void editPPUValidate(Object field) {
 		try {
-			double value = Double.valueOf(getString(field, "text"))
-					.doubleValue();
+			double value = Double.parseDouble(getString(field, "text"));
 			Global.main.updateUndo();
 			cp.pixels_per_unit = value / 100 * previewwidth;
 			drawPreview();
@@ -867,8 +866,7 @@ public class Adjust extends MyThinlet implements Constants, ThreadTarget {
 
 	public void timeChanged(Object field) {
 		try {
-			double value = Double.valueOf(getString(field, "text"))
-					.doubleValue();
+			double value = Double.parseDouble(getString(field, "text"));
 			Global.main.updateUndo();
 			cp.time = value;
 			Global.mainCP.copy(cp, true);
@@ -880,16 +878,10 @@ public class Adjust extends MyThinlet implements Constants, ThreadTarget {
 
 	public void txtCameraChange() {
 		try {
-			cp.zoom = Double.valueOf(getString(find("txtZoom"), "text"))
-					.doubleValue();
-			cp.center[0] = Double
-					.valueOf(getString(find("txtCenterX"), "text"))
-					.doubleValue();
-			cp.center[1] = Double
-					.valueOf(getString(find("txtCenterY"), "text"))
-					.doubleValue();
-			cp.fangle = Double.valueOf(getString(find("txtAngle"), "text"))
-					.doubleValue() * Math.PI / 180.0;
+			cp.zoom = Double.parseDouble(getString(find("txtZoom"), "text"));
+			cp.center[0] = Double.parseDouble(getString(find("txtCenterX"), "text"));
+			cp.center[1] = Double.parseDouble(getString(find("txtCenterY"), "text"));
+			cp.fangle = Double.parseDouble(getString(find("txtAngle"), "text")) * Math.PI / 180.0;
 
 			setInteger(find("scrollZoom"), "value", (int) (cp.zoom * 1000));
 			setInteger(find("scrollCenterX"), "value",
@@ -944,9 +936,6 @@ public class Adjust extends MyThinlet implements Constants, ThreadTarget {
 		Global.sizepresets[index - 1][3] = imageheight;
 
 		updateSizePresetButtons();
-
-		// Global.main.setWindowSize(imagewidth,imageheight);
-
 	}
 
 	/*****************************************************************************/
