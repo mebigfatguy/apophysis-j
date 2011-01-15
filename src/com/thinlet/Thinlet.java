@@ -8140,18 +8140,24 @@ public class Thinlet extends Container implements Runnable, Serializable {
 		} catch (Throwable e) {
 		}
 		if (image == null) {
+			InputStream is = null;
 			try {
-				InputStream is = getClass().getResourceAsStream(path);
-				// InputStream is = ClassLoader.getSystemResourceAsStream(path);
+				is = getClass().getResourceAsStream(path);
 				if (is != null) {
 					byte[] data = new byte[is.available()];
 					is.read(data, 0, data.length);
 					image = getToolkit().createImage(data);
-					is.close();
 				} else { // contributed by Wolf Paulus
 					image = Toolkit.getDefaultToolkit().getImage(new URL(path));
 				}
 			} catch (Throwable e) {
+			} finally {
+				try {
+					if (is != null) {
+						is.close();
+					}
+				} catch (IOException ioe) {
+				}
 			}
 		}
 		if (preload && (image != null)) {
