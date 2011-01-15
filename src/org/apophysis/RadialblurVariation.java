@@ -84,12 +84,13 @@ public class RadialblurVariation extends Variation {
 		spin = weight * Math.sin(angle * Math.PI / 2);
 		zoom = weight * Math.cos(angle * Math.PI / 2);
 
-		if (spin == 0)
+		if (spin == 0) {
 			context = 0;
-		else if (zoom == 0)
+		} else if (zoom == 0) {
 			context = 1;
-		else
+		} else {
 			context = 2;
+		}
 
 		N = 0;
 		rnd[0] = Math.random();
@@ -115,12 +116,10 @@ public class RadialblurVariation extends Variation {
 
 	@Override
 	public void compute(XForm xform) {
-		double r;
-		double a, cosa, sina;
 
 		switch (context) {
-		case 0:
-			r = zoom * (rnd[0] + rnd[1] + rnd[2] + rnd[3] - 2);
+		case 0: {
+			double r = zoom * (rnd[0] + rnd[1] + rnd[2] + rnd[3] - 2);
 
 			rnd[N] = Math.random();
 			N = (N + 1) & 0x03;
@@ -128,37 +127,35 @@ public class RadialblurVariation extends Variation {
 			xform.fpx += r * xform.ftx;
 			xform.fpy += r * xform.fty;
 			break;
+		}
 
-		case 1:
-			a = xform.fangle + spin * (rnd[0] + rnd[1] + rnd[2] + rnd[3] - 2);
-			cosa = Math.cos(a);
-			sina = Math.sin(a);
-			r = xform.flength;
+		case 1: {
+			double r = xform.flength;
 
 			rnd[N] = Math.random();
 			N = (N + 1) & 0x03;
 
-			r = xform.flength;
-
 			xform.fpx += r * xform.ftx;
 			xform.fpy += r * xform.fty;
 			break;
+		}
 
-		case 2:
+		case 2: {
 			double g = rnd[0] + rnd[1] + rnd[2] + rnd[3] - 2;
 			rnd[N] = Math.random();
 			N = (N + 1) & 0x03;
 
 			double ra = xform.flength;
-			a = Math.atan2(xform.fty, xform.ftx) + spin * g;
-			cosa = Math.cos(a);
-			sina = Math.sin(a);
+			double a = Math.atan2(xform.fty, xform.ftx) + spin * g;
+			double cosa = Math.cos(a);
+			double sina = Math.sin(a);
 
 			double rz = zoom * g - 1;
 
 			xform.fpx += ra * cosa + rz * xform.ftx;
 			xform.fpy += ra * sina + rz * xform.fty;
 			break;
+		}
 		}
 	}
 
