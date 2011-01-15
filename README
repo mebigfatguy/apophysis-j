@@ -1,4 +1,6 @@
-apophysis-j is a port in java of the famous fractal flame editor apophysis for Windows. It is based on the version 2.07 beta of apophysis. It should run on any machine equipped with a decent java environment (1.4 or higher) and bring the capabilities of this wonderful program to mac and linux users at last.
+apophysis-j is a port in java of the famous fractal flame editor apophysis for Windows. It is based on the 
+version 2.07 beta of apophysis. It should run on any machine equipped with a decent java environment (1.5 or higher) 
+and bring the capabilities of this wonderful program to mac and linux users at last.
 
 This project uses ant to build, use
 
