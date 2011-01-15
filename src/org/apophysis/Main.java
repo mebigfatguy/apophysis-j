@@ -206,12 +206,12 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 				fplugin.mkdir();
 			}
 
-			// check if sub-directory apophysis exists
-			String pname = getClass().getPackage().getName();
+			// check if sub-directory org.apophysis exists
+			String pname = getClass().getPackage().getName().replace('.', '/');
 			if (fplugin.exists() && fplugin.isDirectory()) {
 				File fapo = new File(fplugin, pname);
 				if (!fapo.exists()) {
-					fapo.mkdir();
+					fapo.mkdirs();
 				}
 			}
 		}
