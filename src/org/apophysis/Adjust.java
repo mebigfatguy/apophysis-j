@@ -1008,8 +1008,8 @@ public class Adjust extends MyThinlet implements Constants, ThreadTarget {
 		}
 
 		try {
-			int w = Integer.parseInt(getString(combo, "text"));
 			if (Global.maintainRatio) {
+				int w = Integer.parseInt(getString(combo, "text"));
 				int h = cp.height * w / cp.width;
 				setString(find("txtHeight"), "text", "" + h);
 			}
@@ -1027,8 +1027,8 @@ public class Adjust extends MyThinlet implements Constants, ThreadTarget {
 		}
 
 		try {
-			int h = Integer.parseInt(getString(combo, "text"));
 			if (Global.maintainRatio) {
+				int h = Integer.parseInt(getString(combo, "text"));
 				int w = cp.width * h / cp.height;
 				setString(find("txtWidth"), "text", "" + w);
 			}

@@ -55,7 +55,6 @@ public class CosineVariation extends Variation {
 	@Override
 	public void compute(XForm xform) {
 		double r = Math.PI * xform.ftx;
-		double sinr = Math.sin(r);
 		double cosr = Math.cos(r);
 
 		if (xform.fty == 0) {
@@ -63,6 +62,7 @@ public class CosineVariation extends Variation {
 		} else {
 			double e1 = Math.exp(xform.fty);
 			double e2 = Math.exp(-xform.fty);
+			double sinr = Math.sin(r);
 			xform.fpx += weight * cosr * (e1 + e2) / 2;
 			xform.fpy -= weight * sinr * (e1 - e2) / 2;
 		}

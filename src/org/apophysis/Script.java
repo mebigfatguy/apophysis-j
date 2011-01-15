@@ -1067,9 +1067,7 @@ public class Script extends MyThinlet implements Constants {
 		}
 		options.java2js();
 
-		int nv = XForm.getNrVariations();
-
-		int iv = (Global.variation < 0) ? (int) (Math.random() * nv)
+		int iv = (Global.variation < 0) ? (int) (Math.random() * XForm.getNrVariations())
 				: Global.variation;
 		ScriptableObject.putProperty(scope, "Variation",
 				Context.javaToJS(Integer.valueOf(iv), scope));

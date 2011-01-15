@@ -148,12 +148,12 @@ public class Fullscreen extends MyThinlet implements Constants {
 			int h = image.getHeight(null);
 
 			int h2 = bounds.width * h / w;
-			int w2 = bounds.height * w / h;
 
 			if (h2 < bounds.height) {
 				g.drawImage(image, 0, bounds.height / 2 - h2 / 2, bounds.width,
 						h2, null);
 			} else {
+				int w2 = bounds.height * w / h;
 				g.drawImage(image, bounds.width / 2 - w2 / 2, 0, w2,
 						bounds.height, null);
 			}

@@ -1845,8 +1845,6 @@ public class Thinlet extends Container implements Runnable, Serializable {
 					clipy, clipwidth, clipheight, false, false, false, false,
 					0, 0, 0, 0, false, enabled ? 'e' : 'd', "left", true, false);
 		} else if (("button".equals(classname)) || ("togglebutton".equals(classname))) {
-			boolean toggled = ("togglebutton".equals(classname))
-					&& getBoolean(component, "selected", false);
 			boolean link = ("button".equals(classname))
 					&& (get(component, "type") == "link");
 			if (link) {
@@ -1856,6 +1854,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 								: 'l') : 'd', "center", true, enabled
 								&& (inside != pressed));
 			} else { // disabled toggled
+				boolean toggled = ("togglebutton".equals(classname)) && getBoolean(component, "selected", false);
 				char mode = enabled ? ((inside != pressed) ? 'h'
 						: ((pressed || toggled) ? 'p' : 'g')) : 'd';
 				paint(component, 0, 0, bounds.width, bounds.height, g, clipx,
@@ -4599,7 +4598,6 @@ public class Thinlet extends Container implements Runnable, Serializable {
 				}
 			}
 		} else if ("bean".equals(classname)) {
-			Component bean = (Component) get(component, "bean");
 			int modifiers = 0;
 			if (shiftdown) {
 				modifiers |= InputEvent.SHIFT_MASK;
@@ -4613,6 +4611,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 					|| (id == MouseEvent.MOUSE_ENTERED)
 					|| (id == MouseEvent.MOUSE_MOVED)
 					|| (id == MouseEvent.MOUSE_DRAGGED)) {
+				Component bean = (Component) get(component, "bean");
 				bean.dispatchEvent(new MouseEvent(this, id, System
 						.currentTimeMillis(), modifiers, ((Integer) get(
 						component, ":mousex")).intValue(), ((Integer) get(

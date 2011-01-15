@@ -397,13 +397,14 @@ public class ControlPoint implements Constants {
 		double left, top, bottom, right;
 		int n;
 
-		top = 0;
-		bottom = 0;
-		right = 0;
-		left = 0;
 		n = nxforms;
 
 		if (Global.referenceMode > 0) {
+			top = 0;
+			bottom = 0;
+			right = 0;
+			left = 0;
+
 			for (i = 0; i < n; i++) {
 				xset = 1.0;
 				yset = 1.0;

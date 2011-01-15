@@ -295,10 +295,10 @@ public class Render extends MyThinlet implements Constants, ThreadTarget {
 			return;
 		}
 
-		File file = new File(filename);
-		File dir = new File(file.getParent());
-
 		if (renderall) {
+			File file = new File(filename);
+			File dir = new File(file.getParent());
+
 			int k = filename.lastIndexOf('.');
 			ext = (k > 0) ? filename.substring(k) : ".jpg";
 			file = new File(dir, cp.name + ext);
@@ -587,8 +587,8 @@ public class Render extends MyThinlet implements Constants, ThreadTarget {
 		}
 
 		try {
-			int w = Integer.parseInt(getString(combo, "text"));
 			if (getBoolean(find("chkMaintain"), "selected")) {
+				int w = Integer.parseInt(getString(combo, "text"));
 				int h = w * cp.height / cp.width;
 				setString(find("cbHeight"), "text", "" + h);
 			}
@@ -609,8 +609,8 @@ public class Render extends MyThinlet implements Constants, ThreadTarget {
 		}
 
 		try {
-			int h = Integer.parseInt(getString(combo, "text"));
 			if (getBoolean(find("chkMaintain"), "selected")) {
+				int h = Integer.parseInt(getString(combo, "text"));
 				int w = h * cp.width / cp.height;
 				setString(find("cbWidth"), "text", "" + w);
 			}
