@@ -671,8 +671,8 @@ public class Renderer implements Constants {
 			System.out.println("fnumbatches = " + fnumbatches);
 		}
 
-		double fbmax = 500 * Math.pow(2, fcp.zoom);
-		fbmax = fbmax * fcp.width * fcp.height * fcp.width / 500 / 500 / 500;
+		//double fbmax = 500 * Math.pow(2, fcp.zoom);
+		//fbmax = fbmax * fcp.width * fcp.height * fcp.width / 500 / 500 / 500;
 
 		// System.out.println("fbmax = "+((int)fbmax));
 		// System.out.println("fnumbatches = "+fnumbatches);
