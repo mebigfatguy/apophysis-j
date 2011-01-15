@@ -1,0 +1,25 @@
+<!--
+	Apophysis-j Copyright (C) 2011 Dave Brosius
+-->
+<?xml version="1.0" encoding="utf-8"?> 
+<jnlp 
+  spec="1.0+" 
+  codebase="https://github.com/mebigfatguy/apophysis-j/wiki/jnlp" 
+  href="apophysis-j.jnlp">
+  <information> 
+    <title>Apophysis-j</title>
+    <vendor>Apophysis-j.org</vendor> 
+    <homepage href="https://github.com/mebigfatguy/apophysis-j/wiki"/> 
+    <description>A fractal Flame editor</description> 
+    <offline-allowed/> 
+  </information> 
+  <security> 
+      <all-permissions/> 
+  </security> 
+  <resources> 
+    <j2se version="1.5+" initial-heap-size="800m" max-heap-size="1600m"/>
+    <jar href="apophysis-j-$VERSION.jar"/> 
+    <jar href="js.jar"/> 
+  </resources> 
+  <application-desc main-class="org.apophysis.Apophysis"/> 
+</jnlp> 

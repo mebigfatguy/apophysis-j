@@ -1,5 +1,8 @@
 
 classes/
+javadoc/
+jnlp/
 .settings/
 apophysis-j-*.jar
-apophysis-j-src-*.jar
+apophysis-j-src-*.zip
+*.store

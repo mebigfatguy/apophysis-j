@@ -10,7 +10,7 @@
 	<property name="classes.dir" value="${basedir}/classes"/>
 	<property name="lib.dir" value="${basedir}/lib"/>
 	<property name="javadoc.dir" value="${basedir}/javadoc"/>
-	<property name="htdocs.dir" value="${basedir}/htdocs"/>
+	<property name="jnlp.dir" value="${basedir}/jnlp"/>
 	<property name="javac.source" value="1.5"/>
 	<property name="javac.target" value="1.5"/>
 	<property name="javac.deprecation" value="on"/>
@@ -21,11 +21,18 @@
 		<delete dir="${javadoc.dir}"/>
 		<delete file="${basedir}/apophysis-j-${apophysis-j.version}.jar"/>
 		<delete file="${basedir}/apophysis-j-src-${apophysis-j.version}.zip"/>
+		<delete quiet="true">
+			<fileset dir="${jnlp.dir}">
+				<include name="*.jar"/>
+				<include name="*.jnlp"/>
+			</fileset>
+		</delete>
 	</target>
 
 	<target name="-init" description="prepares repository for a build">
 		<mkdir dir="${classes.dir}"/>
 		<mkdir dir="${javadoc.dir}"/>
+		<mkdir dir="${jnlp.dir}"/>
 		<path id="apophysis-j.classpath">
 			<pathelement location="${lib.dir}/js.jar"/>
 		</path>
@@ -40,6 +47,18 @@
     			<include name="**/*.dat"/>
     		</fileset>
 		</copy>
+		<copy todir="${jnlp.dir}">
+			<fileset dir="${basedir}">
+				<include name="*.jnlp"/>
+			</fileset>
+		</copy>
+		<replaceregexp byline="true">
+  			<regexp pattern="\$VERSION"/>
+  			<substitution expression="${apophysis-j.version}"/>
+  			<fileset dir="${jnlp.dir}">
+   				<include name="*.jnlp"/>
+  			</fileset>
+ 		</replaceregexp>
 	</target>
 		
 	<target name="compile" depends="-init" description="compiles java files">
@@ -92,7 +111,7 @@
 	<target name="javadoc" depends="-init" description="build the javadoc for the project">
 		<javadoc packagenames="org.apophysis.*"
 				 sourcepath="${src.dir}"
-				 classpathref="org.apophysis-j.classpath"
+				 classpathref="apophysis-j.classpath"
 				 destdir="${javadoc.dir}"
 				 windowtitle="Apophysis api">
 		    <doctitle><![CDATA[<h1>apophysis-j javadoc</h1>]]></doctitle>
@@ -102,8 +121,28 @@
 
 	<target name="build" depends="clean, -init, compile, resources, jar" description="builds the jar">
 	</target>
+	
+	<target name="jnlp" description="copy jars to jnlp directory">
+		<copy todir="${jnlp.dir}">
+			<fileset dir="${lib.dir}">
+				<include name="*.jar"/>
+			</fileset>
+			<fileset dir="${basedir}">
+				<include name="*.jar"/>
+			</fileset>
+		</copy>
+		<input message="Enter keystore password" addproperty="pass"/>
+		<signjar keystore="apophysis-j.store" 
+		         alias="apophysis-j"
+		         keypass="${pass}"
+		         storepass="${pass}">
+		    <fileset dir="${jnlp.dir}">
+				<include name="*.jar"/>
+			</fileset>
+		</signjar>
+	</target>
 
 
-	<target name="release" depends="build, srczip, javadoc" description="prepares everything for a release"/>
+	<target name="release" depends="build, jnlp, srczip, javadoc" description="prepares everything for a release"/>
 
 </project>
