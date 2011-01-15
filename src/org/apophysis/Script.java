@@ -417,13 +417,13 @@ public class Script extends MyThinlet implements Constants {
 
 		ControlPoint tcp = new ControlPoint();
 		tcp.copy(cp);
-		cps.put(new Integer(index), tcp);
+		cps.put(Integer.valueOf(index), tcp);
 	}
 
 	/*****************************************************************************/
 
 	public void _GetFlame(int index) {
-		ControlPoint tcp = cps.get(new Integer(index));
+		ControlPoint tcp = cps.get(Integer.valueOf(index));
 		if (tcp != null) {
 			js2java();
 			cp.copy(tcp);
@@ -640,8 +640,8 @@ public class Script extends MyThinlet implements Constants {
 	/*****************************************************************************/
 
 	public void _Morph(int a, int b, double c) {
-		ControlPoint cpa = cps.get(new Integer(a));
-		ControlPoint cpb = cps.get(new Integer(b));
+		ControlPoint cpa = cps.get(Integer.valueOf(a));
+		ControlPoint cpb = cps.get(Integer.valueOf(b));
 
 		if ((cpa != null) && (cpb != null)) {
 			cp.interpolateX(cpa, cpb, c);
@@ -1065,19 +1065,19 @@ public class Script extends MyThinlet implements Constants {
 		int iv = (Global.variation < 0) ? (int) (Math.random() * nv)
 				: Global.variation;
 		ScriptableObject.putProperty(scope, "Variation",
-				Context.javaToJS(new Integer(iv), scope));
+				Context.javaToJS(Integer.valueOf(iv), scope));
 
 		ScriptableObject.putProperty(scope, "SelectedTransform", Context
-				.javaToJS(new Integer(Global.editor.selectedTriangle), scope));
+				.javaToJS(Integer.valueOf(Global.editor.selectedTriangle), scope));
 
 		ScriptableObject.putProperty(scope, "ActiveTransform",
-				Context.javaToJS(new Integer(_at_), scope));
+				Context.javaToJS(Integer.valueOf(_at_), scope));
 
 		ScriptableObject.putProperty(scope, "Transforms",
-				Context.javaToJS(new Integer(cp.nxforms), scope));
+				Context.javaToJS(Integer.valueOf(cp.nxforms), scope));
 
 		ScriptableObject.putProperty(scope, "BatchIndex",
-				Context.javaToJS(new Integer(Global.randomIndex), scope));
+				Context.javaToJS(Integer.valueOf(Global.randomIndex), scope));
 
 		ScriptableObject.putProperty(scope, "Stopped",
 				Context.javaToJS(new Boolean(false), scope));
@@ -1315,32 +1315,32 @@ public class Script extends MyThinlet implements Constants {
 				Context.javaToJS(new Double(Math.PI), scope));
 
 		ScriptableObject.putProperty(scope, "NXFORMS",
-				Context.javaToJS(new Integer(NXFORMS), scope));
+				Context.javaToJS(Integer.valueOf(NXFORMS), scope));
 
 		int nv = XForm.getNrVariations();
 		ScriptableObject.putProperty(scope, "NVARS",
-				Context.javaToJS(new Integer(nv), scope));
+				Context.javaToJS(Integer.valueOf(nv), scope));
 
 		int np = XForm.getNrParameters();
 		ScriptableObject.putProperty(scope, "NumVariables",
-				Context.javaToJS(new Integer(np), scope));
+				Context.javaToJS(Integer.valueOf(np), scope));
 
 		ScriptableObject.putProperty(scope, "SYM_NONE",
-				Context.javaToJS(new Integer(0), scope));
+				Context.javaToJS(Integer.valueOf(0), scope));
 
 		ScriptableObject.putProperty(scope, "SYM_BILATERAL",
-				Context.javaToJS(new Integer(1), scope));
+				Context.javaToJS(Integer.valueOf(1), scope));
 
 		ScriptableObject.putProperty(scope, "SYM_ROTATIONAL",
-				Context.javaToJS(new Integer(2), scope));
+				Context.javaToJS(Integer.valueOf(2), scope));
 
 		ScriptableObject.putProperty(scope, "SYM_DIHEDRAL",
-				Context.javaToJS(new Integer(3), scope));
+				Context.javaToJS(Integer.valueOf(3), scope));
 
 		for (int i = 0; i < nv; i++) {
 			String vname = XForm.getVariation(i).getName().toUpperCase();
 			ScriptableObject.putProperty(scope, "V_" + vname,
-					Context.javaToJS(new Integer(i), scope));
+					Context.javaToJS(Integer.valueOf(i), scope));
 		}
 
 		int ip = 0;
@@ -1350,7 +1350,7 @@ public class Script extends MyThinlet implements Constants {
 			for (int j = 0; j < np; j++) {
 				String pname = variation.getParameterName(j).toUpperCase();
 				ScriptableObject.putProperty(scope, "V_" + pname,
-						Context.javaToJS(new Integer(ip), scope));
+						Context.javaToJS(Integer.valueOf(ip), scope));
 				ip++;
 			}
 		}

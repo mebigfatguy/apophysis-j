@@ -3029,7 +3029,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 				if ((mod & java.awt.Event.META_MASK) != 0) {
 					mod = (mod & ~java.awt.Event.META_MASK) | mask;
 					acc = (acc & 0xFFFFFFFFL) | (mod << 32);
-					set(item, "accelerator", new Long(acc));
+					set(item, "accelerator", Long.valueOf(acc));
 				}
 			}
 		}

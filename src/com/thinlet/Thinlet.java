@@ -5464,8 +5464,8 @@ public class Thinlet extends Container implements Runnable, Serializable {
 				insidepart = "down";
 			}
 		} else if ("bean" == classname) {
-			set(component, ":mousex", new Integer(x));
-			set(component, ":mousey", new Integer(y));
+			set(component, ":mousex", Integer.valueOf(x));
+			set(component, ":mousey", Integer.valueOf(y));
 		} else if (":combolist" == classname) {
 			if (!findScroll(component, x, y)) {
 				y += getRectangle(component, ":view").y;
@@ -7582,7 +7582,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 								.getInt(null);
 					}
 				}
-				keystroke = new Long(((long) modifiers) << 32 | keycode);
+				keystroke = Long.valueOf(((long) modifiers) << 32 | keycode);
 			} catch (Exception exc) {
 				throw new IllegalArgumentException(token);
 			}
@@ -8065,7 +8065,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 	private boolean setInteger(Object component, String key, int value,
 			int defaultvalue) {
 		return set(component, key, (value == defaultvalue) ? null
-				: new Integer(value));
+				: Integer.valueOf(value));
 	}
 
 	/**
@@ -8182,9 +8182,9 @@ public class Thinlet extends Container implements Runnable, Serializable {
 
 	private static Object[] dtd;
 	static {
-		Integer integer_1 = new Integer(-1);
-		Integer integer0 = new Integer(0);
-		Integer integer1 = new Integer(1);
+		Integer integer_1 = Integer.valueOf(-1);
+		Integer integer0 = Integer.valueOf(0);
+		Integer integer1 = Integer.valueOf(1);
 		String[] orientation = { "horizontal", "vertical" };
 		String[] leftcenterright = { "left", "center", "right" };
 		String[] selections = { "single", "interval", "multiple" }; // +none
@@ -8332,9 +8332,9 @@ public class Thinlet extends Container implements Runnable, Serializable {
 				"textfield",
 				new Object[][] {
 						{ "integer", "minimum", null,
-								new Integer(Integer.MIN_VALUE) },
+								Integer.valueOf(Integer.MIN_VALUE) },
 						{ "integer", "maximum", null,
-								new Integer(Integer.MAX_VALUE) },
+								Integer.valueOf(Integer.MAX_VALUE) },
 						{ "integer", "step", null, integer1 },
 						{ "integer", "value", null, integer0 } }, // == text?
 																	// deprecated
@@ -8343,13 +8343,13 @@ public class Thinlet extends Container implements Runnable, Serializable {
 				new Object[][] {
 						{ "choice", "orientation", "validate", orientation },
 						{ "integer", "minimum", "paint", integer0 }, // ...checkvalue
-						{ "integer", "maximum", "paint", new Integer(100) },
+						{ "integer", "maximum", "paint", Integer.valueOf(100) },
 						{ "integer", "value", "paint", integer0 } },
 				// change stringpainted
 				"slider",
 				"progressbar",
-				new Object[][] { { "integer", "unit", null, new Integer(5) },
-						{ "integer", "block", null, new Integer(25) },
+				new Object[][] { { "integer", "unit", null, Integer.valueOf(5) },
+						{ "integer", "block", null, Integer.valueOf(25) },
 						{ "method", "perform" }, { "method", "action" } },
 				// minor/majortickspacing
 				// inverted
@@ -8390,7 +8390,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 				"choice",
 				new Object[][] {
 						{ "integer", "width", null,
-								new Integer(DEFAULT_COLUMN_WIDTH) },
+								Integer.valueOf(DEFAULT_COLUMN_WIDTH) },
 						{ "choice", "sort", null,
 								new String[] { "none", "ascent", "descent" } },
 						{ "choice", "datatype", null,
