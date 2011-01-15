@@ -281,7 +281,7 @@ public class XForm implements Constants {
 			return;
 		}
 
-		String pname = (new SPoint()).getClass().getPackage().getName();
+		String pname = (new SPoint()).getClass().getPackage().getName().replace('.', '/');
 		File dapo = new File(dplugin, pname);
 		if (!dapo.exists()) {
 			return;
