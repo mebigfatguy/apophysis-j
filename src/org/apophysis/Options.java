@@ -52,6 +52,7 @@ public class Options extends MyThinlet implements Constants {
 
 	/*****************************************************************************/
 
+	@Override
 	public boolean destroy() {
 		hide();
 		return false;
@@ -64,9 +65,10 @@ public class Options extends MyThinlet implements Constants {
 		int nv = XForm.getNrVariations();
 
 		SortableVariation[] svar = new SortableVariation[nv];
-		for (int i = 0; i < nv; i++)
+		for (int i = 0; i < nv; i++) {
 			svar[i] = new SortableVariation(XForm.getVariation(i).getName(), i,
 					XForm.getVariation(i).getGroup());
+		}
 
 		QuickSort.qsort(svar);
 
@@ -79,15 +81,17 @@ public class Options extends MyThinlet implements Constants {
 			setString(checkbox, "name", "variation" + svar[i].index);
 			setString(checkbox, "text", svar[i].name);
 			setInteger(checkbox, "weightx", 1);
-			if (i % 2 == 0)
+			if (i % 2 == 0) {
 				setColor(checkbox, "background", color);
+			}
 			add(panel, checkbox);
 
 			Object label = createImpl("label");
 			setString(label, "text", "Group " + svar[i].group + "  ");
 			setChoice(label, "alignment", "right");
-			if (i % 2 == 0)
+			if (i % 2 == 0) {
 				setColor(label, "background", color);
+			}
 			add(panel, label);
 		}
 
@@ -97,6 +101,7 @@ public class Options extends MyThinlet implements Constants {
 
 	/*****************************************************************************/
 
+	@Override
 	public void show() {
 		super.show();
 
@@ -171,26 +176,30 @@ public class Options extends MyThinlet implements Constants {
 		setBoolean(find("chkExtendedEdit"), "selected", Global.extEditEnabled);
 		setBoolean(find("chkAxisLock"), "selected", Global.transformAxisLock);
 
-		if (Global.doubleClickSetVars)
+		if (Global.doubleClickSetVars) {
 			setBoolean(find("doubleclick1"), "selected", true);
-		else
+		} else {
 			setBoolean(find("doubleclick0"), "selected", true);
+		}
 
-		if (Global.rotationMode == 1)
+		if (Global.rotationMode == 1) {
 			setBoolean(find("rotationmode1"), "selected", true);
-		else
+		} else {
 			setBoolean(find("rotationmode0"), "selected", true);
+		}
 
-		if (Global.preserveQuality)
+		if (Global.preserveQuality) {
 			setBoolean(find("zoomingmode0"), "selected", true);
-		else
+		} else {
 			setBoolean(find("zoomingmode1"), "selected", true);
+		}
 
 		if (Global.nrThreads == 0) {
 			setInteger(find("cbNrThreads"), "selected", 0);
 			setString(find("cbNrThreads"), "text", "Off");
-		} else
+		} else {
 			setString(find("cbNrThreads"), "text", "" + Global.nrThreads);
+		}
 
 		setString(find("txtJPEGQuality"), "text", "" + Global.jpegQuality);
 
@@ -208,12 +217,13 @@ public class Options extends MyThinlet implements Constants {
 		setString(find("udMaxLum"), "text", "" + Global.maxLum);
 
 		setBoolean(find("grpGradient0"), "selected", true);
-		for (int i = 1; i < 5; i++)
+		for (int i = 1; i < 5; i++) {
 			if (Global.randGradient == i) {
 				setBoolean(find("grpGradient" + Global.randGradient),
 						"selected", true);
 				setBoolean(find("grpGradient0"), "selected", false);
 			}
+		}
 
 		setString(find("txtNumTries"), "text", "" + Global.numTries);
 		setString(find("txtTryLength"), "text", "" + Global.tryLength);
@@ -224,8 +234,9 @@ public class Options extends MyThinlet implements Constants {
 		setString(find("txtGradients"), "text", Global.randGradientFile);
 
 		int nv = XForm.getNrVariations();
-		for (int i = 0; i < nv; i++)
+		for (int i = 0; i < nv; i++) {
 			setBoolean(find("variation" + i), "selected", Global.variations[i]);
+		}
 
 		updateEnabledCount();
 
@@ -241,9 +252,11 @@ public class Options extends MyThinlet implements Constants {
 	void updateEnabledCount() {
 		int nv = XForm.getNrVariations();
 		int ne = 0;
-		for (int i = 0; i < nv; i++)
-			if (getBoolean(find("variation" + i), "selected"))
+		for (int i = 0; i < nv; i++) {
+			if (getBoolean(find("variation" + i), "selected")) {
 				ne++;
+			}
+		}
 
 		setString(find("varEnabled"), "text", "Enabled : " + ne);
 
@@ -398,18 +411,21 @@ public class Options extends MyThinlet implements Constants {
 		Global.helpersEnabled = getBoolean(find("chkHelpers"), "selected");
 		Global.showAllXforms = getBoolean(find("chkShowAllXforms"), "selected");
 
-		for (int i = 0; i < 3; i++)
-			if (getBoolean(find("referencemode" + i), "selected"))
+		for (int i = 0; i < 3; i++) {
+			if (getBoolean(find("referencemode" + i), "selected")) {
 				Global.referenceMode = i;
+			}
+		}
 
 		Global.extEditEnabled = getBoolean(find("chkExtendedEdit"), "selected");
 		Global.transformAxisLock = getBoolean(find("chkAxisLock"), "selected");
 
-		if (getInteger(find("cbNrThreads"), "selected") == 0)
+		if (getInteger(find("cbNrThreads"), "selected") == 0) {
 			Global.nrThreads = 0;
-		else
+		} else {
 			Global.nrThreads = Integer.parseInt(getString(find("cbNrThreads"),
 					"text"));
+		}
 
 		Global.doubleClickSetVars = getBoolean(find("doubleclick1"), "selected");
 
@@ -420,10 +436,11 @@ public class Options extends MyThinlet implements Constants {
 		Global.watermarkPosition = getSelectedIndex(find("cmbWatermark"));
 		Global.watermarkFile = getString(find("txtWatermark"), "text");
 
-		if (getBoolean(find("rotationmode0"), "selected"))
+		if (getBoolean(find("rotationmode0"), "selected")) {
 			Global.rotationMode = 0;
-		else
+		} else {
 			Global.rotationMode = 1;
+		}
 
 		Global.preserveQuality = getBoolean(find("zoomingmode0"), "selected");
 
@@ -442,13 +459,16 @@ public class Options extends MyThinlet implements Constants {
 		Global.maxLum = Integer.parseInt(getString(find("udMaxLum"), "text"));
 
 		Global.randGradient = 0;
-		for (int i = 1; i < 5; i++)
-			if (getBoolean(find("grpGradient" + i), "selected"))
+		for (int i = 1; i < 5; i++) {
+			if (getBoolean(find("grpGradient" + i), "selected")) {
 				Global.randGradient = i;
+			}
+		}
 
 		int nv = XForm.getNrVariations();
-		for (int i = 0; i < nv; i++)
+		for (int i = 0; i < nv; i++) {
 			Global.variations[i] = getBoolean(find("variation" + i), "selected");
+		}
 
 		Global.defLibrary = getString(find("txtLibrary"), "text");
 		Global.defFlameFile = getString(find("txtParameter"), "text");
@@ -510,9 +530,9 @@ public class Options extends MyThinlet implements Constants {
 	public void btnPlayClick() {
 		String filename = getString(find("txtSoundFile"), "text");
 
-		if (filename.length() == 0)
+		if (filename.length() == 0) {
 			beep();
-		else {
+		} else {
 			File file = new File(filename);
 			System.out.println("file exists");
 			if (file.exists()) {
@@ -529,15 +549,17 @@ public class Options extends MyThinlet implements Constants {
 	public void udMinChange(Object minbox, Object maxbox) {
 		int min = Integer.parseInt(getString(minbox, "text"));
 		int max = Integer.parseInt(getString(maxbox, "text"));
-		if (max < min)
+		if (max < min) {
 			setString(maxbox, "text", "" + min);
+		}
 	}
 
 	public void udMaxChange(Object minbox, Object maxbox) {
 		int min = Integer.parseInt(getString(minbox, "text"));
 		int max = Integer.parseInt(getString(maxbox, "text"));
-		if (max < min)
+		if (max < min) {
 			setString(minbox, "text", "" + max);
+		}
 	}
 
 	/*****************************************************************************/
@@ -545,23 +567,26 @@ public class Options extends MyThinlet implements Constants {
 	public void minMutateChange() {
 		int min = Integer.parseInt(getString(find("udMinMutate"), "text"));
 		int max = Integer.parseInt(getString(find("udMaxMutate"), "text"));
-		if (max < min)
+		if (max < min) {
 			setString(find("udMaxMutate"), "text", "" + min);
+		}
 	}
 
 	public void maxMutateChange() {
 		int min = Integer.parseInt(getString(find("udMinMutate"), "text"));
 		int max = Integer.parseInt(getString(find("udMaxMutate"), "text"));
-		if (max < min)
+		if (max < min) {
 			setString(find("udMinMutate"), "text", "" + max);
+		}
 	}
 
 	/*****************************************************************************/
 
 	public void btnSetAllClick() {
 		int nv = XForm.getNrVariations();
-		for (int i = 0; i < nv; i++)
+		for (int i = 0; i < nv; i++) {
 			setBoolean(find("variation" + i), "selected", true);
+		}
 
 		updateEnabledCount();
 
@@ -572,8 +597,9 @@ public class Options extends MyThinlet implements Constants {
 
 	public void btnClearAllClick() {
 		int nv = XForm.getNrVariations();
-		for (int i = 0; i < nv; i++)
+		for (int i = 0; i < nv; i++) {
 			setBoolean(find("variation" + i), "selected", false);
+		}
 
 		updateEnabledCount();
 
@@ -588,8 +614,9 @@ public class Options extends MyThinlet implements Constants {
 		int nv = XForm.getNrVariations();
 		for (int i = 0; i < nv; i++) {
 			boolean b = XForm.getVariation(i).isSheepCompatible();
-			if (b)
+			if (b) {
 				n++;
+			}
 			setBoolean(find("variation" + i), "selected", b);
 		}
 
@@ -658,7 +685,7 @@ public class Options extends MyThinlet implements Constants {
 	/*****************************************************************************/
 	/*****************************************************************************/
 
-	class SortableVariation implements MySortable {
+	static class SortableVariation implements MySortable {
 
 		String name;
 		int index;

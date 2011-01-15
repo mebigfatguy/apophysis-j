@@ -1495,7 +1495,7 @@ public class Script extends MyThinlet implements Constants {
 	/*****************************************************************************/
 	/*****************************************************************************/
 
-	class ExitException extends RuntimeException {
+	static class ExitException extends RuntimeException {
 	}
 
 	/*****************************************************************************/

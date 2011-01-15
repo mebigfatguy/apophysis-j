@@ -3183,7 +3183,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 	/*****************************************************************************/
 	/*****************************************************************************/
 
-	class SortableControlPoint implements MySortable {
+	static class SortableControlPoint implements MySortable {
 
 		ControlPoint cp;
 		String name;
