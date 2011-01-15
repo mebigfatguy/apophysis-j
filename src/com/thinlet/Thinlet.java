@@ -2901,7 +2901,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 			String part, boolean top, boolean left, boolean bottom,
 			boolean right, boolean horizontal) {
 		inside = inside && (insidepart != null) && (insidepart.equals(part));
-		pressed = pressed && (pressedpart == part);
+		pressed = pressed && (pressedpart != null) && (pressedpart.equals(part));
 		paintRect(g, x, y, width, height, enabled ? c_border : c_disable,
 				enabled ? ((inside != pressed) ? c_hover : (pressed ? c_press
 						: c_ctrl)) : c_bg, top, left, bottom, right, horizontal);
