@@ -261,7 +261,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 	protected void doLayout(Object component) {
 
 		String classname = getClass(component);
-		if ("combobox" == classname) {
+		if ("combobox".equals(classname)) {
 			if (getBoolean(component, "editable", true)) {
 				Image icon = getIcon(component, "icon", null);
 				layoutField(component, block, false,
@@ -275,9 +275,9 @@ public class Thinlet extends Container implements Runnable, Serializable {
 					set(component, "icon", get(choice, "icon"));
 				}
 			}
-		} else if (("textfield" == classname) || ("passwordfield" == classname)) {
-			layoutField(component, 0, ("passwordfield" == classname), 0);
-		} else if ("textarea" == classname) {
+		} else if (("textfield".equals(classname)) || ("passwordfield".equals(classname))) {
+			layoutField(component, 0, ("passwordfield".equals(classname)), 0);
+		} else if ("textarea".equals(classname)) {
 			String text = getString(component, "text", "");
 			int start = getInteger(component, "start", 0);
 			if (start > text.length()) {
@@ -323,12 +323,12 @@ public class Thinlet extends Container implements Runnable, Serializable {
 					0, 0, 0, getBoolean(component, "border", true), 0);
 			scrollToVisible(component, caretx, carety, 2,
 					fm.getAscent() + fm.getDescent() + 2); // ?
-		} else if ("tabbedpane" == classname) {
+		} else if ("tabbedpane".equals(classname)) {
 			// tabbedpane (not selected) tab padding are 1, 3, 1, and 3 pt
 			Rectangle bounds = getRectangle(component, "bounds");
 			String placement = getString(component, "placement", "top");
-			boolean horizontal = ((placement == "top") || (placement == "bottom"));
-			boolean stacked = (placement == "stacked");
+			boolean horizontal = (("top".equals(placement)) || ("bottom".equals(placement)));
+			boolean stacked = ("stacked".equals(placement));
 
 			// draw up tabs in row/column
 			int tabd = 0;
@@ -356,8 +356,8 @@ public class Thinlet extends Container implements Runnable, Serializable {
 			}
 
 			// match tab height/width, set tab content size
-			int cx = (placement == "left") ? (tabsize + 1) : 2;
-			int cy = (placement == "top") ? (tabsize + 1) : 2;
+			int cx = ("left".equals(placement)) ? (tabsize + 1) : 2;
+			int cy = ("top".equals(placement)) ? (tabsize + 1) : 2;
 			int cwidth = bounds.width
 					- ((horizontal || stacked) ? 4 : (tabsize + 3));
 			int cheight = bounds.height
@@ -367,12 +367,12 @@ public class Thinlet extends Container implements Runnable, Serializable {
 				Rectangle r = getRectangle(tab, "bounds");
 				if (!stacked) {
 					if (horizontal) {
-						if (placement == "bottom") {
+						if ("bottom".equals(placement)) {
 							r.y = bounds.height - tabsize;
 						}
 						r.height = tabsize;
 					} else {
-						if (placement == "right") {
+						if ("right".equals(placement)) {
 							r.x = bounds.width - tabsize;
 						}
 						r.width = tabsize;
@@ -388,7 +388,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 				}
 			}
 			checkOffset(component);
-		} else if (("panel" == classname) || (classname == "dialog")) {
+		} else if (("panel".equals(classname)) || ("dialog".equals(classname))) {
 			int gap = getInteger(component, "gap", 0);
 			int[][] grid = getGrid(component);
 
@@ -414,11 +414,11 @@ public class Thinlet extends Container implements Runnable, Serializable {
 																// icon
 			setInteger(component, ":titleheight", titleheight, 0);
 			boolean scrollable = getBoolean(component, "scrollable", false);
-			boolean border = ("panel" == classname)
+			boolean border = ("panel".equals(classname))
 					&& getBoolean(component, "border", false);
 			int iborder = (border ? 1 : 0);
 			if (scrollable) { // set scrollpane areas
-				if ("panel" == classname) {
+				if ("panel".equals(classname)) {
 					int head = titleheight / 2;
 					int headgap = (titleheight > 0) ? (titleheight - head - iborder)
 							: 0;
@@ -449,7 +449,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 					Rectangle bounds = getRectangle(component, "bounds");
 					areawidth = bounds.width;
 					areaheight = bounds.height;
-					if ("panel" == classname) {
+					if ("panel".equals(classname)) {
 						areax = iborder;
 						areay = Math.max(iborder, titleheight);
 						areawidth -= 2 * iborder;
@@ -494,22 +494,22 @@ public class Thinlet extends Container implements Runnable, Serializable {
 							false);
 					String halign = getString(comp, "halign", "fill");
 					String valign = getString(comp, "valign", "fill");
-					if ((halign != "fill") || (valign != "fill")) {
+					if ((!"fill".equals(halign)) || (!"fill".equals(valign))) {
 						Dimension d = getPreferredSize(comp);
-						if (halign != "fill") {
+						if (!"fill".equals(halign)) {
 							int dw = Math.max(0, iwidth - d.width);
-							if (halign == "center") {
+							if ("center".equals(halign)) {
 								ix += dw / 2;
-							} else if (halign == "right") {
+							} else if ("right".equals(halign)) {
 								ix += dw;
 							}
 							iwidth -= dw;
 						}
-						if (valign != "fill") {
+						if (!"fill".equals(valign)) {
 							int dh = Math.max(0, iheight - d.height);
-							if (valign == "center") {
+							if ("center".equals(valign)) {
 								iy += dh / 2;
-							} else if (valign == "bottom") {
+							} else if ("bottom".equals(valign)) {
 								iy += dh;
 							}
 							iheight -= dh;
@@ -520,12 +520,12 @@ public class Thinlet extends Container implements Runnable, Serializable {
 					i++;
 				}
 			}
-		} else if ("desktop" == classname) {
+		} else if ("desktop".equals(classname)) {
 			Rectangle bounds = getRectangle(component, "bounds");
 			for (Object comp = get(component, ":comp"); comp != null; comp = get(
 					comp, ":next")) {
 				String iclass = getClass(comp);
-				if (iclass == "dialog") {
+				if ("dialog".equals(iclass)) {
 					Dimension d = getPreferredSize(comp);
 					if (get(comp, "bounds") == null) {
 						setRectangle(comp, "bounds",
@@ -540,9 +540,9 @@ public class Thinlet extends Container implements Runnable, Serializable {
 				}
 				doLayout(comp);
 			}
-		} else if ("spinbox" == classname) {
+		} else if ("spinbox".equals(classname)) {
 			layoutField(component, block, false, 0);
-		} else if ("splitpane" == classname) {
+		} else if ("splitpane".equals(classname)) {
 			Rectangle bounds = getRectangle(component, "bounds");
 			boolean horizontal = ("vertical" != get(component, "orientation"));
 			int divider = getInteger(component, "divider", -1);
@@ -578,12 +578,12 @@ public class Thinlet extends Container implements Runnable, Serializable {
 								: (bounds.height - 5 - divider));
 				doLayout(comp2);
 			}
-		} else if (("list" == classname) || ("table" == classname)
-				|| ("tree" == classname)) {
+		} else if (("list".equals(classname)) || ("table".equals(classname))
+				|| ("tree".equals(classname))) {
 			int line = getBoolean(component, "line", true) ? 1 : 0;
 			int width = 0;
 			int columnheight = 0;
-			if ("table" == classname) {
+			if ("table".equals(classname)) {
 				Object header = get(component, "header");
 				int[] columnwidths = null;
 				if (header != null) {
@@ -615,7 +615,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 				int x = 0;
 				int iwidth = 0;
 				int iheight = 0;
-				if ("table" == classname) {
+				if ("table".equals(classname)) {
 					iwidth = width;
 					for (Object cell = get(item, ":comp"); cell != null; cell = get(
 							cell, ":next")) {
@@ -623,7 +623,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 						iheight = Math.max(iheight, d.height);
 					}
 				} else {
-					if ("tree" == classname) {
+					if ("tree".equals(classname)) {
 						x = (level + 1) * block;
 					}
 					Dimension d = getSize(item, 6, 2);
@@ -633,7 +633,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 				}
 				setRectangle(item, "bounds", x, y, iwidth, iheight);
 				y += iheight + line;
-				if ("tree" == classname) {
+				if ("tree".equals(classname)) {
 					Object next = get(item, ":comp");
 					if ((next != null) && getBoolean(item, "expanded", true)) {
 						level++;
@@ -651,7 +651,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 			}
 			layoutScroll(component, width, y - line, columnheight, 0, 0, 0,
 					true, 0);
-		} else if ("menubar" == classname) {
+		} else if ("menubar".equals(classname)) {
 			Rectangle bounds = getRectangle(component, "bounds");
 			int x = 0;
 			for (Object menu = get(component, ":comp"); menu != null; menu = get(
@@ -660,7 +660,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 				setRectangle(menu, "bounds", x, 0, d.width, bounds.height);
 				x += d.width;
 			}
-		} else if ("bean" == classname) {
+		} else if ("bean".equals(classname)) {
 			Rectangle r = getRectangle(component, "bounds");
 			((Component) get(component, "bean")).setBounds(r);
 		}
@@ -676,7 +676,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 		String placement = getString(component, "placement", "top");
 		int selected = getInteger(component, "selected", 0);
 		int i = 0;
-		if (placement == "stacked") {
+		if ("stacked".equals(placement)) {
 			int dy = 0;
 			for (Object tab = get(component, ":comp"); tab != null; tab = get(
 					tab, ":next")) {
@@ -694,7 +694,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 			}
 			return;
 		}
-		boolean horizontal = ((placement == "top") || (placement == "bottom"));
+		boolean horizontal = (("top".equals(placement)) || ("bottom".equals(placement)));
 		Rectangle bounds = getRectangle(component, "bounds");
 		int panesize = horizontal ? bounds.width : bounds.height;
 		int first = 0;
@@ -952,7 +952,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 		}
 		// set :popup bounds
 		Rectangle menubounds = getRectangle(selected, "bounds");
-		boolean menubar = ("menubar" == getClass(component));
+		boolean menubar = ("menubar".equals(getClass(component)));
 		if (menubar) {
 			popupowner = component;
 		}
@@ -1010,12 +1010,12 @@ public class Thinlet extends Container implements Runnable, Serializable {
 		for (Object item = get(menu, ":comp"); item != null; item = get(item,
 				":next")) {
 			String itemclass = getClass(item);
-			Dimension d = (itemclass == "separator") ? new Dimension(1, 1)
+			Dimension d = ("separator".equals(itemclass)) ? new Dimension(1, 1)
 					: getSize(item, 8, 4);
-			if (itemclass == "checkboxmenuitem") {
+			if ("checkboxmenuitem".equals(itemclass)) {
 				d.width = d.width + block + 3;
 				d.height = Math.max(block, d.height);
-			} else if (itemclass == "menu") {
+			} else if ("menu".equals(itemclass)) {
 				d.width += block;
 			}
 			String accelerator = getAccelerator(item); // add accelerator width
@@ -1087,11 +1087,11 @@ public class Thinlet extends Container implements Runnable, Serializable {
 	private void closeup() {
 		if (popupowner != null) {
 			String classname = getClass(popupowner);
-			if ("menubar" == classname) {
+			if ("menubar".equals(classname)) {
 				set(popupowner, "selected", null);
 				popupMenu(popupowner);
 				repaint(popupowner); // , selected
-			} else if ("combobox" == classname) {
+			} else if ("combobox".equals(classname)) {
 				closeCombo(popupowner, get(popupowner, ":combolist"), null);
 			} else { // "popupmenu"
 				popupMenu(popupowner);
@@ -1107,7 +1107,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 		String text = null;
 		tooltipowner = null;
 		String classname = getClass(mouseinside);
-		if ((classname == "tabbedpane") || (classname == "menubar")
+		if (("tabbedpane".equals(classname)) || ("menubar".equals(classname))
 				|| (classname == ":popup")) {
 			if (insidepart != null) {
 				text = getString(insidepart, "tooltip", null);
@@ -1304,21 +1304,21 @@ public class Thinlet extends Container implements Runnable, Serializable {
 			return new Dimension(width, height);
 		}
 		String classname = getClass(component);
-		if ("label" == classname) {
+		if ("label".equals(classname)) {
 			return getSize(component, 0, 0);
 		}
-		if (("button" == classname) || ("togglebutton" == classname)) {
-			boolean link = ("button" == classname)
+		if (("button".equals(classname)) || ("togglebutton".equals(classname))) {
+			boolean link = ("button".equals(classname))
 					&& (get(component, "type") == "link");
 			return getSize(component, link ? 0 : 12, link ? 0 : 6);
 		}
-		if ("checkbox" == classname) {
+		if ("checkbox".equals(classname)) {
 			Dimension d = getSize(component, 0, 0);
 			d.width = d.width + block + 3;
 			d.height = Math.max(block, d.height);
 			return d;
 		}
-		if ("combobox" == classname) {
+		if ("combobox".equals(classname)) {
 			if (getBoolean(component, "editable", true)) {
 				Dimension size = getFieldSize(component);
 				Image icon = getIcon(component, "icon", null);
@@ -1349,10 +1349,10 @@ public class Thinlet extends Container implements Runnable, Serializable {
 				return size;
 			}
 		}
-		if (("textfield" == classname) || ("passwordfield" == classname)) {
+		if (("textfield".equals(classname)) || ("passwordfield".equals(classname))) {
 			return getFieldSize(component);
 		}
-		if ("textarea" == classname) {
+		if ("textarea".equals(classname)) {
 			int columns = getInteger(component, "columns", 0);
 			int rows = getInteger(component, "rows", 0); // 'e' -> 'm' ?
 			Font currentfont = (Font) get(component, "font");
@@ -1364,9 +1364,9 @@ public class Thinlet extends Container implements Runnable, Serializable {
 							- fm.getLeading() + 2) : 76)
 							+ 2 + block);
 		}
-		if ("tabbedpane" == classname) {
+		if ("tabbedpane".equals(classname)) {
 			String placement = getString(component, "placement", "top");
-			boolean horizontal = ((placement != "left") && (placement != "right"));
+			boolean horizontal = ((!"left".equals(placement)) && (!"right".equals(placement)));
 			int tabsize = 0; // max tab height (for horizontal),
 			// max tabwidth (for vertical), or sum of tab heights for stacked
 			int contentwidth = 0;
@@ -1374,7 +1374,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 			for (Object tab = get(component, ":comp"); tab != null; tab = get(
 					tab, ":next")) {
 				Dimension d = getSize(tab, 0, 0);
-				if (placement == "stacked") {
+				if ("stacked".equals(placement)) {
 					tabsize += d.height + 3;
 				} else {
 					tabsize = Math.max(tabsize, horizontal ? d.height + 5
@@ -1392,11 +1392,11 @@ public class Thinlet extends Container implements Runnable, Serializable {
 					+ (horizontal ? 4 : (tabsize + 3)), contentheight
 					+ (horizontal ? (tabsize + 3) : 4));
 		}
-		if (("panel" == classname) || (classname == "dialog")) {
+		if (("panel".equals(classname)) || ("dialog".equals(classname))) {
 			// title text and icon height
 			Dimension size = getSize(component, 0, 0);
 			// add border size
-			if (classname == "dialog") {
+			if ("dialog".equals(classname)) {
 				size.width = 8;
 				size.height += 8; // title width neglected
 			} else if (getBoolean(component, "border", false)) { // bordered
@@ -1419,12 +1419,12 @@ public class Thinlet extends Container implements Runnable, Serializable {
 				size.height += getSum(grid[1], 0, grid[1].length, gap, false);
 			}
 			return size;
-		} else if ("desktop" == classname) {
+		} else if ("desktop".equals(classname)) {
 			Dimension size = new Dimension();
 			for (Object comp = get(component, ":comp"); comp != null; comp = get(
 					comp, ":next")) {
 				String iclass = getClass(comp);
-				if ((iclass != "dialog") && (iclass != ":popup")
+				if ((!"dialog".equals(iclass)) && (iclass != ":popup")
 						&& (iclass != ":combolist")) {
 					Dimension d = getPreferredSize(comp);
 					size.width = Math.max(d.width, size.width);
@@ -1433,20 +1433,20 @@ public class Thinlet extends Container implements Runnable, Serializable {
 			}
 			return size;
 		}
-		if ("spinbox" == classname) {
+		if ("spinbox".equals(classname)) {
 			Dimension size = getFieldSize(component);
 			size.width += block;
 			return size;
 		}
-		if ("progressbar" == classname) {
+		if ("progressbar".equals(classname)) {
 			boolean horizontal = ("vertical" != get(component, "orientation"));
 			return new Dimension(horizontal ? 76 : 6, horizontal ? 6 : 76);
 		}
-		if ("slider" == classname) {
+		if ("slider".equals(classname)) {
 			boolean horizontal = ("vertical" != get(component, "orientation"));
 			return new Dimension(horizontal ? 76 : 10, horizontal ? 10 : 76);
 		}
-		if ("splitpane" == classname) {
+		if ("splitpane".equals(classname)) {
 			boolean horizontal = ("vertical" != get(component, "orientation"));
 			Object comp1 = get(component, ":comp");
 			Dimension size = ((comp1 == null) || !getBoolean(comp1, "visible",
@@ -1466,14 +1466,14 @@ public class Thinlet extends Container implements Runnable, Serializable {
 			}
 			return size;
 		}
-		if (("list" == classname) || ("table" == classname)
-				|| ("tree" == classname)) {
+		if (("list".equals(classname)) || ("table".equals(classname))
+				|| ("tree".equals(classname))) {
 			return new Dimension(76 + 2 + block, 76 + 2 + block);
 		}
-		if ("separator" == classname) {
+		if ("separator".equals(classname)) {
 			return new Dimension(1, 1);
 		}
-		if ("menubar" == classname) {
+		if ("menubar".equals(classname)) {
 			Dimension size = new Dimension(0, 0);
 			for (Object menu = get(component, ":comp"); menu != null; menu = get(
 					menu, ":next")) {
@@ -1483,7 +1483,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 			}
 			return size;
 		}
-		if ("canvas" == classname) {
+		if ("canvas".equals(classname)) {
 			// check if user registered a method to compute size
 			Dimension d = new Dimension(0, 0);
 			if (invoke(component, null, "size", d)) {
@@ -1840,14 +1840,14 @@ public class Thinlet extends Container implements Runnable, Serializable {
 		boolean focus = focusinside && (focusowner == component);
 		enabled = getBoolean(component, "enabled", true); // enabled &&
 
-		if ("label" == classname) {
+		if ("label".equals(classname)) {
 			paint(component, 0, 0, bounds.width, bounds.height, g, clipx,
 					clipy, clipwidth, clipheight, false, false, false, false,
 					0, 0, 0, 0, false, enabled ? 'e' : 'd', "left", true, false);
-		} else if (("button" == classname) || ("togglebutton" == classname)) {
-			boolean toggled = ("togglebutton" == classname)
+		} else if (("button".equals(classname)) || ("togglebutton".equals(classname))) {
+			boolean toggled = ("togglebutton".equals(classname))
 					&& getBoolean(component, "selected", false);
-			boolean link = ("button" == classname)
+			boolean link = ("button".equals(classname))
 					&& (get(component, "type") == "link");
 			if (link) {
 				paint(component, 0, 0, bounds.width, bounds.height, g, clipx,
@@ -1861,10 +1861,10 @@ public class Thinlet extends Container implements Runnable, Serializable {
 				paint(component, 0, 0, bounds.width, bounds.height, g, clipx,
 						clipy, clipwidth, clipheight, true, true, true, true,
 						2, 5, 2, 5, focus, mode, "center", true, false);
-				// (enabled && ("button" == classname) && get(component, "type")
+				// (enabled && ("button".equals(classname)) && get(component, "type")
 				// == "default")...
 			}
-		} else if ("checkbox" == classname) {
+		} else if ("checkbox".equals(classname)) {
 			paint(component, 0, 0, bounds.width, bounds.height, g, clipx,
 					clipy, clipwidth, clipheight, false, false, false, false,
 					0, block + 3, 0, 0, false, enabled ? 'e' : 'd', "left",
@@ -1905,7 +1905,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 					g.drawOval(4, dy + 4, block - 9, block - 9);
 				}
 			}
-		} else if ("combobox" == classname) {
+		} else if ("combobox".equals(classname)) {
 			if (getBoolean(component, "editable", true)) {
 				Image icon = getIcon(component, "icon", null);
 				int left = (icon != null) ? icon.getWidth(this) : 0;
@@ -1929,23 +1929,23 @@ public class Thinlet extends Container implements Runnable, Serializable {
 				paintArrow(g, bounds.width - block, 0, block, bounds.height,
 						'S');
 			}
-		} else if (":combolist" == classname) {
+		} else if (":combolist".equals(classname)) {
 			paintScroll(component, classname, pressed, inside, focus, enabled,
 					g, clipx, clipy, clipwidth, clipheight);
-		} else if (("textfield" == classname) || ("passwordfield" == classname)) {
+		} else if (("textfield".equals(classname)) || ("passwordfield".equals(classname))) {
 			paintField(g, clipx, clipy, clipwidth, clipheight, component,
 					bounds.width, bounds.height, focus, enabled,
-					("passwordfield" == classname), 0);
-		} else if ("textarea" == classname) {
+					("passwordfield".equals(classname)), 0);
+		} else if ("textarea".equals(classname)) {
 			paintScroll(component, classname, pressed, inside, focus, enabled,
 					g, clipx, clipy, clipwidth, clipheight);
-		} else if ("tabbedpane" == classname) {
+		} else if ("tabbedpane".equals(classname)) {
 			int i = 0;
 			Object selectedtab = null;
 			int selected = getInteger(component, "selected", 0);
 			String placement = getString(component, "placement", "top");
-			boolean horizontal = ((placement == "top") || (placement == "bottom"));
-			boolean stacked = (placement == "stacked");
+			boolean horizontal = (("top".equals(placement)) || ("bottom".equals(placement)));
+			boolean stacked = ("stacked".equals(placement));
 			int bx = stacked ? 0 : horizontal ? 2 : 1, by = stacked ? 0
 					: horizontal ? 1 : 2, bw = 2 * bx, bh = 2 * by;
 			// paint tabs except the selected one
@@ -1960,9 +1960,9 @@ public class Thinlet extends Container implements Runnable, Serializable {
 							&& getBoolean(tab, "enabled", true);
 					paint(tab, r.x + bx, r.y + by, r.width - bw, r.height - bh,
 							g, clipx, clipy, clipwidth, clipheight,
-							(placement != "bottom"), (placement != "right"),
-							!stacked && (placement != "top"),
-							(placement != "left"), 1, 3, 1, 3, false,
+							(!"bottom".equals(placement)), (!"right".equals(placement)),
+							!stacked && (!"top".equals(placement)),
+							(!"left".equals(placement)), 1, 3, 1, 3, false,
 							tabenabled ? (hover ? 'h' : 'g') : 'd', "left",
 							true, false);
 
@@ -1970,9 +1970,9 @@ public class Thinlet extends Container implements Runnable, Serializable {
 					selectedtab = tab;
 					// paint tabbedpane border
 					paint(tab,
-							(placement == "left") ? r.width - 1 : 0,
+							("left".equals(placement)) ? r.width - 1 : 0,
 							stacked ? (r.y + r.height - 1)
-									: (placement == "top") ? r.height - 1 : 0,
+									: ("top".equals(placement)) ? r.height - 1 : 0,
 							(horizontal || stacked) ? bounds.width
 									: (bounds.width - r.width + 1),
 							stacked ? (bounds.height - r.y - r.height + 1)
@@ -2001,16 +2001,16 @@ public class Thinlet extends Container implements Runnable, Serializable {
 				int ph = stacked ? 3 : (horizontal ? 5 : 4);
 				int pv = stacked ? 1 : (horizontal ? 2 : 3);
 				paint(selectedtab, r.x, r.y, r.width, r.height, g, clipx,
-						clipy, clipwidth, clipheight, (placement != "bottom"),
-						(placement != "right"), !stacked
-								&& (placement != "top"), (placement != "left"),
+						clipy, clipwidth, clipheight, (!"bottom".equals(placement)),
+						(!"right".equals(placement)), !stacked
+								&& (!"top".equals(placement)), (!"left".equals(placement)),
 						pv, ph, pv, ph, focus, enabled ? 'b' : 'i', "left",
 						true, false);
 			}
 			g.setClip(clipx, clipy, clipwidth, clipheight); // +clip
-		} else if (("panel" == classname) || ("dialog" == classname)) {
+		} else if (("panel".equals(classname)) || ("dialog".equals(classname))) {
 			int titleheight = getInteger(component, ":titleheight", 0);
-			if ("dialog" == classname) {
+			if ("dialog".equals(classname)) {
 				paint(component, 0, 0, bounds.width, 3 + titleheight, g, clipx,
 						clipy, clipwidth, clipheight, true, true, false, true,
 						1, 2, 1, 2, false, 'g', "left", false, false);
@@ -2067,7 +2067,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 					paint(g, clipx, clipy, clipwidth, clipheight, comp, enabled);
 				}
 			}
-		} else if ("desktop" == classname) {
+		} else if ("desktop".equals(classname)) {
 			paintRect(g, 0, 0, bounds.width, bounds.height, c_border, c_bg,
 					false, false, false, false, true);
 			paintReverse(g, clipx, clipy, clipwidth, clipheight,
@@ -2083,7 +2083,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 				g.drawString(text, r.x + 2, r.y
 						+ g.getFontMetrics().getAscent() + 2); // +nullpointerexception
 			}
-		} else if ("spinbox" == classname) {
+		} else if ("spinbox".equals(classname)) {
 			paintField(g, clipx, clipy, clipwidth, clipheight, component,
 					bounds.width - block, bounds.height, focus, enabled, false,
 					0);
@@ -2093,7 +2093,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 			paintArrow(g, bounds.width - block, bounds.height / 2, block,
 					bounds.height - (bounds.height / 2), 'S', enabled, inside,
 					pressed, "down", true, false, true, true, true);
-		} else if ("progressbar" == classname) {
+		} else if ("progressbar".equals(classname)) {
 			int minimum = getInteger(component, "minimum", 0);
 			int maximum = getInteger(component, "maximum", 100);
 			int value = getInteger(component, "value", 0);
@@ -2122,7 +2122,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 					horizontal ? bounds.height : (bounds.height - length),
 					enabled ? c_border : c_disable, bg, true, true, true, true,
 					true);
-		} else if ("slider" == classname) {
+		} else if ("slider".equals(classname)) {
 			int minimum = getInteger(component, "minimum", 0);
 			int maximum = getInteger(component, "maximum", 100);
 			int value = getInteger(component, "value", 0);
@@ -2154,7 +2154,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 					- (horizontal ? 6 : (block + length)), enabled ? c_border
 					: c_disable, c_bg, horizontal, !horizontal, true, true,
 					true);
-		} else if ("splitpane" == classname) {
+		} else if ("splitpane".equals(classname)) {
 			boolean horizontal = ("vertical" != get(component, "orientation"));
 			int divider = getInteger(component, "divider", -1);
 			paintRect(g, horizontal ? divider : 0, horizontal ? 0 : divider,
@@ -2181,16 +2181,16 @@ public class Thinlet extends Container implements Runnable, Serializable {
 							enabled);
 				}
 			}
-		} else if (("list" == classname) || ("table" == classname)
-				|| ("tree" == classname)) {
+		} else if (("list".equals(classname)) || ("table".equals(classname))
+				|| ("tree".equals(classname))) {
 			paintScroll(component, classname, pressed, inside, focus, enabled,
 					g, clipx, clipy, clipwidth, clipheight);
-		} else if ("separator" == classname) {
+		} else if ("separator".equals(classname)) {
 			g.setColor(enabled ? c_border : c_disable);
 			g.fillRect(0, 0, bounds.width + evm, bounds.height + evm);
-		} else if ("menubar" == classname) {
+		} else if ("menubar".equals(classname)) {
 			Object selected = get(component, "selected");
-			boolean bottom = ("bottom" == get(component, "placement"));
+			boolean bottom = ("bottom".equals(get(component, "placement")));
 			int lastx = 0;
 			for (Object menu = get(component, ":comp"); menu != null; menu = get(
 					menu, ":next")) {
@@ -2218,7 +2218,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 			paintRect(g, lastx, 0, bounds.width - lastx, bounds.height,
 					enabled ? c_border : c_disable, enabled ? c_ctrl : c_bg,
 					bottom, false, !bottom, false, true);
-		} else if (":popup" == classname) {
+		} else if (":popup".equals(classname)) {
 			paintRect(g, 0, 0, bounds.width, bounds.height, c_border, c_textbg,
 					true, true, true, true, true);
 			Object selected = get(component, "selected");
@@ -2232,7 +2232,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 					continue;
 				}
 				String itemclass = getClass(menu);
-				if (itemclass == "separator") {
+				if ("separator".equals(itemclass)) {
 					g.setColor(c_border);
 					g.fillRect(r.x, r.y, bounds.width - 2 + evm, r.height + evm);
 				} else {
@@ -2253,10 +2253,10 @@ public class Thinlet extends Container implements Runnable, Serializable {
 							false,
 							false,
 							2,
-							(itemclass == "checkboxmenuitem") ? (block + 7) : 4,
+							("checkboxmenuitem".equals(itemclass)) ? (block + 7) : 4,
 							2, 4, false, menuenabled ? (armed ? 's' : 't')
 									: 'd', "left", true, false);
-					if (itemclass == "checkboxmenuitem") {
+					if ("checkboxmenuitem".equals(itemclass)) {
 						boolean checked = getBoolean(menu, "selected", false);
 						String group = getString(menu, "group", null);
 						g.translate(r.x + 4, r.y + 2);
@@ -2280,7 +2280,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 						}
 						g.translate(-r.x - 4, -r.y - 2);
 					}
-					if (itemclass == "menu") {
+					if ("menu".equals(itemclass)) {
 						paintArrow(g, r.x + bounds.width - block, r.y, block,
 								r.height, 'E');
 					} else {
@@ -2296,7 +2296,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 					}
 				}
 			}
-		} else if ("canvas" == classname) {
+		} else if ("canvas".equals(classname)) {
 			g.setClip(0, 0, bounds.width, bounds.height);
 			invoke(component, null, "draw", g);
 			g.setClip(clipx, clipy, clipwidth, clipheight);
@@ -2519,9 +2519,9 @@ public class Thinlet extends Container implements Runnable, Serializable {
 
 						Object sort = get(column, "sort"); // "none", "ascent",
 															// "descent"
-						if ((sort != null) && (sort != "none")) {
+						if ((sort != null) && (!"none".equals(sort))) {
 							paintArrow(g, x - view.x + width - block, 0, block,
-									port.y, (sort == "ascent") ? 'S' : 'N');
+									port.y, ("ascent".equals(sort)) ? 'S' : 'N');
 						}
 						x += width;
 					}
@@ -2575,7 +2575,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 	private void paint(Object component, String classname, boolean focus,
 			boolean enabled, Graphics g, int clipx, int clipy, int clipwidth,
 			int clipheight, int portwidth, int viewwidth) {
-		if ("textarea" == classname) {
+		if ("textarea".equals(classname)) {
 			char[] chars = (char[]) get(component, ":text");
 			int start = focus ? getInteger(component, "start", 0) : 0;
 			int end = focus ? getInteger(component, "end", 0) : 0;
@@ -2625,7 +2625,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 			if (customfont != null) {
 				g.setFont(font);
 			} // restore the default font
-		} else if (":combolist" == classname) {
+		} else if (":combolist".equals(classname)) {
 			Object lead = get(component, ":lead");
 			for (Object choice = get(get(component, "combobox"), ":comp"); choice != null; choice = get(
 					choice, ":next")) {
@@ -2659,19 +2659,19 @@ public class Thinlet extends Container implements Runnable, Serializable {
 								: 't')
 								: 'd', "left", false, false);
 			}
-		} else if (("panel" == classname) || ("dialog" == classname)) {
+		} else if (("panel".equals(classname)) || ("dialog".equals(classname))) {
 			for (Object comp = get(component, ":comp"); comp != null; comp = get(
 					comp, ":next")) {
 				paint(g, clipx, clipy, clipwidth, clipheight, comp, enabled);
 			}
-		} else { // if (("list" == classname) || ("table" == classname) ||
-					// ("tree" == classname))
+		} else { // if (("list".equals(classname)) || ("table".equals(classname)) ||
+					// ("tree".equals(classname)))
 			Object lead = get(component, ":lead");
-			int[] columnwidths = ("table" == classname) ? ((int[]) get(
+			int[] columnwidths = ("table".equals(classname)) ? ((int[]) get(
 					component, ":widths")) : null;
 			boolean line = getBoolean(component, "line", true);
 			int iline = line ? 1 : 0;
-			boolean angle = ("tree" == classname)
+			boolean angle = ("tree".equals(classname))
 					&& getBoolean(component, "angle", false);
 			for (Object item = get(component, ":comp"), next = null; item != null; item = next) {
 				if (focus && (lead == null)) {
@@ -2731,7 +2731,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 							clipwidth, clipheight, false, false, false, false,
 							1, 3, 1, 3, false, itemenabled ? 'e' : 'd', "left",
 							false, false);
-					if ("tree" == classname) {
+					if ("tree".equals(classname)) {
 						int x = r.x - block / 2;
 						int y = r.y + (r.height - 1) / 2;
 						if (angle) {
@@ -3116,9 +3116,9 @@ public class Thinlet extends Container implements Runnable, Serializable {
 
 		boolean clipped = (tw + iw > width) || (th > height) || (ih > height);
 		int cx = x;
-		if ("center" == alignment) {
+		if ("center".equals(alignment)) {
 			cx += (width - tw - iw) / 2;
-		} else if ("right" == alignment) {
+		} else if ("right".equals(alignment)) {
 			cx += width - tw - iw;
 		}
 		if (clipped) {
@@ -3482,7 +3482,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 			boolean controldown, int modifiers, int keychar, int keycode) {
 		String classname = getClass(component);
 
-		if ("combobox" == classname) {
+		if ("combobox".equals(classname)) {
 			Object combolist = get(component, ":combolist");
 			if (combolist == null) { // the drop down list is not visible
 				boolean editable = getBoolean(component, "editable", true);
@@ -3535,7 +3535,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 		do {
 			parentDialog = t;
 		} while (("dialog" != getClass(t)) && ((t = getParent(t)) != null));
-		if ((parentDialog != null) && ("dialog" == getClass(parentDialog))) {
+		if ((parentDialog != null) && ("dialog".equals(getClass(parentDialog)))) {
 			if (keycode == KeyEvent.VK_ESCAPE) {
 				if (invoke(parentDialog, null, "close")) {
 					return (true);
@@ -3543,7 +3543,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 			}
 		}
 
-		if ("button" == classname) {
+		if ("button".equals(classname)) {
 			if ((keychar == KeyEvent.VK_SPACE)
 					|| ((keycode == KeyEvent.VK_ENTER) && (get(component,
 							"type") == "default"))
@@ -3554,17 +3554,17 @@ public class Thinlet extends Container implements Runnable, Serializable {
 				repaint(component);
 				return true;
 			}
-		} else if (("checkbox" == classname) || ("togglebutton" == classname)) {
+		} else if (("checkbox".equals(classname)) || ("togglebutton".equals(classname))) {
 			if (keychar == KeyEvent.VK_SPACE) {
 				changeCheck(component, true);
 				repaint(component);
 				return true;
 			}
-		} else if (("textfield" == classname) || ("passwordfield" == classname)) {
+		} else if (("textfield".equals(classname)) || ("passwordfield".equals(classname))) {
 			return processField(component, shiftdown, controldown, modifiers,
-					keychar, keycode, false, ("passwordfield" == classname),
+					keychar, keycode, false, ("passwordfield".equals(classname)),
 					false);
-		} else if ("textarea" == classname) {
+		} else if ("textarea".equals(classname)) {
 			char[] chars = (char[]) get(component, ":text");
 			int start = getInteger(component, "start", 0);
 			int end = getInteger(component, "end", 0);
@@ -3622,7 +3622,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 			}
 			return changeField(component, getString(component, "text", ""),
 					insert, istart, iend, start, end);
-		} else if ("tabbedpane" == classname) {
+		} else if ("tabbedpane".equals(classname)) {
 			if ((keycode == KeyEvent.VK_RIGHT) || (keycode == KeyEvent.VK_DOWN)
 					|| (keycode == KeyEvent.VK_LEFT)
 					|| (keycode == KeyEvent.VK_UP)) {
@@ -3645,7 +3645,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 					invoke(component, getItem(component, newvalue), "action");
 				}
 			}
-		} else if ("spinbox" == classname) {
+		} else if ("spinbox".equals(classname)) {
 			if ((keycode == KeyEvent.VK_UP) || (keycode == KeyEvent.VK_DOWN)) {
 				processSpin(component, (keycode == KeyEvent.VK_UP) ? "up"
 						: "down");
@@ -3653,7 +3653,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 			}
 			return processField(component, shiftdown, controldown, modifiers,
 					keychar, keycode, false, false, true);
-		} else if ("slider" == classname) {
+		} else if ("slider".equals(classname)) {
 			int value = getInteger(component, "value", 0);
 			int d = 0;
 			if ((keycode == KeyEvent.VK_HOME) || (keycode == KeyEvent.VK_LEFT)
@@ -3683,7 +3683,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 				repaint(component);
 				invoke(component, null, "action");
 			}
-		} else if ("splitpane" == classname) {
+		} else if ("splitpane".equals(classname)) {
 			int divider = getInteger(component, "divider", -1);
 			int d = 0;
 			if (keycode == KeyEvent.VK_HOME) {
@@ -3707,10 +3707,10 @@ public class Thinlet extends Container implements Runnable, Serializable {
 				setInteger(component, "divider", divider + d, -1);
 				validate(component);
 			}
-		} else if (("list" == classname) || ("table" == classname)) {
+		} else if (("list".equals(classname)) || ("table".equals(classname))) {
 			return processList(component, shiftdown, controldown, keychar,
 					keycode, false);
-		} else if ("tree" == classname) {
+		} else if ("tree".equals(classname)) {
 			// ? clear childs' selection, select this is its subnode was
 			// selected
 			if (keycode == KeyEvent.VK_LEFT) {
@@ -3751,7 +3751,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 			}
 			return processList(component, shiftdown, controldown, keychar,
 					keycode, true);
-		} else if (("menubar" == classname) || ("popupmenu" == classname)) {
+		} else if (("menubar".equals(classname)) || ("popupmenu".equals(classname))) {
 			// find the last open :popup and the previous one
 			Object previous = null;
 			Object last = null;
@@ -3785,7 +3785,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 					popupMenu(previous);
 					set(previous, "selected", selected);
 					repaint(previous); // , selected
-				} else if ("menubar" == classname) { // select the previous
+				} else if ("menubar".equals(classname)) { // select the previous
 														// menubar menu
 					Object next = getMenu(component,
 							get(component, "selected"), false, false);
@@ -3804,7 +3804,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 																					// menu
 					Object popup = popupMenu(last);
 					set(popup, "selected", getMenu(popup, null, true, true));
-				} else if ("menubar" == classname) { // select the next menubar
+				} else if ("menubar".equals(classname)) { // select the next menubar
 														// menu
 					Object next = getMenu(component,
 							get(component, "selected"), true, false);
@@ -3833,7 +3833,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 			}
 
 			return true;
-		} else if ("canvas" == classname) {
+		} else if ("canvas".equals(classname)) {
 			KeyEvent e = new KeyEvent(this, KeyEvent.KEY_PRESSED,
 					System.currentTimeMillis(), 0, keycode, (char) keychar);
 			invoke(component, null, "key", e);
@@ -4117,7 +4117,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 					recursive);
 			if (row != null) {
 				String selection = getString(component, "selection", "single");
-				if (shiftdown && (selection != "single") && (lead != null)) {
+				if (shiftdown && (!"single".equals(selection)) && (lead != null)) {
 					extend(component, lead, row, recursive);
 				} else if (!controldown) {
 					selectItem(component, row, recursive);
@@ -4432,7 +4432,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 		}
 		String classname = getClass(component);
 
-		if ("canvas" == classname) {
+		if ("canvas".equals(classname)) {
 			Point pos = getAbsolutePosition(component);
 			if (id == MouseEvent.MOUSE_PRESSED) {
 				MouseEvent e = new MouseEvent(this, id,
@@ -4458,8 +4458,8 @@ public class Thinlet extends Container implements Runnable, Serializable {
 						false, ibutton);
 				invoke(component, null, "release", e);
 			}
-		} else if (("list" == classname) || ("table" == classname)
-				|| ("tree" == classname)) {
+		} else if (("list".equals(classname)) || ("table".equals(classname))
+				|| ("tree".equals(classname))) {
 			// check if we need to change the column selection and invoke the
 			// header its action
 			Object header = get(component, "header");
@@ -4503,7 +4503,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 			}
 			if ((header != null) && (get(header, "action") != null)) {
 				if ((insidepart != null) && (insidepart instanceof Object[])
-						&& ("column" == getClass(insidepart))) {
+						&& ("column".equals(getClass(insidepart)))) {
 					noScroll = true;
 					if ((id == MouseEvent.MOUSE_ENTERED)
 							|| (id == MouseEvent.MOUSE_PRESSED)
@@ -4520,10 +4520,10 @@ public class Thinlet extends Container implements Runnable, Serializable {
 							while (column != null) {
 								if (column == insidepart) {
 									sort = get(column, "sort");
-									if ((null == sort) || ("none" == sort)
-											|| ("descent" == sort)) {
+									if ((null == sort) || ("none".equals(sort))
+											|| ("descent".equals(sort))) {
 										sort = "ascent";
-									} else if ("ascent" == sort) {
+									} else if ("ascent".equals(sort)) {
 										sort = "descent";
 									}
 								} else {
@@ -4531,7 +4531,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 								}
 								set(column, "sort", sort);
 								setBoolean(column, "selected", (sort != null)
-										&& (sort != "none"));
+										&& (!"none".equals(sort)));
 								column = get(column, ":next");
 							}
 							invoke(header, null, "action");
@@ -4554,7 +4554,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 							if (id == MouseEvent.MOUSE_DRAGGED) { // !!!
 								scrollToVisible(component, r.x, r.y, 0,
 										r.height);
-							} else if ("tree" == classname) {
+							} else if ("tree".equals(classname)) {
 								int mx = x + port.x - referencex;
 								if (mx < r.x) {
 									if ((mx >= r.x - block)
@@ -4582,7 +4582,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 										repaint(component, classname, item);
 									} // ?
 								}
-								select(component, item, ("tree" == classname),
+								select(component, item, ("tree".equals(classname)),
 										shiftdown, controldown);
 								if (clickcount == 2) {
 									int mx = x + port.x - referencex;
@@ -4594,11 +4594,11 @@ public class Thinlet extends Container implements Runnable, Serializable {
 							break;
 						}
 						item = getNextItem(component, item,
-								("tree" == classname));
+								("tree".equals(classname)));
 					}
 				}
 			}
-		} else if ("bean" == classname) {
+		} else if ("bean".equals(classname)) {
 			Component bean = (Component) get(component, "bean");
 			int modifiers = 0;
 			if (shiftdown) {
@@ -4619,8 +4619,8 @@ public class Thinlet extends Container implements Runnable, Serializable {
 						component, ":mousey")).intValue(), clickcount,
 						popuptrigger));
 			}
-		} else if (((clickcount < 2) && ("button" == classname))
-				|| ("checkbox" == classname) || ("togglebutton" == classname)) {
+		} else if (((clickcount < 2) && ("button".equals(classname)))
+				|| ("checkbox".equals(classname)) || ("togglebutton".equals(classname))) {
 			if ((id == MouseEvent.MOUSE_ENTERED)
 					|| (id == MouseEvent.MOUSE_EXITED)
 					|| (id == MouseEvent.MOUSE_PRESSED)
@@ -4628,7 +4628,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 				if (id == MouseEvent.MOUSE_PRESSED) {
 					setFocus(component);
 				}
-				if (("button" == classname)
+				if (("button".equals(classname))
 						&& ((mousepressed == null) || (mousepressed == component))
 						&& ((id == MouseEvent.MOUSE_ENTERED) || (id == MouseEvent.MOUSE_EXITED))
 						&& (get(component, "type") == "link")) {
@@ -4645,7 +4645,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 				}
 				repaint(component);
 			}
-		} else if ("combobox" == classname) {
+		} else if ("combobox".equals(classname)) {
 			boolean editable = getBoolean(component, "editable", true);
 			if (editable && (part == null)) { // textfield area
 				Image icon = null;
@@ -4654,7 +4654,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 						.getWidth(this) : 0;
 				processField(x, y, clickcount, id, component, false, false,
 						left);
-			} else if (part != "icon") { // part = "down"
+			} else if (!"icon".equals(part)) { // part = "down"
 				if (((id == MouseEvent.MOUSE_ENTERED) || (id == MouseEvent.MOUSE_EXITED))
 						&& (mousepressed == null)) {
 					if (editable) {
@@ -4685,7 +4685,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 					}
 				}
 			}
-		} else if (":combolist" == classname) {
+		} else if (":combolist".equals(classname)) {
 			if (!processScroll(x, y, id, component, part)) {
 				if ((id == MouseEvent.MOUSE_ENTERED) || (id == DRAG_ENTERED)) {
 					if (part != null) { // + scroll if dragged
@@ -4695,24 +4695,24 @@ public class Thinlet extends Container implements Runnable, Serializable {
 					closeCombo(get(component, "combobox"), component, part);
 				}
 			}
-		} else if (("textfield" == classname) || ("passwordfield" == classname)) {
+		} else if (("textfield".equals(classname)) || ("passwordfield".equals(classname))) {
 			processField(x, y, clickcount, id, component, false,
-					("passwordfield" == classname), 0);
-		} else if ("textarea" == classname) {
+					("passwordfield".equals(classname)), 0);
+		} else if ("textarea".equals(classname)) {
 			if (!processScroll(x, y, id, component, part)) {
 				processField(x, y, clickcount, id, component, true, false, 0);
 			}
-		} else if ("panel" == classname) {
+		} else if ("panel".equals(classname)) {
 			processScroll(x, y, id, component, part);
-		} else if ("desktop" == classname) {
-			if (part == "modal") {
+		} else if ("desktop".equals(classname)) {
+			if ("modal".equals(part)) {
 				if (id == MouseEvent.MOUSE_ENTERED) {
 					setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 				} else if (id == MouseEvent.MOUSE_EXITED) {
 					setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 				}
 			}
-		} else if ("spinbox" == classname) {
+		} else if ("spinbox".equals(classname)) {
 			if (part == null) {
 				processField(x, y, clickcount, id, component, false, false, 0);
 			} else { // part = "up" || "down"
@@ -4734,7 +4734,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 					repaint(component, classname, part);
 				}
 			}
-		} else if ("tabbedpane" == classname) {
+		} else if ("tabbedpane".equals(classname)) {
 			if ((id == MouseEvent.MOUSE_ENTERED)
 					|| (id == MouseEvent.MOUSE_EXITED)) {
 				if ((part != null)
@@ -4760,7 +4760,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 					invoke(component, part, "action");
 				}
 			}
-		} else if ("slider" == classname) {
+		} else if ("slider".equals(classname)) {
 			if ((id == MouseEvent.MOUSE_PRESSED)
 					|| (id == MouseEvent.MOUSE_DRAGGED)) {
 				if (id == MouseEvent.MOUSE_PRESSED) {
@@ -4797,7 +4797,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 					invoke(component, null, "perform");
 				}
 			}
-		} else if ("splitpane" == classname) {
+		} else if ("splitpane".equals(classname)) {
 			if (id == MouseEvent.MOUSE_PRESSED) {
 				setReference(component, 2, 2);
 			} else if (id == MouseEvent.MOUSE_DRAGGED) {
@@ -4824,7 +4824,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 					|| ((id == MouseEvent.MOUSE_RELEASED) && (mouseinside != component))) {
 				setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 			}
-		} else if ("menubar" == classname) {
+		} else if ("menubar".equals(classname)) {
 			Object selected = get(component, "selected");
 			if (((id == MouseEvent.MOUSE_ENTERED) || (id == MouseEvent.MOUSE_EXITED))
 					&& (part != null)
@@ -4855,7 +4855,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 					closeup();
 				}
 			}
-		} else if (":popup" == classname) {
+		} else if (":popup".equals(classname)) {
 			if (part != null) {
 				if (((id == MouseEvent.MOUSE_ENTERED) || (id == DRAG_ENTERED))
 						&& getBoolean(part, "enabled", true)) {
@@ -4883,8 +4883,8 @@ public class Thinlet extends Container implements Runnable, Serializable {
 					repaint(component, classname, part);
 				}
 			}
-		} else if ("dialog" == classname) {
-			if (part == "header") {
+		} else if ("dialog".equals(classname)) {
+			if ("header".equals(part)) {
 				if (id == MouseEvent.MOUSE_PRESSED) {
 					Rectangle bounds = getRectangle(component, "bounds");
 					referencex = x - bounds.x;
@@ -5054,11 +5054,11 @@ public class Thinlet extends Container implements Runnable, Serializable {
 			boolean shiftdown, boolean controldown) {
 		String selection = getString(component, "selection", "single");
 		Object lead = null;
-		if (shiftdown && (selection != "single")
+		if (shiftdown && (!"single".equals(selection))
 				&& ((lead = get(component, ":lead")) != null)) {
 			extend(component, lead, row, recursive);
 		} else {
-			if (controldown && (selection == "multiple")) {
+			if (controldown && ("multiple".equals(selection))) {
 				setBoolean(row, "selected",
 						!getBoolean(row, "selected", false), false);
 				repaint(component, null, row);
@@ -5210,8 +5210,8 @@ public class Thinlet extends Container implements Runnable, Serializable {
 	 */
 	private boolean processScroll(int x, int y, int id, Object component,
 			Object part) {
-		if ((part == "up") || (part == "down") || (part == "left")
-				|| (part == "right")) {
+		if (("up".equals(part)) || ("down".equals(part)) || ("left".equals(part))
+				|| ("right".equals(part))) {
 			if ((id == MouseEvent.MOUSE_ENTERED)
 					|| (id == MouseEvent.MOUSE_EXITED)
 					|| (id == MouseEvent.MOUSE_PRESSED)
@@ -5228,8 +5228,8 @@ public class Thinlet extends Container implements Runnable, Serializable {
 					repaint(component, null, part);
 				}
 			}
-		} else if ((part == "uptrack") || (part == "downtrack")
-				|| (part == "lefttrack") || (part == "righttrack")) {
+		} else if (("uptrack".equals(part)) || ("downtrack".equals(part))
+				|| ("lefttrack".equals(part)) || ("righttrack".equals(part))) {
 			if (id == MouseEvent.MOUSE_PRESSED) {
 				if (processScroll(component, part)) {
 					setTimer(300L);
@@ -5237,11 +5237,11 @@ public class Thinlet extends Container implements Runnable, Serializable {
 			} else if (id == MouseEvent.MOUSE_RELEASED) {
 				setTimer(0L);
 			}
-		} else if ((part == "vknob") || (part == "hknob")) {
+		} else if (("vknob".equals(part)) || ("hknob".equals(part))) {
 			if (id == MouseEvent.MOUSE_PRESSED) {
 				Rectangle port = getRectangle(component, ":port");
 				Rectangle view = getRectangle(component, ":view");
-				if (part == "hknob") {
+				if ("hknob".equals(part)) {
 					referencex = x - view.x * (port.width - 2 * block)
 							/ view.width;
 				} else {
@@ -5251,7 +5251,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 			} else if (id == MouseEvent.MOUSE_DRAGGED) {
 				Rectangle port = getRectangle(component, ":port");
 				Rectangle view = getRectangle(component, ":view");
-				if (part == "hknob") {
+				if ("hknob".equals(part)) {
 					int viewx = (x - referencex) * view.width
 							/ (port.width - 2 * block);
 					viewx = Math.max(0,
@@ -5260,7 +5260,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 						view.x = viewx;
 						repaint(component, null, "horizontal");
 					}
-				} else { // (part == "vknob")
+				} else { // ("vknob".equals(part))
 					int viewy = (y - referencey) * view.height
 							/ (port.height - 2 * block);
 					viewy = Math.max(0,
@@ -5271,7 +5271,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 					}
 				}
 			}
-		} else if (part == "corner") {
+		} else if ("corner".equals(part)) {
 			part = "corner"; // compiler bug
 		} else { // ?
 			if (id == MouseEvent.MOUSE_PRESSED) {
@@ -5290,25 +5290,25 @@ public class Thinlet extends Container implements Runnable, Serializable {
 	 */
 	private boolean processScroll(Object component, Object part) {
 		Rectangle view = getRectangle(component, ":view");
-		Rectangle port = ((part == "left") || (part == "up")) ? null
+		Rectangle port = (("left".equals(part)) || ("up".equals(part))) ? null
 				: getRectangle(component, ":port");
 		int dx = 0;
 		int dy = 0;
-		if (part == "left") {
+		if ("left".equals(part)) {
 			dx = -10;
-		} else if (part == "lefttrack") {
+		} else if ("lefttrack".equals(part)) {
 			dx = -port.width;
-		} else if (part == "right") {
+		} else if ("right".equals(part)) {
 			dx = 10;
-		} else if (part == "righttrack") {
+		} else if ("righttrack".equals(part)) {
 			dx = port.width;
-		} else if (part == "up") {
+		} else if ("up".equals(part)) {
 			dy = -10;
-		} else if (part == "uptrack") {
+		} else if ("uptrack".equals(part)) {
 			dy = -port.height;
-		} else if (part == "down") {
+		} else if ("down".equals(part)) {
 			dy = 10;
-		} else if (part == "downtrack") {
+		} else if ("downtrack".equals(part)) {
 			dy = port.height;
 		}
 		if (dx != 0) {
@@ -5326,11 +5326,11 @@ public class Thinlet extends Container implements Runnable, Serializable {
 		view.x += dx;
 		view.y += dy;
 		repaint(component, null, (dx != 0) ? "horizontal" : "vertical");
-		return (((part == "left") || (part == "lefttrack")) && (view.x > 0))
-				|| (((part == "right") || (part == "righttrack")) && (view.x < view.width
+		return ((("left".equals(part)) || ("lefttrack".equals(part))) && (view.x > 0))
+				|| ((("right".equals(part)) || ("righttrack".equals(part))) && (view.x < view.width
 						- port.width))
-				|| (((part == "up") || (part == "uptrack")) && (view.y > 0))
-				|| (((part == "down") || (part == "downtrack")) && (view.y < view.height
+				|| ((("up".equals(part)) || ("uptrack".equals(part))) && (view.y > 0))
+				|| ((("down".equals(part)) || ("downtrack".equals(part))) && (view.y < view.height
 						- port.height));
 	}
 
@@ -5342,11 +5342,11 @@ public class Thinlet extends Container implements Runnable, Serializable {
 		try {
 			int itext = Integer.parseInt(text);
 			int step = getInteger(component, "step", 1);
-			if ((part == "up") ? (itext + step <= getInteger(component,
+			if (("up".equals(part)) ? (itext + step <= getInteger(component,
 					"maximum", Integer.MAX_VALUE))
 					: (itext - step >= getInteger(component, "minimum",
 							Integer.MIN_VALUE))) {
-				String value = String.valueOf((part == "up") ? (itext + step)
+				String value = String.valueOf(("up".equals(part)) ? (itext + step)
 						: (itext - step));
 				setString(component, "text", value, null);
 				setInteger(component, "start", value.length(), 0);
@@ -5387,14 +5387,14 @@ public class Thinlet extends Container implements Runnable, Serializable {
 			for (int i = 0; i < args.length; i++) {
 				Object target = data[2 + 3 * i];
 
-				if ("first" == target) {
+				if ("first".equals(target)) {
 					args[i] = first;
-				} else if ("thinlet" == target) {
+				} else if ("thinlet".equals(target)) {
 					args[i] = this;
-				} else if (("constant" == target)) {
+				} else if (("constant".equals(target))) {
 					args[i] = data[2 + 3 * i + 1];
 				} else {
-					if ("item" == target) {
+					if ("item".equals(target)) {
 						target = part;
 					}
 					Object parametername = data[2 + 3 * i + 1];
@@ -5454,7 +5454,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 		y -= bounds.y;
 		String classname = getClass(component);
 
-		if ("combobox" == classname) {
+		if ("combobox".equals(classname)) {
 			if (getBoolean(component, "editable", true)
 					&& (x <= bounds.width - block)) {
 				Image icon = getIcon(component, "icon", null);
@@ -5463,10 +5463,10 @@ public class Thinlet extends Container implements Runnable, Serializable {
 			} else {
 				insidepart = "down";
 			}
-		} else if ("bean" == classname) {
+		} else if ("bean".equals(classname)) {
 			set(component, ":mousex", Integer.valueOf(x));
 			set(component, ":mousey", Integer.valueOf(y));
-		} else if (":combolist" == classname) {
+		} else if (":combolist".equals(classname)) {
 			if (!findScroll(component, x, y)) {
 				y += getRectangle(component, ":view").y;
 				for (Object choice = get(get(component, "combobox"), ":comp"); choice != null; choice = get(
@@ -5478,9 +5478,9 @@ public class Thinlet extends Container implements Runnable, Serializable {
 					}
 				}
 			}
-		} else if ("textarea" == classname) {
+		} else if ("textarea".equals(classname)) {
 			findScroll(component, x, y);
-		} else if ("tabbedpane" == classname) {
+		} else if ("tabbedpane".equals(classname)) {
 			int selected = getInteger(component, "selected", 0);
 			int i = 0;
 			for (Object tab = get(component, ":comp"); tab != null; tab = get(
@@ -5499,9 +5499,9 @@ public class Thinlet extends Container implements Runnable, Serializable {
 				}
 				i++;
 			}
-		} else if (("panel" == classname) || ("desktop" == classname)
-				|| ("dialog" == classname)) {
-			if ("dialog" == classname) {
+		} else if (("panel".equals(classname)) || ("desktop".equals(classname))
+				|| ("dialog".equals(classname))) {
+			if ("dialog".equals(classname)) {
 				int titleheight = getInteger(component, ":titleheight", 0);
 				boolean resizable = getBoolean(component, "resizable", false);
 				if (resizable && (x < 4)) {
@@ -5543,17 +5543,17 @@ public class Thinlet extends Container implements Runnable, Serializable {
 					if (findComponent(comp, x, y)) {
 						break;
 					}
-					if (("desktop" == classname)
+					if (("desktop".equals(classname))
 							&& getBoolean(comp, "modal", false)) {
 						insidepart = "modal";
 						break;
 					} // && dialog
 				}
 			}
-		} else if ("spinbox" == classname) {
+		} else if ("spinbox".equals(classname)) {
 			insidepart = (x <= bounds.width - block) ? null
 					: ((y <= bounds.height / 2) ? "up" : "down");
-		} else if ("splitpane" == classname) {
+		} else if ("splitpane".equals(classname)) {
 			Object comp1 = get(component, ":comp");
 			if (comp1 != null) {
 				if (!findComponent(comp1, x, y)) {
@@ -5563,9 +5563,9 @@ public class Thinlet extends Container implements Runnable, Serializable {
 					}
 				}
 			}
-		} else if ("list" == classname) {
+		} else if ("list".equals(classname)) {
 			findScroll(component, x, y);
-		} else if ("table" == classname) {
+		} else if ("table".equals(classname)) {
 			// check if we are inside the header, then if we have an action on
 			// this header or it is a
 			// resizable one, do further checks to see if we need to change the
@@ -5619,9 +5619,9 @@ public class Thinlet extends Container implements Runnable, Serializable {
 					&& (get(header, ":resizecomponent") == null)) {
 				findScroll(component, x, y);
 			}
-		} else if ("tree" == classname) {
+		} else if ("tree".equals(classname)) {
 			findScroll(component, x, y);
-		} else if ("menubar" == classname) {
+		} else if ("menubar".equals(classname)) {
 			for (Object menu = get(component, ":comp"); menu != null; menu = get(
 					menu, ":next")) {
 				Rectangle r = getRectangle(menu, "bounds");
@@ -5630,7 +5630,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 					break;
 				}
 			}
-		} else if (":popup" == classname) {
+		} else if (":popup".equals(classname)) {
 			for (Object menu = get(get(component, "menu"), ":comp"); menu != null; menu = get(
 					menu, ":next")) {
 				Rectangle r = getRectangle(menu, "bounds");
@@ -5717,51 +5717,51 @@ public class Thinlet extends Container implements Runnable, Serializable {
 	 */
 	private void repaint(Object component, Object classname, Object part) {
 		Rectangle b = getRectangle(component, "bounds");
-		if (classname == "combobox") { // combobox down arrow
+		if ("combobox".equals(classname)) { // combobox down arrow
 			repaint(component, b.x + b.width - block, b.y, block, b.height); // icon?+
-		} else if (classname == "spinbox") {
-			if (part == "text") { // spinbox textfield content
+		} else if ("spinbox".equals(classname)) {
+			if ("text".equals(part)) { // spinbox textfield content
 				repaint(component, b.x, b.y, b.width - block, b.height);
 			} else { // spinbox increase or decrease button
-				repaint(component, b.x + b.width - block, (part == "up") ? b.y
+				repaint(component, b.x + b.width - block, ("up".equals(part)) ? b.y
 						: (b.y + b.height - b.height / 2), block, b.height / 2);
 			}
 		}
-		// else if (classname == "dialog") {}
+		// else if ("dialog".equals(classname)) {}
 		// int titleheight = getInteger(component, ":titleheight", 0);
-		// else if (classname == "splitpane") {}
-		else if ((classname == "tabbedpane") || // tab
-				(classname == "menubar") || (classname == ":popup")) { // menuitem
+		// else if ("splitpane".equals(classname)) {}
+		else if (("tabbedpane".equals(classname)) || // tab
+				("menubar".equals(classname)) || (classname == ":popup")) { // menuitem
 			Rectangle r = getRectangle(part, "bounds");
 			repaint(component, b.x + r.x, b.y + r.y,
 					(classname == ":popup") ? b.width : r.width, r.height);
 		}
 		// classname: ":combolist" "textarea" "list" "table" "tree"
-		else if ((part == "left") || (part == "right")) { // horizontal
+		else if (("left".equals(part)) || ("right".equals(part))) { // horizontal
 															// scrollbar button
 			Rectangle r = getRectangle(component, ":horizontal");
 			repaint(component, b.x
-					+ ((part == "left") ? r.x : (r.x + r.width - block)), b.y
+					+ (("left".equals(part)) ? r.x : (r.x + r.width - block)), b.y
 					+ r.y, block, r.height);
-		} else if ((part == "up") || (part == "down")) { // vertical scrollbar
+		} else if (("up".equals(part)) || ("down".equals(part))) { // vertical scrollbar
 															// button
 			Rectangle r = getRectangle(component, ":vertical");
 			repaint(component, b.x + r.x, b.y
-					+ ((part == "up") ? r.y : (r.y + r.height - block)),
+					+ (("up".equals(part)) ? r.y : (r.y + r.height - block)),
 					r.width, block);
-		} else if ((part == "text") || (part == "horizontal")
-				|| (part == "vertical")) {
+		} else if (("text".equals(part)) || ("horizontal".equals(part))
+				|| ("vertical".equals(part))) {
 			Rectangle port = getRectangle(component, ":port"); // textarea or
 																// content
 			repaint(component, b.x + port.x, b.y + port.y, port.width,
 					port.height);
-			if (part == "horizontal") {
+			if ("horizontal".equals(part)) {
 				Rectangle r = getRectangle(component, ":horizontal");
 				repaint(component, b.x + r.x, b.y + r.y, r.width, r.height);
 				repaint(component, b.x + r.x, b.y, r.width, port.y); // paint
 																		// header
 																		// too
-			} else if (part == "vertical") {
+			} else if ("vertical".equals(part)) {
 				Rectangle r = getRectangle(component, ":vertical");
 				repaint(component, b.x + r.x, b.y + r.y, r.width, r.height);
 			}
@@ -5980,14 +5980,14 @@ public class Thinlet extends Container implements Runnable, Serializable {
 	 */
 	private boolean isFocusable(Object component, boolean forced) {
 		String classname = getClass(component);
-		if ((classname == "button") || (classname == "checkbox")
-				|| ("togglebutton" == classname) || (classname == "canvas")
-				|| (classname == "combobox") || (classname == "textfield")
-				|| (classname == "passwordfield") || (classname == "textarea")
-				|| (classname == "spinbox") || (classname == "slider")
-				|| (classname == "list") || (classname == "table")
-				|| (classname == "tree") || (classname == "tabbedpane")
-				|| (forced && (classname == "splitpane"))) {
+		if (("button".equals(classname)) || ("checkbox".equals(classname))
+				|| ("togglebutton".equals(classname)) || ("canvas".equals(classname))
+				|| ("combobox".equals(classname)) || ("textfield".equals(classname))
+				|| ("passwordfield".equals(classname)) || ("textarea".equals(classname))
+				|| ("spinbox".equals(classname)) || ("slider".equals(classname))
+				|| ("list".equals(classname)) || ("table".equals(classname))
+				|| ("tree".equals(classname)) || ("tabbedpane".equals(classname))
+				|| (forced && ("splitpane".equals(classname)))) {
 			for (Object comp = component; comp != null;) {
 				// component and parents are enabled and visible
 				if (!getBoolean(comp, "enabled", true)
@@ -6123,12 +6123,12 @@ public class Thinlet extends Container implements Runnable, Serializable {
 	 */
 	public int getSelectedIndex(Object component) {
 		String classname = getClass(component);
-		if ((classname == "combobox") || (classname == "tabbedpane")) {
+		if (("combobox".equals(classname)) || ("tabbedpane".equals(classname))) {
 			return getInteger(component, "selected",
-					(classname == "combobox") ? -1 : 0);
+					("combobox".equals(classname)) ? -1 : 0);
 		}
-		if ((classname == "list") || (classname == "table")
-				|| (classname == "header") || (classname == "tree")) {
+		if (("list".equals(classname)) || ("table".equals(classname))
+				|| ("header".equals(classname)) || ("tree".equals(classname))) {
 			Object item = get(component, ":comp");
 			for (int i = 0; item != null; i++) {
 				if (getBoolean(item, "selected", false)) {
@@ -6150,14 +6150,14 @@ public class Thinlet extends Container implements Runnable, Serializable {
 	 */
 	public Object getSelectedItem(Object component) {
 		String classname = getClass(component);
-		if ((classname == "combobox") || (classname == "tabbedpane")) {
+		if (("combobox".equals(classname)) || ("tabbedpane".equals(classname))) {
 			int index = getInteger(component, "selected",
-					(classname == "combobox") ? -1 : 0);
+					("combobox".equals(classname)) ? -1 : 0);
 			return (index != -1) ? getItemImpl(component, ":comp", index)
 					: null;
 		}
-		if ((classname == "list") || (classname == "table")
-				|| (classname == "header") || (classname == "tree")) {
+		if (("list".equals(classname)) || ("table".equals(classname))
+				|| ("header".equals(classname)) || ("tree".equals(classname))) {
 			for (Object item = findNextItem(component, classname, null); item != null; item = findNextItem(
 					component, classname, item)) {
 				if (getBoolean(item, "selected", false)) {
@@ -6338,7 +6338,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 	public void add(Object parent, Object component, int index) {
 		addImpl(parent, component, index);
 		update(component, "validate");
-		if (("dialog" == getClass(component)) && getBoolean(component, "modal")) {
+		if (("dialog".equals(getClass(component))) && getBoolean(component, "modal")) {
 			checkLocation();
 		}
 		if (parent == content) {
@@ -6373,7 +6373,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 		update(component, "validate");
 		Object parent = getParent(component);
 		Object classname = getClass(component);
-		if (("popupmenu" == classname) || ("header" == classname)) {
+		if (("popupmenu".equals(classname)) || ("header".equals(classname))) {
 			set(parent, classname, null);
 		} else {
 			removeItemImpl(parent, component);
@@ -6443,7 +6443,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 			}
 		}
 		// search in table header
-		Object header = get(component, "header"); // if ("table" == classname)
+		Object header = get(component, "header"); // if ("table".equals(classname))
 		if ((header != null) && ((found = find(header, name)) != null)) {
 			return found;
 		}
@@ -6483,7 +6483,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 			return false;
 		}
 		String classname = getClass(component);
-		if ("label" == classname) {
+		if ("label".equals(classname)) {
 			if (hasMnemonic(component, keycode, modifiers)) {
 				Object labelfor = get(component, "for");
 				if (labelfor != null) {
@@ -6491,7 +6491,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 					return true;
 				}
 			}
-		} else if ("button" == classname) {
+		} else if ("button".equals(classname)) {
 			if (((modifiers == 0) && (((keycode == KeyEvent.VK_ENTER) && (get(
 					component, "type") == "default")) || ((keycode == KeyEvent.VK_ESCAPE) && (get(
 					component, "type") == "cancel"))))
@@ -6500,13 +6500,13 @@ public class Thinlet extends Container implements Runnable, Serializable {
 				repaint(component);
 				return true;
 			}
-		} else if (("checkbox" == classname) || ("togglebutton" == classname)) {
+		} else if (("checkbox".equals(classname)) || ("togglebutton".equals(classname))) {
 			if (hasMnemonic(component, keycode, modifiers)) {
 				changeCheck(component, true);
 				repaint(component);
 				return true;
 			}
-		} else if ("menubar" == classname) {
+		} else if ("menubar".equals(classname)) {
 			for (Object menu = get(component, ":comp"); menu != null; menu = get(
 					menu, ":next")) {
 				if (hasMnemonic(menu, keycode, modifiers)
@@ -6518,12 +6518,12 @@ public class Thinlet extends Container implements Runnable, Serializable {
 					return true;
 				}
 			}
-		} else if (("menuitem" == classname)
-				|| ("checkboxmenuitem" == classname)) {
+		} else if (("menuitem".equals(classname))
+				|| ("checkboxmenuitem".equals(classname))) {
 			if (hasAccelerator(component, keycode, modifiers)) {
 				invoke(component, null, "action");
 			}
-		} else if ("tabbedpane" == classname) {
+		} else if ("tabbedpane".equals(classname)) {
 			int selected = getInteger(component, "selected", 0);
 			int i = 0;
 			for (Object tab = get(component, ":comp"); tab != null; tab = get(
@@ -6545,9 +6545,9 @@ public class Thinlet extends Container implements Runnable, Serializable {
 			}
 		}
 		// check subcomponents
-		if (("panel" == classname) || ("desktop" == classname)
-				|| ("dialog" == classname) || ("splitpane" == classname)
-				|| ("menubar" == classname) || ("menu" == classname)) {
+		if (("panel".equals(classname)) || ("desktop".equals(classname))
+				|| ("dialog".equals(classname)) || ("splitpane".equals(classname))
+				|| ("menubar".equals(classname)) || ("menu".equals(classname))) {
 			for (Object comp = get(component, ":comp"); comp != null; comp = get(
 					comp, ":next")) {
 				if ((comp != checked)
@@ -6561,7 +6561,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 				&& (("dialog" != classname) || !getBoolean(component, "modal",
 						false))) {
 			if (checkMnemonic(getParent(component), true,
-					("tab" == classname) ? checked : component, keycode,
+					("tab".equals(classname)) ? checked : component, keycode,
 					modifiers)) {
 				return true;
 			}
@@ -7125,31 +7125,31 @@ public class Thinlet extends Container implements Runnable, Serializable {
 
 	public void finishParse(Object component, Object definition[],
 			String value, Object root, Object handler) {
-		if ("method" == definition[0]) {
+		if ("method".equals(definition[0])) {
 			Class<?> first = null;
-			if ("draw" == definition[1]) {
+			if ("draw".equals(definition[1])) {
 				first = Graphics.class;
-			} else if ("press" == definition[1]) {
+			} else if ("press".equals(definition[1])) {
 				first = MouseEvent.class;
-			} else if ("drag" == definition[1]) {
+			} else if ("drag".equals(definition[1])) {
 				first = MouseEvent.class;
-			} else if ("move" == definition[1]) {
+			} else if ("move".equals(definition[1])) {
 				first = MouseEvent.class;
-			} else if ("release" == definition[1]) {
+			} else if ("release".equals(definition[1])) {
 				first = MouseEvent.class;
-			} else if ("size" == definition[1]) {
+			} else if ("size".equals(definition[1])) {
 				first = Dimension.class;
-			} else if ("key" == definition[1]) {
+			} else if ("key".equals(definition[1])) {
 				first = KeyEvent.class;
 			}
 
 			Object[] method = getMethod(component, value, root, handler, first);
-			if ("init" == definition[1]) {
+			if ("init".equals(definition[1])) {
 				invokeImpl(method, null, null);
 			} else {
 				set(component, definition[1], method);
 			}
-		} else { // ("component" == definition[0])
+		} else { // ("component".equals(definition)[0])
 			Object reference = find(root, value); // +start find from the
 													// component
 			if (reference == null) {
@@ -7172,29 +7172,29 @@ public class Thinlet extends Container implements Runnable, Serializable {
 	private void addImpl(Object parent, Object component, int index) {
 		String parentclass = getClass(parent);
 		String classname = getClass(component);
-		if ((("combobox" == parentclass) && ("choice" == classname))
-				|| (("tabbedpane" == parentclass) && ("tab" == classname))
-				|| (("list" == parentclass) && ("item" == classname))
-				|| (("table" == parentclass) && ("row" == classname))
-				|| (("header" == parentclass) && ("column" == classname))
-				|| (("row" == parentclass) && ("cell" == classname))
-				|| ((("tree" == parentclass) || ("node" == parentclass)) && ("node" == classname))
-				|| (("menubar" == parentclass) && ("menu" == classname))
-				|| ((("menu" == parentclass) || ("popupmenu" == parentclass)) && (("menu" == classname)
-						|| ("menuitem" == classname)
-						|| ("checkboxmenuitem" == classname) || ("separator" == classname)))
-				|| ((("panel" == parentclass) || ("desktop" == parentclass)
-						|| ("splitpane" == parentclass)
-						|| ("dialog" == parentclass) || ("tab" == parentclass))
-						&& instance(classname, "component") && (classname != "popupmenu"))) {
+		if ((("combobox".equals(parentclass)) && ("choice".equals(classname)))
+				|| (("tabbedpane".equals(parentclass)) && ("tab".equals(classname)))
+				|| (("list".equals(parentclass)) && ("item".equals(classname)))
+				|| (("table".equals(parentclass)) && ("row".equals(classname)))
+				|| (("header".equals(parentclass)) && ("column".equals(classname)))
+				|| (("row".equals(parentclass)) && ("cell".equals(classname)))
+				|| ((("tree".equals(parentclass)) || ("node".equals(parentclass))) && ("node".equals(classname)))
+				|| (("menubar".equals(parentclass)) && ("menu".equals(classname)))
+				|| ((("menu".equals(parentclass)) || ("popupmenu".equals(parentclass))) && (("menu".equals(classname))
+						|| ("menuitem".equals(classname))
+						|| ("checkboxmenuitem".equals(classname)) || ("separator".equals(classname))))
+				|| ((("panel".equals(parentclass)) || ("desktop".equals(parentclass))
+						|| ("splitpane".equals(parentclass))
+						|| ("dialog".equals(parentclass)) || ("tab".equals(parentclass)))
+						&& instance(classname, "component") && (!"popupmenu".equals(classname)))) {
 			insertItem(parent, ":comp", component, index);
 			set(component, ":parent", parent);
-		} else if ((("table" == parentclass) && ("header" == classname))
-				|| (("popupmenu" == classname) && instance(parentclass,
+		} else if ((("table".equals(parentclass)) && ("header".equals(classname)))
+				|| (("popupmenu".equals(classname)) && instance(parentclass,
 						"component"))) {
 			set(parent, classname, component);
 			set(component, ":parent", parent);
-		} else if (("item" == parentclass) && ("popupmenu" == classname)) {
+		} else if (("item".equals(parentclass)) && ("popupmenu".equals(classname))) {
 			set(parent, classname, component);
 			set(component, ":parent", parent);
 		} else {
@@ -7242,14 +7242,14 @@ public class Thinlet extends Container implements Runnable, Serializable {
 
 		Object[] definition = getDefinition(getClass(component), key, null);
 		key = (String) definition[1];
-		if ("string" == definition[0]) {
+		if ("string".equals(definition[0])) {
 			value = (encoding == null) ? new String(value) : new String(
 					value.getBytes(), 0, value.length(), encoding);
 			setString(component, key, value, (String) definition[3]);
-		} else if ("choice" == definition[0]) {
+		} else if ("choice".equals(definition[0])) {
 			String[] values = (String[]) definition[3];
 			setChoice(component, key, value, values, values[0]);
-		} else if ("boolean" == definition[0]) {
+		} else if ("boolean".equals(definition[0])) {
 			if ("true".equals(value)) {
 				if (definition[3] == Boolean.FALSE) {
 					set(component, key, Boolean.TRUE);
@@ -7261,19 +7261,19 @@ public class Thinlet extends Container implements Runnable, Serializable {
 			} else {
 				throw new IllegalArgumentException(value);
 			}
-		} else if ("integer" == definition[0]) {
+		} else if ("integer".equals(definition[0])) {
 			set(component, key, Integer.valueOf(value));
-		} else if ("icon" == definition[0]) {
+		} else if ("icon".equals(definition[0])) {
 			set(component, key, getIcon(value));
-		} else if (("method" == definition[0])
-				|| ("component" == definition[0])) {
+		} else if (("method".equals(definition[0]))
+				|| ("component".equals(definition[0]))) {
 			if (lasts == null) {
 				lasts = new Vector<Object>();
 			}
 			lasts.add(component);
 			lasts.add(definition);
 			lasts.add(value);
-		} else if ("property" == definition[0]) {
+		} else if ("property".equals(definition[0])) {
 			StringTokenizer st = new StringTokenizer(value, ";");
 			while (st.hasMoreTokens()) {
 				String token = st.nextToken();
@@ -7284,7 +7284,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 				putProperty(component, token.substring(0, equals),
 						token.substring(equals + 1));
 			}
-		} else if ("font" == definition[0]) {
+		} else if ("font".equals(definition[0])) {
 			String name = null;
 			boolean bold = false;
 			boolean italic = false;
@@ -7312,7 +7312,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 			}
 			set(component, key, new Font(name, (bold ? Font.BOLD : 0)
 					| (italic ? Font.ITALIC : 0), size));
-		} else if ("color" == definition[0]) {
+		} else if ("color".equals(definition[0])) {
 			int color = 0;
 			if (value.startsWith("#")) {
 				color = Integer.parseInt(value.substring(1), 16);
@@ -7326,9 +7326,9 @@ public class Thinlet extends Container implements Runnable, Serializable {
 						| (Integer.parseInt(st.nextToken()) & 0xff);
 			}
 			set(component, key, new Color(color));
-		} else if ("keystroke" == definition[0]) {
+		} else if ("keystroke".equals(definition[0])) {
 			setKeystrokeImpl(component, key, value);
-		} else if ("bean" == definition[0]) {
+		} else if ("bean".equals(definition[0])) {
 			try {
 				Object beanObject = Class.forName(value).newInstance();
 				set(component, key, beanObject);
@@ -7709,15 +7709,15 @@ public class Thinlet extends Container implements Runnable, Serializable {
 				if ("item".equals(compname)) {
 					comp = "item";
 					String parentclass = getClass(component);
-					if ("list" == parentclass) {
+					if ("list".equals(parentclass)) {
 						classname = "item";
-					} else if ("tree" == parentclass) {
+					} else if ("tree".equals(parentclass)) {
 						classname = "node";
-					} else if ("table" == parentclass) {
+					} else if ("table".equals(parentclass)) {
 						classname = "row";
-					} else if ("combobox" == parentclass) {
+					} else if ("combobox".equals(parentclass)) {
 						classname = "choice";
-					} else if ("tabbedpane" == parentclass) {
+					} else if ("tabbedpane".equals(parentclass)) {
 						classname = "tab";
 					} else {
 						throw new IllegalArgumentException(parentclass
@@ -7766,15 +7766,15 @@ public class Thinlet extends Container implements Runnable, Serializable {
 					data[2 + 3 * j + 2] = definition[3]; // default value, e.g.
 															// Boolean.TRUE
 					Object fieldclass = definition[0];
-					if ((fieldclass == "string") || (fieldclass == "choice")) {
+					if (("string".equals(fieldclass)) || ("choice".equals(fieldclass))) {
 						parametertypes[j] = String.class;
-					} else if (fieldclass == "boolean") {
+					} else if ("boolean".equals(fieldclass)) {
 						parametertypes[j] = Boolean.TYPE;
-					} else if (fieldclass == "integer") {
+					} else if ("integer".equals(fieldclass)) {
 						parametertypes[j] = Integer.TYPE;
-					} else if (fieldclass == "icon") {
+					} else if ("icon".equals(fieldclass)) {
 						parametertypes[j] = Image.class;
-					} else if (fieldclass == "rectangle") {
+					} else if ("rectangle".equals(fieldclass)) {
 						parametertypes[j] = Rectangle.class;
 					} else {
 						throw new IllegalArgumentException((String) fieldclass);
@@ -7797,7 +7797,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 	 *
 	 */
 	private void update(Object component, Object mode) {
-		if ("parent" == mode) {
+		if ("parent".equals(mode)) {
 			component = getParent(component);
 			mode = "validate";
 		}
@@ -7810,7 +7810,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 			if (!getBoolean(component, "visible", true)) {
 				break;
 			}
-			if ("paint" == mode) {// || (firstpaint && (component == content))
+			if ("paint".equals(mode)) {// || (firstpaint && (component == content))
 				Rectangle bounds = getRectangle(component, "bounds");
 				if (bounds == null) {
 					return;
@@ -7831,19 +7831,19 @@ public class Thinlet extends Container implements Runnable, Serializable {
 			}
 			Object parent = getParent(component);
 			String classname = getClass(parent);
-			if ("combobox" == classname) {
+			if ("combobox".equals(classname)) {
 				parent = get(parent, ":combolist");
-			} else if ("menu" == classname) {
+			} else if ("menu".equals(classname)) {
 				parent = get(parent, ":popup");
-			} else if (("paint" == mode) && ("tabbedpane" == classname)) {
+			} else if (("paint".equals(mode)) && ("tabbedpane".equals(classname))) {
 				if (getItem(parent, getInteger(parent, "selected", 0)) != component) {
 					break;
 				}
 			}
-			if (("layout" == mode)
-					|| (("validate" == mode) && (("list" == classname)
-							|| ("table" == classname) || ("tree" == classname)
-							|| ("dialog" == classname) || (parent == content)))) {
+			if (("layout".equals(mode))
+					|| (("validate".equals(mode)) && (("list".equals(classname))
+							|| ("table".equals(classname)) || ("tree".equals(classname))
+							|| ("dialog".equals(classname)) || (parent == content)))) {
 				Rectangle bounds = getRectangle(parent, "bounds");
 				if (bounds == null) {
 					return;
