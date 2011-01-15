@@ -33,7 +33,7 @@ public interface Constants {
 
 	/****************************************************************************/
 
-	static final String VERSION = "2.7";
+	static final String VERSION = "2.8";
 	static final String APPNAME = "apophysis-j";
 
 	static final String DIRNAME = ".apophysis-j";
