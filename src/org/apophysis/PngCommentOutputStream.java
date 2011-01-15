@@ -103,7 +103,6 @@ public class PngCommentOutputStream extends OutputStream implements Constants {
 		int sep = 0; // separator
 		int comp = 0; // compression method
 		byte[] b2 = deflate(comment);
-		;
 
 		int len = b1.length + 2 + b2.length;
 
@@ -151,8 +150,9 @@ public class PngCommentOutputStream extends OutputStream implements Constants {
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		DeflaterOutputStream dos = new DeflaterOutputStream(bos);
 		int n = s.length();
-		for (int i = 0; i < n; i++)
+		for (int i = 0; i < n; i++) {
 			dos.write(s.charAt(i));
+		}
 		dos.close();
 		return bos.toByteArray();
 	}

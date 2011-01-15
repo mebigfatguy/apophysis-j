@@ -52,7 +52,7 @@ public class BASE64DecoderStream extends FilterInputStream {
 	// used by getByte method. this buffer contains encoded bytes.
 	private final byte[] input_buffer = new byte[78 * 105];
 	private int input_pos = 0;
-	private int input_len = 0;;
+	private int input_len = 0;
 
 	private boolean ignoreErrors = false;
 

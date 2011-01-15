@@ -4602,10 +4602,10 @@ public class Thinlet extends Container implements Runnable, Serializable {
 			Component bean = (Component) get(component, "bean");
 			int modifiers = 0;
 			if (shiftdown) {
-				modifiers |= KeyEvent.SHIFT_MASK;
+				modifiers |= InputEvent.SHIFT_MASK;
 			}
 			if (controldown) {
-				modifiers |= KeyEvent.CTRL_MASK;
+				modifiers |= InputEvent.CTRL_MASK;
 			}
 			if ((id == MouseEvent.MOUSE_PRESSED)
 					|| (id == MouseEvent.MOUSE_RELEASED)

@@ -83,7 +83,6 @@ public class ScriptConverter {
 		}
 
 		while (processFormat(sb)) {
-			;
 		}
 
 		// save literals
@@ -117,13 +116,10 @@ public class ScriptConverter {
 		}
 
 		while (processInputQuery(sb)) {
-			;
 		}
 		while (processProcedure(sb)) {
-			;
 		}
 		while (processWith(sb)) {
-			;
 		}
 
 		processStructure(sb, "Flame", JSFlame.class);
@@ -235,12 +231,10 @@ public class ScriptConverter {
 
 		// process CASE statements
 		while (processCaseStatement(sb)) {
-			;
 		}
 
 		// process DELETE statements
 		while (processDeleteStatement(sb)) {
-			;
 		}
 
 		replaceWord(sb, "begin", "{");

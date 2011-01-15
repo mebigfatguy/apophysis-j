@@ -103,7 +103,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 	RenderThread renderthread;
 
-	ControlPoint renderCP = null;;
+	ControlPoint renderCP = null;
 
 	double[] center = new double[2];
 	double[] viewpos = new double[2];
