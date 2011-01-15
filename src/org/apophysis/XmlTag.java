@@ -237,7 +237,7 @@ public class XmlTag {
 
 		double[] dd = new double[n];
 		for (int i = 0; i < n; i++) {
-			dd[i] = Double.valueOf(tk.nextToken()).doubleValue();
+			dd[i] = Double.parseDouble(tk.nextToken());
 		}
 
 		return dd;
@@ -250,7 +250,7 @@ public class XmlTag {
 		if (s == null) {
 			return value;
 		} else {
-			return Double.valueOf(s).doubleValue();
+			return Double.parseDouble(s);
 		}
 	}
 

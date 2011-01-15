@@ -164,10 +164,10 @@ public class Export extends MyThinlet implements Constants {
 
 			imageWidth = Integer.parseInt(getString(find("cbWidth"), "text"));
 			imageHeight = Integer.parseInt(getString(find("cbHeight"), "text"));
-			sample_density = Double.valueOf(
-					getString(find("txtDensity"), "text")).doubleValue();
-			filter_radius = Double.valueOf(
-					getString(find("txtFilterRadius"), "text")).doubleValue();
+			sample_density = Double.parseDouble(
+					getString(find("txtDensity"), "text"));
+			filter_radius = Double.parseDouble(
+					getString(find("txtFilterRadius"), "text"));
 			oversample = Integer.parseInt(getString(find("udOversample"),
 					"text"));
 

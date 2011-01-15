@@ -247,8 +247,8 @@ public class ControlPoint implements Constants {
 		String s = getHashString(h, "center", "");
 		int ii = s.indexOf('/');
 		if (ii > 0) {
-			center[0] = Double.valueOf(s.substring(0, ii)).doubleValue();
-			center[1] = Double.valueOf(s.substring(ii + 1)).doubleValue();
+			center[0] = Double.parseDouble(s.substring(0, ii));
+			center[1] = Double.parseDouble(s.substring(ii + 1));
 		}
 
 		spatial_filter_radius = getHashDouble(h, "p_spat_filt_rad",
@@ -321,7 +321,7 @@ public class ControlPoint implements Constants {
 		if (s == null) {
 			return value;
 		} else {
-			return Double.valueOf(s).doubleValue();
+			return Double.parseDouble(s);
 		}
 	}
 

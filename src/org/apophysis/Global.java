@@ -781,7 +781,7 @@ public class Global implements Constants {
 		if (s == null) {
 			return value;
 		} else {
-			return Double.valueOf(s).doubleValue();
+			return Double.parseDouble(s);
 		}
 	}
 

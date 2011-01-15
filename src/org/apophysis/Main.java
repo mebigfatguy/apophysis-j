@@ -331,96 +331,80 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 					while (tk.hasMoreTokens()) {
 						temp = tk.nextToken();
 						if (temp.equals("time")) {
-							cp.time = Double.valueOf(tk.nextToken())
-									.doubleValue();
+							cp.time = Double.parseDouble(tk.nextToken())
+									;
 						} else if (temp.equals("zoom")) {
-							cp.zoom = Double.valueOf(tk.nextToken())
-									.doubleValue();
+							cp.zoom = Double.parseDouble(tk.nextToken())
+									;
 						} else if (temp.equals("angle")) {
-							cp.fangle = Double.valueOf(tk.nextToken())
-									.doubleValue();
+							cp.fangle = Double.parseDouble(tk.nextToken())
+									;
 						} else if (temp.equals("image_size")) {
 							cp.width = Integer.parseInt(tk.nextToken());
 							cp.height = Integer.parseInt(tk.nextToken());
 						} else if (temp.equals("center")) {
-							cp.center[0] = Double.valueOf(tk.nextToken())
-									.doubleValue();
-							cp.center[1] = Double.valueOf(tk.nextToken())
-									.doubleValue();
+							cp.center[0] = Double.parseDouble(tk.nextToken())
+									;
+							cp.center[1] = Double.parseDouble(tk.nextToken())
+									;
 						} else if (temp.equals("pixels_per_unit")) {
-							cp.pixels_per_unit = Double.valueOf(tk.nextToken())
-									.doubleValue();
+							cp.pixels_per_unit = Double.parseDouble(tk.nextToken())
+									;
 						} else if (temp.equals("spatial_oversample")) {
 							cp.spatial_oversample = Integer.parseInt(tk
 									.nextToken());
 						} else if (temp.equals("spatial_filter_radius")) {
-							cp.spatial_filter_radius = Double.valueOf(
-									tk.nextToken()).doubleValue();
+							cp.spatial_filter_radius = Double.parseDouble(
+									tk.nextToken());
 						} else if (temp.equals("sample_density")) {
-							cp.sample_density = Double.valueOf(tk.nextToken())
-									.doubleValue();
+							cp.sample_density = Double.parseDouble(tk.nextToken())
+									;
 						} else if (temp.equals("background")) {
 							cp.background[0] = Integer.parseInt(tk.nextToken());
 							cp.background[1] = Integer.parseInt(tk.nextToken());
 							cp.background[2] = Integer.parseInt(tk.nextToken());
 						} else if (temp.equals("brightness")) {
-							cp.brightness = Double.valueOf(tk.nextToken())
-									.doubleValue();
+							cp.brightness = Double.parseDouble(tk.nextToken())
+									;
 						} else if (temp.equals("gamma")) {
-							cp.gamma = Double.valueOf(tk.nextToken())
-									.doubleValue();
+							cp.gamma = Double.parseDouble(tk.nextToken())
+									;
 						} else if (temp.equals("vibrancy")) {
-							cp.vibrancy = Double.valueOf(tk.nextToken())
-									.doubleValue();
+							cp.vibrancy = Double.parseDouble(tk.nextToken())
+									;
 						} else if (temp.equals("hue_rotation")) {
-							cp.hue_rotation = Double.valueOf(tk.nextToken())
-									.doubleValue();
+							cp.hue_rotation = Double.parseDouble(tk.nextToken())
+									;
 						} else if (temp.equals("finalzformenabled")) {
 							cp.finalXformEnabled = (!tk.nextToken().equals("0"));
 						} else if (temp.equals("xform")) {
 							ixform = Integer.parseInt(tk.nextToken());
 						} else if (temp.equals("density")) {
-							cp.xform[ixform].density = Double.valueOf(
-									tk.nextToken()).doubleValue();
+							cp.xform[ixform].density = Double.parseDouble(tk.nextToken());
 						} else if (temp.equals("color")) {
-							cp.xform[ixform].color = Double.valueOf(
-									tk.nextToken()).doubleValue();
+							cp.xform[ixform].color = Double.parseDouble(tk.nextToken());
 						} else if (temp.equals("symmetry")) {
-							cp.xform[ixform].symmetry = Double.valueOf(
-									tk.nextToken()).doubleValue();
+							cp.xform[ixform].symmetry = Double.parseDouble(tk.nextToken());
 						} else if (temp.equals("vars")) {
 							int iv = 0;
 							while (tk.hasMoreTokens()) {
-								cp.xform[ixform].vars[iv++] = Double.valueOf(
-										tk.nextToken()).doubleValue();
+								cp.xform[ixform].vars[iv++] = Double.parseDouble(tk.nextToken());
 							}
 							break;
 						} else if (temp.equals("coefs")) {
-							cp.xform[ixform].c00 = Double.valueOf(
-									tk.nextToken()).doubleValue();
-							cp.xform[ixform].c01 = Double.valueOf(
-									tk.nextToken()).doubleValue();
-							cp.xform[ixform].c10 = Double.valueOf(
-									tk.nextToken()).doubleValue();
-							cp.xform[ixform].c11 = Double.valueOf(
-									tk.nextToken()).doubleValue();
-							cp.xform[ixform].c20 = Double.valueOf(
-									tk.nextToken()).doubleValue();
-							cp.xform[ixform].c21 = Double.valueOf(
-									tk.nextToken()).doubleValue();
+							cp.xform[ixform].c00 = Double.parseDouble(tk.nextToken());
+							cp.xform[ixform].c01 = Double.parseDouble(tk.nextToken());
+							cp.xform[ixform].c10 = Double.parseDouble(tk.nextToken());
+							cp.xform[ixform].c11 = Double.parseDouble(tk.nextToken());
+							cp.xform[ixform].c20 = Double.parseDouble(tk.nextToken());
+							cp.xform[ixform].c21 = Double.parseDouble(tk.nextToken());
 						} else if (temp.equals("post")) {
-							cp.xform[ixform].p00 = Double.valueOf(
-									tk.nextToken()).doubleValue();
-							cp.xform[ixform].p01 = Double.valueOf(
-									tk.nextToken()).doubleValue();
-							cp.xform[ixform].p10 = Double.valueOf(
-									tk.nextToken()).doubleValue();
-							cp.xform[ixform].p11 = Double.valueOf(
-									tk.nextToken()).doubleValue();
-							cp.xform[ixform].p20 = Double.valueOf(
-									tk.nextToken()).doubleValue();
-							cp.xform[ixform].p21 = Double.valueOf(
-									tk.nextToken()).doubleValue();
+							cp.xform[ixform].p00 = Double.parseDouble(tk.nextToken());
+							cp.xform[ixform].p01 = Double.parseDouble(tk.nextToken());
+							cp.xform[ixform].p10 = Double.parseDouble(tk.nextToken());
+							cp.xform[ixform].p11 = Double.parseDouble(tk.nextToken());
+							cp.xform[ixform].p20 = Double.parseDouble(tk.nextToken());
+							cp.xform[ixform].p21 = Double.parseDouble(tk.nextToken());
 						} else if (temp.equals("palette:")) {
 							for (int i = 0; i < 256; i++) {
 								line = r.readLine();

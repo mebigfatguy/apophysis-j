@@ -67,10 +67,10 @@ public class Preset implements Constants {
 		height = Integer.parseInt(line);
 
 		line = v.get(3);
-		density = Double.valueOf(line).doubleValue();
+		density = Double.parseDouble(line);
 
 		line = v.get(4);
-		filter_radius = Double.valueOf(line).doubleValue();
+		filter_radius = Double.parseDouble(line);
 
 		line = v.get(5);
 		oversample = Integer.parseInt(line);

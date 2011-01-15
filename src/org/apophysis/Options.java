@@ -374,26 +374,26 @@ public class Options extends MyThinlet implements Constants {
 
 		Global.randomPrefix = getString(find("txtRandomPrefix"), "text");
 
-		Global.defSampleDensity = Double.valueOf(
-				getString(find("txtSampleDensity"), "text")).doubleValue();
-		Global.defGamma = Double.valueOf(getString(find("txtGamma"), "text"))
-				.doubleValue();
-		Global.defBrightness = Double.valueOf(
-				getString(find("txtBrightness"), "text")).doubleValue();
-		Global.defVibrancy = Double.valueOf(
-				getString(find("txtVibrancy"), "text")).doubleValue();
-		Global.defFilterRadius = Double.valueOf(
-				getString(find("txtFilterRadius"), "text")).doubleValue();
+		Global.defSampleDensity = Double.parseDouble(
+				getString(find("txtSampleDensity"), "text"));
+		Global.defGamma = Double.parseDouble(getString(find("txtGamma"), "text"))
+				;
+		Global.defBrightness = Double.parseDouble(
+				getString(find("txtBrightness"), "text"));
+		Global.defVibrancy = Double.parseDouble(
+				getString(find("txtVibrancy"), "text"));
+		Global.defFilterRadius = Double.parseDouble(
+				getString(find("txtFilterRadius"), "text"));
 
 		Global.defOversample = Integer.parseInt(getString(
 				find("txtOversample"), "text"));
 
-		Global.prevLowQuality = Double.valueOf(
-				getString(find("txtLowQuality"), "text")).doubleValue();
-		Global.prevMediumQuality = Double.valueOf(
-				getString(find("txtMediumQuality"), "text")).doubleValue();
-		Global.prevHighQuality = Double.valueOf(
-				getString(find("txtHighQuality"), "text")).doubleValue();
+		Global.prevLowQuality = Double.parseDouble(
+				getString(find("txtLowQuality"), "text"));
+		Global.prevMediumQuality = Double.parseDouble(
+				getString(find("txtMediumQuality"), "text"));
+		Global.prevHighQuality = Double.parseDouble(
+				getString(find("txtHighQuality"), "text"));
 
 		Global.editorBkgColor = getColor(find("btnBackgroundColor"),
 				"background").getRGB();

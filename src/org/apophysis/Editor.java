@@ -1861,7 +1861,7 @@ public class Editor extends MyThinlet implements Constants, ThreadTarget {
 		} else {
 			double value = 0.0;
 			try {
-				value = Double.valueOf(s).doubleValue();
+				value = Double.parseDouble(s);
 			} catch (Exception ex) {
 			}
 			if (value == 0.0) {
@@ -1895,7 +1895,7 @@ public class Editor extends MyThinlet implements Constants, ThreadTarget {
 				if (s.length() == 0) {
 					value = 0.0;
 				} else {
-					value = Double.valueOf(s).doubleValue();
+					value = Double.parseDouble(s);
 				}
 				cp.xform[selectedTriangle].vars[i] = value;
 			} catch (Exception ex) {
@@ -1982,7 +1982,7 @@ public class Editor extends MyThinlet implements Constants, ThreadTarget {
 		for (int i = 0; i < np; i++) {
 			try {
 				String s = getString(find("txtParameter" + i), "text");
-				double value = Double.valueOf(s).doubleValue();
+				double value = Double.parseDouble(s);
 				cp.xform[selectedTriangle].pvalues[i] = value;
 			} catch (Exception ex) {
 			}
@@ -2021,7 +2021,7 @@ public class Editor extends MyThinlet implements Constants, ThreadTarget {
 	public void btTrgRotateLeftClick() {
 		try {
 			String s = getString(find("txtTrgRotateValue"), "text");
-			double angle = Double.valueOf(s).doubleValue() * Math.PI / 180;
+			double angle = Double.parseDouble(s) * Math.PI / 180;
 			rotateTriangle(selectedTriangle, angle);
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -2033,7 +2033,7 @@ public class Editor extends MyThinlet implements Constants, ThreadTarget {
 	public void btTrgRotateRightClick() {
 		try {
 			String s = getString(find("txtTrgRotateValue"), "text");
-			double angle = Double.valueOf(s).doubleValue() * Math.PI / 180;
+			double angle = Double.parseDouble(s) * Math.PI / 180;
 			rotateTriangle(selectedTriangle, -angle);
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -2099,7 +2099,7 @@ public class Editor extends MyThinlet implements Constants, ThreadTarget {
 	void moveTriangle(double dx, double dy) {
 		try {
 			String s = getString(find("txtTrgMoveValue"), "text");
-			double offset = Double.valueOf(s).doubleValue();
+			double offset = Double.parseDouble(s);
 
 			Global.main.updateUndo();
 
@@ -2379,23 +2379,23 @@ public class Editor extends MyThinlet implements Constants, ThreadTarget {
 	public void cornerEditExit() {
 
 		try {
-			Global.mainTriangles[selectedTriangle].x[0] = Double.valueOf(
-					getString(find("txtAx"), "text")).doubleValue();
+			Global.mainTriangles[selectedTriangle].x[0] = Double.parseDouble(
+					getString(find("txtAx"), "text"));
 
-			Global.mainTriangles[selectedTriangle].y[0] = Double.valueOf(
-					getString(find("txtAy"), "text")).doubleValue();
+			Global.mainTriangles[selectedTriangle].y[0] = Double.parseDouble(
+					getString(find("txtAy"), "text"));
 
-			Global.mainTriangles[selectedTriangle].x[1] = Double.valueOf(
-					getString(find("txtBx"), "text")).doubleValue();
+			Global.mainTriangles[selectedTriangle].x[1] = Double.parseDouble(
+					getString(find("txtBx"), "text"));
 
-			Global.mainTriangles[selectedTriangle].y[1] = Double.valueOf(
-					getString(find("txtBy"), "text")).doubleValue();
+			Global.mainTriangles[selectedTriangle].y[1] = Double.parseDouble(
+					getString(find("txtBy"), "text"));
 
-			Global.mainTriangles[selectedTriangle].x[2] = Double.valueOf(
-					getString(find("txtCx"), "text")).doubleValue();
+			Global.mainTriangles[selectedTriangle].x[2] = Double.parseDouble(
+					getString(find("txtCx"), "text"));
 
-			Global.mainTriangles[selectedTriangle].y[2] = Double.valueOf(
-					getString(find("txtCy"), "text")).doubleValue();
+			Global.mainTriangles[selectedTriangle].y[2] = Double.parseDouble(
+					getString(find("txtCy"), "text"));
 
 			Global.main.updateUndo();
 			updateFlame(true);
@@ -2427,38 +2427,32 @@ public class Editor extends MyThinlet implements Constants, ThreadTarget {
 			// rectangular coordinates
 
 			try {
-				cp.xform[selectedTriangle].c00 = Double.valueOf(s00)
-						.doubleValue();
+				cp.xform[selectedTriangle].c00 = Double.parseDouble(s00);
 			} catch (Exception ex) {
 			}
 
 			try {
-				cp.xform[selectedTriangle].c01 = -Double.valueOf(s01)
-						.doubleValue();
+				cp.xform[selectedTriangle].c01 = -Double.parseDouble(s01);
 			} catch (Exception ex) {
 			}
 
 			try {
-				cp.xform[selectedTriangle].c10 = -Double.valueOf(s10)
-						.doubleValue();
+				cp.xform[selectedTriangle].c10 = -Double.parseDouble(s10);
 			} catch (Exception ex) {
 			}
 
 			try {
-				cp.xform[selectedTriangle].c11 = Double.valueOf(s11)
-						.doubleValue();
+				cp.xform[selectedTriangle].c11 = Double.parseDouble(s11);
 			} catch (Exception ex) {
 			}
 
 			try {
-				cp.xform[selectedTriangle].c20 = Double.valueOf(s20)
-						.doubleValue();
+				cp.xform[selectedTriangle].c20 = Double.parseDouble(s20);
 			} catch (Exception ex) {
 			}
 
 			try {
-				cp.xform[selectedTriangle].c21 = -Double.valueOf(s21)
-						.doubleValue();
+				cp.xform[selectedTriangle].c21 = -Double.parseDouble(s21);
 			} catch (Exception ex) {
 			}
 
@@ -2468,8 +2462,8 @@ public class Editor extends MyThinlet implements Constants, ThreadTarget {
 			double x = 0, y = 0, r = 0, a = 0;
 
 			try {
-				r = Double.valueOf(s00).doubleValue();
-				a = Double.valueOf(s01).doubleValue() * Math.PI / 180.0;
+				r = Double.parseDouble(s00);
+				a = Double.parseDouble(s01) * Math.PI / 180.0;
 				x = r * Math.cos(a);
 				y = r * Math.sin(a);
 				cp.xform[selectedTriangle].c00 = x;
@@ -2478,8 +2472,8 @@ public class Editor extends MyThinlet implements Constants, ThreadTarget {
 			}
 
 			try {
-				r = Double.valueOf(s10).doubleValue();
-				a = Double.valueOf(s11).doubleValue() * Math.PI / 180.0;
+				r = Double.parseDouble(s10);
+				a = Double.parseDouble(s11) * Math.PI / 180.0;
 				x = r * Math.cos(a);
 				y = r * Math.sin(a);
 				cp.xform[selectedTriangle].c10 = -x;
@@ -2488,8 +2482,8 @@ public class Editor extends MyThinlet implements Constants, ThreadTarget {
 			}
 
 			try {
-				r = Double.valueOf(s20).doubleValue();
-				a = Double.valueOf(s21).doubleValue() * Math.PI / 180.0;
+				r = Double.parseDouble(s20);
+				a = Double.parseDouble(s21) * Math.PI / 180.0;
 				x = r * Math.cos(a);
 				y = r * Math.sin(a);
 				cp.xform[selectedTriangle].c20 = x;
@@ -2523,38 +2517,32 @@ public class Editor extends MyThinlet implements Constants, ThreadTarget {
 			// rectangular coordinates
 
 			try {
-				cp.xform[selectedTriangle].p00 = Double.valueOf(s00)
-						.doubleValue();
+				cp.xform[selectedTriangle].p00 = Double.parseDouble(s00);
 			} catch (Exception ex) {
 			}
 
 			try {
-				cp.xform[selectedTriangle].p01 = -Double.valueOf(s01)
-						.doubleValue();
+				cp.xform[selectedTriangle].p01 = -Double.parseDouble(s01);
 			} catch (Exception ex) {
 			}
 
 			try {
-				cp.xform[selectedTriangle].p10 = -Double.valueOf(s10)
-						.doubleValue();
+				cp.xform[selectedTriangle].p10 = -Double.parseDouble(s10);
 			} catch (Exception ex) {
 			}
 
 			try {
-				cp.xform[selectedTriangle].p11 = Double.valueOf(s11)
-						.doubleValue();
+				cp.xform[selectedTriangle].p11 = Double.parseDouble(s11);
 			} catch (Exception ex) {
 			}
 
 			try {
-				cp.xform[selectedTriangle].p20 = Double.valueOf(s20)
-						.doubleValue();
+				cp.xform[selectedTriangle].p20 = Double.parseDouble(s20);
 			} catch (Exception ex) {
 			}
 
 			try {
-				cp.xform[selectedTriangle].p21 = -Double.valueOf(s21)
-						.doubleValue();
+				cp.xform[selectedTriangle].p21 = -Double.parseDouble(s21);
 			} catch (Exception ex) {
 			}
 
@@ -2564,8 +2552,8 @@ public class Editor extends MyThinlet implements Constants, ThreadTarget {
 			double x = 0, y = 0, r = 0, a = 0;
 
 			try {
-				r = Double.valueOf(s00).doubleValue();
-				a = Double.valueOf(s01).doubleValue() * Math.PI / 180.0;
+				r = Double.parseDouble(s00);
+				a = Double.parseDouble(s01) * Math.PI / 180.0;
 				x = r * Math.cos(a);
 				y = r * Math.sin(a);
 				cp.xform[selectedTriangle].p00 = x;
@@ -2574,8 +2562,8 @@ public class Editor extends MyThinlet implements Constants, ThreadTarget {
 			}
 
 			try {
-				r = Double.valueOf(s10).doubleValue();
-				a = Double.valueOf(s11).doubleValue() * Math.PI / 180.0;
+				r = Double.parseDouble(s10);
+				a = Double.parseDouble(s11) * Math.PI / 180.0;
 				x = r * Math.cos(a);
 				y = r * Math.sin(a);
 				cp.xform[selectedTriangle].p10 = -x;
@@ -2584,8 +2572,8 @@ public class Editor extends MyThinlet implements Constants, ThreadTarget {
 			}
 
 			try {
-				r = Double.valueOf(s20).doubleValue();
-				a = Double.valueOf(s21).doubleValue() * Math.PI / 180.0;
+				r = Double.parseDouble(s20);
+				a = Double.parseDouble(s21) * Math.PI / 180.0;
 				x = r * Math.cos(a);
 				y = r * Math.sin(a);
 				cp.xform[selectedTriangle].p20 = x;
@@ -2648,7 +2636,7 @@ public class Editor extends MyThinlet implements Constants, ThreadTarget {
 			double scale = 0;
 
 			String s = getString(find("txtTrgScaleValue"), "text");
-			double value = Double.valueOf(s).doubleValue();
+			double value = Double.parseDouble(s);
 
 			if (option == -1) {
 				scale = 100.0 / value;
@@ -2761,8 +2749,7 @@ public class Editor extends MyThinlet implements Constants, ThreadTarget {
 		double value;
 
 		try {
-			value = Double.valueOf(getString(find("editPivotX"), "text"))
-					.doubleValue();
+			value = Double.parseDouble(getString(find("editPivotX"), "text"));
 			if (pivotMode == PIVOT_LOCAL) {
 				localPivot.x = value;
 			} else {
@@ -2773,8 +2760,7 @@ public class Editor extends MyThinlet implements Constants, ThreadTarget {
 		}
 
 		try {
-			value = Double.valueOf(getString(find("editPivotY"), "text"))
-					.doubleValue();
+			value = Double.parseDouble(getString(find("editPivotY"), "text"));
 			if (pivotMode == PIVOT_LOCAL) {
 				localPivot.y = value;
 			} else {
@@ -2861,8 +2847,7 @@ public class Editor extends MyThinlet implements Constants, ThreadTarget {
 
 	public void txtColorChange(Object field) {
 		try {
-			double value = Double.valueOf(getString(field, "text"))
-					.doubleValue();
+			double value = Double.parseDouble(getString(field, "text"));
 
 			if (cp.xform[selectedTriangle].color != value) {
 				if (value < 0) {
@@ -2924,8 +2909,7 @@ public class Editor extends MyThinlet implements Constants, ThreadTarget {
 
 	public void txtSymmetryChange(Object field) {
 		try {
-			double value = Double.valueOf(getString(field, "text"))
-					.doubleValue();
+			double value = Double.parseDouble(getString(field, "text"));
 
 			if (cp.xform[selectedTriangle].symmetry != value) {
 				if (value < -1) {
@@ -3584,8 +3568,7 @@ public class Editor extends MyThinlet implements Constants, ThreadTarget {
 
 	public void txtPValidate(Object field) {
 		try {
-			double newval = Double.valueOf(getString(field, "text"))
-					.doubleValue();
+			double newval = Double.parseDouble(getString(field, "text"));
 			cp.xform[selectedTriangle].density = newval;
 			updateFlame(true);
 		} catch (Exception ex) {

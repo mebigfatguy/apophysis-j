@@ -285,10 +285,9 @@ public class Render extends MyThinlet implements Constants, ThreadTarget {
 		imageheight = Integer.parseInt(getString(find("cbHeight"), "text"));
 
 		oversample = Integer.parseInt(getString(find("txtOversample"), "text"));
-		filter_radius = Double.valueOf(
-				getString(find("txtFilterRadius"), "text")).doubleValue();
-		sample_density = Double.valueOf(getString(find("txtDensity"), "text"))
-				.doubleValue();
+		filter_radius = Double.parseDouble(
+				getString(find("txtFilterRadius"), "text"));
+		sample_density = Double.parseDouble(getString(find("txtDensity"), "text"));
 
 		filename = getString(find("txtFilename"), "text");
 		if (filename.length() == 0) {
@@ -534,10 +533,9 @@ public class Render extends MyThinlet implements Constants, ThreadTarget {
 		preset.name = _answer;
 		preset.width = Integer.parseInt(getString(find("cbWidth"), "text"));
 		preset.height = Integer.parseInt(getString(find("cbHeight"), "text"));
-		preset.density = Double.valueOf(getString(find("txtDensity"), "text"))
-				.doubleValue();
-		preset.filter_radius = Double.valueOf(
-				getString(find("txtFilterRadius"), "text")).doubleValue();
+		preset.density = Double.parseDouble(getString(find("txtDensity"), "text"));
+		preset.filter_radius = Double.parseDouble(
+				getString(find("txtFilterRadius"), "text"));
 		preset.oversample = Integer.parseInt(getString(find("txtOversample"),
 				"text"));
 		preset.format = ".jpg";
@@ -630,10 +628,10 @@ public class Render extends MyThinlet implements Constants, ThreadTarget {
 
 		try {
 			s = getString(find("txtDensity"), "text");
-			sample_density = Double.valueOf(s).doubleValue();
+			sample_density = Double.parseDouble(s);
 
 			s = getString(find("txtFilterRadius"), "text");
-			filter_radius = Double.valueOf(s).doubleValue();
+			filter_radius = Double.parseDouble(s);
 
 			s = getString(find("txtOversample"), "text");
 			oversample = Integer.parseInt(s);
