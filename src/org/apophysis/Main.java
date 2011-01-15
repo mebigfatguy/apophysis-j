@@ -129,7 +129,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 	int yview = 0;
 
 	// for undo / redo
-	Vector<ControlPoint> history;
+	List<ControlPoint> history;
 	int undoindex;
 
 	// for drag and drop
@@ -243,7 +243,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 		setString(find("tbQualityBox"), "text", "" + quality);
 
 		undoindex = 0;
-		history.removeAllElements();
+		history.clear();
 		updateUndoControls();
 
 		fmousemovestate = msDrag;
@@ -1066,7 +1066,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 	/*****************************************************************************/
 
 	public void clearUndo() {
-		history.removeAllElements();
+		history.clear();
 		undoindex = 0;
 		updateUndoControls();
 	}
@@ -1075,7 +1075,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 	public void updateUndo() {
 		while (history.size() > undoindex) {
-			history.removeElement(history.get(history.size() - 1));
+			history.remove(history.get(history.size() - 1));
 		}
 		saveFlame();
 		undoindex++;
