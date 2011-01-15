@@ -29,8 +29,6 @@ package org.apophysis;
 
 public class GaussianblurVariation extends Variation {
 
-	double gauss_rnd[];
-
 	/*****************************************************************************/
 
 	@Override
@@ -43,16 +41,6 @@ public class GaussianblurVariation extends Variation {
 	@Override
 	public int getGroup() {
 		return 2;
-	}
-
-	/*****************************************************************************/
-
-	@Override
-	public void prepare(XForm xform, double weight) {
-		super.prepare(xform, weight);
-
-		gauss_rnd = new double[4];
-
 	}
 
 	/*****************************************************************************/

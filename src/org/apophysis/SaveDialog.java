@@ -47,7 +47,6 @@ public class SaveDialog {
 	public String filename = null;
 
 	List<File> dirs = new Vector<File>();
-	String pattern = "*.*";
 
 	String defaultname;
 

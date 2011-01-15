@@ -58,7 +58,6 @@ public class Imager implements Constants {
 
 	int foversample;
 
-	int bucketheight;
 	int bucketwidth;
 	int buckets[];
 
@@ -426,7 +425,6 @@ public class Imager implements Constants {
 			int bits) {
 		this.buckets = buckets;
 		this.bucketwidth = bucketwidth;
-		this.bucketheight = bucketheight;
 	}
 
 	/*****************************************************************************/

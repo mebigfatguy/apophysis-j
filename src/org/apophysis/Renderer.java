@@ -77,9 +77,6 @@ public class Renderer implements Constants {
 
 	int[][] colormap = new int[256][3];
 
-	int fslice;
-	int fnumslices;
-
 	int fnumbatches;
 
 	boolean frenderover;
@@ -92,8 +89,6 @@ public class Renderer implements Constants {
 
 	double[] p = new double[3]; // used as a TCPoint
 	double[] q = new double[3]; // used as a TCPoint
-
-	boolean terminating = false;
 
 	ThreadTarget target = null;
 
@@ -108,8 +103,6 @@ public class Renderer implements Constants {
 
 		this.target = target;
 
-		fnumslices = 1;
-		fslice = 0;
 		fstop = 0;
 
 		imager = new Imager();
