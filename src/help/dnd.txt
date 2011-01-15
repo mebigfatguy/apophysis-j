@@ -1,4 +1,4 @@
-Apophysis-j supports drag and drop from the destop. The action
+Apophysis-j supports drag and drop from the desktop. The action
 taken depends upon the file type :
 
 *.flame   the content of the file is loaded into the main list
