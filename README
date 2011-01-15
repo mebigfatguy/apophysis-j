@@ -6,6 +6,15 @@ ant
 
 from the main directory to build the jar
 
+If you wish to build a release, including a jnlp version, you will need to create a keystore, using 
+keytool like this:
+
+keytool -genkey -alias apophysis-j -keypass {pass} -keystore apophysis-j.store -storepass {pass}
+
+You will be prompted for the passwords when you run
+
+ant release
+
 There are also eclipse project files here.
 -----------------------------------------------------------
 Written/Ported by Jean-Francois Bouzereau
