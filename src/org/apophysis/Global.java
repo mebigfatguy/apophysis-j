@@ -27,6 +27,8 @@
 
 package org.apophysis;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -35,6 +37,8 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -986,20 +990,24 @@ public class Global implements Constants {
 			throw new IOException("Cannot copy " + filesrc.getName());
 		}
 
-		byte[] buffer = new byte[512];
-		FileInputStream is = new FileInputStream(filesrc);
-		FileOutputStream os = new FileOutputStream(filedst);
-		while (true) {
-			int n = is.read(buffer);
-			if (n <= 0) {
-				break;
-			}
-			os.write(buffer, 0, n);
-		}
-		is.close();
-		os.close();
+		InputStream is = null;
+		OutputStream os = null;
 
-		buffer = null;
+		try {
+			byte[] buffer = new byte[512];
+			is = new BufferedInputStream(new FileInputStream(filesrc));
+			os = new BufferedOutputStream(new FileOutputStream(filedst));
+			while (true) {
+				int n = is.read(buffer);
+				if (n <= 0) {
+					break;
+				}
+				os.write(buffer, 0, n);
+			}
+		} finally {
+			IOCloser.close(is);
+			IOCloser.close(os);
+		}
 
 	} // End of method copyFile
 

@@ -28,6 +28,7 @@
 package org.apophysis;
 
 import java.awt.Color;
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.util.StringTokenizer;
@@ -286,8 +287,9 @@ class CMap {
 			index = 0;
 		}
 
+		InputStream is = null;
 		try {
-			InputStream is = Global.main.getClass().getResourceAsStream("/org/apophysis/cmap.dat");
+			is = new BufferedInputStream(Global.main.getClass().getResourceAsStream("/org/apophysis/cmap.dat"));
 
 			is.skip(index * 256 * 3);
 
@@ -297,9 +299,10 @@ class CMap {
 				cmap[i][2] = is.read();
 			}
 
-			is.close();
 		} catch (Exception ex) {
 			ex.printStackTrace();
+		} finally {
+			IOCloser.close(is);
 		}
 
 	} // End of method getCMap

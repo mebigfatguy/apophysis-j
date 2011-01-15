@@ -661,7 +661,14 @@ public class Script extends MyThinlet implements Constants {
 		if (!file.exists()) {
 			throw new IOException("File not found");
 		}
-		cpf = Global.main.readXML(new FileReader(filename));
+
+		BufferedReader r = null;
+		try {
+			r = new BufferedReader(new FileReader(filename));
+			cpf = Global.main.readXML(r);
+		} finally {
+			IOCloser.close(r);
+		}
 	}
 
 	/*****************************************************************************/

@@ -622,10 +622,16 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 	/*****************************************************************************/
 
 	List<ControlPoint> openXMLFile(String filename) {
-		List<ControlPoint> v = new Vector<ControlPoint>();
+		List<ControlPoint> v;
+
+		Reader r = null;
 		try {
-			v = readXML(new FileReader(filename));
+			r = new BufferedReader(new FileReader(filename));
+			v = readXML(r);
 		} catch (Exception ex) {
+			v = new Vector<ControlPoint>();
+		} finally {
+			IOCloser.close(r);
 		}
 		return v;
 	}
@@ -832,10 +838,16 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 	/*****************************************************************************/
 
 	public void saveXMLFile(ControlPoint cp, String filename) {
-		List<ControlPoint> mycps = new Vector<ControlPoint>();
+		List<ControlPoint> mycps;
+
+		BufferedReader r = null;
 		try {
-			mycps = readXML(new FileReader(filename));
+			r = new BufferedReader(new FileReader(filename));
+			mycps = readXML(r);
 		} catch (Exception ex) {
+			mycps = new Vector<ControlPoint>();
+		} finally {
+			IOCloser.close(r);
 		}
 
 		if (cp != null) {
