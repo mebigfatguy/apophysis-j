@@ -77,17 +77,11 @@ public class Renderer implements Constants {
 
 	int[][] colormap = new int[256][3];
 
-	int fmaxmem;
 	int fslice;
 	int fnumslices;
 
-	long image_width, image_height;
-	double image_center_x, image_center_y;
-
-	int fcompatibility;
 	int fnumbatches;
 
-	int fminbatches;
 	boolean frenderover;
 
 	public long rendertime, pausetime;
