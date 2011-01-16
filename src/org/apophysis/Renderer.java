@@ -636,7 +636,7 @@ public class Renderer implements Constants {
 		nsamples = (int) Math.round(sample_density * nrslices * bucketsize
 				/ (oversample * oversample));
 
-		fnumbatches = Math.round(nsamples / (fcp.nbatches * SUB_BATCH_SIZE));
+		fnumbatches = (int)Math.round(((double)nsamples) / (fcp.nbatches * SUB_BATCH_SIZE));
 		if (fnumbatches == 0) {
 			fnumbatches = 1;
 		}
