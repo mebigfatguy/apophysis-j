@@ -106,8 +106,6 @@ public class XForm implements Constants {
 	/****************************************************************************/
 	// FIELDS
 
-	public int index = 0;
-
 	public double density;
 	public double color; // color coord for this function. 0 - 1
 	public double color2; // Second color coord for this function. 0 - 1

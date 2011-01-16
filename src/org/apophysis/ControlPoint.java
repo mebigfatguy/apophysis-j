@@ -98,11 +98,9 @@ public class ControlPoint implements Constants {
 	public double estimator_min;
 	public double estimator_curve;
 
-	public int jitters;
 	public double gamma_threshold;
 
 	public double fangle;
-	public boolean fTwoColorDimensions;
 
 	public List<String> unknown; // name of unknown variations
 
@@ -156,10 +154,7 @@ public class ControlPoint implements Constants {
 		estimator = 9.0;
 		estimator_min = 0.0;
 		estimator_curve = 0.4;
-		jitters = 1;
 		gamma_threshold = 0.01;
-
-		fTwoColorDimensions = false;
 
 		finalXformEnabled = Global.enableFinalXform;
 
@@ -647,7 +642,6 @@ public class ControlPoint implements Constants {
 		for (int i = 0; i < n; i++) {
 			if (xform[i].enabled) {
 				xform[i].prepare();
-				xform[i].index = i;
 				totvalue += xform[i].density;
 			}
 		}
@@ -1625,7 +1619,6 @@ public class ControlPoint implements Constants {
 	/*****************************************************************************/
 
 	public void clear() {
-		symmetry = 0;
 		cmapindex = -1;
 		zoom = 0;
 		for (int i = 0; i < NXFORMS; i++) {
@@ -1663,8 +1656,6 @@ public class ControlPoint implements Constants {
 		if (nxforms == NXFORMS) {
 			return;
 		}
-
-		symmetry = sym;
 
 		i = nxforms;
 

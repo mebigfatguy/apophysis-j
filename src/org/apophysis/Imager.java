@@ -28,7 +28,6 @@
 package org.apophysis;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -70,8 +69,6 @@ public class Imager implements Constants {
 	int height;
 
 	public boolean debug = false;
-
-	public Font wfont = new Font("Helvetica", Font.BOLD, 12); // watermark font
 
 	/*****************************************************************************/
 

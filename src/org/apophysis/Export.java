@@ -255,7 +255,6 @@ public class Export extends MyThinlet implements Constants {
 		cp1.estimator = estimator;
 		cp1.estimator_min = estimatorMin;
 		cp1.estimator_curve = estimatorCurve;
-		cp1.jitters = jitters;
 		cp1.gamma_threshold = gammaThreshold;
 
 		Runtime runtime = Runtime.getRuntime();
