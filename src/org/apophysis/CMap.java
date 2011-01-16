@@ -413,7 +413,7 @@ class CMap {
 		for (int i = 0; i <= 255; i++) {
 			int j = (int) Math.round(i * 399.0 / 255);
 			int c = (pal[i][2] << 16) | (pal[i][1] << 8) | pal[i][0];
-			sb.append(" index=" + j + " color=" + c + "\n");
+			sb.append(" index=").append(j).append(" color=").append(c).append("\n");
 		}
 
 		sb.append("\n");

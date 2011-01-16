@@ -428,8 +428,7 @@ public class ScriptConverter {
 
 		String args = sb.substring(m + 1, n);
 
-		StringBuffer snew = new StringBuffer("Format('" + fmt + "'," + args
-				+ ")");
+		StringBuffer snew = new StringBuffer("Format('").append(fmt).append("',").append(args).append(")");
 
 		System.out.println("new : " + snew);
 
@@ -480,7 +479,7 @@ public class ScriptConverter {
 		String call = sb.substring(i, l + 1);
 		String varname = sb.substring(k + 1, l).trim();
 
-		StringBuffer sbnew = new StringBuffer(varname + ":=" + call);
+		StringBuffer sbnew = new StringBuffer(varname).append(":=").append(call);
 
 		replaceWord(sbnew, "InputQuery", "InputQuery");
 		sb.replace(i, l + 1, sbnew.toString());
@@ -726,8 +725,9 @@ public class ScriptConverter {
 		String from = sb.substring(k + 1, l).trim();
 		String len = sb.substring(l + 1, m).trim();
 
-		StringBuffer sbnew = new StringBuffer(varname + " := " + "Delete("
-				+ varname + "," + from + "," + len + ")");
+		StringBuffer sbnew = new StringBuffer(varname).append(" := ")
+		                         .append("Delete(").append(varname).append(",").append(from)
+		                         .append(",").append(len).append(")");
 		replaceWord(sbnew, "delete", "Delete");
 
 		sb.replace(i, m + 1, sbnew.toString());
