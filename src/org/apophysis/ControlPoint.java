@@ -1049,11 +1049,11 @@ public class ControlPoint implements Constants {
 									.cos(theta));
 					cp.xform[i].c20 = Global.random() * 2 - 1;
 					cp.xform[i].c21 = Global.random() * 2 - 1;
-					cp.xform[i].density = 1 / transforms;
+					cp.xform[i].density = 1.0 / transforms;
 				}
 			} else {
 				for (int i = 0; i < transforms; i++) {
-					cp.xform[i].density = 1 / transforms;
+					cp.xform[i].density = 1.0 / transforms;
 				}
 			}
 
@@ -1551,8 +1551,8 @@ public class ControlPoint implements Constants {
 		scale = Math.pow(2.0, zoom);
 		ppu = pixels_per_unit * scale;
 
-		dx = ((r.left + r.right) / 2 - width / 2) / ppu;
-		dy = ((r.top + r.bottom) / 2 - height / 2) / ppu;
+		dx = ((r.left + r.right) / 2.0 - width / 2.0) / ppu;
+		dy = ((r.top + r.bottom) / 2.0 - height / 2.0) / ppu;
 
 		center[0] = center[0] + Math.cos(fangle) * dx - Math.sin(fangle) * dy;
 		center[1] = center[1] + Math.sin(fangle) * dx + Math.cos(fangle) * dy;
@@ -1593,8 +1593,8 @@ public class ControlPoint implements Constants {
 
 		ppu = pixels_per_unit * Math.pow(2, zoom);
 
-		dx = ((r.left + r.right) / 2 - width / 2) / ppu;
-		dy = ((r.top + r.bottom) / 2 - height / 2) / ppu;
+		dx = ((r.left + r.right) / 2.0 - width / 2.0) / ppu;
+		dy = ((r.top + r.bottom) / 2.0 - height / 2.0) / ppu;
 
 		center[0] = center[0] - Math.cos(fangle) * dx + Math.sin(fangle) * dy;
 		center[1] = center[1] - Math.sin(fangle) * dx - Math.cos(fangle) * dy;
@@ -1701,7 +1701,7 @@ public class ControlPoint implements Constants {
 			if (sym < 3) {
 				xform[i].color = 0;
 			} else {
-				xform[i].color = (k - 1) / (sym - 2);
+				xform[i].color = (k - 1.0) / (sym - 2.0);
 			}
 
 			if (xform[i].color > 1) {

@@ -1755,7 +1755,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 		updateUndo();
 
 		for (int i = 0; i < Global.transforms; i++) {
-			Global.mainCP.xform[i].color = i / (Global.transforms - 1);
+			Global.mainCP.xform[i].color = ((double)i) / (Global.transforms - 1);
 		}
 
 		timer.enable();
@@ -2021,7 +2021,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 			sgn = (dy * dx >= 0) ? 1 : -1;
 			if ((dy == 0)
 					|| (Math.abs(dx / dy) >= imagewidth * 1.0 / imageheight)) {
-				cy = (ydrag + click.top) / 2;
+				cy = (ydrag + click.top) / 2.0;
 				select.left = click.left;
 				select.right = xdrag;
 				select.top = (int) (cy - sgn
@@ -2097,7 +2097,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 			updateUndo();
 			scale = Global.mainCP.width * 1.0 / imagewidth;
 			Global.mainCP.zoomOutToRect(scaleRect(select, scale));
-			scale = imagewidth / Math.abs(select.right - select.left);
+			scale = ((double)imagewidth) / Math.abs(select.right - select.left);
 			timer.enable();
 			updateWindows();
 			break;

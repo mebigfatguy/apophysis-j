@@ -186,7 +186,7 @@ public class Browser extends MyThinlet implements Constants {
 				while (ind < 0) {
 					ind += 400;
 				}
-				ind = (int) (ind * 255 / 399 + 0.5);
+				ind = (int) (((double) ind) * 255 / 399 + 0.5);
 				indices[i] = ind;
 
 				palette[ind][0] = (colors[i]) & 0xFF;

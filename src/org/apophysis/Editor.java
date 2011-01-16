@@ -346,8 +346,8 @@ public class Editor extends MyThinlet implements Constants, ThreadTarget {
 
 		width = bounds.width;
 		height = bounds.height;
-		ix = width / 2;
-		iy = height / 2;
+		ix = width / 2.0;
+		iy = height / 2.0;
 		sc = 50 * graphZoom;
 
 		g.setColor(bg);
@@ -654,8 +654,8 @@ public class Editor extends MyThinlet implements Constants, ThreadTarget {
 			pixels[i] = 0; // transparent pixels
 		}
 
-		double ix = graphwidth / 2;
-		double iy = graphheight / 2;
+		double ix = graphwidth / 2.0;
+		double iy = graphheight / 2.0;
 		double sc = graphZoom * 50;
 
 		XForm form = cp.xform[selectedTriangle];
