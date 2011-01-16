@@ -27,7 +27,10 @@
 
 package org.apophysis;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileFilter;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URL;
@@ -35,8 +38,11 @@ import java.net.URLClassLoader;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
+import java.util.jar.JarEntry;
+import java.util.jar.JarInputStream;
 
 public class XForm implements Constants {
 
@@ -281,10 +287,110 @@ public class XForm implements Constants {
 			return;
 		}
 
+		List<Variation> vdup = new ArrayList<Variation>();
+
+		vdup.addAll(registerJarPluginVariations(dplugin, main));
+		vdup.addAll(registerFilePluginVariations(dplugin, main));
+
+		sheep = new boolean[registered_variations.size()];
+		for (int i = 0; i < sheep.length; i++) {
+			sheep[i] = false;
+		}
+
+		int nd = vdup.size();
+		if (nd > 0) {
+			String msg = "Duplicate variations ";
+			String sep = ": ";
+			for (int i = 0; i < nd; i++) {
+				Variation v = vdup.get(i);
+				msg += sep + v.getName();
+				sep = ", ";
+			}
+
+			main.alert(msg);
+		}
+	} // End of method registerPluginVariations
+
+	/*****************************************************************************/
+
+	private static List<Variation> registerJarPluginVariations(final File dplugin, Main main) {
+		final File[] jars = dplugin.listFiles(new FileFilter() {
+			public boolean accept(File pathname) {
+				return pathname.getName().endsWith(".jar");
+			}
+		});
+
+		if (jars.length == 0) {
+			return Collections.<Variation>emptyList();
+		}
+
+
+		loader = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+			public ClassLoader run() {
+				try {
+					URL[] urls = new URL[jars.length];
+					for (int i = 0; i < jars.length; i++) {
+						urls[i] = new URL("jar", "", "file://" + jars[i].getAbsolutePath() + "!/");
+					}
+
+					return new URLClassLoader(urls);
+				} catch (Exception ex) {
+					ex.printStackTrace();
+					return null;
+				}
+			}
+		});
+
+		if (loader == null) {
+			return Collections.<Variation>emptyList();
+		}
+
+		List<Variation> vdup = new ArrayList<Variation>();
+
+		for (File jar : jars) {
+			JarInputStream jis = null;
+			try {
+				jis = new JarInputStream(new BufferedInputStream(new FileInputStream(jar)));
+				JarEntry entry = jis.getNextJarEntry();
+				while (entry != null) {
+					String clsName = entry.getName();
+					if (clsName.endsWith(".class")) {
+						clsName = clsName.substring(0, clsName.length() - ".class".length());
+						try {
+							clsName = clsName.replace('/', '.').replace('\\', '.');
+							Class<?> klass = loader.loadClass(clsName);
+							Object o = klass.newInstance();
+							if (o instanceof Variation) {
+								Variation v = (Variation) o;
+								int ind = getVariationIndex(v.getName());
+								if (ind >= 0) {
+									vdup.add(v);
+								} else {
+									registerVariation(v);
+								}
+							}
+						} catch (Exception err) {
+							err.printStackTrace();
+						}
+					}
+
+					entry = jis.getNextJarEntry();
+				}
+			} catch (Exception e) {
+			} finally {
+				IOCloser.close(jis);
+			}
+		}
+
+		return vdup;
+	}
+
+	@Deprecated
+	private static List<Variation> registerFilePluginVariations(final File dplugin, Main main) {
 		String pname = (new SPoint()).getClass().getPackage().getName().replace('.', '/');
 		File dapo = new File(dplugin, pname);
 		if (!dapo.exists()) {
-			return;
+			return Collections.<Variation>emptyList();
 		}
 
 		loader = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
@@ -300,14 +406,14 @@ public class XForm implements Constants {
 		});
 
 		if (loader == null) {
-			return;
+			return Collections.<Variation>emptyList();
 		}
 
 		List<Variation> vdup = new ArrayList<Variation>();
 
 		String[] filenames = dapo.list();
 		if (filenames == null) {
-			return;
+			return Collections.<Variation>emptyList();
 		}
 		int nf = filenames.length;
 		for (int i = 0; i < nf; i++) {
@@ -337,30 +443,10 @@ public class XForm implements Constants {
 			} catch (Throwable err) {
 				err.printStackTrace();
 			}
-
 		}
 
-		sheep = new boolean[registered_variations.size()];
-		for (int i = 0; i < sheep.length; i++) {
-			sheep[i] = false;
-		}
-
-		int nd = vdup.size();
-		if (nd > 0) {
-			String msg = "Duplicate variations ";
-			String sep = ": ";
-			for (int i = 0; i < nd; i++) {
-				Variation v = vdup.get(i);
-				msg += sep + v.getName();
-				sep = ", ";
-			}
-
-			main.alert(msg);
-		}
-
-	} // End of method registerPluginVariations
-
-	/*****************************************************************************/
+		return vdup;
+	}
 
 	public static void installPlugin(File file) {
 		int k = file.getName().indexOf('.');
