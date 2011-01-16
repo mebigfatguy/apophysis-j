@@ -547,8 +547,6 @@ public class ControlPoint implements Constants {
 	}
 
 	public void copy(ControlPoint cp1, boolean keepSizes) {
-		int w = width;
-		int h = height;
 
 		width = cp1.width;
 		height = cp1.height;
@@ -582,7 +580,7 @@ public class ControlPoint implements Constants {
 		url = cp1.url;
 
 		if (keepSizes) {
-			adjustScale(w, h);
+			adjustScale(width, height);
 		}
 
 		nxforms = cp1.nxforms;
