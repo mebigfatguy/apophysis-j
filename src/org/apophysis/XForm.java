@@ -287,10 +287,7 @@ public class XForm implements Constants {
 			return;
 		}
 
-		List<Variation> vdup = new ArrayList<Variation>();
-
-		vdup.addAll(registerJarPluginVariations(dplugin, main));
-		vdup.addAll(registerFilePluginVariations(dplugin, main));
+		List<Variation> vdup = registerJarPluginVariations(dplugin, main);
 
 		sheep = new boolean[registered_variations.size()];
 		for (int i = 0; i < sheep.length; i++) {
@@ -379,69 +376,6 @@ public class XForm implements Constants {
 			} catch (Exception e) {
 			} finally {
 				IOCloser.close(jis);
-			}
-		}
-
-		return vdup;
-	}
-
-	@Deprecated
-	private static List<Variation> registerFilePluginVariations(final File dplugin, Main main) {
-		String pname = (new SPoint()).getClass().getPackage().getName().replace('.', '/');
-		File dapo = new File(dplugin, pname);
-		if (!dapo.exists()) {
-			return Collections.<Variation>emptyList();
-		}
-
-		loader = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
-			public ClassLoader run() {
-				try {
-					URL[] urls = new URL[] { dplugin.toURL() };
-					return new URLClassLoader(urls);
-				} catch (Exception ex) {
-					ex.printStackTrace();
-					return null;
-				}
-			}
-		});
-
-		if (loader == null) {
-			return Collections.<Variation>emptyList();
-		}
-
-		List<Variation> vdup = new ArrayList<Variation>();
-
-		String[] filenames = dapo.list();
-		if (filenames == null) {
-			return Collections.<Variation>emptyList();
-		}
-		int nf = filenames.length;
-		for (int i = 0; i < nf; i++) {
-			int k = filenames[i].indexOf('.');
-			if (k < 0) {
-				continue;
-			}
-			String ext = filenames[i].substring(k + 1);
-			if (!ext.equals("class")) {
-				continue;
-			}
-
-			String cname = filenames[i].substring(0, k);
-
-			try {
-				Class<?> klass = loader.loadClass(pname + "." + cname);
-				Object o = klass.newInstance();
-				if (o instanceof Variation) {
-					Variation v = (Variation) o;
-					int ind = getVariationIndex(v.getName());
-					if (ind >= 0) {
-						vdup.add(v);
-					} else {
-						registerVariation(v);
-					}
-				}
-			} catch (Throwable err) {
-				err.printStackTrace();
 			}
 		}
 
