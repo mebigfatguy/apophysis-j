@@ -7,7 +7,9 @@
 	<property file="build.properties"/>
 
 	<property name="src.dir" value="${basedir}/src"/>
+	<property name="plugins.dir" value="${basedir}/plugins"/>
 	<property name="classes.dir" value="${basedir}/classes"/>
+	<property name="pluginsclasses.dir" value="${basedir}/plugin_classes"/>
 	<property name="lib.dir" value="${basedir}/lib"/>
 	<property name="javadoc.dir" value="${basedir}/javadoc"/>
 	<property name="jnlp.dir" value="${basedir}/jnlp"/>
@@ -18,6 +20,7 @@
 
 	<target name="clean" description="removes all generated collateral">
 		<delete dir="${classes.dir}"/>
+		<delete dir="${pluginsclasses.dir}"/>
 		<delete dir="${javadoc.dir}"/>
 		<delete file="${basedir}/apophysis-j-${apophysis-j.version}.jar"/>
 		<delete file="${basedir}/apophysis-j-src-${apophysis-j.version}.zip"/>
@@ -31,9 +34,11 @@
 
 	<target name="-init" description="prepares repository for a build">
 		<mkdir dir="${classes.dir}"/>
+		<mkdir dir="${pluginsclasses.dir}"/>
 		<mkdir dir="${javadoc.dir}"/>
 		<mkdir dir="${jnlp.dir}"/>
 		<path id="apophysis-j.classpath">
+			<pathelement location="${classes.dir}"/>
 			<pathelement location="${lib.dir}/js.jar"/>
 		</path>
 	</target>
@@ -46,6 +51,11 @@
     			<include name="**/*.gif"/>
     			<include name="**/*.dat"/>
     		</fileset>
+		</copy>
+		<copy todir="${pluginsclasses.dir}">
+			<fileset dir="${plugins.dir}">
+    			<include name="**/*.txt"/>
+			</fileset>
 		</copy>
 		<copy todir="${jnlp.dir}">
 			<fileset dir="${basedir}">
@@ -64,6 +74,15 @@
 	<target name="compile" depends="-init" description="compiles java files">
 		<javac srcdir="${src.dir}"
 				destdir="${classes.dir}"
+				source="${javac.source}"
+				target="${javac.target}"
+				deprecation="${javac.deprecation}"
+				debug="${javac.debug}"
+			    includeantruntime="false">
+			<classpath refid="apophysis-j.classpath"/>
+		</javac>
+		<javac srcdir="${plugins.dir}"
+				destdir="${pluginsclasses.dir}"
 				source="${javac.source}"
 				target="${javac.target}"
 				deprecation="${javac.deprecation}"
@@ -94,6 +113,22 @@
 				<attribute name="Bundle-ActivationPolicy" value="lazy"/>
 			</manifest>
 		</jar>
+		<jar destfile="${basedir}/apophysis-j-plugins-${apophysis-j.version}.jar">
+			<fileset dir="${pluginsclasses.dir}">
+				<include name="**/*.class"/>
+				<include name="**/*.txt"/>
+			</fileset>
+			<manifest>
+				<attribute name="apophysis-j-version" value="${apophysis-j.version}"/>
+				<attribute name="Bundle-ManifestVersion" value="2"/>
+				<attribute name="Bundle-Name" value="apophysis-j-plugins"/>
+				<attribute name="Bundle-SymbolicName" value="apophysis-j-plugins; singleton:=true"/>
+				<attribute name="Bundle-Version" value="${apophysis-j.version}"/>				
+				<attribute name="Bundle-ClassPath" value="."/>
+				<attribute name="Bundle-Vendor" value="Apophysis-j Plugins Project"/>
+				<attribute name="Bundle-ActivationPolicy" value="lazy"/>
+			</manifest>
+		</jar>
 	</target>
 
 	<target name="srczip" description="builds the source distribution zip file">
@@ -104,6 +139,10 @@
 				<include name="**/*.license"/>
 				<include name="**/*.txt"/>
 				<include name="lib/*.jar"/>
+			</fileset>
+			<fileset dir="${plugins.dir}">
+				<include name="**/*.java"/>
+				<include name="**/*.txt"/>
 			</fileset>
 		</zip>
 	</target>
