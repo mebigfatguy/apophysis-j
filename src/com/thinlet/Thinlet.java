@@ -7250,11 +7250,11 @@ public class Thinlet extends Container implements Runnable, Serializable {
 			setChoice(component, key, value, values, values[0]);
 		} else if ("boolean".equals(definition[0])) {
 			if ("true".equals(value)) {
-				if (definition[3] == Boolean.FALSE) {
+				if (Boolean.FALSE.equals(definition[3])) {
 					set(component, key, Boolean.TRUE);
 				}
 			} else if ("false".equals(value)) {
-				if (definition[3] == Boolean.TRUE) {
+				if (Boolean.TRUE.equals(definition[3])) {
 					set(component, key, Boolean.FALSE);
 				}
 			} else {
@@ -7419,7 +7419,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 	public void setBoolean(Object component, String key, boolean value) {
 		Object[] definition = getDefinition(getClass(component), key, "boolean");
 		if (setBoolean(component, (String) definition[1], value,
-				(definition[3] == Boolean.TRUE))) {
+				Boolean.TRUE.equals(definition[3]))) {
 			update(component, definition[2]);
 		}
 	}
@@ -7428,7 +7428,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 	 * Gets the property value of the given component by the property key
 	 */
 	public boolean getBoolean(Object component, String key) {
-		return get(component, key, "boolean") == Boolean.TRUE;
+		return Boolean.TRUE.equals(get(component, key, "boolean"));
 	}
 
 	/**
