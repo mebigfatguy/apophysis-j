@@ -1,9 +1,9 @@
 Apophysis-j supports java plugins. You can write your own
 programs by extending the existing Variation class, compile
-them, and put the compiled class files into this directory:
+them, jar them up, and put the jar file into this directory:
 
-on linux and mac :     $HOME/.apophysis-j/plugins/apophysis
-on windows       :     %HOMEPATH%\.apophysis-j\plugins\apophysis
+on linux and mac :     $HOME/.apophysis-j/plugins/
+on windows       :     %HOMEPATH%\.apophysis-j\plugins\
 
 
 At launch time, apophysis-j scans the content of this directory
