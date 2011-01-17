@@ -44,6 +44,47 @@ import java.util.Vector;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
+import org.apophysis.variations.BentVariation;
+import org.apophysis.variations.BlobVariation;
+import org.apophysis.variations.BlurVariation;
+import org.apophysis.variations.BubbleVariation;
+import org.apophysis.variations.CosineVariation;
+import org.apophysis.variations.CurlVariation;
+import org.apophysis.variations.CylinderVariation;
+import org.apophysis.variations.DiamondVariation;
+import org.apophysis.variations.DiscVariation;
+import org.apophysis.variations.ExVariation;
+import org.apophysis.variations.ExponentialVariation;
+import org.apophysis.variations.EyefishVariation;
+import org.apophysis.variations.Fan2Variation;
+import org.apophysis.variations.FanVariation;
+import org.apophysis.variations.FisheyeVariation;
+import org.apophysis.variations.GaussianblurVariation;
+import org.apophysis.variations.HandkerchiefVariation;
+import org.apophysis.variations.HeartVariation;
+import org.apophysis.variations.HorseshoeVariation;
+import org.apophysis.variations.HyperbolicVariation;
+import org.apophysis.variations.JuliaVariation;
+import org.apophysis.variations.JulianVariation;
+import org.apophysis.variations.JuliascopeVariation;
+import org.apophysis.variations.LinearVariation;
+import org.apophysis.variations.NoiseVariation;
+import org.apophysis.variations.PDJVariation;
+import org.apophysis.variations.PerspectiveVariation;
+import org.apophysis.variations.PolarVariation;
+import org.apophysis.variations.PopcornVariation;
+import org.apophysis.variations.PowerVariation;
+import org.apophysis.variations.RadialblurVariation;
+import org.apophysis.variations.RectanglesVariation;
+import org.apophysis.variations.Rings2Variation;
+import org.apophysis.variations.RingsVariation;
+import org.apophysis.variations.SinusoidalVariation;
+import org.apophysis.variations.SphericalVariation;
+import org.apophysis.variations.SpiralVariation;
+import org.apophysis.variations.SupershapeVariation;
+import org.apophysis.variations.SwirlVariation;
+import org.apophysis.variations.WavesVariation;
+
 public class XForm implements Constants {
 
 	/****************************************************************************/

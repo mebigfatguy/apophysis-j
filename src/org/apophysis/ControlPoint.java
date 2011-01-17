@@ -33,6 +33,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apophysis.variations.JulianVariation;
+
 public class ControlPoint implements Constants {
 
 	/*****************************************************************************/
