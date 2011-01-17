@@ -332,7 +332,7 @@ public class OpenDialog {
 	public void show() {
 
 		try {
-			Object dialog = thinlet.parse("opendialog.xml", this);
+			Object dialog = thinlet.parse("/org/apophysis/thinlet/xml/opendialog.xml", this);
 			thinlet.add(dialog);
 		} catch (Exception ex) {
 			ex.printStackTrace();
