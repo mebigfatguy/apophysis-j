@@ -30,7 +30,6 @@ package org.apophysis;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
-import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.image.MemoryImageSource;
@@ -61,53 +60,29 @@ public class Adjust extends MyThinlet implements Constants, ThreadTarget {
 	/*****************************************************************************/
 	// FIELDS
 
-	boolean resetting;
+	private boolean resetting;
 
-	ControlPoint cp = new ControlPoint();
+	private final ControlPoint cp = new ControlPoint();
 
-	boolean pnlDragMode, pnlDragged, pnlMM;
-	Point pnlDragPos, pnlDragOld;
-	double pnlDragValue;
+	private double previewdensity;
 
-	Point mousepos;
+	private int[][] palette = new int[256][3];
+	private final int[][] backupal = new int[256][3];
+	private final int[][] tmpbackupal = new int[256][3];
 
-	boolean camDragMode, camDragged, camMM;
-	Point camDragPos, camDragOld;
-	double camDragValueX, camDragValueY, camSin, camCos;
+	private int scrollmode = modeRotate;
 
-	double previewdensity;
+	private Image pimage = null; // preview image
+	private int imageheight = 0, imagewidth = 0;
+	private int previewwidth = 0, previewheight = 0;
 
-	int[][] palette = new int[256][3];
-	int[][] backupal = new int[256][3];
-	int[][] tmpbackupal = new int[256][3];
+	private Image gimage = null; // gradient image
 
-	int scrollmode = modeRotate;
+	private float[] hsv = new float[3];
 
-	boolean gradientchanged;
+	private final Renderer renderer;
 
-	int imgDragMode;
-
-	int dragX, oldX;
-	int oldpos, offset;
-
-	Image pimage = null; // preview image
-	int imageheight = 0, imagewidth = 0;
-	int previewwidth = 0, previewheight = 0;
-	int previewtop = 0, previewleft = 0;
-
-	Rectangle[] preset = new Rectangle[4];
-
-	double ratio;
-
-	Image gimage = null; // gradient image
-
-	float[] hsv = new float[3];
-
-	Renderer renderer;
-
-	Color gray80 = new Color(0x808080);
-
-	boolean instantpreview = false;
+	private final Color gray80 = new Color(0x808080);
 
 	/*****************************************************************************/
 
@@ -288,8 +263,6 @@ public class Adjust extends MyThinlet implements Constants, ThreadTarget {
 		if (resetting) {
 			return;
 		}
-
-		gradientchanged = true;
 
 		switch (scrollmode) {
 		case modeRotate:
@@ -617,14 +590,10 @@ public class Adjust extends MyThinlet implements Constants, ThreadTarget {
 			previewwidth = pw;
 			r = cp.width * 1.0 / previewwidth;
 			previewheight = (int) (cp.height / r + 0.5);
-			previewleft = 1;
-			previewtop = (ph - previewheight) / 2;
 		} else {
 			previewheight = ph;
 			r = cp.height * 1.0 / previewheight;
 			previewwidth = (int) (cp.width / r + 0.5);
-			previewtop = 1;
-			previewleft = (pw - previewwidth) / 2;
 		}
 
 		cp.adjustScale(previewwidth, previewheight);

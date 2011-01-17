@@ -29,6 +29,6 @@ package org.apophysis;
 
 public interface Computation {
 
-	public void compute(XForm xform);
+	void compute(XForm xform);
 
 }

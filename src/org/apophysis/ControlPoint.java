@@ -104,7 +104,7 @@ public class ControlPoint implements Constants {
 
 	public List<String> unknown; // name of unknown variations
 
-	XForm[] propTable = new XForm[PROP_TABLE_SIZE];
+	private final XForm[] propTable = new XForm[PROP_TABLE_SIZE];
 
 	/*****************************************************************************/
 	// CONSTRUCTORS

@@ -43,7 +43,7 @@ class CMap {
 
 	/*****************************************************************************/
 
-	public static String[] cmapnames = { "south-sea-bather", "sky-flesh",
+	public static final String[] cmapnames = { "south-sea-bather", "sky-flesh",
 			"blue-bather", "no-name", "pillows", "mauve-splat",
 			"facial-treescape", "fasion-bug", "leafy-face", "mouldy-sun",
 			"sunny-harvest", "peach-tree", "fire-dragon", "ice-dragon",

@@ -48,23 +48,15 @@ public class Fullscreen extends MyThinlet implements Constants {
 	/*****************************************************************************/
 	// FIELDS
 
-	long remainder, starttime, t;
-	int imgleft, imgtop, imgwidth, imgheight;
-	boolean closing;
-
-	Renderer renderer;
-
 	Image image = null;
 
-	boolean calculate;
-	ControlPoint cp = new ControlPoint();
-	double zoom;
-	double[] center = new double[2];
+	final ControlPoint cp = new ControlPoint();
+	final double[] center = new double[2];
 
-	GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-	GraphicsDevice gd = ge.getDefaultScreenDevice();
+	private final GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+	private final GraphicsDevice gd = ge.getDefaultScreenDevice();
 
-	Window wscreen = null;
+	private Window wscreen = null;
 
 	/*****************************************************************************/
 

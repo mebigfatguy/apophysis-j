@@ -44,10 +44,10 @@ public class ColorDialog {
 	private MyThinlet thinlet = null;
 	private Task task = null;
 
-	Image himage = null;
+	private Image himage = null;
 
-	int red, green, blue;
-	float[] hsb = new float[3];
+	private int red, green, blue;
+	private final float[] hsb = new float[3];
 
 	/******************************************************************************/
 	// CONSTRUCTOR

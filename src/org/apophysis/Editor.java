@@ -34,7 +34,6 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -77,122 +76,116 @@ public class Editor extends MyThinlet implements Constants, ThreadTarget {
 	/*****************************************************************************/
 	// FIELDS
 
-	int[][] cmap = new int[256][3];
+	private final int[][] cmap = new int[256][3];
 
-	double[] fclick = new double[2];
-	double[] fdrag = new double[2];
-	double[] fmove = new double[2];
+	private final double[] fclick = new double[2];
+	private final double[] fdrag = new double[2];
+	private final double[] fmove = new double[2];
 
-	double dclick; // distance to pivot when clicking
-	double ddrag; // distance to pivot when dragging
+	private double dclick; // distance to pivot when clicking
+	private double ddrag; // distance to pivot when dragging
 
-	double aclick; // angle when clicking
-	double adrag; // angle when dragging
+	private double aclick; // angle when clicking
+	private double adrag; // angle when dragging
 
-	double cclick; // cos when clicking
-	double sclick; // sin when clicking
+	private double cclick; // cos when clicking
+	private double sclick; // sin when clicking
 
-	double[][][] widgets = new double[4][3][2];
-	double xx, xy, yx, yy;
+	private final double[][][] widgets = new double[4][3][2];
+	private double xx, xy, yx, yy;
 
-	SPoint rcenter = new SPoint(); // center of rotation
-	double rradius; // radius of rotation
+	private final SPoint rcenter = new SPoint(); // center of rotation
+	private double rradius; // radius of rotation
 
-	boolean showhelpers = false;
+	private boolean showhelpers = false;
 
-	double p0x, p0y, p1x, p1y, p2x, p2y; // for scaling corners
+	private double p1x, p1y, p2x, p2y; // for scaling corners
 
-	Triangle oldT = new Triangle();
+	private final Triangle oldT = new Triangle();
 
-	int action;
+	private int action;
 
-	int editMode, oldMode;
+	private int editMode, oldMode;
 
-	boolean key_handled;
-	boolean updating;
-	Point mousePos;
-	int mouseOverTriangle, mouseOverEdge, mouseOverCorner, mouseOverWidget;
-	int selectedTriangle, selectedEdge, selectedCorner, selectedWidget;
+	private int mouseOverTriangle, mouseOverEdge, mouseOverCorner, mouseOverWidget;
+	public int selectedTriangle, selectedEdge, selectedCorner, selectedWidget;
 
-	boolean selectMode = true;
-	boolean extendedEdit = false;
-	boolean axisLock = false;
+	private boolean selectMode = true;
+	private boolean extendedEdit = false;
+	private boolean axisLock = false;
 
-	double graphZoom;
+	private double graphZoom;
 
-	boolean changed = false;
-	boolean mustupdateflame = false;
+	private boolean changed = false;
+	private boolean mustupdateflame = false;
 
-	int[] polyx = new int[5];
-	int[] polyy = new int[5];
+	private final int[] polyx = new int[5];
+	private final int[] polyy = new int[5];
 
-	double gCenterX;
-	double gCenterY;
+	private double gCenterX;
+	private double gCenterY;
 
-	Triangle memTriangle;
+	private final Triangle memTriangle;
 
-	SPoint pivot = new SPoint();
+	private final SPoint pivot = new SPoint();
 
-	double[] tcenter = new double[2];
-	boolean mustautozoom = false;
+	private boolean mustautozoom = false;
 
 	// PUBLIC
 
 	public ControlPoint cp = new ControlPoint();
 
-	Color bgcolor;
-	Color hcolor; // helpers color
+	private Color bgcolor;
+	private Color hcolor; // helpers color
 
 	// public Renderer render;
 
 	public int pivotMode = PIVOT_LOCAL;
-	public SPoint localPivot = new SPoint(0, 0);
-	public SPoint worldPivot = new SPoint(0, 0);
+	private final SPoint localPivot = new SPoint(0, 0);
+	private final SPoint worldPivot = new SPoint(0, 0);
 
-	int imagewidth = 0, imageheight = 0;
+	private int imagewidth = 0, imageheight = 0;
 
 	// preview bounds
-	int previewwidth, previewheight;
+	private int previewwidth, previewheight;
 
 	// bounds for immediate painting
-	Rectangle ibounds = new Rectangle();
+	private final Rectangle ibounds = new Rectangle();
 
-	Renderer renderer = null;
-	Image pimage = null;
-	boolean showpreview = true;
+	private Renderer renderer = null;
+	private Image pimage = null;
+	private boolean showpreview = true;
 
-	BasicStroke solid;
-	BasicStroke dots;
-	BasicStroke solid3;
+	private BasicStroke solid;
+	private BasicStroke dots;
+	private BasicStroke solid3;
 
-	Font vfont = new Font("Helvetica", Font.PLAIN, 10);
-	Font pfont = new Font("Helvetica", Font.PLAIN, 9);
+	private final Font vfont = new Font("Helvetica", Font.PLAIN, 10);
+	private final Font pfont = new Font("Helvetica", Font.PLAIN, 9);
 
 	// status bar
-	Color bg = new Color(0xD1CCC6);
-	String status1 = "X:0";
-	String status2 = "Y:0";
-	String status3 = "Starting editor ...";
-	Font sfont = new Font("Courier", Font.PLAIN, 12);
-	int swidth;
-	int sheight;
-	static final int hstatus1 = 5;
-	static final int hstatus2 = 85;
-	static final int hstatus3 = 165;
+	private final Color bg = new Color(0xD1CCC6);
+	private String status1 = "X:0";
+	private String status2 = "Y:0";
+	private String status3 = "Starting editor ...";
+	private final Font sfont = new Font("Courier", Font.PLAIN, 12);
+	private static final int hstatus1 = 5;
+	private static final int hstatus2 = 85;
+	private static final int hstatus3 = 165;
 
-	int dragcount = 0;
+	private int dragcount = 0;
 
 	// variation preview
-	boolean showVarPreview = false;
-	int varPreviewDensity = 2, varPreviewRange = 6, varPreviewDepth = 3;
+	private boolean showVarPreview = false;
+	private int varPreviewDensity = 2, varPreviewRange = 6, varPreviewDepth = 3;
 
-	int[] pixels = null;
-	MemoryImageSource source = null;
-	Image vimage = null;
-	int graphwidth;
-	int graphheight;
+	private int[] pixels = null;
+	private MemoryImageSource source = null;
+	private Image vimage = null;
+	private int graphwidth;
+	private int graphheight;
 
-	double previewdensity = 0;
+	private double previewdensity = 0;
 
 	/*****************************************************************************/
 
@@ -2146,7 +2139,6 @@ public class Editor extends MyThinlet implements Constants, ThreadTarget {
 	/*****************************************************************************/
 
 	void showSelectedInfo() {
-		updating = true;
 
 		if (selectedTriangle < 0) {
 			selectedTriangle = 0;
@@ -2203,8 +2195,6 @@ public class Editor extends MyThinlet implements Constants, ThreadTarget {
 		}
 
 		setBoolean(find("chkEnabled"), "selected", xform.enabled);
-
-		updating = false;
 
 		repaint();
 
@@ -2997,8 +2987,6 @@ public class Editor extends MyThinlet implements Constants, ThreadTarget {
 	/*****************************************************************************/
 
 	public void drawStatusBar(Graphics g, Rectangle bounds) {
-		swidth = bounds.width;
-		sheight = bounds.height;
 		g.setColor(bg);
 		g.fillRect(0, 0, bounds.width, bounds.height);
 		g.setColor(Color.black);

@@ -38,9 +38,9 @@ public class Favorites extends MyThinlet implements Constants {
 	/*****************************************************************************/
 	// FIELDS
 
-	List<File> scripts = null;
+	private List<File> scripts = null;
 
-	Object listview = null;
+	private Object listview = null;
 
 	/*****************************************************************************/
 

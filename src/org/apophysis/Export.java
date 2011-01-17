@@ -43,26 +43,24 @@ public class Export extends MyThinlet implements Constants {
 	/*****************************************************************************/
 	// FIELDS
 
-	String filename;
+	public String filename;
 
-	int imageWidth;
-	int imageHeight;
-	int oversample;
-	int batches;
-	int strips;
+	private int imageWidth;
+	private int imageHeight;
+	private int oversample;
+	private int batches;
+	private int strips;
 
-	double sample_density;
-	double filter_radius;
-	double estimator;
-	double estimatorMin;
-	double estimatorCurve;
-	int jitters;
+	private double sample_density;
+	private double filter_radius;
+	private double estimator;
+	private double estimatorMin;
+	private double estimatorCurve;
+	private int jitters;
 
-	double ratio;
+	private double gammaThreshold;
 
-	double gammaThreshold;
-
-	int depth;
+	private int depth;
 
 	/*****************************************************************************/
 
@@ -102,8 +100,6 @@ public class Export extends MyThinlet implements Constants {
 		setString(find("txtDensity"), "text", "" + sample_density);
 		setString(find("txtFilterRadius"), "text", "" + filter_radius);
 		setString(find("udOversample"), "text", "" + oversample);
-
-		ratio = imageWidth * 1.0 / imageHeight;
 
 		batches = 1;
 		estimator = 9.0;

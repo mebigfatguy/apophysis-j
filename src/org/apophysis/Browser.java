@@ -51,20 +51,14 @@ public class Browser extends MyThinlet implements Constants {
 	/*****************************************************************************/
 	// FIELDS
 
-	double previewdensity;
-	int flameindex, gradientindex;
-	String extension, identifier, filename;
-	ControlPoint cp;
-	int[][] palette = new int[256][3];
-	double zoom;
-	double[] center = new double[2];
-	Renderer renderer;
-	String flamestring;
 
-	int[] indices = new int[400];
-	int[] colors = new int[400];
+	private String filename;
+	private final int[][] palette = new int[256][3];
 
-	Image pimage = null;
+	private final int[] indices = new int[400];
+	private final int[] colors = new int[400];
+
+	private Image pimage = null;
 
 	/*****************************************************************************/
 
