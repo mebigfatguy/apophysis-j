@@ -7,11 +7,11 @@
 
 			<panel weightx="1" weighty="3" halign="left" valign="top"
 				>
-				<button	name="btnUndo" icon="images/adjust1.gif"
+				<button	name="btnUndo" icon="/images/adjust1.gif"
 					halign="left" weightx="0"
 					action="undo()"
 					/>
-				<button name="btnRedo" icon="images/adjust2.gif"
+				<button name="btnRedo" icon="/images/adjust2.gif"
 					halign="left" weightx="0"
 					action="redo()"
 					/>
@@ -83,7 +83,7 @@
 		placement="top" selected="1" >
 
 
-		<tab name="TabSheet1" text="  Camera  " icon="images/main18.gif" >
+		<tab name="TabSheet1" text="  Camera  " icon="/images/main18.gif" >
 			<panel weightx="1" weighty="1" halign="fill" valign="fill"
 				columns="3" top="20" gap="5" bottom="5" >
 
@@ -141,7 +141,7 @@
 			</panel>
 		</tab>
 
-		<tab name="TabSheet2" text="  Rendering  " icon="images/main35.gif" >
+		<tab name="TabSheet2" text="  Rendering  " icon="/images/main35.gif" >
 	
 			<panel columns="1" >	
 				<panel  weightx="1" weighty="1" halign="fill" valign="fill"
@@ -210,7 +210,7 @@
 
 		</tab>
 
-		<tab name="TabSheet3" text="  Gradient  " icon="images/main11.gif" >
+		<tab name="TabSheet3" text="  Gradient  " icon="/images/main11.gif" >
 
 			<panel weightx="1" weighty="1" halign="fill" valign="fill"
 				columns="1" top="20" gap="5" bottom="5" left="5" right="5" >
@@ -322,22 +322,22 @@
 							
 						<button name="btnCopy"
 							tooltip="Copy gradient to clipboard"
-							icon="images/adjust6.gif"
+							icon="/images/adjust6.gif"
 							action="mnuCopyClick()"
 							/>
 						<button name="btnPaste"
 							tooltip="Paste gradient from clipboard"
-							icon="images/adjust5.gif"
+							icon="/images/adjust5.gif"
 							action="mnuPasteClick()"
 							/>
 						<button name="btnOpen"
 							tooltip="Open gradient browser"
-							icon="images/adjust3.gif"
+							icon="/images/adjust3.gif"
 							action="btnOpenClick()"
 							/>
 						<button name="btnSmoothPalette"
 							tooltip="Smooth palette"
-							icon="images/adjust4.gif"
+							icon="/images/adjust4.gif"
 							action="mnuSmoothGradientClick()"
 							/>
 					</panel>
@@ -346,7 +346,7 @@
 			</panel>
 		</tab>
 
-		<tab name="TabSheet4" text="  Image size  " icon="images/main51.gif" >
+		<tab name="TabSheet4" text="  Image size  " icon="/images/main51.gif" >
 
 			<panel weightx="1" weighty="1" halign="fill"  valign="fill"
 				top="20" left="5" right="5" bottom="0" gap="10"

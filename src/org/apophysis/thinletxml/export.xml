@@ -13,7 +13,7 @@
 		<textfield name="txtFilename" weightx="1" halign="fill"
 			/>
 
-		<button name="btnBrowse" icon="images/browser.gif"
+		<button name="btnBrowse" icon="/images/browser.gif"
 			weightx="0" halign="fill"
 			action="btnBrowseClick()"
 			/>

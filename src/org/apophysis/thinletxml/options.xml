@@ -65,7 +65,7 @@
 						<textfield columns="30" name="txtWatermark"
 							weightx="1" halign="fill"
 							/>
-						<button text="" icon="images/browser.gif"
+						<button text="" icon="/images/browser.gif"
 							weightx="0" halign="right"	
 							action="btnBrowseWatermarkClick()"
 							/>
@@ -83,7 +83,7 @@
 						<checkbox text="Play sound on render complete" 
 							name="chkPlaysound"
 							weightx="1" halign="left" />
-						<button text="" icon="images/play.gif" 
+						<button text="" icon="/images/play.gif" 
 							action="btnPlayClick()"
 							weightx="0" halign="right" />
 					</panel>
@@ -93,7 +93,7 @@
 						<textfield columns="30" name="txtSoundFile"
 							weightx="1" halign="fill"
 							/>
-						<button text="" icon="images/browser.gif"
+						<button text="" icon="/images/browser.gif"
 							action="btnBrowseSoundClick()"
 							weightx="0" halign="right"	
 							/>
@@ -631,7 +631,7 @@
 							name="txtGradients"
 							weightx="1" halign="fill" 
 							/>
-						<button icon="images/browser.gif"
+						<button icon="/images/browser.gif"
 							action="btnGradientsClick()"
 							/>
 					</panel>					
@@ -818,7 +818,7 @@
 					weightx="0" halign="fill" valign="fill" />
 				<textfield name="txtParameter" 
 					weightx="1" halign="fill" valign="fill" />
-				<button icon="images/browser.gif"
+				<button icon="/images/browser.gif"
 					action="btnParameterClick()"
 					weightx="0" halign="fill" valign="fill" />
 
@@ -832,7 +832,7 @@
 					weightx="0" halign="fill" valign="fill" />
 				<textfield name="txtSmooth" 
 					weightx="1" halign="fill" valign="fill" />
-				<button icon="images/browser.gif"
+				<button icon="/images/browser.gif"
 					action="btnSmoothClick()"
 					weightx="0" halign="fill" valign="fill" />
 
@@ -846,7 +846,7 @@
 					weightx="0" halign="fill" valign="fill" />
 				<textfield name="txtLibrary" 
 					weightx="1" halign="fill" valign="fill" />
-				<button name="btnLibrary" icon="images/browser.gif"
+				<button name="btnLibrary" icon="/images/browser.gif"
 					action="btnLibraryClick()"
 					weightx="0" halign="fill" valign="fill" />
 				
@@ -861,7 +861,7 @@
 					weightx="0" halign="fill" valign="fill" />
 				<textfield name="txtRenderer" 
 					weightx="1" halign="fill" valign="fill" />
-				<button name="btnRenderer" icon="images/browser.gif"
+				<button name="btnRenderer" icon="/images/browser.gif"
 					action="btnRendererClick()"
 					weightx="0" halign="fill" valign="fill" />
 

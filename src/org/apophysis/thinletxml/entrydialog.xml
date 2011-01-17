@@ -14,7 +14,7 @@
 			/>
 		<textfield name="FileField" columns="48"
 			/>
-		<button icon="images/main1.gif"
+		<button icon="/images/main1.gif"
 			action="chooseFile()"
 			/>
 

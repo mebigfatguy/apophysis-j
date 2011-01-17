@@ -14,12 +14,12 @@
 		<menu name="MainFile" text="File" background="#D1CCC6" >
 			<menuitem name="mnuOpen" text="Open"
 				accelerator="META O"
-				icon="images/main1.gif"
+				icon="/images/main1.gif"
 				background="#D1CCC6"
 				action="mnuOpenClick()" />
 			<separator/>
 			<menuitem name="mnuSaveAs" text="Save parameters ..."
-				icon="images/main3.gif"
+				icon="/images/main3.gif"
 				accelerator="META S"
 				background="#D1CCC6"
 				action="mnuSaveAsClick()"
@@ -31,12 +31,12 @@
 				/>
 			<separator/>
 			<menuitem name="mnuSmoothGradient" 
-				icon="images/main34.gif"
+				icon="/images/main34.gif"
 				background="#D1CCC6"
 				action="mnuSmoothGradientClick()"
 				text="Smooth palette ..." />
 			<menuitem name="mnuOpenGradient"
-				icon="images/main22.gif"
+				icon="/images/main22.gif"
 				background="#D1CCC6"
 				action="mnuOpenGradientClick()"
 				text="Gradient browser ..." />
@@ -145,7 +145,7 @@
 
 		<menu name="View1" text="View" background="#D1CCC6" >
 			<menuitem name="mnuFullView" text="Full screen"
-				icon="images/main52.gif"
+				icon="/images/main52.gif"
 				tooltip="Show full-screen view of the flame"
 				accelerator="F3"
 				background="#D1CCC6"
@@ -153,26 +153,26 @@
 				/>
 			<separator/>
 			<menuitem name="mnuEditor" text="Editor"
-				icon="images/main19.gif"
+				icon="/images/main19.gif"
 				accelerator="F4"
 				background="#D1CCC6"
 				action="mnuEditorClick()"
 				/>
 			<menuitem name="mnuAdjust" text="Adjust"
-				icon="images/main18.gif"
+				icon="/images/main18.gif"
 				accelerator="F5"
 				background="#D1CCC6"
 				action="mnuAdjustClick()"
 				/>
 			<menuitem name="mnuGrad" text="Gradient"
-				icon="images/main11.gif"
+				icon="/images/main11.gif"
 				accelerator="F6"
 				background="#D1CCC6"
 				action="mnuGradClick()"
 				/>
 			<menuitem name="mnuMutate" text="Mutation"
 				accelerator="F7"
-				icon="images/main17.gif"
+				icon="/images/main17.gif"
 				background="#D1CCC6"
 				action="mnuMutateClick()"
 				/>
@@ -180,13 +180,13 @@
 			<menuitem name="mnuImageSize" text="Image size"
 				background="#D1CCC6"
 				action="mnuImageSizeClick()"
-				icon="images/main51.gif"
+				icon="/images/main51.gif"
 				/>
 		</menu>
 
 		<menu name="F1" text="Flame" background="#D1CCC6" >
 			<menuitem name="mnuResetLocation" text="Reset location"
-				icon="images/main12.gif"
+				icon="/images/main12.gif"
 				accelerator="F12"
 				background="#D1CCC6"
 				action="mnuResetLocationClick()"
@@ -237,7 +237,7 @@
 				text="Select random gradient" />
 			<separator/>
 			<menuitem name="mnuRender" text="Render to disk ..."
-				icon="images/main35.gif"
+				icon="/images/main35.gif"
 				accelerator="META R"
 				background="#D1CCC6"
 				action="mnuRenderClick()"
@@ -264,23 +264,23 @@
 			<menuitem name="mnuRun" text="Run"
 				action="mnuRunScriptClick()"
 				background="#D1CCC6"
-				icon="images/main43.gif"
+				icon="/images/main43.gif"
 				/>
 			<menuitem name="mnuStop" text="Stop"
 				action="mnuStopScriptClick()"
 				background="#D1CCC6"
-				icon="images/main36.gif"
+				icon="/images/main36.gif"
 				/>
 			<separator/>
 			<menuitem name="mnuOpenScript" text="Open ..."
-				icon="images/main1.gif"
+				icon="/images/main1.gif"
 				action="mnuOpenScriptClick()"
 				background="#D1CCC6"
 				/>
 			<menuitem name="mnuEditScript" text="Edit"
 				action="mnuEditScriptClick()"
 				background="#D1CCC6"
-				icon="images/main42.gif"
+				icon="/images/main42.gif"
 				/>
 			<separator/>
 			<menuitem name="mnuManageFavorites" text="Manage favorites"
@@ -308,7 +308,7 @@
 				/>
 			<separator/>
 			<menuitem name="mnuOptions" text="Options ..."
-				icon="images/main13.gif"
+				icon="/images/main13.gif"
 				accelerator="META P"
 				action="mnuOptionsClick()"
 				tooltip="Show the Options dialog"
@@ -338,18 +338,18 @@
 		halign="left" valign="top" >
 
 		<button name="btnOpen" background="#D1CCC6"
-			icon="images/main1.gif"
+			icon="/images/main1.gif"
 			tooltip="Open a parameter file for browsing"
 			action="mnuOpenClick()"
 			/>
 
 		<button name="btnSave" background="#D1CCC6"
-			icon="images/main3.gif"
+			icon="/images/main3.gif"
 			action="mnuSaveAsClick()"
 			/>
 
 		<button name="btnRender"  background="#D1CCC6"
-			icon="images/main35.gif"
+			icon="/images/main35.gif"
 			tooltip="Render flame to disk"
 			action="mnuRenderClick()"
 			/>
@@ -357,13 +357,13 @@
 		<label text=" " background="#D1CCC6" />
 
 		<button name="btnUndo" background="#D1CCC6"
-			icon="images/main4.gif"
+			icon="/images/main4.gif"
 			enabled="false"
 			action="undo()"
 			/>
 
 		<button name="btnRedo" background="#D1CCC6"
-			icon="images/main5.gif"
+			icon="/images/main5.gif"
 			action="redo()"
 			enabled="false"
 			/>
@@ -372,7 +372,7 @@
 
 		<button name="btnReset" background="#D1CCC6"
 			tooltip="Reset location (F12)"
-			icon="images/main12.gif"
+			icon="/images/main12.gif"
 			action="mnuResetLocationClick()"
 			/>
 
@@ -389,7 +389,7 @@
 		</combobox>
 
 		<button name="btnFullScreen" background="#D1CCC6"
-			icon="images/main52.gif"
+			icon="/images/main52.gif"
 			tooltip="Full-screen view (F3)"
 			action="mnuFullScreenClick()"
 			/>
@@ -397,31 +397,31 @@
 		<label text=" " background="#D1CCC6" />
 
 		<button name="btnEditor" background="#D1CCC6"
-			icon="images/main19.gif"
+			icon="/images/main19.gif"
 			tooltip="Show transform editor"
 			action="mnuEditorClick()"
 			/>
 
 		<button name="btnAdjust" background="#D1CCC6"
 			tooltip="Adjust render-settings"
-			icon="images/main18.gif"
+			icon="/images/main18.gif"
 			action="mnuAdjustClick()"
 			/>
 
 		<button name="btnGradient" background="#D1CCC6"
-			icon="images/main11.gif"
+			icon="/images/main11.gif"
 			tooltip="Show the gradient window"
 			action="mnuGradClick()"
 			/>
 
 		<button name="btnMutate"  background="#D1CCC6"
-			icon="images/main17.gif"
+			icon="/images/main17.gif"
 			tooltip="Show the mutation window"
 			action="mnuMutateClick()"
 			/>
 
 		<button name="btnSize" background="#D1CCC6"
-			icon="images/main51.gif"
+			icon="/images/main51.gif"
 			tooltip="Adjust image size"
 			action="mnuImageSizeClick()"
 			/>
@@ -430,31 +430,31 @@
 
 		<button name="btnDefine"  background="#D1CCC6"
 			tooltip="Open the script editor"
-			icon="images/main42.gif"
+			icon="/images/main42.gif"
 			action="mnuEditScriptClick()"
 			/>
 
 		<button name="btnRun"  background="#D1CCC6"
 			tooltip="Run the script (F9)"
 			action="mnuRunScriptClick()"
-			icon="images/main43.gif"
+			icon="/images/main43.gif"
 			/>
 
 		<button name="btnStop"  background="#D1CCC6"
 			tooltip="Stop the script (F10)"
 			action="mnuStopScriptClick()"
-			icon="images/main36.gif"
+			icon="/images/main36.gif"
 			/>
 
 		<label text=" " background="#D1CCC6" />
 
 		<button name="btnOptions" background="#D1CCC6"
-			icon="images/main13.gif"
+			icon="/images/main13.gif"
 			action="mnuOptionsClick()"
 			/>
 
 		<togglebutton name="tbShowAlpha" background="#D1CCC6"
-			icon="images/main53.gif"
+			icon="/images/main53.gif"
 			action="btShowAlphaClick(this)"
 			/>
 
@@ -462,28 +462,28 @@
 
 		<togglebutton name="tbZoomWindow"  background="#D1CCC6"
 			group="mouseaction"
-			icon="images/main50.gif"
+			icon="/images/main50.gif"
 			tooltip="Zoom to rectangle"
 			action="tbZoomWindowClick()"
 			/>
 
 		<togglebutton name="tbZoomOutWindow" background="#D1CCC6"
 			group="mouseaction"
-			icon="images/main49.gif"
+			icon="/images/main49.gif"
 			tooltip="Zoom out using rectangle"
 			action="tbZoomOutWindowClick()"
 			/>
 
 		<togglebutton name="tbDrag" background="#D1CCC6"
 			group="mouseaction"
-			icon="images/main48.gif"
+			icon="/images/main48.gif"
 			tooltip="translate image"
 			action="tbDragClick()"
 			/>
 
 		<togglebutton name="tbRotate"  background="#D1CCC6"
 			group="mouseaction"
-			icon="images/main41.gif"
+			icon="/images/main41.gif"
 			tooltip="Rotate image"
 			action="tbRotateClick()"
 			/>
@@ -514,24 +514,24 @@
 			<popupmenu name="MainPopup" >
 				<menuitem name="mnuPopupUndo" text="Undo"
 					background="#D1CCC6"
-					icon="images/main4.gif"
+					icon="/images/main4.gif"
 					action="undo()"
 					/>
 				<menuitem name="mnuPopupRedo" text="Redo"
 					background="#D1CCC6"
-					icon="images/main5.gif"
+					icon="/images/main5.gif"
 					action="redo()"
 					/>
 				<separator/>
 				<menuitem name="mnuPopupResetLocation" text="Reset Location"
 					background="#D1CCC6"
-					icon="images/main12.gif"
+					icon="/images/main12.gif"
 					action="mnuResetLocationClick()"
 					/>
 				<separator/>
 				<menuitem name="mnuPopupFullScreen" text="Fullscreen view"
 					background="#D1CCC6"
-					icon="images/main52.gif"
+					icon="/images/main52.gif"
 					action="mnuFullScreenClick()"
 					/>
 			</popupmenu>

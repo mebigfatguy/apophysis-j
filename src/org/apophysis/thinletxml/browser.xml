@@ -23,7 +23,7 @@
 			top="10" left="10"  bottom="10" right="30"
 			>
 
-			<button name="btnDefGradient" icon="images/browser.gif"
+			<button name="btnDefGradient" icon="/images/browser.gif"
 				tooltip="Open..."
 				action="btnDefGradientClick()"
 				/>

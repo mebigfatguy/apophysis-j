@@ -9,25 +9,25 @@
 			tooltip="New blank flame"
 			action="mnuResetAllClick()"
 			background="#D1CCC6"
-			icon="images/editor0.gif" />
+			icon="/images/editor0.gif" />
 
 		<button name="btAdd" 
 			tooltip="Add a new triangle"
 			action="mnuAddClick()"
 			background="#D1CCC6"
-			icon="images/editor1.gif" />
+			icon="/images/editor1.gif" />
 
 		<button name="btDuplicate" 
 			tooltip="Duplicate the selected triangle"
 			action="mnuDupClick()"
 			background="#D1CCC6"
-			icon="images/editor2.gif" />
+			icon="/images/editor2.gif" />
 
 		<button name="btDelete" 
 			tooltip="Delete the selected triangle"
 			action="mnuDeleteClick()"
 			background="#D1CCC6"
-			icon="images/editor3.gif" />
+			icon="/images/editor3.gif" />
 			
 
 		<label text=" "  />
@@ -36,13 +36,13 @@
 			tooltip="Undo (Ctrl+Z)"
 			action="undo()"
 			background="#D1CCC6"
-			icon="images/editor4.gif" />
+			icon="/images/editor4.gif" />
 
 		<button name="btRedo" 
 			tooltip="Redo (Ctrl+Y)"
 			action="redo()"
 			background="#D1CCC6"
-			icon="images/editor5.gif" />
+			icon="/images/editor5.gif" />
 
 		<label text=" "  />
 
@@ -50,28 +50,28 @@
 			tooltip="Select mode"
 			background="#D1CCC6"
 			action="tbSelectClick(this)"
-			icon="images/editor6.gif" />
+			icon="/images/editor6.gif" />
 
 		<togglebutton name="tbMove" 
 			group="mode"
 			tooltip="Move triangle"
 			background="#D1CCC6"
 			action="tbMoveClick()"
-			icon="images/editor7.gif" />
+			icon="/images/editor7.gif" />
 
 		<togglebutton name="tbRotate" 
 			group="mode"
 			tooltip="Rotate triangle"
 			background="#D1CCC6"
 			action="tbRotateClick()"
-			icon="images/editor8.gif" />
+			icon="/images/editor8.gif" />
 
 		<togglebutton name="tbScale" 
 			group="mode"
 			tooltip="Scale triangle"
 			background="#D1CCC6"
 			action="tbScaleClick()"
-			icon="images/editor9.gif" />
+			icon="/images/editor9.gif" />
 
 		<label text=" "  />
 
@@ -79,31 +79,31 @@
 			tooltip="Toggle world pivot mode"
 			background="#D1CCC6"
 			action="btnPivotModeClick()"
-			icon="images/editor15.gif" />
+			icon="/images/editor15.gif" />
 
 		<button name="tbRotate90CCW" 
 			tooltip="Rotate triangle 90° counter-clockwise"
 			background="#D1CCC6"
 			action="btTrgRotateLeft90Click()"
-			icon="images/editor17.gif" />
+			icon="/images/editor17.gif" />
 
 		<button name="tbTotate90CW" 
 			tooltip="Rotate triangle 90° clockwise"
 			background="#D1CCC6"
 			action="btTrgRotateRight90Click()"
-			icon="images/editor18.gif" />
+			icon="/images/editor18.gif" />
 
 		<button name="tbFlipHorz" 
 			tooltip="Flip horizontal"
 			background="#D1CCC6"
 			action="mnuFlipHorizontalClick()"
-			icon="images/editor10.gif" />
+			icon="/images/editor10.gif" />
 
 		<button name="tbFlipVert" 
 			tooltip="Flip vertical"
 			background="#D1CCC6"
 			action="mnuFlipVerticalClick()"
-			icon="images/editor11.gif" />
+			icon="/images/editor11.gif" />
 
 		<label text=" "  />
 
@@ -111,7 +111,7 @@
 			tooltip="Show/hide variation preview"
 			background="#D1CCC6"
 			action="tbVarPreviewClick(this)"
-			icon="images/editor14.gif" />
+			icon="/images/editor14.gif" />
 
 		<label text=" "  />
 
@@ -119,84 +119,84 @@
 			tooltip="Enable post-triangle editing"
 			background="#D1CCC6"
 			action="mnuPostXswapClick()"
-			icon="images/editor29.gif" />
+			icon="/images/editor29.gif" />
 
 		<togglebutton name="tbEnableFinalXform" 
 			tooltip="Show final Xform"
 			background="#D1CCC6"
 			action="tbEnableFinalXformClick(this)"
-			icon="images/editor24.gif" />
+			icon="/images/editor24.gif" />
 
 		<label text="" >
 		<popupmenu name="TrianglePopup"
 			>
 			<menuitem text="Reset triangle"
 				background="#D1CCC6"
-				icon="images/editor20.gif"
+				icon="/images/editor20.gif"
 				action="mnuResetTriangleClick()"
 				/>
 			<separator/>
 			<menuitem text="Duplicate"
 				background="#D1CCC6"
-				icon="images/editor2.gif"
+				icon="/images/editor2.gif"
 				action="mnuDupClick()"
 				/>
 			<menuitem text="Delete"
 				background="#D1CCC6"
-				icon="images/editor3.gif"
+				icon="/images/editor3.gif"
 				action="mnuDeleteClick()"
 				/>
 			<menuitem text="Add"
 				background="#D1CCC6"
-				icon="images/editor1.gif"
+				icon="/images/editor1.gif"
 				action="mnuAddClick()"
 				/>
 			<separator/>
 			<menuitem text="Copy triangle coordinates"
 				background="#D1CCC6"
-				icon="images/editor26.gif"
+				icon="/images/editor26.gif"
 				action="btCopyTriangleClick()"
 				/>
 			<menuitem text="Paste triangle coordinates"
 				background="#D1CCC6"
-				icon="images/editor27.gif"
+				icon="/images/editor27.gif"
 				action="btPasteTriangleClick()"
 				/>
 			<separator/>
 			<menuitem text="Rotate triangle 90° CCW"
 				background="#D1CCC6"
-				icon="images/editor17.gif"
+				icon="/images/editor17.gif"
 				action="btTrgRotateLeft90Click()"
 				/>
 			<menuitem text="Rotate triangle 90° CW"
 				background="#D1CCC6"
-				icon="images/editor18.gif"
+				icon="/images/editor18.gif"
 				action="btTrgRotateRight90Click()"
 				/>
 			<menuitem text="Flip Horizontal"
 				background="#D1CCC6"
-				icon="images/editor10.gif"
+				icon="/images/editor10.gif"
 				action="mnuFlipHorizontalClick()"
 				/>
 			<menuitem text="Flip Vertical"
 				background="#D1CCC6"
-				icon="images/editor11.gif"
+				icon="/images/editor11.gif"
 				action="mnuFlipVerticalClick()"
 				/>
 			<separator/>
 			<menuitem text="Reset position"
 				background="#D1CCC6"
-				icon="images/editor21.gif"
+				icon="/images/editor21.gif"
 				action="btnOcoefsClick()"
 				/>
 			<menuitem text="Reset rotation"
 				background="#D1CCC6"
-				icon="images/editor22.gif"
+				icon="/images/editor22.gif"
 				action="mnuResetRotationClick()"
 				/>
 			<menuitem text="Reset scale"
 				background="#D1CCC6"
-				icon="images/editor23.gif"
+				icon="/images/editor23.gif"
 				action="mnuResetScaleClick()"
 				/>
 		</popupmenu>
@@ -220,67 +220,67 @@
 			>
 			<menuitem text="Undo" enabled="false"
 				name="mnuUndo"
-				icon="images/editor4.gif"
+				icon="/images/editor4.gif"
 				background="#D1CCC6"
 				action="undo()"
 				/>
 			<menuitem text="Redo" enabled="false"
 				name="mnuRedo"
-				icon="images/editor5.gif"
+				icon="/images/editor5.gif"
 				background="#D1CCC6"
 				action="redo()"
 				/>
 			<separator/>
 			<menuitem text="Add transform" 
-				icon="images/editor1.gif"
+				icon="/images/editor1.gif"
 				background="#D1CCC6"
 				action="mnuAddClick()"
 				/>
 			<separator/>
 			<menuitem text="Auto Zoom"
-				icon="images/editor19.gif"
+				icon="/images/editor19.gif"
 				background="#D1CCC6"
 				action="mnuAutoZoomClick()"
 				/>
 			<checkboxmenuitem text="Show Variation Preview"
 				name="mnuVarPreview"
-				icon="images/editor14.gif"
+				icon="/images/editor14.gif"
 				background="#D1CCC6"
 				action="mnuVarPreviewClick(this)"
 				/>
 			<separator/>
 			<checkboxmenuitem text="Select Mode"
 				name="mnuSelect"
-				icon="images/editor6.gif"
+				icon="/images/editor6.gif"
 				background="#D1CCC6"
 				action="mnuSelectClick(this)"
 				/>
 			<checkboxmenuitem text="Extended edit mode"
 				name="mnuExtendedEdit"
-				icon="images/editor25.gif"
+				icon="/images/editor25.gif"
 				background="#D1CCC6"
 				action="mnuExtendedEditClick(this)"
 				/>
 			<checkboxmenuitem text="Lock tranform axes"
 				name="mnuAxisLock"
-				icon="images/editor16.gif"
+				icon="/images/editor16.gif"
 				background="#D1CCC6"
 				action="mnuAxisLockClick(this)"
 				/>
 			<checkboxmenuitem text="Post-triangle editing"
 				name="mnuPostXswap"
-				icon="images/editor29.gif"
+				icon="/images/editor29.gif"
 				background="#D1CCC6"
 				action="mnuPostXswapClick()"
 				/>
 			<separator/>
 			<menuitem text="Flip All Vertical"
-				icon="images/editor13.gif"
+				icon="/images/editor13.gif"
 				background="#D1CCC6"
 				action="mnuFlipAllVerticalClick()"
 				/>
 			<menuitem text="Flip All Horizontal"
-				icon="images/editor12.gif"
+				icon="/images/editor12.gif"
 				background="#D1CCC6"
 				action="mnuFlipAllHorizontalClick()"
 				/>
@@ -391,13 +391,13 @@
 				
 								<button name="btTrgRotateLeft90"
 									background="#D1CCC6"
-									icon="images/left90.gif"
+									icon="/images/left90.gif"
 									tooltip="Rotate triangle 90 ° counter clockwise"
 									action="btTrgRotateLeft90Click()"
 									/>
 								<button name="btTrgRotateLeft"
 									background="#D1CCC6"
-									icon="images/rotateleft.gif"
+									icon="/images/rotateleft.gif"
 									tooltip="Rotate triangle counter clockwise"
 									action="btTrgRotateLeftClick()"
 									/>
@@ -415,25 +415,25 @@
 								</combobox>
 								<button name="btTrgRotateRight"
 									background="#D1CCC6"
-									icon="images/rotateright.gif"
+									icon="/images/rotateright.gif"
 									tooltip="Rotate triangle clockwise"
 									action="btTrgRotateRightClick()"
 									/>
 								<button name="btTrgRotateRight90"
 									background="#D1CCC6"
-									icon="images/right90.gif"
+									icon="/images/right90.gif"
 									tooltip="Rotate triangle 90° clockwise"
 									action="btTrgRotateRight90Click()"
 									/>
 
 								<button name="btTrgMoveUp"
 									background="#D1CCC6"
-									icon="images/moveup.gif"
+									icon="/images/moveup.gif"
 									action="btTrgMoveUpClick()"
 									/>
 								<button name="btTrgMoveDown"
 									background="#D1CCC6"
-									icon="images/movedown.gif"
+									icon="/images/movedown.gif"
 									action="btTrgMoveDownClick()"
 									/>
 								<combobox name="txtTrgMoveValue"
@@ -449,19 +449,19 @@
 								</combobox>
 								<button name="btTrgMoveLeft"
 									background="#D1CCC6"
-									icon="images/moveleft.gif"
+									icon="/images/moveleft.gif"
 									action="btTrgMoveLeftClick()"
 									/>
 								<button name="btTrgMoveRight"
 									background="#D1CCC6"
-									icon="images/moveright.gif"
+									icon="/images/moveright.gif"
 									action="btTrgMoveRightClick()"
 									/>
 
 								<label text="" />
 								<button name="btTrgScaleDown"
 									background="#D1CCC6"
-									icon="images/scaledown.gif"
+									icon="/images/scaledown.gif"
 									action="btTrgScaleClick(-1)"
 									/>
 								<combobox name="txtTrgScaleValue"
@@ -475,7 +475,7 @@
 								</combobox>
 								<button name="btTrgScaleUp"
 									background="#D1CCC6"
-									icon="images/scaleup.gif"	
+									icon="/images/scaleup.gif"	
 									action="btTrgScaleClick(1)"
 									/>
 								<label text="" />
@@ -491,36 +491,36 @@
 
 	
 								<button name="btCopyTriangle"
-									icon="images/editor26.gif"
+									icon="/images/editor26.gif"
 									background="#D1CCC6"
 									tooltip="Copy triangle coordinates"
 									action="btCopyTriangleClick()"
 									/>
 								<button name="btPasteTriangle"
-									icon="images/editor27.gif"
+									icon="/images/editor27.gif"
 									background="#D1CCC6"
 									tooltip="Paste triangle coordinates"
 									action="btPasteTriangleClick()"
 									/>
 								<togglebutton name="btExtendedEdit"
-									icon="images/editor25.gif"
+									icon="/images/editor25.gif"
 									background="#D1CCC6"
 									tooltip="Enable extended edit mode"
 									action="btExtendedEditClick(this)"
 									/>
 								<togglebutton name="btAxisLock"
-									icon="images/editor16.gif"
+									icon="/images/editor16.gif"
 									background="#D1CCC6"
 									tooltip="Lock transform axes"
 									action="btAxisLockClick(this)"
 									/>
 								<togglebutton name="btAutoWeights"
-									icon="images/editor28.gif"
+									icon="/images/editor28.gif"
 									background="#D1CCC6"
 									tooltip="Auto-balance weights"
 									/>
 								<togglebutton name="btPostXswap"
-									icon="images/editor29.gif"
+									icon="/images/editor29.gif"
 									background="#D1CCC6"
 									tooltip="Enable post-triangle editing"
 									/>

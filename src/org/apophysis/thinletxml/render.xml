@@ -24,12 +24,12 @@
 						action="cmbPresetChange(this)"
 						/>
 
-					<button name="btnSavePreset"  icon="images/main2.gif"
+					<button name="btnSavePreset"  icon="/images/main2.gif"
 						tooltip="savepreset"
 						action="btnSavePresetClick()"
 						/>
 	
-					<button name="btnDeletePreset" icon="images/main9.gif"
+					<button name="btnDeletePreset" icon="/images/main9.gif"
 						tooltip="Delete preset"
 						action="btnDeletePresetClick()"
 						/>
@@ -50,7 +50,7 @@
 						weightx="1" halign="fill"
 						/>
 
-					<button name="btnBrowse" icon="images/browser.gif"
+					<button name="btnBrowse" icon="/images/browser.gif"
 						action="btnBrowseClick()"
 						/>
 				</panel>
