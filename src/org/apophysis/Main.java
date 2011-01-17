@@ -2460,7 +2460,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 	public void mnuAboutClick() {
 		try {
-			Object dialog = parse("about.xml");
+			Object dialog = parse("/org/apophysis/thinletxml/about.xml");
 			add(dialog);
 
 			setString(find("aboutname"), "text", APPNAME);

@@ -111,7 +111,7 @@ public class MyThinlet extends Thinlet {
 	public void alert(String msg, Task task) {
 		try {
 			_endtask = task;
-			Object dialog = parse("alert.xml");
+			Object dialog = parse("/org/apophysis/thinletxml/alert.xml");
 			add(dialog);
 			setString(find("alertmessage"), "text", msg);
 			launcher.toFront();
@@ -139,7 +139,7 @@ public class MyThinlet extends Thinlet {
 
 	public void alertAndWait(String msg) {
 		try {
-			Object dialog = parse("alert.xml");
+			Object dialog = parse("/org/apophysis/thinletxml/alert.xml");
 			add(dialog);
 			setString(find("alertmessage"), "text", msg);
 			launcher.toFront();
@@ -201,7 +201,7 @@ public class MyThinlet extends Thinlet {
 	public void ask(String question, String value, Task task) {
 		try {
 			_endtask = task;
-			Object dialog = parse("ask.xml");
+			Object dialog = parse("/org/apophysis/thinletxml/ask.xml");
 			add(dialog);
 			setString(find("question"), "text", question);
 			setString(find("answer"), "text", value);
@@ -244,7 +244,7 @@ public class MyThinlet extends Thinlet {
 
 		try {
 			_endtask = null;
-			Object dialog = parse("ask.xml");
+			Object dialog = parse("/org/apophysis/thinletxml/ask.xml");
 			add(dialog);
 			setString(find("question"), "text", question);
 			setString(find("answer"), "text", value);
