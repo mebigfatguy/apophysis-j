@@ -18,8 +18,8 @@
   </security> 
   <resources> 
     <j2se version="1.5+" initial-heap-size="800m" max-heap-size="1600m"/>
-    <jar href="https://github.com/downloads/mebigfatguy/apophysis-j/apophysis-j-$VERSION.jar"/> 
-    <jar href="https://github.com/downloads/mebigfatguy/apophysis-j/js.jar"/> 
+    <jar href="apophysis-j-$VERSION.jar"/> 
+    <jar href="js.jar"/> 
   </resources> 
   <application-desc main-class="org.apophysis.Apophysis"/> 
 </jnlp> 
