@@ -44,21 +44,21 @@ public class Apophysis implements Constants {
 
 			Global.randomGenerator = new Random();
 
-			Global.main = new Main(title, "/org/apophysis/main.xml", 660, 530);
-			Global.editor = new Editor("Editor", "/org/apophysis/editor.xml", 760, 556);
-			Global.adjust = new Adjust("Adjust", "/org/apophysis/adjust.xml", 450, 380);
-			Global.browser = new Browser("Browser", "/org/apophysis/browser.xml", 500, 350);
-			Global.mutate = new Mutate("Mutate", "/org/apophysis/mutate.xml", 370, 400);
-			Global.options = new Options("Options", "/org/apophysis/options.xml", 520, 400);
-			Global.export = new Export("Export Flame", "/org/apophysis/export.xml", 420, 390);
-			Global.script = new Script("Script Editor", "/org/apophysis/script.xml", 540, 490);
-			Global.helper = new Helper("Help", "/org/apophysis/helper.xml", 520, 520);
-			Global.preview = new Preview("Preview", "/org/apophysis/preview.xml", 212, 180);
+			Global.main = new Main(title, "/org/apophysis/thinletxml/main.xml", 660, 530);
+			Global.editor = new Editor("Editor", "/org/apophysis/thinletxml/editor.xml", 760, 556);
+			Global.adjust = new Adjust("Adjust", "/org/apophysis/thinletxml/adjust.xml", 450, 380);
+			Global.browser = new Browser("Browser", "/org/apophysis/thinletxml/browser.xml", 500, 350);
+			Global.mutate = new Mutate("Mutate", "/org/apophysis/thinletxml/mutate.xml", 370, 400);
+			Global.options = new Options("Options", "/org/apophysis/thinletxml/options.xml", 520, 400);
+			Global.export = new Export("Export Flame", "/org/apophysis/thinletxml/export.xml", 420, 390);
+			Global.script = new Script("Script Editor", "/org/apophysis/thinletxml/script.xml", 540, 490);
+			Global.helper = new Helper("Help", "/org/apophysis/thinletxml/helper.xml", 520, 520);
+			Global.preview = new Preview("Preview", "/org/apophysis/thinletxml/preview.xml", 212, 180);
 			Global.favorites = new Favorites("Favorite Scripts",
-					"/org/apophysis/favorites.xml", 400, 400);
-			Global.fullscreen = new Fullscreen("Full Screen", "/org/apophysis/fullscreen.xml",
+					"/org/apophysis/thinletxml/favorites.xml", 400, 400);
+			Global.fullscreen = new Fullscreen("Full Screen", "/org/apophysis/thinletxml/fullscreen.xml",
 					100, 100);
-			Global.render = new Render("Render", "render.xml", 470, 470);
+			Global.render = new Render("Render", "/org/apophysis/thinletxml/render.xml", 470, 470);
 
 			Global.main.show();
 
