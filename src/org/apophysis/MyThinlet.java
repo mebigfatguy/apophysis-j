@@ -165,7 +165,7 @@ public class MyThinlet extends Thinlet {
 	public void confirm(String text, Task task) {
 		try {
 			_endtask = task;
-			Object dialog = parse("confirm.xml");
+			Object dialog = parse("/org/apophysis/thinletxml/confirm.xml");
 			add(dialog);
 			setString(find("question"), "text", text);
 			launcher.toFront();
