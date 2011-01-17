@@ -48,15 +48,15 @@ public class JpegCommentOutputStream extends OutputStream implements Constants {
 	/*****************************************************************************/
 	// FIELDS
 
-	FileOutputStream os = null;
-	String comment = null;
+	private FileOutputStream os = null;
+	private String comment = null;
 
-	int nextbyte = 0;
-	int state = STATE_BOF1;
-	int markerlen = 0; // marker length
-	int marker = 0;
-	boolean mustWriteComment = false;
-	boolean commentWritten = false;
+	private int nextbyte = 0;
+	private int state = STATE_BOF1;
+	private int markerlen = 0; // marker length
+	private int marker = 0;
+	private boolean mustWriteComment = false;
+	private boolean commentWritten = false;
 
 	/*****************************************************************************/
 
@@ -91,38 +91,44 @@ public class JpegCommentOutputStream extends OutputStream implements Constants {
 	public void write(byte b[], int off, int len) throws IOException {
 
 		// if rest of previous chunk still to be written
-		if (nextbyte > 0)
+		if (nextbyte > 0) {
 			os.write(b, off, Math.min(nextbyte, len));
+		}
 
 		// check data
 		while (nextbyte < len) {
 			int by = b[off + nextbyte];
-			if (by < 0)
+			if (by < 0) {
 				by += 256;
+			}
 
 			switch (state) {
 			case STATE_BOF1:
-				if (by != 0xFF)
+				if (by != 0xFF) {
 					throw new IOException("Bad header");
+				}
 				os.write(by);
 				state = STATE_BOF2;
 				nextbyte++;
 				break;
 
 			case STATE_BOF2:
-				if (by != 0xD8)
+				if (by != 0xD8) {
 					throw new IOException("Bad header");
+				}
 				os.write(by);
 				state = STATE_MARKER1;
 				nextbyte++;
 				break;
 
 			case STATE_MARKER1:
-				if (mustWriteComment && !commentWritten)
+				if (mustWriteComment && !commentWritten) {
 					writeComment();
+				}
 				os.write(by);
-				if (by == 0xFF)
+				if (by == 0xFF) {
 					state = STATE_MARKER2;
+				}
 				nextbyte++;
 				break;
 
@@ -148,10 +154,11 @@ public class JpegCommentOutputStream extends OutputStream implements Constants {
 				markerlen |= by;
 				state = STATE_MARKER1;
 				nextbyte++;
-				if (nextbyte + markerlen - 2 <= len)
+				if (nextbyte + markerlen - 2 <= len) {
 					os.write(b, nextbyte, markerlen - 2);
-				else
+				} else {
 					os.write(b, nextbyte, len - nextbyte);
+				}
 				nextbyte += markerlen - 2;
 				break;
 			}
@@ -182,34 +189,48 @@ public class JpegCommentOutputStream extends OutputStream implements Constants {
 	/*****************************************************************************/
 
 	boolean checkMarker(int marker) {
-		if (marker == M_SOF0)
+		if (marker == M_SOF0) {
 			return true;
-		if (marker == M_SOF1)
+		}
+		if (marker == M_SOF1) {
 			return true;
-		if (marker == M_SOF2)
+		}
+		if (marker == M_SOF2) {
 			return true;
-		if (marker == M_SOF3)
+		}
+		if (marker == M_SOF3) {
 			return true;
-		if (marker == M_SOF5)
+		}
+		if (marker == M_SOF5) {
 			return true;
-		if (marker == M_SOF6)
+		}
+		if (marker == M_SOF6) {
 			return true;
-		if (marker == M_SOF7)
+		}
+		if (marker == M_SOF7) {
 			return true;
-		if (marker == M_SOF9)
+		}
+		if (marker == M_SOF9) {
 			return true;
-		if (marker == M_SOF10)
+		}
+		if (marker == M_SOF10) {
 			return true;
-		if (marker == M_SOF11)
+		}
+		if (marker == M_SOF11) {
 			return true;
-		if (marker == M_SOF13)
+		}
+		if (marker == M_SOF13) {
 			return true;
-		if (marker == M_SOF14)
+		}
+		if (marker == M_SOF14) {
 			return true;
-		if (marker == M_SOF15)
+		}
+		if (marker == M_SOF15) {
 			return true;
-		if (marker == M_EOI)
+		}
+		if (marker == M_EOI) {
 			return true;
+		}
 		return false;
 	}
 

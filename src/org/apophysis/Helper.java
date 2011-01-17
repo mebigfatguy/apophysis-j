@@ -37,8 +37,8 @@ public class Helper extends MyThinlet implements Constants, Runnable {
 	/*****************************************************************************/
 	// FIELDS
 
-	String titles[];
-	String names[];
+	private String titles[];
+	private String names[];
 
 	/*****************************************************************************/
 

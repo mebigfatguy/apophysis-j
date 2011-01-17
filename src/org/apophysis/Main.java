@@ -55,7 +55,6 @@ import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -89,52 +88,51 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 	String paramFile;
 	String filelist[];
 
-	long startTime;
+	private long startTime;
 
-	Object canvas;
-	int imagewidth, imageheight; // image dimension
+	private final Object canvas;
+	private int imagewidth, imageheight; // image dimension
 
-	int fmousemovestate = msUsual;
-	MouseRect click = new MouseRect();
-	MouseRect select = new MouseRect();
-	double rotateangle, clickangle;
-	boolean drawselection = true;
-	BasicStroke dots, basic;
+	private int fmousemovestate = msUsual;
+	private final MouseRect click = new MouseRect();
+	private final MouseRect select = new MouseRect();
+	private double rotateangle, clickangle;
+	private boolean drawselection = true;
+	private BasicStroke dots, basic;
 
-	RenderThread renderthread;
+	private RenderThread renderthread;
 
-	ControlPoint renderCP = null;
+	private ControlPoint renderCP = null;
 
-	double[] center = new double[2];
-	double[] viewpos = new double[2];
-	double[] viewoldpos = new double[2];
-	double viewscale;
+	final double[] center = new double[2];
+	private final double[] viewpos = new double[2];
+	private final double[] viewoldpos = new double[2];
+	private double viewscale;
 
 	Timer timer = null;
 
-	Image image = null;
+	private Image image = null;
 
-	Font font = new Font("Helvetica", Font.PLAIN, 12);
+	private final Font font = new Font("Helvetica", Font.PLAIN, 12);
 
-	public int panelwidth = 0, panelheight = 0;
+	int panelwidth = 0, panelheight = 0;
 
-	Color grayf0 = new Color(0xF0, 0xF0, 0xF0);
-	Color grayc0 = new Color(0xC0, 0xC0, 0xC0);
+	private final Color grayf0 = new Color(0xF0, 0xF0, 0xF0);
+	private final Color grayc0 = new Color(0xC0, 0xC0, 0xC0);
 
 	List<ControlPoint> cps;
 
-	int splitpos = 160;
+	private int splitpos = 160;
 
-	int xview = 0;
-	int yview = 0;
+	private int xview = 0;
+	private int yview = 0;
 
 	// for undo / redo
-	List<ControlPoint> history;
+	private final List<ControlPoint> history;
 	int undoindex;
 
 	// for drag and drop
-	DropTarget droptarget = null;
-	URL dropurl = null;
+	private DropTarget droptarget = null;
 
 	/*****************************************************************************/
 

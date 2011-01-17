@@ -47,26 +47,26 @@ public class Imager implements Constants {
 	/*****************************************************************************/
 	// FIELDS
 
-	int[] rbits = new int[256];
-	int[] gbits = new int[256];
-	int[] bbits = new int[256];
-	int[] abits = new int[256];
+	private final int[] rbits = new int[256];
+	private final int[] gbits = new int[256];
+	private final int[] bbits = new int[256];
+	private final int[] abits = new int[256];
 
-	double filter[][];
-	int filtersize;
+	private double filter[][];
+	private int filtersize;
 
-	int foversample;
+	private int foversample;
 
-	int bucketwidth;
-	int buckets[];
+	private int bucketwidth;
+	private int buckets[];
 
-	ControlPoint fcp;
+	private ControlPoint fcp;
 
 	// image
 
-	int pixels[];
-	int width;
-	int height;
+	private int pixels[];
+	private int width;
+	private int height;
 
 	public boolean debug = false;
 
