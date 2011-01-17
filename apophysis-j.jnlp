@@ -4,7 +4,7 @@
 <?xml version="1.0" encoding="utf-8"?> 
 <jnlp 
   spec="1.0+" 
-  codebase="https://github.com/mebigfatguy/apophysis-j/wiki/jnlp" 
+  codebase="https://github.com/downloads/mebigfatguy/apophysis-j/" 
   href="apophysis-j.jnlp">
   <information> 
     <title>Apophysis-j</title>
