@@ -297,8 +297,8 @@ public class Renderer implements Constants {
 				}
 			}
 			if (buckets == null) {
-				System.out.println("avail = " + availableMemory());
-				System.out.println("needs = " + (bucketsize * 4 * 4));
+				//System.out.println("avail = " + availableMemory());
+				//System.out.println("needs = " + (bucketsize * 4 * 4));
 				/*
 				 * long usable = 80*availableMemory()/100;
 				 * if(bucketsize*4*4>usable) { bucketslice =
