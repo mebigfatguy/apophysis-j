@@ -2687,7 +2687,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 				} // clip rectangle is above
 				boolean subnode = false;
 				boolean expanded = false;
-				if ("tree" != classname) {
+				if (!"tree".equals(classname)) {
 					next = get(item, ":next");
 				} else {
 					subnode = (next = get(item, ":comp")) != null;
@@ -2723,7 +2723,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 					g.setColor(c_bg);
 					g.drawLine(0, r.y + r.height, viewwidth, r.y + r.height);
 				}
-				if ("table" != classname) { // list or tree
+				if (!"table".equals(classname)) { // list or tree
 					boolean itemenabled = enabled
 							&& getBoolean(item, "enabled", true);
 					paint(item, r.x, r.y, viewwidth, r.height, g, clipx, clipy,
