@@ -294,7 +294,7 @@ public class ControlPoint implements Constants {
 			int[] x = v.get(i);
 			int ind = x[0];
 			int col = x[1];
-			ind = (int) (ind * 255 / 399 + 0.5);
+			ind = (int) (ind * 255.0 / 399.0 + 0.5);
 			cmap[ind][0] = (col) & 0xFF;
 			cmap[ind][1] = (col >> 8) & 0xFF;
 			cmap[ind][2] = (col >> 16) & 0xFF;
