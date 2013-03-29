@@ -246,7 +246,7 @@ public class Script extends MyThinlet implements Constants {
 		runner = null;
 
 		ScriptableObject.putProperty(scope, "Stopped",
-				Context.javaToJS(new Boolean(true), scope));
+				Context.javaToJS(Boolean.TRUE, scope));
 
 	}
 
@@ -1085,7 +1085,7 @@ public class Script extends MyThinlet implements Constants {
 				Context.javaToJS(Integer.valueOf(Global.randomIndex), scope));
 
 		ScriptableObject.putProperty(scope, "Stopped",
-				Context.javaToJS(new Boolean(false), scope));
+				Context.javaToJS(Boolean.FALSE, scope));
 
 		ScriptableObject.putProperty(scope, "CurrentFile",
 				Context.javaToJS(Global.openFile, scope));

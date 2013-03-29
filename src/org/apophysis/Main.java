@@ -60,6 +60,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -1271,10 +1272,11 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 			g.dispose();
 			image = null;
 
+			Random ran = new Random();
 			// pick 256 random pixels
 			for (i = 0; i < 256; i++) {
-				x = (int) (Math.random() * iw);
-				y = (int) (Math.random() * ih);
+				x = ran.nextInt(iw);
+				y = ran.nextInt(ih);
 				clist[i] = bimage.getRGB(x, y);
 			}
 
@@ -1286,7 +1288,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 				// scramble
 				for (i = 0; i < 256; i++) {
-					rand = (int) (Math.random() * 256);
+					rand = ran.nextInt(256);
 					int z = clist[i];
 					clist[i] = clist[rand];
 					clist[rand] = z;
@@ -1301,8 +1303,8 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 				// improve
 				for (i = 1; i <= Global.tryLength; i++) {
 					p++;
-					i0 = 1 + (int) (Math.random() * 254);
-					i1 = 1 + (int) (Math.random() * 254);
+					i0 = 1 + ran.nextInt(254);
+					i1 = 1 + ran.nextInt(254);
 					if ((i0 - i1) == 1) {
 						as_is = diffcolor(clist, i1 - 1, i1)
 								+ diffcolor(clist, i0, i0 + 1);
@@ -1341,7 +1343,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 			// clean
 			for (i = 1; i <= 1024; i++) {
-				i0 = 1 + (int) (Math.random() * 253);
+				i0 = 1 + ran.nextInt(253);
 				i1 = i0 + 1;
 				as_is = diffcolor(clist, i0 - 1, i0)
 						+ diffcolor(clist, i1, i1 + 1);
