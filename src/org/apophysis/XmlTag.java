@@ -37,23 +37,25 @@ public class XmlTag {
 	/******************************************************************************/
 	// CONSTANTS
 
-	static final int ST_WNAME = 0; // waiting for tag name
-	static final int ST_NAME = 1; // building tag name
-	static final int ST_WATTR = 2; // waiting for attribute name
-	static final int ST_ATTR = 3; // building attribute name
-	static final int ST_WEQUAL = 4; // waiting for =
-	static final int ST_WVALUE = 5; // waiting for attribute value
-	static final int ST_VALUE = 6; // building attribute value
-	static final int ST_WCLOSE = 7; // waiting for closing bracket
+    enum State {
+        ST_WNAME, // waiting for tag name
+	    ST_NAME, // building tag name
+        ST_WATTR, // waiting for attribute name
+        ST_ATTR, // building attribute name
+        ST_WEQUAL, // waiting for =
+        ST_WVALUE, // waiting for attribute value
+        ST_VALUE, // building attribute value
+        ST_WCLOSE; // waiting for closing bracket
+    }
 
 	/******************************************************************************/
 	// FIELDS
 
-	String name = null;
-	Map<String, String> attributes = new Hashtable<String, String>();
-	boolean closed = false;
+	private String name = null;
+	private Map<String, String> attributes = new Hashtable<String, String>();
+	private boolean closed = false;
 
-	StringBuffer data = new StringBuffer();
+	private StringBuilder data = new StringBuilder();
 
 	/******************************************************************************/
 	// CONSTRUCTOR
@@ -64,7 +66,7 @@ public class XmlTag {
 
 		char[] c = line.toCharArray();
 
-		int state = ST_WNAME;
+		State state = State.ST_WNAME;
 
 		for (int i = 0; i < c.length; i++) {
 			switch (state) {
@@ -77,7 +79,7 @@ public class XmlTag {
 					throw new Exception("Not a XML tag");
 				} else {
 					name = "";
-					state = ST_NAME;
+					state = State.ST_NAME;
 				}
 				break;
 
@@ -85,7 +87,7 @@ public class XmlTag {
 				if (c[i] == '>') {
 					i = c.length;
 				} else if (c[i] == ' ') {
-					state = ST_WATTR;
+					state = State.ST_WATTR;
 				} else {
 					name = name + c[i];
 				}
@@ -96,24 +98,24 @@ public class XmlTag {
 					i = c.length; // exit the loop
 				} else if (c[i] == '/') {
 					closed = true;
-					state = ST_WCLOSE;
+					state = State.ST_WCLOSE;
 				} else if (c[i] == ' ') {
 					continue;
 				} else if (c[i] == '\t') {
 					continue;
 				} else {
 					attr = "" + c[i];
-					state = ST_ATTR;
+					state = State.ST_ATTR;
 				}
 				break;
 
 			case ST_ATTR:
 				if (c[i] == ' ') {
-					state = ST_WEQUAL;
+					state = State.ST_WEQUAL;
 				} else if (c[i] == '\t') {
-					state = ST_WEQUAL;
+					state = State.ST_WEQUAL;
 				} else if (c[i] == '=') {
-					state = ST_WVALUE;
+					state = State.ST_WVALUE;
 				} else {
 					attr = attr + c[i];
 				}
@@ -125,7 +127,7 @@ public class XmlTag {
 				} else if (c[i] == '\t') {
 					continue;
 				} else if (c[i] == '=') {
-					state = ST_WVALUE;
+					state = State.ST_WVALUE;
 				} else {
 					throw new Exception("Bad attribute " + attr);
 				}
@@ -138,7 +140,7 @@ public class XmlTag {
 					continue;
 				} else if (c[i] == '"') {
 					value = "";
-					state = ST_VALUE;
+					state = State.ST_VALUE;
 				} else {
 					throw new Exception("Bad attribute " + attr);
 				}
@@ -147,7 +149,7 @@ public class XmlTag {
 			case ST_VALUE:
 				if (c[i] == '"') {
 					attributes.put(attr, value);
-					state = ST_WATTR;
+					state = State.ST_WATTR;
 				} else {
 					value = value + c[i];
 				}
@@ -162,7 +164,7 @@ public class XmlTag {
 				break;
 			}
 
-			if (state == ST_VALUE) {
+			if (state == State.ST_VALUE) {
 				attributes.put(attr, value);
 			}
 		}
