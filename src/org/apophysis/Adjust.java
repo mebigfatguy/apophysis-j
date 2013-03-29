@@ -298,9 +298,10 @@ public class Adjust extends MyThinlet implements Constants, ThreadTarget {
 
 	void applyRotate(int value) {
 		for (int i = 0; i < 256; i++) {
-			palette[i][0] = backupal[(256 + i - value) % 256][0];
-			palette[i][1] = backupal[(256 + i - value) % 256][1];
-			palette[i][2] = backupal[(256 + i - value) % 256][2];
+		    int[] tuple = backupal[(256 + i - value) % 256];
+			palette[i][0] = tuple[0];
+			palette[i][1] = tuple[1];
+			palette[i][2] = tuple[2];
 		}
 
 	} // End of method applyRotate
