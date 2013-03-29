@@ -28,9 +28,9 @@
 package org.apophysis;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
-import java.util.Vector;
 
 import com.thinlet.Thinlet;
 
@@ -48,8 +48,8 @@ public class OpenDialog {
 
 	private File curdir = null;
 
-	private final List<File> dirs = new Vector<File>();
-	private final List<String[]> filters = new Vector<String[]>();
+	private final List<File> dirs = new ArrayList<File>();
+	private final List<String[]> filters = new ArrayList<String[]>();
 	private String[] patterns = { "*.*" };
 
 	File[] roots = null;

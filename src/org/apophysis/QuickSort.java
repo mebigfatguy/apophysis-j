@@ -28,7 +28,6 @@
 package org.apophysis;
 
 import java.util.List;
-import java.util.Vector;
 
 public class QuickSort {
 
@@ -188,7 +187,7 @@ public class QuickSort {
 
 	/*****************************************************************************/
 
-	public static void invert(Vector<MySortable> v) {
+	public static void invert(List<MySortable> v) {
 		int n = v.size();
 		for (int i = 0; i < n / 2; i++) {
 			MySortable o = v.get(i);

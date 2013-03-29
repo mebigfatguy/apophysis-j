@@ -40,7 +40,6 @@ import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Vector;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
@@ -93,7 +92,7 @@ public class XForm implements Constants {
 	static final double MAX_WEIGHT = 1000.0;
 	static final double EPS = 1e-300;
 
-	static List<Variation> registered_variations = new Vector<Variation>();
+	static List<Variation> registered_variations = new ArrayList<Variation>();
 
 	static {
 		registerVariation(new LinearVariation());

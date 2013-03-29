@@ -29,11 +29,11 @@ package org.apophysis;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
-import java.util.Vector;
 
 public class ScriptConverter {
 
@@ -53,7 +53,7 @@ public class ScriptConverter {
 	static void convert(StringBuffer stringbuffer) {
 		sb = stringbuffer;
 		sub = new Hashtable<String, String>();
-		functions = new Vector<String>();
+		functions = new ArrayList<String>();
 
 		// save comments
 		while (true) {

@@ -41,12 +41,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.Vector;
 
 public class Global implements Constants {
 
@@ -875,7 +875,7 @@ public class Global implements Constants {
 	/*****************************************************************************/
 
 	static List<File> readFavorites() {
-		List<File> v = new Vector<File>();
+		List<File> v = new ArrayList<File>();
 
 		try {
 			File f = new File(apopath, FAVNAME);
@@ -923,7 +923,7 @@ public class Global implements Constants {
 	/*****************************************************************************/
 
 	public static List<Preset> readPresets() {
-		List<Preset> v = new Vector<Preset>();
+		List<Preset> v = new ArrayList<Preset>();
 
 		try {
 			File file = new File(apopath, PRSTNAME);
@@ -937,7 +937,7 @@ public class Global implements Constants {
 				line = line.trim();
 				if (line.endsWith("{")) {
 					line = line.substring(0, line.length() - 1).trim();
-					List<String> w = new Vector<String>();
+					List<String> w = new ArrayList<String>();
 					w.add(line);
 					while (true) {
 						line = r.readLine();

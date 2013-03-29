@@ -62,7 +62,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.StringTokenizer;
-import java.util.Vector;
 
 import javax.imageio.ImageIO;
 
@@ -152,7 +151,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 		// Global.readSettings();
 
-		history = new Vector<ControlPoint>();
+		history = new ArrayList<ControlPoint>();
 		undoindex = 0;
 
 		droptarget = new DropTarget(this, this);
@@ -287,7 +286,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 		String temp = null;
 		int ixform = 0;
 
-		List<ControlPoint> newcps = new Vector<ControlPoint>();
+		List<ControlPoint> newcps = new ArrayList<ControlPoint>();
 
 		try {
 			BufferedReader r = new BufferedReader(new FileReader(filename));
@@ -447,7 +446,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 		} else {
 			int i = comment.indexOf("<flame");
 			if (i < 0) {
-				return new Vector<ControlPoint>();
+				return new ArrayList<ControlPoint>();
 			}
 
 			if (i > 0) {
@@ -474,7 +473,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 		} else {
 			int i = comment.indexOf("<flame");
 			if (i < 0) {
-				return new Vector<ControlPoint>();
+				return new ArrayList<ControlPoint>();
 			}
 
 			if (i > 0) {
@@ -490,7 +489,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 	void openUPRFile(String filename) {
 		int i;
 
-		cps = new Vector<ControlPoint>();
+		cps = new ArrayList<ControlPoint>();
 
 		try {
 			BufferedReader r = new BufferedReader(new FileReader(filename));
@@ -526,7 +525,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 						}
 					}
 
-					List<int[]> v = new Vector<int[]>();
+					List<int[]> v = new ArrayList<int[]>();
 					// read gradient
 					while (true) {
 						line = r.readLine();
@@ -603,7 +602,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 			r = new BufferedReader(new FileReader(filename));
 			v = readXML(r);
 		} catch (Exception ex) {
-			v = new Vector<ControlPoint>();
+			v = new ArrayList<ControlPoint>();
 		} finally {
 			IOCloser.close(r);
 		}
@@ -613,7 +612,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 	/*****************************************************************************/
 
 	List<ControlPoint> readXML(Reader reader) {
-		List<ControlPoint> mycps = new Vector<ControlPoint>();
+		List<ControlPoint> mycps = new ArrayList<ControlPoint>();
 
 		try {
 			BufferedReader r = new BufferedReader(reader);
@@ -640,7 +639,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 	ControlPoint readControlPoint(BufferedReader r) throws Exception {
 		ControlPoint cp = null;
 		String line = null;
-		List<String> unknown = new Vector<String>();
+		List<String> unknown = new ArrayList<String>();
 
 		while (true) {
 			line = r.readLine();
@@ -819,7 +818,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 			r = new BufferedReader(new FileReader(filename));
 			mycps = readXML(r);
 		} catch (Exception ex) {
-			mycps = new Vector<ControlPoint>();
+			mycps = new ArrayList<ControlPoint>();
 		} finally {
 			IOCloser.close(r);
 		}
@@ -1561,7 +1560,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 			b = 1;
 		}
 
-		cps = new Vector<ControlPoint>();
+		cps = new ArrayList<ControlPoint>();
 
 		for (int i = 0; i < b; i++) {
 			ControlPoint cp = ControlPoint.randomFlame(Global.mainCP);
@@ -2697,7 +2696,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 	public void openFiles(File files[]) {
 		boolean scriptloaded = false;
-		List<ControlPoint> newcps = new Vector<ControlPoint>();
+		List<ControlPoint> newcps = new ArrayList<ControlPoint>();
 
 		for (int i = 0; i < files.length; i++) {
 			// should not occur

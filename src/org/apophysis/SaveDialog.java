@@ -28,8 +28,8 @@
 package org.apophysis;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 import com.thinlet.Thinlet;
 
@@ -46,7 +46,7 @@ public class SaveDialog {
 
 	public String filename = null;
 
-	List<File> dirs = new Vector<File>();
+	List<File> dirs = new ArrayList<File>();
 
 	String defaultname;
 

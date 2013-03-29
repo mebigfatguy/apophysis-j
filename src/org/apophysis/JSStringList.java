@@ -5,8 +5,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 public class JSStringList implements Constants {
 
@@ -16,7 +16,7 @@ public class JSStringList implements Constants {
 	public int Count = 0;
 	public String[] Strings = new String[0];
 
-	private List<String> lines = new Vector<String>();
+	private List<String> lines = new ArrayList<String>();
 
 	/*****************************************************************************/
 
@@ -64,7 +64,7 @@ public class JSStringList implements Constants {
 	/*****************************************************************************/
 
 	public void LoadFromFile(String filename) throws IOException {
-		lines = new Vector<String>();
+		lines = new ArrayList<String>();
 
 		BufferedReader r = new BufferedReader(new FileReader(filename));
 		while (true) {
