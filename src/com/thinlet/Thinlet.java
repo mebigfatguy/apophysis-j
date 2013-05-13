@@ -2715,8 +2715,8 @@ public class Thinlet extends Container implements Runnable, Serializable {
 
 				boolean selected = getBoolean(item, "selected", false);
 				boolean focused = focus && (lead == item);
-				paintRect(g, ("tree" != classname) ? 0 : r.x, r.y,
-						("tree" != classname) ? viewwidth : r.width, r.height,
+				paintRect(g, (!"tree".equals(classname)) ? 0 : r.x, r.y,
+						(!"tree".equals(classname)) ? viewwidth : r.width, r.height,
 						c_focus, selected ? c_select : c_textbg, focused,
 						focused, focused, focused, true);
 				if (line) {
