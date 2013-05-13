@@ -6960,14 +6960,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 								if (pi) {
 									if ("?xml".equals(tagname)
 											&& "encoding".equals(key)) {
-										try {
-											String enc = text.toString();
-											new String(new byte[0], 0, 0, enc);
-											encoding = new String(enc);
-										} catch (UnsupportedEncodingException uee) {
-											System.err
-													.println(uee.getMessage());
-										}
+									    encoding = text.toString();
 									}
 								} else if (mode == 'T') { // GUI parser
 									methods = addAttribute(current, key,

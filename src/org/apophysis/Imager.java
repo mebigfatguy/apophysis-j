@@ -251,8 +251,6 @@ public class Imager implements Constants {
 			System.out.println("END OF DEBUG");
 		}
 
-		int nu = 0;
-
 		for (i = 0; i < fcp.height; i++) {
 			bx = 0;
 			if ((i % 7) == 0) {
@@ -352,8 +350,6 @@ public class Imager implements Constants {
 
 					pixels[irow + j] = rbits[ri] | gbits[gi] | bbits[bi]
 							| abits[ai];
-
-					nu++;
 				} else {
 					// no transparency
 
@@ -404,8 +400,6 @@ public class Imager implements Constants {
 
 					pixels[irow + j] = rbits[ri] | gbits[gi] | bbits[bi]
 							| abits[ai];
-
-					nu++;
 				}
 			} // for j
 
@@ -597,7 +591,6 @@ public class Imager implements Constants {
 	/*****************************************************************************/
 
 	void progress(double fraction) {
-		int percent = (int) (fraction * 100);
 	}
 
 	/*****************************************************************************/
@@ -610,10 +603,7 @@ public class Imager implements Constants {
 
 		MemoryImageSource source = new MemoryImageSource(width, height, pixels,
 				0, width);
-		Image image = Toolkit.getDefaultToolkit().createImage(source);
-
-		return image;
-
+		return Toolkit.getDefaultToolkit().createImage(source);
 	}
 
 	/*****************************************************************************/

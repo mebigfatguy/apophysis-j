@@ -1249,9 +1249,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 		int[] original = new int[256];
 		int[] clist = new int[256];
 		int len = 0, len_best = 0, as_is = 0, swapd = 0;
-		int p, rand, tryit, i0, i1, x, y, i, iw, ih;
-
-		p = 0;
+		int rand, tryit, i0, i1, x, y, i, iw, ih;
 
 		try {
 			File file = new File(Global.opendialog.filename);
@@ -1301,7 +1299,6 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 				// improve
 				for (i = 1; i <= Global.tryLength; i++) {
-					p++;
 					i0 = 1 + ran.nextInt(254);
 					i1 = 1 + ran.nextInt(254);
 					if ((i0 - i1) == 1) {

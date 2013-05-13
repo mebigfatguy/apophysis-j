@@ -609,14 +609,9 @@ public class Options extends MyThinlet implements Constants {
 	/*****************************************************************************/
 
 	public void btnSheepClick() {
-		int n = 0;
-
 		int nv = XForm.getNrVariations();
 		for (int i = 0; i < nv; i++) {
 			boolean b = XForm.getVariation(i).isSheepCompatible();
-			if (b) {
-				n++;
-			}
 			setBoolean(find("variation" + i), "selected", b);
 		}
 
