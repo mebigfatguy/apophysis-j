@@ -1035,15 +1035,14 @@ public class Adjust extends MyThinlet implements Constants, ThreadTarget {
 		g.setColor(gray80);
 		g.fillRect(0, 0, bounds.width, bounds.height);
 
-		Color bg = new Color(cp.background[0], cp.background[1],
-				cp.background[2]);
-
 		if (pimage != null) {
 			int wi = pimage.getWidth(null);
 			int hi = pimage.getHeight(null);
 			int x = bounds.width / 2 - wi / 2;
 			int y = bounds.height / 2 - hi / 2;
 
+		    Color bg = new Color(cp.background[0], cp.background[1],
+		                cp.background[2]);
 			g.setColor(bg);
 			g.fillRect(x, y, wi, hi);
 			g.drawImage(pimage, x, y, wi, hi, null);
