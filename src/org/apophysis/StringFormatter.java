@@ -69,7 +69,7 @@ public class StringFormatter {
 			}
 
 			String dec = "";
-			int i = attr.indexOf(".");
+			int i = attr.indexOf('.');
 			if (i >= 0) {
 				dec = attr.substring(i + 1);
 				attr = attr.substring(0, i);
@@ -155,42 +155,42 @@ public class StringFormatter {
 		int j;
 		int i = 999999;
 
-		j = fmt.indexOf("b", ifrom);
+		j = fmt.indexOf('b', ifrom);
 		if ((j >= 0) && (j < i)) {
 			i = j;
 		}
 
-		j = fmt.indexOf("d", ifrom);
+		j = fmt.indexOf('d', ifrom);
 		if ((j >= 0) && (j < i)) {
 			i = j;
 		}
 
-		j = fmt.indexOf("f", ifrom);
+		j = fmt.indexOf('f', ifrom);
 		if ((j >= 0) && (j < i)) {
 			i = j;
 		}
 
-		j = fmt.indexOf("g", ifrom);
+		j = fmt.indexOf('g', ifrom);
 		if ((j >= 0) && (j < i)) {
 			i = j;
 		}
 
-		j = fmt.indexOf("o", ifrom);
+		j = fmt.indexOf('o', ifrom);
 		if ((j >= 0) && (j < i)) {
 			i = j;
 		}
 
-		j = fmt.indexOf("s", ifrom);
+		j = fmt.indexOf('s', ifrom);
 		if ((j >= 0) && (j < i)) {
 			i = j;
 		}
 
-		j = fmt.indexOf("x", ifrom);
+		j = fmt.indexOf('x', ifrom);
 		if ((j >= 0) && (j < i)) {
 			i = j;
 		}
 
-		j = fmt.indexOf("X", ifrom);
+		j = fmt.indexOf('X', ifrom);
 		if ((j >= 0) && (j < i)) {
 			i = j;
 		}
@@ -277,12 +277,12 @@ public class StringFormatter {
 		double y = Math.round(pow10 * x) / pow10;
 
 		String s = "" + y;
-		int i = s.indexOf(".");
+		int i = s.indexOf('.');
 		int l = s.length();
 		if (i < 0) {
 			s = s + ".";
 		}
-		i = s.indexOf(".");
+		i = s.indexOf('.');
 
 		if (l - i - 1 < dec) {
 			for (int j = l - i; j <= dec; j++) {

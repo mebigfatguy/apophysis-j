@@ -428,7 +428,7 @@ public class ScriptConverter {
 
 		String args = sb.substring(m + 1, n);
 
-		StringBuffer snew = new StringBuffer("Format('").append(fmt).append("',").append(args).append(")");
+		StringBuffer snew = new StringBuffer("Format('").append(fmt).append("',").append(args).append(')');
 
 		System.out.println("new : " + snew);
 
@@ -726,8 +726,8 @@ public class ScriptConverter {
 		String len = sb.substring(l + 1, m).trim();
 
 		StringBuffer sbnew = new StringBuffer(varname).append(" := ")
-		                         .append("Delete(").append(varname).append(",").append(from)
-		                         .append(",").append(len).append(")");
+		                         .append("Delete(").append(varname).append(',').append(from)
+		                         .append(',').append(len).append(')');
 		replaceWord(sbnew, "delete", "Delete");
 
 		sb.replace(i, m + 1, sbnew.toString());

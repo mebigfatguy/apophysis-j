@@ -42,7 +42,7 @@ public class Starter {
 			String jarname = s.substring(4);
 			if (jarname.startsWith("file:"))
 				jarname = jarname.substring(5);
-			int i = jarname.indexOf("!");
+			int i = jarname.indexOf('!');
 			if (i > 0)
 				jarname = jarname.substring(0, i);
 			cmd = "java -Xmx200m -jar " + jarname + " Apophysis";

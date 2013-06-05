@@ -447,7 +447,7 @@ class CMap {
 				if (line == null) {
 					break;
 				}
-				if (line.indexOf("}") >= 0) {
+				if (line.indexOf('}') >= 0) {
 					break;
 				}
 				if (line.indexOf("index=") < 0) {
@@ -460,7 +460,7 @@ class CMap {
 				}
 
 				String token = tk.nextToken();
-				int i = token.indexOf("=");
+				int i = token.indexOf('=');
 				if (i < 0) {
 					continue;
 				}
@@ -472,7 +472,7 @@ class CMap {
 				index[n] = Integer.parseInt(val);
 
 				token = tk.nextToken();
-				i = token.indexOf("=");
+				i = token.indexOf('=');
 				if (i < 0) {
 					continue;
 				}

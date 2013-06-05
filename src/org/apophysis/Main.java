@@ -662,7 +662,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 			if (line == null) {
 				break;
 			}
-			if (line.indexOf("<") < 0) {
+			if (line.indexOf('<') < 0) {
 				continue;
 			}
 

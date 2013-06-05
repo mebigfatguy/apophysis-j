@@ -424,7 +424,7 @@ public class Imager implements Constants {
 			boolean watermark) throws IOException {
 
 		String format = "jpg";
-		int i = filename.lastIndexOf(".");
+		int i = filename.lastIndexOf('.');
 		if (i > 0) {
 			format = filename.substring(i + 1);
 		}

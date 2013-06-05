@@ -620,7 +620,7 @@ public class Script extends MyThinlet implements Constants {
 
 	public void _print(Object o) {
 		log.append(Context.toString(o));
-		log.append("\n");
+		log.append('\n');
 		setString(console, "text", log.toString());
 
 		// position the widget to the end
@@ -1286,7 +1286,7 @@ public class Script extends MyThinlet implements Constants {
 			return null;
 		}
 
-		int i = msg.indexOf("(");
+		int i = msg.indexOf('(');
 		if (i > 0) {
 			msg = msg.substring(0, i);
 		}
