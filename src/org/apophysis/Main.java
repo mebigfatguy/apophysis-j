@@ -604,7 +604,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 		} catch (Exception ex) {
 			v = new ArrayList<ControlPoint>();
 		} finally {
-			IOCloser.close(r);
+		    IOUtils.close(r);
 		}
 		return v;
 	}
@@ -820,7 +820,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 		} catch (Exception ex) {
 			mycps = new ArrayList<ControlPoint>();
 		} finally {
-			IOCloser.close(r);
+		    IOUtils.close(r);
 		}
 
 		if (cp != null) {

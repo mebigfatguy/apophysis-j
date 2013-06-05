@@ -413,7 +413,7 @@ public class XForm implements Constants {
 				}
 			} catch (Exception e) {
 			} finally {
-				IOCloser.close(jis);
+			    IOUtils.close(jis);
 			}
 		}
 

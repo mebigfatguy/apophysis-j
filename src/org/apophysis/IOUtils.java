@@ -26,10 +26,12 @@
 package org.apophysis;
 
 import java.io.Closeable;
+import java.io.IOException;
+import java.io.InputStream;
 
-public class IOCloser {
+public class IOUtils {
 
-	private IOCloser() {
+	private IOUtils() {
 	}
 
 	public static final void close(Closeable c) {
@@ -39,5 +41,12 @@ public class IOCloser {
 			}
 		} catch (Exception e) {
 		}
+	}
+	
+	public static void skipFully(InputStream is, long bytes) throws IOException {
+	    do {
+	        long skip = is.skip(bytes);
+	        bytes -= skip;    
+	    } while (bytes > 0);
 	}
 }

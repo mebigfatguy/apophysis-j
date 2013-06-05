@@ -667,7 +667,7 @@ public class Script extends MyThinlet implements Constants {
 			r = new BufferedReader(new FileReader(filename));
 			cpf = Global.main.readXML(r);
 		} finally {
-			IOCloser.close(r);
+		    IOUtils.close(r);
 		}
 	}
 

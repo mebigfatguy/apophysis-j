@@ -1005,8 +1005,8 @@ public class Global implements Constants {
 				os.write(buffer, 0, n);
 			}
 		} finally {
-			IOCloser.close(is);
-			IOCloser.close(os);
+			IOUtils.close(is);
+			IOUtils.close(os);
 		}
 
 	} // End of method copyFile
