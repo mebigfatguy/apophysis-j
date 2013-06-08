@@ -1208,8 +1208,7 @@ public class Script extends MyThinlet implements Constants {
 			nprefix = countLines(s);
 			s = s + userscript + getPostfixScript();
 
-			Object result = cx.evaluateString(scope, s, "<cmd>", 1, null);
-			// _print(result);
+			cx.evaluateString(scope, s, "<cmd>", 1, null);
 
 			// save javascript environment
 			js2java();
