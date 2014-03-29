@@ -397,6 +397,9 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 						} else if (temp.equals("palette:")) {
 							for (int i = 0; i < 256; i++) {
 								line = r.readLine();
+								if (line == null) {
+								    break;
+								}
 								tk = new StringTokenizer(line);
 								cp.cmap[i][0] = Integer
 										.parseInt(tk.nextToken());
