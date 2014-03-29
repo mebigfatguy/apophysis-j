@@ -694,64 +694,66 @@ public class Renderer implements Constants {
 			}
 		}
 
-		while (bucketfirst < bucketheight) {
-			for (int i = 0; i < fnumbatches; i++) {
-				if (fstop != 0) {
-					fcp.actual_density += fcp.sample_density * i / fnumbatches;
-					fnumbatches = i;
-					return;
-				}
-
-				synchronized (this) {
-					while (paused) {
-						try {
-							wait();
-						} catch (Exception ex) {
-						}
-					}
-				}
-
-				if ((i % 0xFF) == 0) {
-					progress(i * 1.0 / fnumbatches);
-				}
-
-				switch (iproc) {
-				case 0:
-					iterateBatchFX(incr);
-					break;
-				case 1:
-					iterateBatch(incr);
-					break;
-				case 2:
-					iterateBatchAngleFX(incr);
-					break;
-				case 3:
-					iterateBatchAngle(incr);
-					break;
-				}
-			}
-
-			if (out != null) {
-				try {
-					writeBuckets(out, buckets, bucketslice);
-				} catch (Exception ex) {
-					ex.printStackTrace();
-					fstop = 1;
-					return;
-				}
-			}
-			bucketfirst += bucketslice;
-		}
-
-		fcp.actual_density = fcp.actual_density + fcp.sample_density;
-
-		progress(1);
-
-		if (out != null) {
-			try {
-				out.close();
-			} catch (IOException ex) {
-			}
+		try {
+    		while (bucketfirst < bucketheight) {
+    			for (int i = 0; i < fnumbatches; i++) {
+    				if (fstop != 0) {
+    					fcp.actual_density += fcp.sample_density * i / fnumbatches;
+    					fnumbatches = i;
+    					return;
+    				}
+    
+    				synchronized (this) {
+    					while (paused) {
+    						try {
+    							wait();
+    						} catch (Exception ex) {
+    						}
+    					}
+    				}
+    
+    				if ((i % 0xFF) == 0) {
+    					progress(i * 1.0 / fnumbatches);
+    				}
+    
+    				switch (iproc) {
+    				case 0:
+    					iterateBatchFX(incr);
+    					break;
+    				case 1:
+    					iterateBatch(incr);
+    					break;
+    				case 2:
+    					iterateBatchAngleFX(incr);
+    					break;
+    				case 3:
+    					iterateBatchAngle(incr);
+    					break;
+    				}
+    			}
+    
+    			if (out != null) {
+    				try {
+    					writeBuckets(out, buckets, bucketslice);
+    				} catch (Exception ex) {
+    					ex.printStackTrace();
+    					fstop = 1;
+    					return;
+    				}
+    			}
+    			bucketfirst += bucketslice;
+    		}
+    
+    		fcp.actual_density = fcp.actual_density + fcp.sample_density;
+    
+    		progress(1);
+		} finally {
+    		if (out != null) {
+    			try {
+    				out.close();
+    			} catch (IOException ex) {
+    			}
+    		}
 		}
 		// System.out.println("number of buckets updated "+nu);
 
