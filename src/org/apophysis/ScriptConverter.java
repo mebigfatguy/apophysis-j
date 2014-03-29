@@ -660,7 +660,7 @@ public class ScriptConverter {
 			return false;
 		}
 
-		String control = sb.substring(i + 4, j).trim().toString();
+		String control = sb.substring(i + 4, j).trim();
 
 		int k = find(sb, "end", j + 1);
 		if (k < 0) {
