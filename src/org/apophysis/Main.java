@@ -2025,7 +2025,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 				select.bottom = (int) (cy + sgn
 						* Math.round(dx / 2 / imagewidth * imageheight));
 			} else {
-				cx = (xdrag + click.left) / 2;
+				cx = (xdrag + click.left) / 2.0;
 				select.left = (int) (cx - sgn
 						* Math.round(dy / 2 / imageheight * imagewidth));
 				select.right = (int) (cx + sgn
@@ -2568,10 +2568,10 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 		if ((1.0 * Global.mainCP.width / Global.mainCP.height) > (1.0 * pw / ph)) {
 			imagewidth = pw;
 			imageheight = (int) (Global.mainCP.height * pw
-					/ Global.mainCP.width + 0.5);
+					/ (double)Global.mainCP.width + 0.5);
 		} else {
 			imageheight = ph;
-			imagewidth = (int) (Global.mainCP.width * ph / Global.mainCP.height + 0.5);
+			imagewidth = (int) (Global.mainCP.width * ph / (double)Global.mainCP.height + 0.5);
 		}
 
 		setInteger(canvas, "width", imagewidth);
