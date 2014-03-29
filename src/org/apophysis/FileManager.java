@@ -66,8 +66,8 @@ public class FileManager implements Constants {
 				String line = r.readLine();
 				if (line == null)
 					break;
-				if (line.trim().endsWith("{")) {
-					String ename = line.trim();
+				String ename = line.trim();
+				if (ename.endsWith("{")) {
 					ename = ename.substring(0, ename.length() - 1).trim();
 					if (ename.equals(title)) {
 						// skip the entry to be replaced
