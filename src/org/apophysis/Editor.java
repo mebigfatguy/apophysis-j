@@ -560,7 +560,6 @@ public class Editor extends MyThinlet implements Constants, ThreadTarget {
 	void drawHelpers(Graphics g, double ix, double iy) {
 		int ix1, iy1, ix2, iy2;
 		double sc = 50 * graphZoom;
-		Triangle t = Global.mainTriangles[selectedTriangle];
 
 		g.setColor(hcolor);
 
@@ -585,6 +584,7 @@ public class Editor extends MyThinlet implements Constants, ThreadTarget {
 			break;
 
 		case ACTION_SCALE:
+			Triangle t = Global.mainTriangles[selectedTriangle];
 			for (int i = 0; i < 3; i++) {
 				ix1 = XScreen(rcenter.x + (t.x[i] - rcenter.x) * sc, ix,
 						gCenterX, sc);
@@ -3625,12 +3625,15 @@ public class Editor extends MyThinlet implements Constants, ThreadTarget {
 	/*****************************************************************************/
 	// ThreadTarget implementation
 
+	@Override
 	public void message(int msg) {
 	}
 
+	@Override
 	public void progress(double value) {
 	}
 
+	@Override
 	public void output(String msg) {
 	}
 

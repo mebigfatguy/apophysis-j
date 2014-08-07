@@ -2318,6 +2318,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 	/*****************************************************************************/
 	// ThreadTarget implementation
 
+	@Override
 	public void message(int index) {
 		if (index == WM_THREAD_COMPLETE) {
 			handleThreadCompletion();
@@ -2392,9 +2393,9 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 		Global.mainCP.adjustScale(width, height);
 
 		if (resize) {
-			Rectangle rwin = launcher.getBounds();
 			Rectangle rpan = getRectangle(find("BackPanel"), "bounds");
 			if (rpan != null) {
+				Rectangle rwin = launcher.getBounds();
 				rwin.width += width - rpan.width;
 				rwin.height += height - rpan.height;
 				launcher.setBounds(rwin);
@@ -2593,9 +2594,11 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 	/*****************************************************************************/
 	// ThreadTarget implementation
 
+	@Override
 	public void output(String msg) {
 	}
 
+	@Override
 	public void progress(double value) {
 
 		int ivalue = (int) (value * 100);
@@ -2640,18 +2643,23 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 	/*****************************************************************************/
 	// Drag and drop implementation
 
+	@Override
 	public void dragEnter(DropTargetDragEvent e) {
 	}
 
+	@Override
 	public void dragOver(DropTargetDragEvent e) {
 	}
 
+	@Override
 	public void dragExit(DropTargetEvent e) {
 	}
 
+	@Override
 	public void dropActionChanged(DropTargetDragEvent e) {
 	}
 
+	@Override
 	public void drop(DropTargetDropEvent e) {
 		Transferable t;
 
@@ -3026,6 +3034,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 	class OpenFileTask implements Task {
 
+		@Override
 		public void execute() {
 			Global.browserPath = Global.opendialog.getBrowserPath();
 			File file = new File(Global.opendialog.filename);
@@ -3046,6 +3055,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 			this.cp = cp;
 		}
 
+		@Override
 		public void execute() {
 			Global.browserPath = Global.savedialog.getBrowserPath();
 			saveXMLFile(cp, Global.savedialog.filename);
@@ -3058,6 +3068,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 	class SmoothPaletteTask implements Task {
 
+		@Override
 		public void execute() {
 			Global.browserPath = Global.opendialog.getBrowserPath();
 			smoothPalette();
@@ -3075,6 +3086,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 			this.index = index;
 		}
 
+		@Override
 		public void execute() {
 			renameFlame(index, _answer);
 		}
@@ -3092,6 +3104,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 			this.index = index;
 		}
 
+		@Override
 		public void execute() {
 			deleteFlame(index);
 		}
@@ -3109,6 +3122,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 			this.all = all;
 		}
 
+		@Override
 		public void execute() {
 			renderToDisk(all);
 		}
@@ -3120,6 +3134,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 	class QuitTask implements Task {
 
+		@Override
 		public void execute() {
 			quitApplication();
 			System.exit(0);
@@ -3192,6 +3207,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 		}
 
+		@Override
 		public long compare(MySortable s) {
 			SortableControlPoint scp = (SortableControlPoint) s;
 			return name.compareTo(scp.name);

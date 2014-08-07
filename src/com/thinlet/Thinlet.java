@@ -1412,9 +1412,9 @@ public class Thinlet extends Container implements Runnable, Serializable {
 			size.height += getInteger(component, "top", 0)
 					+ getInteger(component, "bottom", 0);
 			// add content preferred size
-			int gap = getInteger(component, "gap", 0);
 			int[][] grid = getGrid(component);
 			if (grid != null) { // has components
+				int gap = getInteger(component, "gap", 0);
 				size.width += getSum(grid[0], 0, grid[0].length, gap, false);
 				size.height += getSum(grid[1], 0, grid[1].length, gap, false);
 			}
@@ -3165,6 +3165,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 	 * A second thread is used to repeat value change events for scrollbar or
 	 * spinbox during the mouse is pressed, or to pop up tooltip
 	 */
+	@Override
 	public synchronized void run() {
 		while (timer == Thread.currentThread()) {
 			try {
@@ -5577,10 +5578,10 @@ public class Thinlet extends Container implements Runnable, Serializable {
 				boolean isResizable = getBoolean(header, "resizable");
 				boolean hasAction = null != get(header, "action");
 				if (isResizable || hasAction) {
-					Rectangle view = getRectangle(component, ":view");
 					Rectangle port = getRectangle(component, ":port");
 					if ((0 < x) && (x < port.width) && (0 < y)
 							&& (y < port.y - 1)) {
+						Rectangle view = getRectangle(component, ":view");
 						int[] columnwidths = (int[]) get(component, ":widths");
 						Object column = get(header, ":comp");
 						int left = -view.x;
@@ -5856,8 +5857,8 @@ public class Thinlet extends Container implements Runnable, Serializable {
 			requestFocus();
 		}
 		if (focusowner != component) {
-			Object focused = focusowner;
 			if (focusowner != null) {
+				Object focused = focusowner;
 				focusowner = null; // clear focusowner
 				repaint(focused);
 				// invoke the focus listener of the previously focused component
