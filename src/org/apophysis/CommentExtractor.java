@@ -45,11 +45,8 @@ public class CommentExtractor implements Constants {
 
 	static String readJpegComment(String filename) {
 		String comment = "";
-		BufferedInputStream is = null;
 
-		try {
-			is = new BufferedInputStream(new FileInputStream(filename));
-
+		try (BufferedInputStream is = new BufferedInputStream(new FileInputStream(filename))){
 			// read signature
 			int h1 = is.read();
 			int h2 = is.read();
@@ -119,14 +116,6 @@ public class CommentExtractor implements Constants {
 				}
 			}
 
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-
-		try {
-			if (is != null) {
-				is.close();
-			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -274,12 +263,11 @@ public class CommentExtractor implements Constants {
 		String s = null;
 		comment = comment.substring("encryptedflame:".length());
 
-		ByteArrayInputStream bis = new ByteArrayInputStream(comment.getBytes());
-		BASE64DecoderStream b = new BASE64DecoderStream(bis);
-
 		byte[] d = null;
 
-		try {
+		try (ByteArrayInputStream bis = new ByteArrayInputStream(comment.getBytes());
+			 BASE64DecoderStream b = new BASE64DecoderStream(bis)) {
+
 			byte[] c = new byte[comment.length() * 2];
 			int off = 0;
 			int len = c.length;
@@ -295,33 +283,31 @@ public class CommentExtractor implements Constants {
 			d = new byte[off];
 			System.arraycopy(c, 0, d, 0, off);
 			c = null;
-		} catch (Exception ex) {
-		}
+			
 
-		// if could not decode base64
-		if (d == null) {
+			// if password not null, try it
+			if (Global.passwordText.length() > 0) {
+				try {
+					if ((Global.crypto == null)
+							|| (!Global.crypto.password.equals(Global.passwordText))) {
+						Global.crypto = new Crypto(Global.passwordText);
+					}
+
+					byte[] e = Global.crypto.decode(d);
+					s = new String(e);
+				} catch (Exception ex) {
+				}
+			}
+
+			if (s != null) {
+				return s;
+			}
+
+			return comment;
+
+		} catch (Exception ex) {
 			return comment;
 		}
-
-		// if password not null, try it
-		if (Global.passwordText.length() > 0) {
-			try {
-				if ((Global.crypto == null)
-						|| (!Global.crypto.password.equals(Global.passwordText))) {
-					Global.crypto = new Crypto(Global.passwordText);
-				}
-
-				byte[] e = Global.crypto.decode(d);
-				s = new String(e);
-			} catch (Exception ex) {
-			}
-		}
-
-		if (s != null) {
-			return s;
-		}
-
-		return comment;
 
 	} // End of method decrypt
 
