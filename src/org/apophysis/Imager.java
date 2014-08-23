@@ -485,11 +485,12 @@ public class Imager implements Constants {
 				byte[] e = Global.crypto.encode(sw.toString().getBytes());
 				sw.close();
 
-				ByteArrayOutputStream bos = new ByteArrayOutputStream();
-				BASE64EncoderStream b = new BASE64EncoderStream(bos);
-				b.write(e);
-				b.flush();
-				s = "encryptedflame:" + (new String(bos.toByteArray()));
+				try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
+					 BASE64EncoderStream b = new BASE64EncoderStream(bos)) {
+					b.write(e);
+					b.flush();
+					s = "encryptedflame:" + (new String(bos.toByteArray()));
+				}
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
