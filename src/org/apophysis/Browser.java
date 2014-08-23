@@ -108,8 +108,7 @@ public class Browser extends MyThinlet implements Constants {
 			palette[i][0] = palette[i][1] = palette[i][2] = 0;
 		}
 
-		try {
-			BufferedReader r = new BufferedReader(new FileReader(filename));
+		try (BufferedReader r = new BufferedReader(new FileReader(filename))) {
 
 			// look for the right gradient
 
@@ -172,8 +171,6 @@ public class Browser extends MyThinlet implements Constants {
 					k++;
 				}
 			}
-
-			r.close();
 
 			for (i = 0; i < k; i++) {
 				ind = indices[i];
@@ -395,6 +392,7 @@ public class Browser extends MyThinlet implements Constants {
 
 	class OpenFileTask implements Task {
 
+		@Override
 		public void execute() {
 			openFile();
 		}
