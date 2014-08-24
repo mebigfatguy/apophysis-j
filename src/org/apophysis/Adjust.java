@@ -1246,12 +1246,15 @@ public class Adjust extends MyThinlet implements Constants, ThreadTarget {
 
 	/*****************************************************************************/
 
+	@Override
 	public void message(int msg) {
 	}
-
+	
+	@Override
 	public void progress(double value) {
 	}
 
+	@Override
 	public void output(String msg) {
 	}
 
@@ -1260,6 +1263,7 @@ public class Adjust extends MyThinlet implements Constants, ThreadTarget {
 
 	class ColorTask implements Task {
 
+		@Override
 		public void execute() {
 			changeBackground();
 		}
@@ -1271,6 +1275,7 @@ public class Adjust extends MyThinlet implements Constants, ThreadTarget {
 
 	class SaveGradientTask implements Task {
 
+		@Override
 		public void execute() {
 			Global.gradientFile = Global.entrydialog.filename;
 			saveGradient(Global.entrydialog.filename,
@@ -1284,6 +1289,7 @@ public class Adjust extends MyThinlet implements Constants, ThreadTarget {
 
 	class SaveMapTask implements Task {
 
+		@Override
 		public void execute() {
 			saveMap(Global.savedialog.filename);
 		}
