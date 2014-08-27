@@ -350,6 +350,7 @@ public class XForm implements Constants {
 
 	private static List<Variation> registerJarPluginVariations(final File dplugin, Main main) {
 		final File[] jars = dplugin.listFiles(new FileFilter() {
+			@Override
 			public boolean accept(File pathname) {
 				return pathname.getName().endsWith(".jar");
 			}
@@ -361,6 +362,7 @@ public class XForm implements Constants {
 
 
 		loader = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+			@Override
 			public ClassLoader run() {
 				try {
 					URL[] urls = new URL[jars.length];
