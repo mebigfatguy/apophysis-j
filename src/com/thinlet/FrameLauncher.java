@@ -8,16 +8,17 @@ import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Insets;
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.awt.image.MemoryImageSource;
 
 /**
  * <code>FrameLauncher</code> is a double buffered frame to launch any
  * <i>thinlet</i> component as an application
  */
-public class FrameLauncher extends Frame implements WindowListener {
+public class FrameLauncher extends Frame {
 
+	private static final long serialVersionUID = 207990230335869371L;
 	private transient Thinlet content;
 	private transient Image doublebuffer;
 
@@ -46,7 +47,20 @@ public class FrameLauncher extends Frame implements WindowListener {
 		super(title);
 		this.content = content;
 		add(content, BorderLayout.CENTER);
-		addWindowListener(this);
+		addWindowListener(new WindowAdapter() {
+			/**
+			 * Notify the <i>thinlet</i> component and terminates the Java Virtual
+			 * Machine, or redisplay the frame depending on the return value of
+			 * <i>thinlet</i>'s <code>destroy</code> method (true by default, thus
+			 * terminates the VM if not overriden)
+			 */
+			@Override
+			public void windowClosing(WindowEvent e) {
+				if (FrameLauncher.this.content.destroy()) {
+					System.exit(0);
+				}
+			}
+		});
 		pack();
 
 		Insets is = getInsets();
@@ -120,36 +134,5 @@ public class FrameLauncher extends Frame implements WindowListener {
 			doublebuffer = null;
 		}
 		super.doLayout();
-	}
-
-	/**
-	 * Notify the <i>thinlet</i> component and terminates the Java Virtual
-	 * Machine, or redisplay the frame depending on the return value of
-	 * <i>thinlet</i>'s <code>destroy</code> method (true by default, thus
-	 * terminates the VM if not overriden)
-	 */
-	public void windowClosing(WindowEvent e) {
-		if (content.destroy()) {
-			System.exit(0);
-		}
-		// setVisible(true);
-	}
-
-	public void windowOpened(WindowEvent e) {
-	}
-
-	public void windowClosed(WindowEvent e) {
-	}
-
-	public void windowIconified(WindowEvent e) {
-	}
-
-	public void windowDeiconified(WindowEvent e) {
-	}
-
-	public void windowActivated(WindowEvent e) {
-	}
-
-	public void windowDeactivated(WindowEvent e) {
 	}
 }
