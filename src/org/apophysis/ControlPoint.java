@@ -308,27 +308,27 @@ public class ControlPoint implements Constants {
 		String s = h.get(key);
 		if (s == null) {
 			return value;
-		} else {
-			return Integer.parseInt(s);
 		}
+		
+		return Integer.parseInt(s);
 	}
 
 	double getHashDouble(Map<String, String> h, String key, double value) {
 		String s = h.get(key);
 		if (s == null) {
 			return value;
-		} else {
-			return Double.parseDouble(s);
 		}
+		
+		return Double.parseDouble(s);
 	}
 
 	String getHashString(Map<String, String> h, String key, String value) {
 		String s = h.get(key);
 		if (s == null) {
 			return value;
-		} else {
-			return s;
 		}
+		
+		return s;
 	}
 
 	/*****************************************************************************/
