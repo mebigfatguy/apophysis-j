@@ -324,7 +324,7 @@ public class Renderer implements Constants {
 		if (buckets == null) {
 			fstop = 1;
 		} else {
-			imager.setBucketData(buckets, bucketwidth, bucketheight, 32);
+			imager.setBucketData(buckets, bucketwidth, bucketheight);
 		}
 
 	} // End of method initBuffers

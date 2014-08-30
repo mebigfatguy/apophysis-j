@@ -412,8 +412,7 @@ public class Imager implements Constants {
 
 	/*****************************************************************************/
 
-	public void setBucketData(int buckets[], int bucketwidth, int bucketheight,
-			int bits) {
+	public void setBucketData(int buckets[], int bucketwidth, int bucketheight) {
 		this.buckets = buckets;
 		this.bucketwidth = bucketwidth;
 	}
