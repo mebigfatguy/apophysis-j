@@ -32,11 +32,7 @@ import java.io.File;
 
 public class Options extends MyThinlet implements Constants {
 
-	/*****************************************************************************/
-	// CONSTANTS
-
-	/*****************************************************************************/
-	// FIELDS
+	private static final long serialVersionUID = 4417755594635297382L;
 
 	/*****************************************************************************/
 
@@ -655,6 +651,7 @@ public class Options extends MyThinlet implements Constants {
 			this.button = button;
 		}
 
+		@Override
 		public void execute() {
 			changeColor2(button);
 		}
@@ -671,6 +668,7 @@ public class Options extends MyThinlet implements Constants {
 			this.field = field;
 		}
 
+		@Override
 		public void execute() {
 			setFilename(field);
 		}
@@ -692,6 +690,7 @@ public class Options extends MyThinlet implements Constants {
 			this.group = group;
 		}
 
+		@Override
 		public long compare(MySortable s) {
 			SortableVariation sv = (SortableVariation) s;
 			return name.compareTo(sv.name);
