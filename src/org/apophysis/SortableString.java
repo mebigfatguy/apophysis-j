@@ -35,6 +35,7 @@ class SortableString implements MySortable {
 		this.string = string;
 	}
 
+	@Override
 	public long compare(MySortable s) {
 		return string.compareTo(((SortableString) s).string);
 	}
