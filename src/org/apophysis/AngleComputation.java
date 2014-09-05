@@ -31,6 +31,7 @@ public class AngleComputation implements Computation {
 
 	static final double eps = 1e-300;
 
+	@Override
 	public final void compute(XForm xform) {
 		if ((xform.ftx < -eps) || (xform.ftx > eps) || (xform.fty < -eps)
 				|| (xform.fty > eps)) {
