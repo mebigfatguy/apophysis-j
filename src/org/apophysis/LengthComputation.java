@@ -29,6 +29,7 @@ package org.apophysis;
 
 public class LengthComputation implements Computation {
 
+	@Override
 	public final void compute(XForm xform) {
 		xform.flength = Math
 				.sqrt(xform.ftx * xform.ftx + xform.fty * xform.fty);
