@@ -45,7 +45,7 @@ class Sound {
 	Sound(File file) {
 
 		try {
-			URL url = file.toURL();
+			URL url = file.toURI().toURL();
 			AudioInputStream stream = AudioSystem.getAudioInputStream(url);
 			AudioFormat format = stream.getFormat();
 
