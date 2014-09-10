@@ -29,6 +29,7 @@ package org.apophysis;
 
 public class PostComputation implements Computation {
 
+	@Override
 	public void compute(XForm xform) {
 		double x = xform.fpx;
 		double y = xform.fpy;
