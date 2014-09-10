@@ -135,12 +135,15 @@ public class Preview extends MyThinlet implements Constants, ThreadTarget {
 	/*****************************************************************************/
 	// ThreadTarget implementation
 
+	@Override
 	public void message(int msg) {
 	}
 
+	@Override
 	public void progress(double value) {
 	}
 
+	@Override
 	public void output(String msg) {
 	}
 
