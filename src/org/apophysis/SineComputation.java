@@ -31,6 +31,7 @@ public class SineComputation implements Computation {
 
 	static final double eps = 1e-300;
 
+	@Override
 	public final void compute(XForm xform) {
 		double d = Math.sqrt(xform.ftx * xform.ftx + xform.fty * xform.fty);
 		xform.fsina = xform.ftx / (d + eps);
