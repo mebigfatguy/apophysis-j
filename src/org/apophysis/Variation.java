@@ -120,10 +120,6 @@ public abstract class Variation implements Computation {
 
 	/*****************************************************************************/
 
-	public abstract void compute(XForm xform);
-
-	/*****************************************************************************/
-
 	public Variation getNewInstance() {
 		Variation variation = null;
 
