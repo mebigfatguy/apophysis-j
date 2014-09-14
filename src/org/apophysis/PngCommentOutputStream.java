@@ -147,14 +147,15 @@ public class PngCommentOutputStream extends OutputStream implements Constants {
 	/*****************************************************************************/
 
 	byte[] deflate(String s) throws IOException {
-		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		DeflaterOutputStream dos = new DeflaterOutputStream(bos);
-		int n = s.length();
-		for (int i = 0; i < n; i++) {
-			dos.write(s.charAt(i));
+		try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		     DeflaterOutputStream dos = new DeflaterOutputStream(bos)) {
+			int n = s.length();
+			for (int i = 0; i < n; i++) {
+				dos.write(s.charAt(i));
+			}
+			dos.flush();
+			return bos.toByteArray();
 		}
-		dos.close();
-		return bos.toByteArray();
 	}
 
 	/*****************************************************************************/
