@@ -121,6 +121,7 @@ public class EntryDialog {
 
 	class SaveTask implements Task {
 
+		@Override
 		public void execute() {
 			setFile(Global.savedialog.filename);
 		}
