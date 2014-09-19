@@ -308,10 +308,8 @@ public class Export extends MyThinlet implements Constants {
 			filename = filename + ".flame";
 		}
 
-		try {
-			PrintWriter w = new PrintWriter(new FileWriter(filename));
+		try (PrintWriter w = new PrintWriter(new FileWriter(filename))) {
 			cp.save(w);
-			w.close();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -323,6 +321,7 @@ public class Export extends MyThinlet implements Constants {
 
 	class FilenameTask implements Task {
 
+		@Override
 		public void execute() {
 			Global.browserPath = Global.savedialog.getBrowserPath();
 			setFilename();
