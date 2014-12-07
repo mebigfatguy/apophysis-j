@@ -6756,8 +6756,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 
 	private Object parse(InputStream inputstream, char mode, Object handler)
 			throws IOException {
-		Reader reader = new BufferedReader(new InputStreamReader(inputstream));
-		try {
+		try (Reader reader = new BufferedReader(new InputStreamReader(inputstream))) {
 			Object[] parentlist = null;
 			Object current = null;
 			Map<String, String> attributelist = null;
@@ -7001,10 +7000,6 @@ public class Thinlet extends Container implements Runnable, Serializable {
 			}
 
 			throw new IllegalArgumentException();
-		} finally {
-			if (reader != null) {
-				reader.close();
-			}
 		}
 	}
 
@@ -8044,9 +8039,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 		} catch (Throwable e) {
 		}
 		if (image == null) {
-			InputStream is = null;
-			try {
-				is = getClass().getResourceAsStream(path);
+			try (InputStream is = getClass().getResourceAsStream(path)) {
 				if (is != null) {
 					byte[] data = new byte[is.available()];
 					is.read(data, 0, data.length);
@@ -8055,13 +8048,6 @@ public class Thinlet extends Container implements Runnable, Serializable {
 					image = Toolkit.getDefaultToolkit().getImage(new URL(path));
 				}
 			} catch (Throwable e) {
-			} finally {
-				try {
-					if (is != null) {
-						is.close();
-					}
-				} catch (IOException ioe) {
-				}
 			}
 		}
 		if (preload && (image != null)) {
