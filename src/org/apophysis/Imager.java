@@ -446,16 +446,16 @@ public class Imager implements Constants {
 
 		if (format.equals("jpg") && (comment)) {
 			String scomment = buildComment(encrypt);
-			JpegCommentOutputStream os = new JpegCommentOutputStream(new File(
-					filename), scomment);
-			ImageIO.write(bimage, format, os);
-			os.close();
+			try (JpegCommentOutputStream os = new JpegCommentOutputStream(new File(
+					filename), scomment)) {
+			    ImageIO.write(bimage, format, os);
+			}
 		} else if (format.equals("png") && (comment)) {
 			String scomment = buildComment(encrypt);
-			PngCommentOutputStream os = new PngCommentOutputStream(new File(
-					filename), scomment);
-			ImageIO.write(bimage, format, os);
-			os.close();
+			try (PngCommentOutputStream os = new PngCommentOutputStream(new File(
+					filename), scomment)) {
+			    ImageIO.write(bimage, format, os);
+			}
 		} else {
 			ImageIO.write(bimage, format, new File(filename));
 		}
