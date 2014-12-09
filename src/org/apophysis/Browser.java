@@ -310,8 +310,7 @@ public class Browser extends MyThinlet implements Constants {
 
 		List<MySortable> v = new ArrayList<MySortable>();
 
-		try {
-			BufferedReader r = new BufferedReader(new FileReader(filename));
+		try (BufferedReader r = new BufferedReader(new FileReader(filename))) {
 			while (true) {
 				String line = r.readLine();
 				if (line == null) {
@@ -326,7 +325,6 @@ public class Browser extends MyThinlet implements Constants {
 				String name = line.substring(0, line.length() - 1).trim();
 				v.add(new SortableString(name));
 			}
-			r.close();
 
 			QuickSort.qsort(v);
 
