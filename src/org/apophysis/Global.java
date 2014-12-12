@@ -346,9 +346,8 @@ public class Global implements Constants {
 
 		String defaultPath = System.getProperty("user.dir");
 
-		try {
-			File f = new File(Global.apopath, CONFNAME);
-			BufferedReader r = new BufferedReader(new FileReader(f));
+        File f = new File(Global.apopath, CONFNAME);
+		try (BufferedReader r = new BufferedReader(new FileReader(f))) {
 			while (true) {
 				String line = r.readLine();
 				if (line == null) {
@@ -364,7 +363,6 @@ public class Global implements Constants {
 				String val = line.substring(i + 1).trim();
 				values.put(key, val);
 			}
-			r.close();
 		} catch (FileNotFoundException fnfex) {
 		} catch (Exception ex) {
 			ex.printStackTrace();
