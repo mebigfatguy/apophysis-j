@@ -875,9 +875,8 @@ public class Global implements Constants {
 	static List<File> readFavorites() {
 		List<File> v = new ArrayList<File>();
 
-		try {
-			File f = new File(apopath, FAVNAME);
-			BufferedReader r = new BufferedReader(new FileReader(f));
+        File f = new File(apopath, FAVNAME);
+		try (BufferedReader r = new BufferedReader(new FileReader(f))){
 			while (true) {
 				String line = r.readLine();
 				if (line == null) {
@@ -889,7 +888,6 @@ public class Global implements Constants {
 					v.add(fs);
 				}
 			}
-			r.close();
 		} catch (FileNotFoundException fnfex) {
 		} catch (IOException ex) {
 			ex.printStackTrace();
