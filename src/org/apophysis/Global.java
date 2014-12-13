@@ -921,9 +921,9 @@ public class Global implements Constants {
 	public static List<Preset> readPresets() {
 		List<Preset> v = new ArrayList<Preset>();
 
-		try {
-			File file = new File(apopath, PRSTNAME);
-			BufferedReader r = new BufferedReader(new FileReader(file));
+        File file = new File(apopath, PRSTNAME);
+		try (BufferedReader r = new BufferedReader(new FileReader(file))) {
+			
 			while (true) {
 				String line = r.readLine();
 				if (line == null) {
@@ -949,7 +949,6 @@ public class Global implements Constants {
 					v.add(preset);
 				}
 			}
-			r.close();
 		} catch (FileNotFoundException fnfex) {
 		} catch (IOException ex) {
 			ex.printStackTrace();
