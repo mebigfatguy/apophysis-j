@@ -30,6 +30,7 @@ package org.apophysis;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -582,9 +583,8 @@ public class Global implements Constants {
 
 	static void writeSettings() {
 
-		try {
-			File f = new File(Global.apopath, CONFNAME);
-			PrintWriter w = new PrintWriter(new FileWriter(f));
+        File f = new File(Global.apopath, CONFNAME);
+		try (PrintWriter w = new PrintWriter(new BufferedWriter(new FileWriter(f)))) {
 
 			writeString(w, "DefaultFlameFile", defFlameFile);
 			writeString(w, "GradientFile", gradientFile);
@@ -754,7 +754,6 @@ public class Global implements Constants {
 				}
 			}
 
-			w.close();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
