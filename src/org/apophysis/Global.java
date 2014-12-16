@@ -900,15 +900,13 @@ public class Global implements Constants {
 
 	static void writeFavorites(List<File> v) {
 
-		try {
-			File f = new File(apopath, FAVNAME);
-			PrintWriter w = new PrintWriter(new FileWriter(f));
+        File f = new File(apopath, FAVNAME);
+		try (PrintWriter w = new PrintWriter(new BufferedWriter(new FileWriter(f)))) {
 			int n = v.size();
 			for (int i = 0; i < n; i++) {
 				File fs = v.get(i);
 				w.println(fs.getAbsolutePath());
 			}
-			w.close();
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}
