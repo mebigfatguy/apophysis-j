@@ -27,6 +27,7 @@
 
 package org.apophysis;
 
+import java.io.BufferedInputStream;
 import java.io.InputStreamReader;
 
 public class Helper extends MyThinlet implements Constants, Runnable {
@@ -123,13 +124,13 @@ public class Helper extends MyThinlet implements Constants, Runnable {
 		String title = titles[index];
 		String name = names[index];
 
-		try {
+        String rname = "/help/" + name + ".txt";
+		try (InputStreamReader r = new InputStreamReader(new BufferedInputStream(Global.main.getClass()
+                    .getResourceAsStream(rname)))) {
 			char[] buffer = new char[512];
 
-			String rname = "/help/" + name + ".txt";
 
-			InputStreamReader r = new InputStreamReader(Global.main.getClass()
-					.getResourceAsStream(rname));
+			
 
 			StringBuilder sb = new StringBuilder();
 
@@ -140,7 +141,6 @@ public class Helper extends MyThinlet implements Constants, Runnable {
 				}
 				sb.append(buffer, 0, n);
 			}
-			r.close();
 
 			setString(find("Display"), "text", sb.toString());
 			setInteger(find("cmbTopic"), "selected", index);
