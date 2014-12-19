@@ -288,8 +288,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 		List<ControlPoint> newcps = new ArrayList<ControlPoint>();
 
-		try {
-			BufferedReader r = new BufferedReader(new FileReader(filename));
+		try (BufferedReader r = new BufferedReader(new FileReader(filename))) {
 
 			while (true) {
 				String line = r.readLine();
@@ -412,8 +411,6 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 					}
 				}
 			}
-
-			r.close();
 
 			cp.nxforms = 0;
 			for (int i = 0; i < cp.xform.length; i++) {
