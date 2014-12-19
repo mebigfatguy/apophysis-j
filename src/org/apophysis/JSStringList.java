@@ -66,15 +66,15 @@ public class JSStringList implements Constants {
 	public void LoadFromFile(String filename) throws IOException {
 		lines = new ArrayList<String>();
 
-		BufferedReader r = new BufferedReader(new FileReader(filename));
-		while (true) {
-			String line = r.readLine();
-			if (line == null) {
-				break;
-			}
-			lines.add(line);
+		try (BufferedReader r = new BufferedReader(new FileReader(filename))) {
+    		while (true) {
+    			String line = r.readLine();
+    			if (line == null) {
+    				break;
+    			}
+    			lines.add(line);
+    		}
 		}
-		r.close();
 
 		updateFields();
 	}
