@@ -491,8 +491,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 		cps = new ArrayList<ControlPoint>();
 
-		try {
-			BufferedReader r = new BufferedReader(new FileReader(filename));
+		try (BufferedReader r = new BufferedReader(new FileReader(filename))) {
 
 			while (true) {
 				String line = r.readLine();
@@ -572,8 +571,6 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 					cps.add(cp);
 				}
 			}
-
-			r.close();
 
 			Global.openFile = filename;
 			Global.openFileType = ftUPR;
