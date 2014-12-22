@@ -611,8 +611,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 	List<ControlPoint> readXML(Reader reader) {
 		List<ControlPoint> mycps = new ArrayList<ControlPoint>();
 
-		try {
-			BufferedReader r = new BufferedReader(reader);
+		try (BufferedReader r = new BufferedReader(reader)) {
 
 			while (true) {
 				ControlPoint cp = readControlPoint(r);
@@ -621,7 +620,6 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 				}
 				mycps.add(cp);
 			}
-			r.close();
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
