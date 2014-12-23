@@ -149,8 +149,7 @@ public class Script extends MyThinlet implements Constants {
 	String readScript(File file, boolean mustconvert) {
 		StringBuffer sb = new StringBuffer();
 
-		try {
-			BufferedReader r = new BufferedReader(new FileReader(file));
+		try (BufferedReader r = new BufferedReader(new FileReader(file))) {
 			while (true) {
 				String line = r.readLine();
 				if (line == null) {
@@ -159,7 +158,6 @@ public class Script extends MyThinlet implements Constants {
 				sb.append(line);
 				sb.append('\n');
 			}
-			r.close();
 
 			if (mustconvert) {
 				ScriptConverter.convert(sb);
