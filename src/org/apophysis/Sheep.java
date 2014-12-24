@@ -232,70 +232,68 @@ public class Sheep extends Thread {
 
 		String cmd = "/v2d6/cgi/apophysis.cgi";
 
-		Socket socket = new Socket(server, port);
-
-		BufferedReader r = new BufferedReader(new InputStreamReader(
+		try (Socket socket = new Socket(server, port);
+		     BufferedReader r = new BufferedReader(new InputStreamReader(
 				socket.getInputStream()));
-		PrintWriter w = new PrintWriter(socket.getOutputStream());
+		     PrintWriter w = new PrintWriter(socket.getOutputStream())) {
 
-		w.print("POST " + cmd + " HTTP/1.1");
-		w.print(eol);
-
-		w.print("Host: " + server + ":" + port);
-		w.print(eol);
-
-		w.print("Connection: close");
-		w.print(eol);
-
-		w.print("Accept: text/plain; q=0.8");
-		w.print(eol);
-
-		w.print("Content-type: multipart/form-data; boundary=" + boundary);
-		w.print(eol);
-
-		w.print("Content-Length: " + data.length());
-		w.print(eol);
-		w.print(eol);
-
-		w.print(data);
-
-		w.flush();
-
-		// read response header
-		String line = null;
-
-		while (true) {
-			line = r.readLine();
-			if (line == null) {
-				break;
-			}
-
-			line = line.trim();
-			if (line.length() == 0) {
-				break;
-			}
-
-			if (line.startsWith("Location:")) {
-				i = line.indexOf("id=");
-				if (i > 0) {
-					id = Integer.parseInt(line.substring(i + 3).trim());
-				}
-			}
+    		w.print("POST " + cmd + " HTTP/1.1");
+    		w.print(eol);
+    
+    		w.print("Host: " + server + ":" + port);
+    		w.print(eol);
+    
+    		w.print("Connection: close");
+    		w.print(eol);
+    
+    		w.print("Accept: text/plain; q=0.8");
+    		w.print(eol);
+    
+    		w.print("Content-type: multipart/form-data; boundary=" + boundary);
+    		w.print(eol);
+    
+    		w.print("Content-Length: " + data.length());
+    		w.print(eol);
+    		w.print(eol);
+    
+    		w.print(data);
+    
+    		w.flush();
+    
+    		// read response header
+    		String line = null;
+    
+    		while (true) {
+    			line = r.readLine();
+    			if (line == null) {
+    				break;
+    			}
+    
+    			line = line.trim();
+    			if (line.length() == 0) {
+    				break;
+    			}
+    
+    			if (line.startsWith("Location:")) {
+    				i = line.indexOf("id=");
+    				if (i > 0) {
+    					id = Integer.parseInt(line.substring(i + 3).trim());
+    				}
+    			}
+    		}
+    
+    		// read response data, should be two lines
+    		line = r.readLine();
+    		line = r.readLine();
+    
+    		if (line != null) {
+    			line = line.trim();
+    			if (line.length() > 0) {
+    				// error message
+    				Global.main.alert(line);
+    			}
+    		}
 		}
-
-		// read response data, should be two lines
-		line = r.readLine();
-		line = r.readLine();
-
-		if (line != null) {
-			line = line.trim();
-			if (line.length() > 0) {
-				// error message
-				Global.main.alert(line);
-			}
-		}
-
-		socket.close();
 
 		return id;
 
@@ -354,63 +352,62 @@ public class Sheep extends Thread {
 				}
 			}
 
-			BufferedReader r = new BufferedReader(new InputStreamReader(
-					con.getInputStream()));
-			while (true) {
-				String line = r.readLine();
-				if (line == null) {
-					break;
-				}
-				int i = line.indexOf("The complete list of");
-				if (i < 0) {
-					continue;
-				}
-				int j = line.indexOf("variations", i);
-				if (j < 0) {
-					continue;
-				}
-				break;
+			try (BufferedReader r = new BufferedReader(new InputStreamReader(
+					con.getInputStream()))) {
+    			while (true) {
+    				String line = r.readLine();
+    				if (line == null) {
+    					break;
+    				}
+    				int i = line.indexOf("The complete list of");
+    				if (i < 0) {
+    					continue;
+    				}
+    				int j = line.indexOf("variations", i);
+    				if (j < 0) {
+    					continue;
+    				}
+    				break;
+    			}
+    
+    			while (true) {
+    				String line = r.readLine();
+    				if (line == null) {
+    					break;
+    				}
+    				int i = line.indexOf("<ul>");
+    				if (i >= 0) {
+    					break;
+    				}
+    			}
+    
+    			while (true) {
+    				String line = r.readLine();
+    				if (line == null) {
+    					break;
+    				}
+    				int i = line.indexOf("</ul>");
+    				if (i >= 0) {
+    					break;
+    				}
+    
+    				int j = line.indexOf("<li>");
+    				if (j < 0) {
+    					continue;
+    				}
+    				int k = line.indexOf("</li>", j);
+    				if (k < 0) {
+    					continue;
+    				}
+    
+    				String vname = line.substring(j + 4, k);
+    				if (vname.equals("gaussian")) {
+    					vname = "gaussian_blur";
+    				}
+    
+    				h.put(vname, Boolean.TRUE);
+    			}
 			}
-
-			while (true) {
-				String line = r.readLine();
-				if (line == null) {
-					break;
-				}
-				int i = line.indexOf("<ul>");
-				if (i >= 0) {
-					break;
-				}
-			}
-
-			while (true) {
-				String line = r.readLine();
-				if (line == null) {
-					break;
-				}
-				int i = line.indexOf("</ul>");
-				if (i >= 0) {
-					break;
-				}
-
-				int j = line.indexOf("<li>");
-				if (j < 0) {
-					continue;
-				}
-				int k = line.indexOf("</li>", j);
-				if (k < 0) {
-					continue;
-				}
-
-				String vname = line.substring(j + 4, k);
-				if (vname.equals("gaussian")) {
-					vname = "gaussian_blur";
-				}
-
-				h.put(vname, Boolean.TRUE);
-			}
-
-			r.close();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
