@@ -34,6 +34,7 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.BufferedInputStream;
 import java.io.InputStream;
 
 class Terminal extends Frame implements Runnable, WindowListener {
@@ -130,8 +131,7 @@ class Terminal extends Frame implements Runnable, WindowListener {
 
 	public void run() {
 
-		try {
-			InputStream r = process.getErrorStream();
+		try (InputStream r = new BufferedInputStream(process.getErrorStream())) {
 			while (true) {
 				int k = r.read();
 				if (k < 0)
@@ -163,7 +163,6 @@ class Terminal extends Frame implements Runnable, WindowListener {
 					repaint();
 				}
 			}
-			r.close();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
