@@ -2486,15 +2486,14 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 	public void mnuCopyClick() {
 
-		try {
-			StringWriter sw = new StringWriter();
-			PrintWriter w = new PrintWriter(sw);
+		try (StringWriter sw = new StringWriter();
+             PrintWriter w = new PrintWriter(sw)) {
+			
 			Global.mainCP.save(w);
 			w.flush();
 
 			setClipboard(sw.toString());
 
-			sw.close();
 		} catch (Exception ex) {
 		}
 
