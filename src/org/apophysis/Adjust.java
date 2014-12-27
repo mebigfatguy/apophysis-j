@@ -34,6 +34,7 @@ import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.image.MemoryImageSource;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.io.StringReader;
@@ -1168,8 +1169,8 @@ public class Adjust extends MyThinlet implements Constants, ThreadTarget {
 	/*****************************************************************************/
 
 	void saveMap(String filename) {
-		try {
-			PrintWriter w = new PrintWriter(new FileWriter(filename));
+		try (PrintWriter w = new PrintWriter(new BufferedWriter(new FileWriter(filename)))) {
+			
 			String comment = "  Exported from Apophysis 2.0";
 			for (int i = 0; i < 256; i++) {
 				String p1 = "" + palette[i][0];
@@ -1187,7 +1188,6 @@ public class Adjust extends MyThinlet implements Constants, ThreadTarget {
 				w.println(" " + p1 + " " + p2 + " " + p3 + comment);
 				comment = "";
 			}
-			w.close();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
