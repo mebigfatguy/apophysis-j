@@ -278,11 +278,10 @@ public class Export extends MyThinlet implements Constants {
 
 			// send the flame description as input to the process
 
-			PrintWriter w = new PrintWriter(new OutputStreamWriter(
-					process.getOutputStream()));
-			cp1.save(w);
-			w.flush();
-			w.close();
+			try (PrintWriter w = new PrintWriter(new OutputStreamWriter(
+					process.getOutputStream()))) {
+    			cp1.save(w);
+			}
 
 			String title = (new File(filename)).getName();
 			int j = title.indexOf('.');
