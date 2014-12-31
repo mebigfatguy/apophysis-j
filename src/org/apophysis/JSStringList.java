@@ -1,6 +1,7 @@
 package org.apophysis;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -49,13 +50,10 @@ public class JSStringList implements Constants {
 	/*****************************************************************************/
 
 	public void SaveToFile(String filename) {
-		try {
-			PrintWriter w = new PrintWriter(new FileWriter(filename));
-			int n = lines.size();
-			for (int i = 0; i < n; i++) {
-				w.println(lines.get(i));
+		try (PrintWriter w = new PrintWriter(new BufferedWriter(new FileWriter(filename)))) {
+			for (String line : lines) {
+				w.println(line);
 			}
-			w.close();
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}
