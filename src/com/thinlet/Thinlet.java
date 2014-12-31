@@ -53,6 +53,7 @@ import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -603,9 +604,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 				set(component, ":widths", columnwidths);
 				if ((header != null) && getBoolean(header, "resizable")) {
 					int[] smartWidths = new int[columnwidths.length];
-					for (int i = 0; i < smartWidths.length; i++) {
-						smartWidths[i] = MINIMUM_COLUMN_WIDTH;
-					}
+					Arrays.fill(smartWidths, MINIMUM_COLUMN_WIDTH);
 					set(component, PROPERTY_SMARTWIDTHS, smartWidths);
 				}
 			}
