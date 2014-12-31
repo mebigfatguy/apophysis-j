@@ -958,9 +958,8 @@ public class Global implements Constants {
 	/*****************************************************************************/
 
 	public static void writePresets(List<Preset> v) {
-		try {
-			File f = new File(apopath, PRSTNAME);
-			PrintWriter w = new PrintWriter(new FileWriter(f));
+        File f = new File(apopath, PRSTNAME);
+		try (PrintWriter w = new PrintWriter(new FileWriter(f))) {
 
 			int n = v.size();
 			for (int i = 0; i < n; i++) {
@@ -968,7 +967,6 @@ public class Global implements Constants {
 				preset.write(w);
 			}
 
-			w.close();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
