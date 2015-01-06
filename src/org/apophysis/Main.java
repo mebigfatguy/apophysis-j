@@ -835,19 +835,19 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 				title = title.substring(0, k);
 			}
 
-			PrintWriter w = new PrintWriter(new FileWriter(file));
+			try (PrintWriter w = new PrintWriter(new FileWriter(file))) {
 
-			w.println("<Flames name=\"" + title + "\">");
-
-			int nc = mycps.size();
-			for (int i = 0; i < nc; i++) {
-				cp = mycps.get(i);
-				cp.save(w);
+    			w.println("<Flames name=\"" + title + "\">");
+    
+    			int nc = mycps.size();
+    			for (int i = 0; i < nc; i++) {
+    				cp = mycps.get(i);
+    				cp.save(w);
+    			}
+    
+    			// plplpl added the missing terminal ">" !
+    			w.println("</Flames>");
 			}
-
-			// plplpl added the missing terminal ">" !
-			w.println("</Flames>");
-			w.close();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
