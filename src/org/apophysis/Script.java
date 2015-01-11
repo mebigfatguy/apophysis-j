@@ -28,6 +28,7 @@
 package org.apophysis;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -211,10 +212,8 @@ public class Script extends MyThinlet implements Constants {
 			scriptName = scriptName.substring(0, i);
 		}
 
-		try {
-			PrintWriter w = new PrintWriter(new FileWriter(filename));
+		try (PrintWriter w = new PrintWriter(new BufferedWriter(new FileWriter(filename)))) {
 			w.print(script);
-			w.close();
 			launcher.setTitle(scriptName);
 		} catch (Exception ex) {
 			ex.printStackTrace();
