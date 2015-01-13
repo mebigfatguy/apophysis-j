@@ -178,6 +178,7 @@ public class Favorites extends MyThinlet implements Constants {
 
 	class AddTask implements Task {
 
+	    @Override
 		public void execute() {
 			Global.browserPath = Global.opendialog.getBrowserPath();
 			addScript(Global.opendialog.filename);
