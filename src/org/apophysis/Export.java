@@ -289,7 +289,7 @@ public class Export extends MyThinlet implements Constants {
 				title = title.substring(0, j);
 			}
 			Rectangle bounds = launcher.getBounds();
-			Terminal terminal = new Terminal(title, process, bounds.x, bounds.y);
+			new Terminal(title, process, bounds.x, bounds.y);
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
