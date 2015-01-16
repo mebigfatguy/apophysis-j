@@ -419,6 +419,7 @@ public class Render extends MyThinlet implements Constants, ThreadTarget {
 
 	/*****************************************************************************/
 
+	@Override
 	public void message(int msg) {
 		System.out.println("render received message = " + msg);
 
@@ -703,6 +704,7 @@ public class Render extends MyThinlet implements Constants, ThreadTarget {
 
 	/*****************************************************************************/
 
+	@Override
 	public void progress(double value) {
 
 		if (renderall) {
@@ -729,6 +731,7 @@ public class Render extends MyThinlet implements Constants, ThreadTarget {
 
 	/*****************************************************************************/
 
+	@Override
 	public void output(String msg) {
 		sb.append(msg);
 
@@ -761,6 +764,7 @@ public class Render extends MyThinlet implements Constants, ThreadTarget {
 
 	class PresetTask implements Task {
 
+	    @Override
 		public void execute() {
 			savePreset();
 		}
@@ -772,6 +776,7 @@ public class Render extends MyThinlet implements Constants, ThreadTarget {
 
 	class FilenameTask implements Task {
 
+	    @Override
 		public void execute() {
 			setFilename();
 		}
