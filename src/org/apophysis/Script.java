@@ -1454,6 +1454,7 @@ public class Script extends MyThinlet implements Constants {
 
 	class OpenTask implements Task {
 
+	    @Override
 		public void execute() {
 			Global.browserPath = Global.opendialog.getBrowserPath();
 
@@ -1474,6 +1475,7 @@ public class Script extends MyThinlet implements Constants {
 
 	class SaveTask implements Task {
 
+	    @Override
 		public void execute() {
 			Global.browserPath = Global.savedialog.getBrowserPath();
 			saveFile(Global.savedialog.filename);
