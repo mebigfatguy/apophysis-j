@@ -1638,9 +1638,9 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 	void unselectItems(Object menu) {
 		Object[] items = getItems(menu);
 		for (Object item : items) {
-			if (getClass(item) == "menu") {
+			if ("menu".equals(getClass(item)) {
 				unselectItems(item);
-			} else if (getClass(item) == "checkboxmenuitem") {
+			} else if ("checkboxmenuitem".equals(getClass(item)) {
 				setBoolean(item, "selected", false);
 			}
 		}
