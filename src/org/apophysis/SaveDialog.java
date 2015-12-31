@@ -340,7 +340,7 @@ public class SaveDialog {
 	public void show() {
 
 		try {
-			Object dialog = thinlet.parse("savedialog.xml", this);
+			Object dialog = thinlet.parse("/org/apophysis/thinletxml/savedialog.xml", this);
 			thinlet.add(dialog);
 		} catch (Exception ex) {
 			ex.printStackTrace();
