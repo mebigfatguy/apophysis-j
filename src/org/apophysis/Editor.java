@@ -2678,12 +2678,12 @@ public class Editor extends MyThinlet implements Constants, ThreadTarget {
 	/*****************************************************************************/
 
 	public void tbEnableFinalXformClick(Object button) {
-		Object combo = find("cbTransforms");
-
 		Global.main.updateUndo();
 
 		Global.enableFinalXform = getBoolean(button, "selected");
 		if (!cp.hasFinalXform) {
+		      Object combo = find("cbTransforms");
+
 			if (Global.enableFinalXform) {
 				Object choice = createImpl("choice");
 				setString(choice, "text", "Final");
