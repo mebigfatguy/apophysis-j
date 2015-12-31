@@ -291,7 +291,7 @@ class CMap {
 		try {
 			is = new BufferedInputStream(Global.main.getClass().getResourceAsStream("/org/apophysis/cmap.dat"));
 
-			IOUtils.skipFully(is, index * 256 * 3);
+			IOUtils.skipFully(is, index * 256L * 3L);
 
 			for (int i = 0; i < 256; i++) {
 				cmap[i][0] = is.read();

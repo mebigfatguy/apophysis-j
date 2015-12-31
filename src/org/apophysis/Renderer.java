@@ -840,7 +840,7 @@ public class Renderer implements Constants {
 
 	public void showSmallStats() {
 		if (rendertime > 0) {
-			long totalsamples = fnumbatches * SUB_BATCH_SIZE;
+			long totalsamples = ((long) fnumbatches) * SUB_BATCH_SIZE;
 			long speed = totalsamples / rendertime * 1000;
 
 			target.output("  Average speed: ");
