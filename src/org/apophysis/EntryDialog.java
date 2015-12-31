@@ -57,7 +57,7 @@ public class EntryDialog {
 	public void show() {
 
 		try {
-			Object dialog = thinlet.parse("entrydialog.xml", this);
+			Object dialog = thinlet.parse("/org/apophysis/thinletxml/entrydialog.xml", this);
 			thinlet.add(dialog);
 		} catch (Exception ex) {
 			ex.printStackTrace();

@@ -110,7 +110,7 @@ public class ColorDialog {
 	public void show() {
 
 		try {
-			Object dialog = thinlet.parse("colordialog.xml", this);
+			Object dialog = thinlet.parse("/org/apophysis/thinletxml/colordialog.xml", this);
 			thinlet.add(dialog);
 		} catch (Exception ex) {
 			ex.printStackTrace();
