@@ -19,6 +19,7 @@
   <resources> 
     <j2se version="1.7+" initial-heap-size="800m" max-heap-size="1600m"/>
     <jar href="apophysis-j-$VERSION.jar"/> 
+    <jar href="apophysis-j-plugins-$VERSION.jar"/> 
     <jar href="js.jar"/> 
   </resources> 
   <application-desc main-class="org.apophysis.Apophysis"/> 
