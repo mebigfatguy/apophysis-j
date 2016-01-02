@@ -17,7 +17,7 @@
       <all-permissions/> 
   </security> 
   <resources> 
-    <j2se version="1.5+" initial-heap-size="800m" max-heap-size="1600m"/>
+    <j2se version="1.7+" initial-heap-size="800m" max-heap-size="1600m"/>
     <jar href="apophysis-j-$VERSION.jar"/> 
     <jar href="js.jar"/> 
   </resources> 
