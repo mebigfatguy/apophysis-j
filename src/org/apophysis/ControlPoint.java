@@ -1474,8 +1474,8 @@ public class ControlPoint implements Constants {
 		if (index < 0) {
 			randomVariation();
 		} else {
+            int nv = XForm.getNrVariations();
 			for (int i = 0; i < nxforms; i++) {
-				int nv = XForm.getNrVariations();
 				for (int j = 0; j < nv; j++) {
 					xform[i].vars[j] = 0.0;
 				}
