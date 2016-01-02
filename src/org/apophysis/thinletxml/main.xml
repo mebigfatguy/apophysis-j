@@ -449,11 +449,13 @@
 		<label text=" " background="#D1CCC6" />
 
 		<button name="btnOptions" background="#D1CCC6"
+		    tooltip="Options"
 			icon="/images/main13.gif"
 			action="mnuOptionsClick()"
 			/>
 
 		<togglebutton name="tbShowAlpha" background="#D1CCC6"
+		    tooltip="Show Alpha"
 			icon="/images/main53.gif"
 			action="btShowAlphaClick(this)"
 			/>
