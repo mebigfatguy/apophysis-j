@@ -1309,7 +1309,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 		if (("button".equals(classname)) || ("togglebutton".equals(classname))) {
 			boolean link = ("button".equals(classname))
 					&& (get(component, "type") == "link");
-			return getSize(component, link ? 0 : 12, link ? 0 : 6);
+			return getSize(component, link ? 0 : 16, link ? 0 : 8);
 		}
 		if ("checkbox".equals(classname)) {
 			Dimension d = getSize(component, 0, 0);

@@ -44,7 +44,7 @@ public class Apophysis implements Constants {
 
 			Global.randomGenerator = new Random();
 
-			Global.main = new Main(title, "/org/apophysis/thinletxml/main.xml", 660, 530);
+			Global.main = new Main(title, "/org/apophysis/thinletxml/main.xml", 800, 600);
 			Global.editor = new Editor("Editor", "/org/apophysis/thinletxml/editor.xml", 760, 556);
 			Global.adjust = new Adjust("Adjust", "/org/apophysis/thinletxml/adjust.xml", 450, 380);
 			Global.browser = new Browser("Browser", "/org/apophysis/thinletxml/browser.xml", 500, 350);
