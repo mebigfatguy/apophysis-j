@@ -1089,6 +1089,7 @@ public class Editor extends MyThinlet implements Constants, ThreadTarget {
 			// move final triangle
 			Global.mainTriangles[nt + 1].copy(Global.mainTriangles[nt]);
 			cp.xform[nt + 1].copy(cp.xform[nt]);
+			cp.nxforms++;
 
 			Global.mainTriangles[nt].copy(Global.mainTriangles[M1]);
 			selectedTriangle = nt;
@@ -1172,6 +1173,7 @@ public class Editor extends MyThinlet implements Constants, ThreadTarget {
 
 			Global.mainTriangles[nt + 1].copy(Global.mainTriangles[nt]);
 			cp.xform[nt + 1].copy(cp.xform[nt]);
+			cp.nxforms++;
 			int it = selectedTriangle;
 			if (it != nt) {
 				Global.mainTriangles[nt].copy(Global.mainTriangles[it]);
@@ -1181,6 +1183,7 @@ public class Editor extends MyThinlet implements Constants, ThreadTarget {
 				cp.xform[nt].density = 0.5;
 			}
 
+	        Global.mainCP.nxforms++;
 			Global.transforms++;
 			updateXformsList();
 			updateFlame(true);
