@@ -172,6 +172,16 @@
 			</fileset>
 		</signjar>
 	</target>
+	
+	<target name="run" depends="jar" description="run apophysis-j">
+		<java fork="true" classname="org.apophysis.Apophysis" maxmemory="800m">
+			<classpath>
+				<pathelement path="${target.dir}/apophysis-j-${apophysis-j.version}.jar"/>
+				<pathelement path="${target.dir}/apophysis-j-plugins-${apophysis-j.version}.jar"/>
+				<pathelement path="${lib.dir}/js.jar"/>
+			</classpath>
+		</java>
+	</target>
 
 
 	<target name="release" depends="build, jnlp, srczip, javadoc" description="prepares everything for a release"/>
