@@ -345,6 +345,7 @@
 
 		<button name="btnSave" background="#D1CCC6"
 			icon="/images/main3.gif"
+			tooltip="Save As..."
 			action="mnuSaveAsClick()"
 			/>
 
@@ -357,12 +358,14 @@
 		<label text=" " background="#D1CCC6" />
 
 		<button name="btnUndo" background="#D1CCC6"
+		    tooltip="Undo"
 			icon="/images/main4.gif"
 			enabled="false"
 			action="undo()"
 			/>
 
 		<button name="btnRedo" background="#D1CCC6"
+		    tooltip="Redo"
 			icon="/images/main5.gif"
 			action="redo()"
 			enabled="false"
@@ -377,6 +380,7 @@
 			/>
 
 		<combobox name="tbQualityBox"  background="#D1CCC6"
+		    tooltip="Quality"
 			width="50" height="20"
 			action="tbQualityBoxSet(this)"
 			>
