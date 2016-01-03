@@ -6758,7 +6758,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 		try (Reader reader = new BufferedReader(new InputStreamReader(inputstream))) {
 			Object[] parentlist = null;
 			Object current = null;
-			Map<String, String> attributelist = null;
+			Map<String, String> attributes = null;
 			List<Object> methods = null;
 			StringBuilder text = new StringBuilder();
 			String encoding = null; // encoding value of xml declaration
@@ -6879,8 +6879,8 @@ public class Thinlet extends Container implements Runnable, Serializable {
 							} else if (c == '>') { // end of tag start
 								if (mode == 'S') { // SAX parser
 									((ThinSAXParser) handler).startElement(
-											(String) current, attributelist);
-									attributelist = null;
+											(String) current, attributes);
+									attributes = null;
 								}
 							} else if (c == '/') { // standalone tag
 								if ((c = reader.read()) != '>') {
@@ -6889,8 +6889,8 @@ public class Thinlet extends Container implements Runnable, Serializable {
 								}
 								if (mode == 'S') { // SAX parser
 									((ThinSAXParser) handler).startElement(
-											(String) current, attributelist);
-									attributelist = null;
+											(String) current, attributes);
+									attributes = null;
 									((ThinSAXParser) handler).endElement();
 								}
 								if (parentlist[0] == null) {
@@ -6968,10 +6968,10 @@ public class Thinlet extends Container implements Runnable, Serializable {
 									set(current, key.intern(),
 											new String(text.toString()));
 								} else { // SAX parser
-									if (attributelist == null) {
-										attributelist = new HashMap<String, String>();
+									if (attributes == null) {
+										attributes = new HashMap<String, String>();
 									}
-									attributelist.put(new String(key),
+									attributes.put(new String(key),
 											new String(text.toString()));
 								}
 								// '<![CDATA[' ']]>'
