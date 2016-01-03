@@ -150,8 +150,6 @@ public class SaveDialog {
 		Object dirlist = thinlet.find("savedirlist");
 		thinlet.removeAll(dirlist);
 
-		System.out.println("updatedirs dirssize=" + dirs.size());
-
 		for (int i = 0; i < dirs.size(); i++) {
 			File dir = dirs.get(i);
 
