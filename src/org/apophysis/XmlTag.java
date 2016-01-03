@@ -27,7 +27,7 @@
 
 package org.apophysis;
 
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -52,7 +52,7 @@ public class XmlTag {
 	// FIELDS
 
 	private String name = null;
-	private Map<String, String> attributes = new Hashtable<String, String>();
+	private Map<String, String> attributes = new HashMap<String, String>();
 	private boolean closed = false;
 
 	private StringBuilder data = new StringBuilder();

@@ -56,7 +56,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -501,7 +501,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget,
 
 				if (line.trim().endsWith("{")) {
 					// read parameters
-					Map<String, String> h = new Hashtable<String, String>();
+					Map<String, String> h = new HashMap<String, String>();
 					while (true) {
 						line = r.readLine();
 						if (line == null) {

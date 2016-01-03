@@ -44,10 +44,10 @@ import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Global implements Constants {
 
@@ -336,7 +336,7 @@ public class Global implements Constants {
 	/*****************************************************************************/
 	// PREFERENCES
 
-	static Map<String, String> values = new Hashtable<String, String>();
+	static Map<String, String> values = new ConcurrentHashMap<String, String>();
 
 	/*****************************************************************************/
 

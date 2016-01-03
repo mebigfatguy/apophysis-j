@@ -36,9 +36,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.RhinoException;
@@ -76,7 +76,7 @@ public class Script extends MyThinlet implements Constants {
 	Runner runner = null;
 
 	ControlPoint cp = new ControlPoint();
-	Map<Integer, ControlPoint> cps = new Hashtable<Integer, ControlPoint>();
+	Map<Integer, ControlPoint> cps = new ConcurrentHashMap<Integer, ControlPoint>();
 	List<ControlPoint> cpf = new ArrayList<ControlPoint>();
 
 	Triangle[] triangles = new Triangle[NXFORMS + 2];

@@ -30,7 +30,7 @@ package org.apophysis;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -52,7 +52,7 @@ public class ScriptConverter {
 
 	static void convert(StringBuffer stringbuffer) {
 		sb = stringbuffer;
-		sub = new Hashtable<String, String>();
+		sub = new HashMap<String, String>();
 		functions = new ArrayList<String>();
 
 		// save comments

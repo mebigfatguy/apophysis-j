@@ -54,7 +54,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.MissingResourceException;
@@ -6610,7 +6610,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 	 * <i>parameter='key=value'</i>
 	 *
 	 * @param component
-	 *            the hashtable is binded to this component
+	 *            the map is bound to this component
 	 * @param key
 	 *            the client property key
 	 * @param value
@@ -6621,11 +6621,11 @@ public class Thinlet extends Container implements Runnable, Serializable {
 		Object table = get(component, ":bind");
 		if (value != null) {
 			if (table == null) {
-				set(component, ":bind", table = new Hashtable<Object, Object>());
+				set(component, ":bind", table = new HashMap<Object, Object>());
 			}
-			((Hashtable<Object, Object>) table).put(key, value);
+			((Map<Object, Object>) table).put(key, value);
 		} else if (table != null) {
-			((Hashtable<Object, Object>) table).remove(key);
+			((Map<Object, Object>) table).remove(key);
 		}
 	}
 
@@ -6633,7 +6633,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 	 * Returns the value of the property with the specified key.
 	 *
 	 * @param component
-	 *            searches the hashtable of this component
+	 *            searches the map of this component
 	 * @param key
 	 *            the client property key
 	 * @return the value to which the key is mapped or null if the key is not
@@ -6642,7 +6642,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 	@SuppressWarnings("unchecked")
 	public Object getProperty(Object component, Object key) {
 		Object table = get(component, ":bind");
-		return (table != null) ? ((Hashtable<Object, Object>) table).get(key) : null;
+		return (table != null) ? ((Map<Object, Object>) table).get(key) : null;
 	}
 
 	/*****************************************************************************/
@@ -6703,7 +6703,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 		parse(inputstream, 'S', handler);
 	}
 
-	public void startElement(String name, Hashtable<String, String> attributelist) {
+	public void startElement(String name, Map<String, String> attributes) {
 	}
 
 	public void characters(String text) {
@@ -6969,7 +6969,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 											new String(text.toString()));
 								} else { // SAX parser
 									if (attributelist == null) {
-										attributelist = new Hashtable<String, String>();
+										attributelist = new HashMap<String, String>();
 									}
 									attributelist.put(new String(key),
 											new String(text.toString()));
@@ -8013,7 +8013,7 @@ public class Thinlet extends Container implements Runnable, Serializable {
 
 	/**
 	 * Creates an image from the specified resource. To speed up loading the
-	 * same images use a cache (a simple hashtable). And flush the resources
+	 * same images use a cache (a simple Map). And flush the resources
 	 * being used by an image when you won't use it henceforward
 	 *
 	 * @param path
