@@ -507,6 +507,7 @@
 				/>
 			<list name="ListView" weightx="1" weighty="1" 
 				line="false"
+				tooltip="Double click to rename a Flame"
 				action="listViewChange(this)"
 				perform="listViewDoubleClick(this)"
 				halign="fill" valign="fill" >
