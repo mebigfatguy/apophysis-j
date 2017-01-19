@@ -29,6 +29,7 @@ package org.apophysis;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.zip.InflaterInputStream;
@@ -128,15 +129,15 @@ public class CommentExtractor implements Constants {
 
 	static String readPngComment(String filename) {
 		String comment = "";
-		BufferedInputStream is = null;
+		DataInputStream is = null;
 		byte[] chunk = new byte[4];
 
 		try {
-			is = new BufferedInputStream(new FileInputStream(filename));
+			is = new DataInputStream(new BufferedInputStream(new FileInputStream(filename)));
 
 			// read signature
-			is.read(chunk);
-			is.read(chunk);
+			is.readFully(chunk);
+			is.readFully(chunk);
 
 			// read chunks
 
@@ -152,7 +153,7 @@ public class CommentExtractor implements Constants {
 
 				int len = (l1 << 24) | (l2 << 16) | (l3 << 8) | l4;
 
-				is.read(chunk);
+				is.readFully(chunk);
 				String schunk = new String(chunk);
 
 				if (schunk.equals("tEXt")) {
@@ -208,7 +209,7 @@ public class CommentExtractor implements Constants {
 				}
 
 				// read crc
-				is.read(chunk);
+				is.readFully(chunk);
 			}
 
 		} catch (Exception ex) {
