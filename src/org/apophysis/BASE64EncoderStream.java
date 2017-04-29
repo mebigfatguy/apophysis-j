@@ -315,13 +315,4 @@ public class BASE64EncoderStream extends FilterOutputStream {
 	private static int encodedSize(int size) {
 		return ((size + 2) / 3) * 4;
 	}
-
-	/***
-	 * begin TEST program public static void main(String argv[]) throws
-	 * Exception { FileInputStream infile = new FileInputStream(argv[0]);
-	 * BASE64EncoderStream encoder = new BASE64EncoderStream(System.out); int c;
-	 *
-	 * while ((c = infile.read()) != -1) encoder.write(c); encoder.close(); }
-	 * end TEST program
-	 **/
 }
