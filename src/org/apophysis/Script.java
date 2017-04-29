@@ -35,6 +35,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -48,1461 +50,1417 @@ import org.mozilla.javascript.WrappedException;
 
 public class Script extends MyThinlet implements Constants {
 
-	/*****************************************************************************/
-	// CONSTANTS
+    /*****************************************************************************/
+    // CONSTANTS
 
-	/*****************************************************************************/
-	// FIELDS
+    /*****************************************************************************/
+    // FIELDS
 
-	static int nprefix = 0; // number of lines in prefix script
+    static int nprefix = 0; // number of lines in prefix script
 
-	Object console;
+    Object console;
 
-	public JSFlame flame = new JSFlame(this);
-	public JSTransform transform = new JSTransform(this);
-	public JSOptions options = new JSOptions();
-	public JSRenderer renderer = new JSRenderer();
-	public JSStringList stringlist = new JSStringList();
+    public JSFlame flame = new JSFlame(this);
+    public JSTransform transform = new JSTransform(this);
+    public JSOptions options = new JSOptions();
+    public JSRenderer renderer = new JSRenderer();
+    public JSStringList stringlist = new JSStringList();
 
-	int _at_ = 0; // active transform number
+    int _at_ = 0; // active transform number
 
-	Context cx = null;
-	Scriptable scope = null;
+    Context cx = null;
+    Scriptable scope = null;
 
-	String scriptName = "NewScript";
+    String scriptName = "NewScript";
 
-	StringBuffer log = null;
+    StringBuffer log = null;
 
-	Runner runner = null;
+    Runner runner = null;
 
-	ControlPoint cp = new ControlPoint();
-	Map<Integer, ControlPoint> cps = new ConcurrentHashMap<Integer, ControlPoint>();
-	List<ControlPoint> cpf = new ArrayList<ControlPoint>();
+    ControlPoint cp = new ControlPoint();
+    Map<Integer, ControlPoint> cps = new ConcurrentHashMap<>();
+    List<ControlPoint> cpf = new ArrayList<>();
 
-	Triangle[] triangles = new Triangle[NXFORMS + 2];
+    Triangle[] triangles = new Triangle[NXFORMS + 2];
 
-	boolean updateflame = true;
-	boolean resetlocation = false;
+    boolean updateflame = true;
+    boolean resetlocation = false;
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	Script(String title, String xmlfile, int width, int height)
-			throws Exception {
-		super(title, xmlfile, width, height);
+    Script(String title, String xmlfile, int width, int height) throws Exception {
+        super(title, xmlfile, width, height);
 
-		console = find("Console");
+        console = find("Console");
 
-		for (int i = 0; i < triangles.length; i++) {
-			triangles[i] = new Triangle();
-		}
-	}
+        for (int i = 0; i < triangles.length; i++) {
+            triangles[i] = new Triangle();
+        }
+    }
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	@Override
-	public boolean destroy() {
-		hide();
-		return false;
-	}
+    @Override
+    public boolean destroy() {
+        hide();
+        return false;
+    }
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	@Override
-	public void show() {
-		super.show();
+    @Override
+    public void show() {
+        super.show();
 
-		launcher.setTitle(scriptName);
+        launcher.setTitle(scriptName);
 
-	} // End of method show
+    } // End of method show
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	public void btnNewClick() {
+    public void btnNewClick() {
 
-		loadScript("", "New Script");
+        loadScript("", "New Script");
 
-	} // End of method btnnewClick
+    } // End of method btnnewClick
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	public void btnOpenClick() {
+    public void btnOpenClick() {
 
-		Task task = new OpenTask();
-		Global.opendialog = new OpenDialog(this, Global.browserPath, task);
+        Task task = new OpenTask();
+        Global.opendialog = new OpenDialog(this, Global.browserPath, task);
 
-		Global.opendialog
-				.addFilter("Apophysis-j script files (*.ajs)", "*.ajs");
-		Global.opendialog.addFilter("Apophysis script files (*.asc)", "*.asc");
+        Global.opendialog.addFilter("Apophysis-j script files (*.ajs)", "*.ajs");
+        Global.opendialog.addFilter("Apophysis script files (*.asc)", "*.asc");
 
-		Global.opendialog.show();
+        Global.opendialog.show();
 
-	} // End of method btnOpenClick
+    } // End of method btnOpenClick
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	void openFile(String filename, boolean mustconvert) {
-		File file = new File(filename);
-		loadScript(readScript(file, mustconvert), file.getName());
-	} // End of method openFile
+    void openFile(String filename, boolean mustconvert) {
+        File file = new File(filename);
+        loadScript(readScript(file, mustconvert), file.getName());
+    } // End of method openFile
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	String readScript(File file, boolean mustconvert) {
-		StringBuffer sb = new StringBuffer();
+    String readScript(File file, boolean mustconvert) {
+        StringBuffer sb = new StringBuffer();
 
-		try (BufferedReader r = new BufferedReader(new FileReader(file))) {
-			while (true) {
-				String line = r.readLine();
-				if (line == null) {
-					break;
-				}
-				sb.append(line);
-				sb.append('\n');
-			}
+        try (BufferedReader r = new BufferedReader(new FileReader(file))) {
+            while (true) {
+                String line = r.readLine();
+                if (line == null) {
+                    break;
+                }
+                sb.append(line);
+                sb.append('\n');
+            }
 
-			if (mustconvert) {
-				ScriptConverter.convert(sb);
-			}
-		} catch (IOException ex) {
-			ex.printStackTrace();
-		}
+            if (mustconvert) {
+                ScriptConverter.convert(sb);
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
 
-		return sb.toString();
+        return sb.toString();
 
-	} // End of method readScript
+    } // End of method readScript
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	void loadScript(String script, String title) {
-		int i = title.lastIndexOf('.');
-		if (i > 0) {
-			title = title.substring(0, i);
-		}
-		scriptName = title;
-		launcher.setTitle(scriptName);
+    void loadScript(String script, String title) {
+        int i = title.lastIndexOf('.');
+        if (i > 0) {
+            title = title.substring(0, i);
+        }
+        scriptName = title;
+        launcher.setTitle(scriptName);
 
-		setString(find("Editor"), "text", script);
+        setString(find("Editor"), "text", script);
 
-		setBoolean(find("btnRun"), "enabled", true);
-		setBoolean(find("btnStop"), "enabled", false);
-
-		requestFocus(find("Editor"));
-
-	} // End of method loadScript
-
-	/*****************************************************************************/
-
-	public void btnSaveClick() {
-		Task task = new SaveTask();
-		Global.savedialog = new SaveDialog(this, Global.browserPath, scriptName
-				+ ".ajs", task);
-		Global.savedialog.show();
-
-	}
-
-	/*****************************************************************************/
-
-	void saveFile(String filename) {
-		String script = getString(find("Editor"), "text");
-
-		File file = new File(filename);
-		scriptName = file.getName();
-		int i = scriptName.lastIndexOf('.');
-		if (i >= 0) {
-			scriptName = scriptName.substring(0, i);
-		}
-
-		try (PrintWriter w = new PrintWriter(new BufferedWriter(new FileWriter(filename)))) {
-			w.print(script);
-			launcher.setTitle(scriptName);
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-
-	} // End of method saveFile
+        setBoolean(find("btnRun"), "enabled", true);
+        setBoolean(find("btnStop"), "enabled", false);
+
+        requestFocus(find("Editor"));
+
+    } // End of method loadScript
+
+    /*****************************************************************************/
+
+    public void btnSaveClick() {
+        Task task = new SaveTask();
+        Global.savedialog = new SaveDialog(this, Global.browserPath, scriptName + ".ajs", task);
+        Global.savedialog.show();
+
+    }
+
+    /*****************************************************************************/
+
+    void saveFile(String filename) {
+        String script = getString(find("Editor"), "text");
+
+        File file = new File(filename);
+        scriptName = file.getName();
+        int i = scriptName.lastIndexOf('.');
+        if (i >= 0) {
+            scriptName = scriptName.substring(0, i);
+        }
+
+        try (PrintWriter w = new PrintWriter(new BufferedWriter(new FileWriter(filename)))) {
+            w.print(script);
+            launcher.setTitle(scriptName);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+    } // End of method saveFile
+
+    /*****************************************************************************/
 
-	/*****************************************************************************/
+    public void btnRunClick() {
+        if (runner != null) {
+            return;
+        }
+
+        runner = new Runner();
+        runner.start();
+
+    } // End of method btnRunClick
+
+    /*****************************************************************************/
+
+    public void btnStopClick() {
+        if (scope == null) {
+            return;
+        }
 
-	public void btnRunClick() {
-		if (runner != null) {
-			return;
-		}
-
-		runner = new Runner();
-		runner.start();
-
-	} // End of method btnRunClick
-
-	/*****************************************************************************/
-
-	public void btnStopClick() {
-		if (scope == null) {
-			return;
-		}
+        runner = null;
+
+        ScriptableObject.putProperty(scope, "Stopped", Context.javaToJS(Boolean.TRUE, scope));
 
-		runner = null;
-
-		ScriptableObject.putProperty(scope, "Stopped",
-				Context.javaToJS(Boolean.TRUE, scope));
+    }
+
+    /*****************************************************************************/
 
-	}
-
-	/*****************************************************************************/
+    public void btnHelpClick() {
+        Global.helper.show();
+        Global.helper.setTopicByName("scripting");
+    }
+
+    /*****************************************************************************/
 
-	public void btnHelpClick() {
-		Global.helper.show();
-		Global.helper.setTopicByName("scripting");
-	}
-
-	/*****************************************************************************/
+    String getPrefixScript() {
+        StringBuilder sb = new StringBuilder();
 
-	String getPrefixScript() {
-		StringBuilder sb = new StringBuilder();
+        // expose all the methods starting with _
+        try {
+            Method[] methods = this.getClass().getDeclaredMethods();
+            for (int i = 0; i < methods.length; i++) {
+                if (!methods[i].getName().startsWith("_")) {
+                    continue;
+                }
+                Class<?>[] params = methods[i].getParameterTypes();
+                Class<?> answer = methods[i].getReturnType();
 
-		// expose all the methods starting with _
-		try {
-			Method[] methods = this.getClass().getDeclaredMethods();
-			for (int i = 0; i < methods.length; i++) {
-				if (!methods[i].getName().startsWith("_")) {
-					continue;
-				}
-				Class<?>[] params = methods[i].getParameterTypes();
-				Class<?> answer = methods[i].getReturnType();
+                String myname = methods[i].getName().substring(1);
 
-				String myname = methods[i].getName().substring(1);
+                String paren;
+                if (params.length == 0) {
+                    paren = "()";
+                } else {
+                    paren = "(";
+                    for (int j = 1; j < params.length; j++) {
+                        paren += "a" + j + ",";
+                    }
+                    paren += "a" + params.length + ")";
+                }
+                sb.append("function ");
+                sb.append(myname);
+                sb.append(paren);
+                sb.append(" { ");
+                if (answer != null) {
+                    sb.append("return ");
+                }
+                sb.append("__me._");
+                sb.append(myname);
+                sb.append(paren);
+                sb.append(" } \n");
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
 
-				String paren;
-				if (params.length == 0) {
-					paren = "()";
-				} else {
-					paren = "(";
-					for (int j = 1; j < params.length; j++) {
-						paren += "a" + j + ",";
-					}
-					paren += "a" + params.length + ")";
-				}
-				sb.append("function ");
-				sb.append(myname);
-				sb.append(paren);
-				sb.append(" { ");
-				if (answer != null) {
-					sb.append("return ");
-				}
-				sb.append("__me._");
-				sb.append(myname);
-				sb.append(paren);
-				sb.append(" } \n");
-			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
+        sb.append("\n");
 
-		sb.append("\n");
+        return sb.toString();
 
-		return sb.toString();
+    }
 
-	}
+    /*****************************************************************************/
 
-	/*****************************************************************************/
+    String getLibraryScript() {
+        if (Global.defLibrary.equals("")) {
+            return "";
+        }
 
-	String getLibraryScript() {
-		if (Global.defLibrary.equals("")) {
-			return "";
-		}
+        String ext = "ajs";
+        int i = Global.defLibrary.lastIndexOf('.');
+        if (i > 0) {
+            ext = Global.defLibrary.substring(i + 1).toLowerCase();
+        }
 
-		String ext = "ajs";
-		int i = Global.defLibrary.lastIndexOf('.');
-		if (i > 0) {
-			ext = Global.defLibrary.substring(i + 1).toLowerCase();
-		}
+        return readScript(new File(Global.defLibrary), ext.equals("asc"));
 
-		return readScript(new File(Global.defLibrary), ext.equals("asc"));
+    } // End of method getLibraryScript
 
-	} // End of method getLibraryScript
+    /*****************************************************************************/
 
-	/*****************************************************************************/
+    int countLines(String s) {
+        int n = 0;
+        int l = s.length();
+        for (int i = 0; i < l; i++) {
+            if (s.charAt(i) == '\n') {
+                n++;
+            }
+        }
 
-	int countLines(String s) {
-		int n = 0;
-		int l = s.length();
-		for (int i = 0; i < l; i++) {
-			if (s.charAt(i) == '\n') {
-				n++;
-			}
-		}
+        return n;
+    }
 
-		return n;
-	}
+    /*****************************************************************************/
 
-	/*****************************************************************************/
+    String getPostfixScript() {
+        StringBuilder sb = new StringBuilder();
 
-	String getPostfixScript() {
-		StringBuilder sb = new StringBuilder();
+        /*
+         * sb.append("} \n"); // end of myrun function definition
+         * sb.append("\n"); sb.append("myrun() \n"); // myrun invokation
+         */
 
-		/*
-		 * sb.append("} \n"); // end of myrun function definition
-		 * sb.append("\n"); sb.append("myrun() \n"); // myrun invokation
-		 */
+        return sb.toString();
+    }
 
-		return sb.toString();
-	}
+    /*****************************************************************************/
+    /*****************************************************************************/
+    // SCRIPT COMMANDS
 
-	/*****************************************************************************/
-	/*****************************************************************************/
-	// SCRIPT COMMANDS
+    public void _RotateFlame(double a) {
+        double radians = (a * Math.PI) / 180.0;
 
-	public void _RotateFlame(double a) {
-		double radians = a * Math.PI / 180.0;
+        js2java();
 
-		js2java();
+        cp.trianglesFromCP(triangles);
+        for (int i = 0; i < cp.nxforms; i++) {
+            triangles[i].rotate(radians);
+        }
+        triangles[M1].rotate(radians);
+        cp.getFromTriangles(triangles, cp.nxforms);
 
-		cp.trianglesFromCP(triangles);
-		for (int i = 0; i < cp.nxforms; i++) {
-			triangles[i].rotate(radians);
-		}
-		triangles[M1].rotate(radians);
-		cp.getFromTriangles(triangles, cp.nxforms);
+        java2js();
+    }
 
-		java2js();
-	}
+    /*****************************************************************************/
 
-	/*****************************************************************************/
+    public void _RotateReference(double a) {
+        double radians = (a * Math.PI) / 180.0;
 
-	public void _RotateReference(double a) {
-		double radians = a * Math.PI / 180.0;
+        js2java();
 
-		js2java();
+        XForm tx = new XForm();
+        tx.copy(cp.xform[cp.nxforms]);
+        cp.trianglesFromCP(triangles);
+        triangles[M1].rotate(radians);
+        cp.getFromTriangles(triangles, cp.nxforms);
+        cp.xform[cp.nxforms].copy(tx);
 
-		XForm tx = new XForm();
-		tx.copy(cp.xform[cp.nxforms]);
-		cp.trianglesFromCP(triangles);
-		triangles[M1].rotate(radians);
-		cp.getFromTriangles(triangles, cp.nxforms);
-		cp.xform[cp.nxforms].copy(tx);
+        java2js();
+    }
 
-		java2js();
-	}
+    /*****************************************************************************/
 
-	/*****************************************************************************/
+    public void _Rotate(double a) {
+        js2java();
+        if ((_at_ >= 0) && (_at_ < NXFORMS)) {
+            cp.xform[_at_].rotate(a);
+            java2js();
+        }
+    }
 
-	public void _Rotate(double a) {
-		js2java();
-		if ((_at_ >= 0) && (_at_ < NXFORMS)) {
-			cp.xform[_at_].rotate(a);
-			java2js();
-		}
-	}
+    /*****************************************************************************/
 
-	/*****************************************************************************/
+    public void _Multiply(double a, double b, double c, double d) {
+        js2java();
+        if ((_at_ < 0) || (_at_ >= cp.nxforms)) {
+            return;
+        }
 
-	public void _Multiply(double a, double b, double c, double d) {
-		js2java();
-		if ((_at_ < 0) || (_at_ >= cp.nxforms)) {
-			return;
-		}
+        cp.xform[_at_].multiply(a, b, c, d);
 
-		cp.xform[_at_].multiply(a, b, c, d);
+        java2js();
 
-		java2js();
+    }
 
-	}
+    /*****************************************************************************/
 
-	/*****************************************************************************/
+    public void _StoreFlame(int index) {
+        js2java();
 
-	public void _StoreFlame(int index) {
-		js2java();
+        ControlPoint tcp = new ControlPoint();
+        tcp.copy(cp);
+        cps.put(Integer.valueOf(index), tcp);
+    }
 
-		ControlPoint tcp = new ControlPoint();
-		tcp.copy(cp);
-		cps.put(Integer.valueOf(index), tcp);
-	}
+    /*****************************************************************************/
 
-	/*****************************************************************************/
+    public void _GetFlame(int index) {
+        ControlPoint tcp = cps.get(Integer.valueOf(index));
+        if (tcp != null) {
+            js2java();
+            cp.copy(tcp);
+            java2js();
+        }
+    }
 
-	public void _GetFlame(int index) {
-		ControlPoint tcp = cps.get(Integer.valueOf(index));
-		if (tcp != null) {
-			js2java();
-			cp.copy(tcp);
-			java2js();
-		}
-	}
+    /*****************************************************************************/
 
-	/*****************************************************************************/
+    public void _LoadFlame(int index) {
+        ControlPoint tcp = Global.main.cps.get(index);
+        if (tcp != null) {
+            js2java();
+            cp.copy(tcp);
+            java2js();
+        }
+    }
 
-	public void _LoadFlame(int index) {
-		ControlPoint tcp = Global.main.cps.get(index);
-		if (tcp != null) {
-			js2java();
-			cp.copy(tcp);
-			java2js();
-		}
-	}
+    /*****************************************************************************/
 
-	/*****************************************************************************/
+    public void _Scale(double a) {
+        js2java();
+        if ((_at_ < 0) || (_at_ >= cp.nxforms)) {
+            return;
+        }
 
-	public void _Scale(double a) {
-		js2java();
-		if ((_at_ < 0) || (_at_ >= cp.nxforms)) {
-			return;
-		}
+        cp.xform[_at_].scale(a);
 
-		cp.xform[_at_].scale(a);
+        java2js();
+    }
 
-		java2js();
-	}
+    /*****************************************************************************/
 
-	/*****************************************************************************/
+    public void _Translate(double a, double b) {
+        js2java();
+        if ((_at_ < 0) || (_at_ >= cp.nxforms)) {
+            return;
+        }
 
-	public void _Translate(double a, double b) {
-		js2java();
-		if ((_at_ < 0) || (_at_ >= cp.nxforms)) {
-			return;
-		}
+        cp.xform[_at_].translate(a, b);
 
-		cp.xform[_at_].translate(a, b);
+        java2js();
+    }
 
-		java2js();
-	}
+    /*****************************************************************************/
 
-	/*****************************************************************************/
+    public void _SetActiveTransform(int index) {
+        js2java();
 
-	public void _SetActiveTransform(int index) {
-		js2java();
+        _at_ = index;
 
-		_at_ = index;
+        if ((_at_ >= 0) && (_at_ <= cp.nxforms)) {
+            transform.java2js(cp, _at_);
+        }
 
-		if ((_at_ >= 0) && (_at_ <= cp.nxforms)) {
-			transform.java2js(cp, _at_);
-		}
+        java2js();
 
-		java2js();
+    } // End of method scriptSetActiveTransform
 
-	} // End of method scriptSetActiveTransform
+    /*****************************************************************************/
 
-	/*****************************************************************************/
+    public int _FileCount() {
+        return cpf.size();
+    }
 
-	public int _FileCount() {
-		return cpf.size();
-	}
+    /*****************************************************************************/
 
-	/*****************************************************************************/
+    public void _AddTransform() {
+        js2java();
+        if (cp.nxforms < NXFORMS) {
+            _at_ = cp.nxforms;
+            cp.nxforms++;
 
-	public void _AddTransform() {
-		js2java();
-		if (cp.nxforms < NXFORMS) {
-			_at_ = cp.nxforms;
-			cp.nxforms++;
+            // copy final xform if any
+            cp.xform[cp.nxforms].copy(cp.xform[_at_]);
 
-			// copy final xform if any
-			cp.xform[cp.nxforms].copy(cp.xform[_at_]);
+            cp.xform[_at_].clear();
+            cp.xform[_at_].density = 0.5;
 
-			cp.xform[_at_].clear();
-			cp.xform[_at_].density = 0.5;
+            transform.java2js(cp, _at_);
+            java2js();
+        }
+    }
 
-			transform.java2js(cp, _at_);
-			java2js();
-		}
-	}
+    /*****************************************************************************/
 
-	/*****************************************************************************/
+    public void _DeleteTransform() {
+        js2java();
+        if (cp.nxforms > 0) {
+            for (int i = _at_; i <= cp.nxforms; i++) {
+                cp.xform[i].copy(cp.xform[i + 1]);
+            }
+            cp.nxforms--;
+            if (_at_ >= cp.nxforms) {
+                _at_ = cp.nxforms - 1;
+            }
 
-	public void _DeleteTransform() {
-		js2java();
-		if (cp.nxforms > 0) {
-			for (int i = _at_; i <= cp.nxforms; i++) {
-				cp.xform[i].copy(cp.xform[i + 1]);
-			}
-			cp.nxforms--;
-			if (_at_ >= cp.nxforms) {
-				_at_ = cp.nxforms - 1;
-			}
+            java2js();
+        }
+    }
 
-			java2js();
-		}
-	}
+    /*****************************************************************************/
 
-	/*****************************************************************************/
+    public JSFlame _CloneFlame(JSFlame fold) {
+        js2java();
+        JSFlame fnew = fold.Clone();
+        java2js();
+        return fnew;
+    }
 
-	public JSFlame _CloneFlame(JSFlame fold) {
-		js2java();
-		JSFlame fnew = fold.Clone();
-		java2js();
-		return fnew;
-	}
+    /*****************************************************************************/
 
-	/*****************************************************************************/
+    public JSTransform _CloneTransform(JSTransform told) {
+        js2java();
+        JSTransform tnew = told.Clone();
+        java2js();
+        return tnew;
+    }
 
-	public JSTransform _CloneTransform(JSTransform told) {
-		js2java();
-		JSTransform tnew = told.Clone();
-		java2js();
-		return tnew;
-	}
+    /*****************************************************************************/
 
-	/*****************************************************************************/
+    public void _CopyTransform() {
+        js2java();
+        if (cp.nxforms < NXFORMS) {
+            int old = _at_;
+            _at_ = cp.nxforms;
+            cp.nxforms++;
+            cp.xform[cp.nxforms].copy(cp.xform[_at_]);
+            cp.xform[_at_].copy(cp.xform[old]);
 
-	public void _CopyTransform() {
-		js2java();
-		if (cp.nxforms < NXFORMS) {
-			int old = _at_;
-			_at_ = cp.nxforms;
-			cp.nxforms++;
-			cp.xform[cp.nxforms].copy(cp.xform[_at_]);
-			cp.xform[_at_].copy(cp.xform[old]);
+            java2js();
+        }
+    }
 
-			java2js();
-		}
-	}
+    /*****************************************************************************/
 
-	/*****************************************************************************/
+    public void _Clear() {
+        js2java();
 
-	public void _Clear() {
-		js2java();
+        cp.nxforms = 0;
+        _at_ = -1;
+        cp.clear();
+        cp.xform[0].symmetry = 1;
 
-		cp.nxforms = 0;
-		_at_ = -1;
-		cp.clear();
-		cp.xform[0].symmetry = 1;
+        java2js();
+    }
 
-		java2js();
-	}
+    /*****************************************************************************/
 
-	/*****************************************************************************/
+    public void _Preview() {
+        if (runner == null) {
+            return;
+        }
 
-	public void _Preview() {
-		if (runner == null) {
-			return;
-		}
+        if (cp.nxforms > 0) {
+            js2java();
+            Global.preview.cp.copy(cp);
+            Global.preview.show();
+            Global.preview.drawFlame();
+        }
+    }
 
-		if (cp.nxforms > 0) {
-			js2java();
-			Global.preview.cp.copy(cp);
-			Global.preview.show();
-			Global.preview.drawFlame();
-		}
-	}
+    /*****************************************************************************/
 
-	/*****************************************************************************/
+    public void _Render() {
+        js2java();
 
-	public void _Render() {
-		js2java();
+        try {
+            ScriptRenderer srenderer = new ScriptRenderer("Rendering", "srenderer.xml", 270, 90, this, renderer);
 
-		try {
-			ScriptRenderer srenderer = new ScriptRenderer("Rendering",
-					"srenderer.xml", 270, 90, this, renderer);
+            srenderer.show();
+            srenderer.render();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
 
-			srenderer.show();
-			srenderer.render();
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
+    }
 
-	}
+    /*****************************************************************************/
 
-	/*****************************************************************************/
+    public String _Format(String fmt, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7, Object a8, Object a9) {
+        Object[] args = new Object[] { a1, a2, a3, a4, a5, a6, a7, a8, a9 };
+        return StringFormatter.format(fmt, args);
 
-	public String _Format(String fmt, Object a1, Object a2, Object a3,
-			Object a4, Object a5, Object a6, Object a7, Object a8, Object a9) {
-		Object[] args = new Object[] { a1, a2, a3, a4, a5, a6, a7, a8, a9 };
-		return StringFormatter.format(fmt, args);
+    }
 
-	}
+    /*****************************************************************************/
 
-	/*****************************************************************************/
+    public void _Print(Object o) {
+        _print(o);
+    }
 
-	public void _Print(Object o) {
-		_print(o);
-	}
-
-	public void _print(Object o) {
-		log.append(Context.toString(o));
-		log.append('\n');
-		setString(console, "text", log.toString());
+    public void _print(Object o) {
+        log.append(Context.toString(o));
+        log.append('\n');
+        setString(console, "text", log.toString());
 
-		// position the widget to the end
-		int n = log.length();
-		setInteger(console, "start", n - 1);
-		setInteger(console, "end", n - 1);
-	}
+        // position the widget to the end
+        int n = log.length();
+        setInteger(console, "start", n - 1);
+        setInteger(console, "end", n - 1);
+    }
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	public void _AddSymmetry(int n) {
-		js2java();
-		cp.addSymmetry(n);
-		java2js();
-	}
+    public void _AddSymmetry(int n) {
+        js2java();
+        cp.addSymmetry(n);
+        java2js();
+    }
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	public void _Morph(int a, int b, double c) {
-		ControlPoint cpa = cps.get(Integer.valueOf(a));
-		ControlPoint cpb = cps.get(Integer.valueOf(b));
+    public void _Morph(int a, int b, double c) {
+        ControlPoint cpa = cps.get(Integer.valueOf(a));
+        ControlPoint cpb = cps.get(Integer.valueOf(b));
 
-		if ((cpa != null) && (cpb != null)) {
-			cp.interpolateX(cpa, cpb, c);
-			java2js();
-		}
-	}
+        if ((cpa != null) && (cpb != null)) {
+            cp.interpolateX(cpa, cpb, c);
+            java2js();
+        }
+    }
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	public void _SetRenderBounds() {
-	}
+    public void _SetRenderBounds() {
+    }
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	public void _SetFlameFile(String filename) throws Exception {
-		File file = new File(filename);
-		if (!file.exists()) {
-			throw new IOException("File not found");
-		}
+    public void _SetFlameFile(String filename) throws Exception {
+        File file = new File(filename);
+        if (!file.exists()) {
+            throw new IOException("File not found");
+        }
 
-		BufferedReader r = null;
-		try {
-			r = new BufferedReader(new FileReader(filename));
-			cpf = Global.main.readXML(r);
-		} finally {
-		    IOUtils.close(r);
-		}
-	}
+        try (BufferedReader r = Files.newBufferedReader(Paths.get(filename))) {
+            cpf = Global.main.readXML(r);
+        }
+    }
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	public void _ListFile(String filename) throws IOException {
-		File file = new File(filename);
-		if (file.exists()) {
-			File[] files = new File[] { file };
-			Global.main.openFiles(files);
-			cp.copy(Global.mainCP);
-			_at_ = 0;
-			java2js();
-		} else {
-			throw new IOException("Cannot open " + filename);
-		}
-	}
-
-	/*****************************************************************************/
+    public void _ListFile(String filename) throws IOException {
+        File file = new File(filename);
+        if (file.exists()) {
+            File[] files = new File[] { file };
+            Global.main.openFiles(files);
+            cp.copy(Global.mainCP);
+            _at_ = 0;
+            java2js();
+        } else {
+            throw new IOException("Cannot open " + filename);
+        }
+    }
 
-	public void _SaveFlame(String filename) {
-		// TODO - should not replace the file, but append the flame
-		js2java();
-		Global.main.saveXMLFile(cp, filename);
-	}
-
-	/*****************************************************************************/
-
-	public String _GetFileName() {
-		Global.opendialog = new OpenDialog(Global.main, Global.browserPath,
-				null);
-		Global.opendialog.addFilter("Flame files (*.flame)", "*.flame");
-		Global.opendialog.addFilter("Fla files (*.fla)", "*.fla");
-		Global.opendialog.addFilter("All files (*.*)", "*.*");
-		Global.opendialog.show();
-
-		Global.main.launcher.toFront();
-		Global.main.requestFocus();
-
-		while (true) {
-			try {
-				Thread.sleep(100);
-			} catch (Exception ex) {
-			}
-			Object dialog = Global.main.find("opendialog");
-			if (dialog == null) {
-				break;
-			}
-		}
-
-		return Global.opendialog.filename;
-	}
-
-	/*****************************************************************************/
-
-	public void _ShowStatus(String msg) {
-		setString(find("StatusBar"), "text", msg);
-		Global.main.setStatus(msg);
-	}
-
-	/*****************************************************************************/
-
-	public void _RandomFlame(int n) {
-		cp = ControlPoint.randomFlame(cp, n);
-		java2js();
-	}
-
-	/*****************************************************************************/
-
-	public void _RandomGradient() {
-		js2java();
-		cp.cmap = CMap.randomGradient();
-		java2js();
-	}
-
-	/*****************************************************************************/
-
-	public void _SaveGradient(String filename, String title) {
-		js2java();
-		String text = CMap.gradientFromPalette(cp.cmap, title);
-		FileManager.writeEntry(text, title, filename);
-	}
-
-	/*****************************************************************************/
-
-	public int _SetVariation(int index) {
-		return 0;
-	}
-
-	/*****************************************************************************/
-
-	public int _VariationIndex(String name) {
-		int nv = XForm.getNrVariations();
-		for (int i = 0; i < nv; i++) {
-			if (XForm.getVariation(i).getName().equals(name)) {
-				return i;
-			}
-		}
-		return -1;
-	}
-
-	/*****************************************************************************/
-
-	public String _VariationName(int index) {
-		int nv = XForm.getNrVariations();
-		if ((index >= 0) && (index < nv)) {
-			return XForm.getVariation(index).getName();
-		} else {
-			return "";
-		}
-	}
+    /*****************************************************************************/
 
-	/*****************************************************************************/
+    public void _SaveFlame(String filename) {
+        // TODO - should not replace the file, but append the flame
+        js2java();
+        Global.main.saveXMLFile(cp, filename);
+    }
 
-	public String _VariableName(int index) {
-		return XForm.getParameterName(index);
-	}
+    /*****************************************************************************/
 
-	/*****************************************************************************/
+    public String _GetFileName() {
+        Global.opendialog = new OpenDialog(Global.main, Global.browserPath, null);
+        Global.opendialog.addFilter("Flame files (*.flame)", "*.flame");
+        Global.opendialog.addFilter("Fla files (*.fla)", "*.fla");
+        Global.opendialog.addFilter("All files (*.*)", "*.*");
+        Global.opendialog.show();
 
-	public void _CalculateScale() {
-		js2java();
-		double x = cp.center[0];
-		double y = cp.center[1];
-		cp.calcBoundBox();
-		cp.center[0] = x;
-		cp.center[1] = y;
-		java2js();
-	}
-
-	/*****************************************************************************/
+        Global.main.launcher.toFront();
+        Global.main.requestFocus();
 
-	public void _CalculateBounds() {
-		js2java();
-		cp.calcBoundBox();
-		java2js();
-	}
+        while (true) {
+            try {
+                Thread.sleep(100);
+            } catch (Exception ex) {
+            }
+            Object dialog = Global.main.find("opendialog");
+            if (dialog == null) {
+                break;
+            }
+        }
 
-	/*****************************************************************************/
+        return Global.opendialog.filename;
+    }
 
-	public void _NormalizeVars() {
-		js2java();
-		cp.normalizeVariations();
-		java2js();
-	}
+    /*****************************************************************************/
 
-	/*****************************************************************************/
+    public void _ShowStatus(String msg) {
+        setString(find("StatusBar"), "text", msg);
+        Global.main.setStatus(msg);
+    }
 
-	public String _GetSaveFileName(String filename) {
-		if (filename == null) {
-			filename = "";
-		}
-		Global.savedialog = new SaveDialog(Global.main, Global.browserPath,
-				filename, null);
-		Global.savedialog.show();
+    /*****************************************************************************/
 
-		Global.main.launcher.toFront();
-		Global.main.requestFocus();
+    public void _RandomFlame(int n) {
+        cp = ControlPoint.randomFlame(cp, n);
+        java2js();
+    }
+
+    /*****************************************************************************/
+
+    public void _RandomGradient() {
+        js2java();
+        cp.cmap = CMap.randomGradient();
+        java2js();
+    }
 
-		while (true) {
-			try {
-				Thread.sleep(100);
-			} catch (Exception ex) {
-			}
-			Object dialog = Global.main.find("savedialog");
-			if (dialog == null) {
-				break;
-			}
-		}
+    /*****************************************************************************/
+
+    public void _SaveGradient(String filename, String title) {
+        js2java();
+        String text = CMap.gradientFromPalette(cp.cmap, title);
+        FileManager.writeEntry(text, title, filename);
+    }
 
-		return Global.savedialog.filename;
-	}
+    /*****************************************************************************/
+
+    public int _SetVariation(int index) {
+        return 0;
+    }
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	public void _ShowMessage(String msg) {
-		Global.main.alertAndWait(msg);
-	}
+    public int _VariationIndex(String name) {
+        int nv = XForm.getNrVariations();
+        for (int i = 0; i < nv; i++) {
+            if (XForm.getVariation(i).getName().equals(name)) {
+                return i;
+            }
+        }
+        return -1;
+    }
 
-	/*****************************************************************************/
-	// Pascal implementation
+    /*****************************************************************************/
 
-	public void _Exit() {
-		_exit();
-	}
+    public String _VariationName(int index) {
+        int nv = XForm.getNrVariations();
+        if ((index >= 0) && (index < nv)) {
+            return XForm.getVariation(index).getName();
+        } else {
+            return "";
+        }
+    }
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	public void _exit() {
-		throw new ExitException();
-	}
+    public String _VariableName(int index) {
+        return XForm.getParameterName(index);
+    }
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	public String _IntToStr(int n) {
-		return "" + n;
-	}
+    public void _CalculateScale() {
+        js2java();
+        double x = cp.center[0];
+        double y = cp.center[1];
+        cp.calcBoundBox();
+        cp.center[0] = x;
+        cp.center[1] = y;
+        java2js();
+    }
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	public int _StrToInt(String s) {
-		return Integer.parseInt(s);
-	}
+    public void _CalculateBounds() {
+        js2java();
+        cp.calcBoundBox();
+        java2js();
+    }
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	public int _Pos(String search, String text) {
-		int i = text.indexOf(search);
-		return i + 1;
-	}
+    public void _NormalizeVars() {
+        js2java();
+        cp.normalizeVariations();
+        java2js();
+    }
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	public String _Delete(String s, int from, int len) {
-		return s.substring(0, from - 1) + s.substring(from + len - 1);
-	}
+    public String _GetSaveFileName(String filename) {
+        if (filename == null) {
+            filename = "";
+        }
+        Global.savedialog = new SaveDialog(Global.main, Global.browserPath, filename, null);
+        Global.savedialog.show();
 
-	/*****************************************************************************/
+        Global.main.launcher.toFront();
+        Global.main.requestFocus();
 
-	public String _Copy(String s, int from, int len) {
-		if (from < 0) {
-			from = 0;
-		}
-		if (from + len > s.length()) {
-			len = s.length() - from;
-		}
-		return s.substring(from, from + len);
-	}
+        while (true) {
+            try {
+                Thread.sleep(100);
+            } catch (Exception ex) {
+            }
+            Object dialog = Global.main.find("savedialog");
+            if (dialog == null) {
+                break;
+            }
+        }
 
-	/*****************************************************************************/
+        return Global.savedialog.filename;
+    }
 
-	public int _Length(String s) {
-		return s.length();
-	}
+    /*****************************************************************************/
 
-	/*****************************************************************************/
+    public void _ShowMessage(String msg) {
+        Global.main.alertAndWait(msg);
+    }
 
-	public String _Lowercase(String s) {
-		return s.toLowerCase();
-	}
+    /*****************************************************************************/
+    // Pascal implementation
 
-	public String _Uppercase(String s) {
-		return s.toUpperCase();
-	}
+    public void _Exit() {
+        _exit();
+    }
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	public String _Trim(String s) {
-		return s.trim();
-	}
+    public void _exit() {
+        throw new ExitException();
+    }
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	public String _InputQuery(String title, String question, String value) {
-		return Global.main.askAndWait(question, value);
-	}
+    public String _IntToStr(int n) {
+        return "" + n;
+    }
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	public void _DeleteFile(String filename) {
-		(new File(filename)).delete();
-	}
+    public int _StrToInt(String s) {
+        return Integer.parseInt(s);
+    }
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	public boolean _DirectoryExists(String dirname) {
-		File dir = new File(dirname);
-		return dir.exists() && dir.isDirectory();
-	}
+    public int _Pos(String search, String text) {
+        int i = text.indexOf(search);
+        return i + 1;
+    }
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	public boolean _FileExists(String filename) {
-		return (new File(filename)).exists();
-	}
+    public String _Delete(String s, int from, int len) {
+        return s.substring(0, from - 1) + s.substring((from + len) - 1);
+    }
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	public String _ExtractFileName(String filename) {
-		File file = new File(filename);
-		return file.getName();
-	}
+    public String _Copy(String s, int from, int len) {
+        if (from < 0) {
+            from = 0;
+        }
+        if ((from + len) > s.length()) {
+            len = s.length() - from;
+        }
+        return s.substring(from, from + len);
+    }
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	public String _ExtractFilePath(String filename) {
-		File file = new File(filename);
-		return file.getParent() + System.getProperty("file.separator");
-	}
+    public int _Length(String s) {
+        return s.length();
+    }
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	public void _Mkdir(String dirname) {
-		File dir = new File(dirname);
-		dir.mkdir();
-	}
+    public String _Lowercase(String s) {
+        return s.toLowerCase();
+    }
 
-	/*****************************************************************************/
+    public String _Uppercase(String s) {
+        return s.toUpperCase();
+    }
 
-	public boolean _RenameFile(String oldname, String newname) {
-		File oldfile = new File(oldname);
-		File newfile = new File(newname);
-		return oldfile.renameTo(newfile);
-	}
+    /*****************************************************************************/
 
-	/*****************************************************************************/
+    public String _Trim(String s) {
+        return s.trim();
+    }
 
-	public void _CopyFile(String src, String dst) throws IOException {
-		File filesrc = new File(src);
-		File filedst = new File(dst);
-		Global.copyFile(filesrc, filedst);
-	}
+    /*****************************************************************************/
 
-	/*****************************************************************************/
-	/*****************************************************************************/
-	// Math implementation
+    public String _InputQuery(String title, String question, String value) {
+        return Global.main.askAndWait(question, value);
+    }
 
-	public double _sin(double x) {
-		return Math.sin(x);
-	}
+    /*****************************************************************************/
 
-	public double _cos(double x) {
-		return Math.cos(x);
-	}
+    public void _DeleteFile(String filename) {
+        (new File(filename)).delete();
+    }
 
-	public double _tan(double x) {
-		return Math.tan(x);
-	}
+    /*****************************************************************************/
 
-	public double _asin(double x) {
-		return Math.asin(x);
-	}
+    public boolean _DirectoryExists(String dirname) {
+        File dir = new File(dirname);
+        return dir.exists() && dir.isDirectory();
+    }
 
-	public double _acos(double x) {
-		return Math.acos(x);
-	}
+    /*****************************************************************************/
 
-	public double _atan(double x) {
-		return Math.atan(x);
-	}
+    public boolean _FileExists(String filename) {
+        return (new File(filename)).exists();
+    }
 
-	public double _atan2(double x, double y) {
-		return Math.atan2(x, y);
-	}
+    /*****************************************************************************/
 
-	public double _exp(double x) {
-		return Math.exp(x);
-	}
+    public String _ExtractFileName(String filename) {
+        File file = new File(filename);
+        return file.getName();
+    }
 
-	public double _log(double x) {
-		return Math.log(x);
-	}
+    /*****************************************************************************/
 
-	public long _round(double x) {
-		return Math.round(x);
-	}
+    public String _ExtractFilePath(String filename) {
+        File file = new File(filename);
+        return file.getParent() + System.getProperty("file.separator");
+    }
 
-	public double _trunc(double x) {
-		return Math.floor(x);
-	}
+    /*****************************************************************************/
 
-	public double _power(double x, double y) {
-		return Math.pow(x, y);
-	}
+    public void _Mkdir(String dirname) {
+        File dir = new File(dirname);
+        dir.mkdir();
+    }
 
-	public double _pow(double x, double y) {
-		return Math.pow(x, y);
-	}
+    /*****************************************************************************/
 
-	public double _random() {
-		return Math.random();
-	}
+    public boolean _RenameFile(String oldname, String newname) {
+        File oldfile = new File(oldname);
+        File newfile = new File(newname);
+        return oldfile.renameTo(newfile);
+    }
 
-	public double _abs(double x) {
-		return Math.abs(x);
-	}
+    /*****************************************************************************/
 
-	public double _abs(int n) {
-		return Math.abs(n);
-	}
+    public void _CopyFile(String src, String dst) throws IOException {
+        File filesrc = new File(src);
+        File filedst = new File(dst);
+        Global.copyFile(filesrc, filedst);
+    }
 
-	public double _sqrt(double x) {
-		return Math.sqrt(x);
-	}
+    /*****************************************************************************/
+    /*****************************************************************************/
+    // Math implementation
 
-	public double _sqr(double x) {
-		return x * x;
-	}
+    public double _sin(double x) {
+        return Math.sin(x);
+    }
 
-	/*****************************************************************************/
+    public double _cos(double x) {
+        return Math.cos(x);
+    }
 
-	void java2js() {
-		flame.cp.copy(cp);
-		flame.java2js();
-		if ((_at_ >= 0) && (_at_ <= cp.nxforms)) {
-			transform.java2js(cp, _at_);
-		}
-		options.java2js();
+    public double _tan(double x) {
+        return Math.tan(x);
+    }
 
-		int iv = (Global.variation < 0) ? (int) (Math.random() * XForm.getNrVariations())
-				: Global.variation;
-		ScriptableObject.putProperty(scope, "Variation",
-				Context.javaToJS(Integer.valueOf(iv), scope));
+    public double _asin(double x) {
+        return Math.asin(x);
+    }
 
-		ScriptableObject.putProperty(scope, "SelectedTransform", Context
-				.javaToJS(Integer.valueOf(Global.editor.selectedTriangle), scope));
+    public double _acos(double x) {
+        return Math.acos(x);
+    }
 
-		ScriptableObject.putProperty(scope, "ActiveTransform",
-				Context.javaToJS(Integer.valueOf(_at_), scope));
+    public double _atan(double x) {
+        return Math.atan(x);
+    }
 
-		ScriptableObject.putProperty(scope, "Transforms",
-				Context.javaToJS(Integer.valueOf(cp.nxforms), scope));
+    public double _atan2(double x, double y) {
+        return Math.atan2(x, y);
+    }
 
-		ScriptableObject.putProperty(scope, "BatchIndex",
-				Context.javaToJS(Integer.valueOf(Global.randomIndex), scope));
+    public double _exp(double x) {
+        return Math.exp(x);
+    }
 
-		ScriptableObject.putProperty(scope, "Stopped",
-				Context.javaToJS(Boolean.FALSE, scope));
+    public double _log(double x) {
+        return Math.log(x);
+    }
 
-		ScriptableObject.putProperty(scope, "CurrentFile",
-				Context.javaToJS(Global.openFile, scope));
+    public long _round(double x) {
+        return Math.round(x);
+    }
 
-		ScriptableObject.putProperty(scope, "DateCode",
-				Context.javaToJS(Global.randomDate, scope));
+    public double _trunc(double x) {
+        return Math.floor(x);
+    }
 
-		ScriptableObject.putProperty(scope, "LimitVibrancy",
-				Context.javaToJS(new Boolean(Global.limitVibrancy), scope));
+    public double _power(double x, double y) {
+        return Math.pow(x, y);
+    }
 
-		ScriptableObject.putProperty(scope, "ResetLocation",
-				Context.javaToJS(new Boolean(resetlocation), scope));
+    public double _pow(double x, double y) {
+        return Math.pow(x, y);
+    }
 
-		ScriptableObject.putProperty(scope, "UpdateFlame",
-				Context.javaToJS(new Boolean(updateflame), scope));
+    public double _random() {
+        return Math.random();
+    }
 
-	} // End of method java2js
+    public double _abs(double x) {
+        return Math.abs(x);
+    }
 
-	/*****************************************************************************/
+    public double _abs(int n) {
+        return Math.abs(n);
+    }
 
-	void js2java() {
+    public double _sqrt(double x) {
+        return Math.sqrt(x);
+    }
 
-		Object o;
+    public double _sqr(double x) {
+        return x * x;
+    }
 
-		o = ScriptableObject.getProperty(scope, "UpdateFlame");
-		if (o instanceof Boolean) {
-			updateflame = ((Boolean) o).booleanValue();
-		}
+    /*****************************************************************************/
 
-		o = ScriptableObject.getProperty(scope, "SelectedTransform");
-		if (o instanceof Integer) {
-			Global.editor.selectedTriangle = ((Integer) o).intValue();
-		}
+    void java2js() {
+        flame.cp.copy(cp);
+        flame.java2js();
+        if ((_at_ >= 0) && (_at_ <= cp.nxforms)) {
+            transform.java2js(cp, _at_);
+        }
+        options.java2js();
 
-		o = ScriptableObject.getProperty(scope, "ActiveTransform");
-		if (o instanceof Integer) {
-			_at_ = ((Integer) o).intValue();
-		}
+        int iv = (Global.variation < 0) ? (int) (Math.random() * XForm.getNrVariations()) : Global.variation;
+        ScriptableObject.putProperty(scope, "Variation", Context.javaToJS(Integer.valueOf(iv), scope));
 
-		o = ScriptableObject.getProperty(scope, "BatchIndex");
-		if (o instanceof Integer) {
-			Global.randomIndex = ((Integer) o).intValue();
-		}
+        ScriptableObject.putProperty(scope, "SelectedTransform", Context.javaToJS(Integer.valueOf(Global.editor.selectedTriangle), scope));
 
-		o = ScriptableObject.getProperty(scope, "DateCode");
-		if (o instanceof String) {
-			Global.randomDate = (String) o;
-		}
+        ScriptableObject.putProperty(scope, "ActiveTransform", Context.javaToJS(Integer.valueOf(_at_), scope));
 
-		o = ScriptableObject.getProperty(scope, "LimitVibrancy");
-		if (o instanceof Boolean) {
-			Global.limitVibrancy = ((Boolean) o).booleanValue();
-		}
+        ScriptableObject.putProperty(scope, "Transforms", Context.javaToJS(Integer.valueOf(cp.nxforms), scope));
 
-		o = ScriptableObject.getProperty(scope, "ResetLocation");
-		if (o instanceof Boolean) {
-			resetlocation = ((Boolean) o).booleanValue();
-		}
+        ScriptableObject.putProperty(scope, "BatchIndex", Context.javaToJS(Integer.valueOf(Global.randomIndex), scope));
 
-		o = ScriptableObject.getProperty(scope, "Transform");
-		if (o instanceof JSTransform) {
-			transform = (JSTransform) o;
-		}
+        ScriptableObject.putProperty(scope, "Stopped", Context.javaToJS(Boolean.FALSE, scope));
 
-		flame.js2java();
-		cp.copy(flame.cp);
-		if ((_at_ >= 0) && (_at_ <= cp.nxforms)) {
-			transform.js2java(cp, _at_);
-		}
+        ScriptableObject.putProperty(scope, "CurrentFile", Context.javaToJS(Global.openFile, scope));
 
-		options.js2java();
-	} // End of method js2java
+        ScriptableObject.putProperty(scope, "DateCode", Context.javaToJS(Global.randomDate, scope));
 
-	/*****************************************************************************/
+        ScriptableObject.putProperty(scope, "LimitVibrancy", Context.javaToJS(new Boolean(Global.limitVibrancy), scope));
 
-	public void executeScript() {
-		int lineno;
-		String errmsg;
+        ScriptableObject.putProperty(scope, "ResetLocation", Context.javaToJS(new Boolean(resetlocation), scope));
 
-		String userscript = getString(find("Editor"), "text");
-		if (userscript.length() == 0) {
-			runner = null;
-			cx = null;
-			scope = null;
-			return;
-		}
+        ScriptableObject.putProperty(scope, "UpdateFlame", Context.javaToJS(new Boolean(updateflame), scope));
 
-		try {
-			setBoolean(find("btnRun"), "enabled", false);
-			setBoolean(find("btnStop"), "enabled", true);
+    } // End of method java2js
 
-			cx = Context.enter();
-			scope = cx.initStandardObjects();
+    /*****************************************************************************/
 
-			log = new StringBuffer();
-			setString(console, "text", "");
+    void js2java() {
 
-			updateflame = true;
-			resetlocation = false;
+        Object o;
 
-			cpf = Global.main.cps;
+        o = ScriptableObject.getProperty(scope, "UpdateFlame");
+        if (o instanceof Boolean) {
+            updateflame = ((Boolean) o).booleanValue();
+        }
 
-			cp.copy(Global.mainCP);
-			_at_ = Global.editor.selectedTriangle;
-			if ((_at_ < 0) || (_at_ >= Global.mainCP.nxforms)) {
-				_at_ = 0;
-			}
+        o = ScriptableObject.getProperty(scope, "SelectedTransform");
+        if (o instanceof Integer) {
+            Global.editor.selectedTriangle = ((Integer) o).intValue();
+        }
 
-			renderer.Width = 320;
-			renderer.Height = 240;
-			renderer.Watermark = Global.watermark == 1;
-			renderer.Encrypted = Global.encryptedComment == 1;
-			renderer.Comment = Global.jpegComment == 1;
+        o = ScriptableObject.getProperty(scope, "ActiveTransform");
+        if (o instanceof Integer) {
+            _at_ = ((Integer) o).intValue();
+        }
 
-			createEnvironment();
+        o = ScriptableObject.getProperty(scope, "BatchIndex");
+        if (o instanceof Integer) {
+            Global.randomIndex = ((Integer) o).intValue();
+        }
 
-			java2js();
+        o = ScriptableObject.getProperty(scope, "DateCode");
+        if (o instanceof String) {
+            Global.randomDate = (String) o;
+        }
 
-			String s = getPrefixScript() + getLibraryScript();
-			nprefix = countLines(s);
-			s = s + userscript + getPostfixScript();
+        o = ScriptableObject.getProperty(scope, "LimitVibrancy");
+        if (o instanceof Boolean) {
+            Global.limitVibrancy = ((Boolean) o).booleanValue();
+        }
 
-			cx.evaluateString(scope, s, "<cmd>", 1, null);
+        o = ScriptableObject.getProperty(scope, "ResetLocation");
+        if (o instanceof Boolean) {
+            resetlocation = ((Boolean) o).booleanValue();
+        }
 
-			// save javascript environment
-			js2java();
+        o = ScriptableObject.getProperty(scope, "Transform");
+        if (o instanceof JSTransform) {
+            transform = (JSTransform) o;
+        }
 
-			Global.main.stopThread();
+        flame.js2java();
+        cp.copy(flame.cp);
+        if ((_at_ >= 0) && (_at_ <= cp.nxforms)) {
+            transform.js2java(cp, _at_);
+        }
 
-			Global.main.updateUndo();
-			Global.mainCP = new ControlPoint();
-			Global.mainCP.copy(cp);
-			Global.transforms = Global.mainCP.nxforms;
-			Global.main.updateWindows();
+        options.js2java();
+    } // End of method js2java
 
-			if (resetlocation) {
-				Global.main.resetLocation();
-			}
+    /*****************************************************************************/
 
-			if (updateflame) {
-				Global.main.timer.enable();
-			}
+    public void executeScript() {
+        int lineno;
+        String errmsg;
 
-		} catch (WrappedException wex) {
-			Throwable t = wex.getWrappedException();
-			errmsg = getMessage(t);
-			if (errmsg == null) {
-				errmsg = getMessage(wex);
-			}
-			lineno = getLineNumber(t, nprefix);
-			if (!(t instanceof ExitException)) {
-				_print(errmsg + " (line " + lineno + ")");
-			}
-		} catch (RhinoException rex) {
-			errmsg = getMessage(rex);
-			lineno = getLineNumber(rex, nprefix);
-			_print(errmsg + " (line " + lineno + ")");
-		} catch (Exception ex) {
-			System.out.println("THIS IS AN EXCEPTION");
-			ex.printStackTrace();
-			System.out.println("--------------------------");
-			_print(ex.toString());
-		}
+        String userscript = getString(find("Editor"), "text");
+        if (userscript.length() == 0) {
+            runner = null;
+            cx = null;
+            scope = null;
+            return;
+        }
 
-		setBoolean(find("btnRun"), "enabled", true);
-		setBoolean(find("btnStop"), "enabled", false);
+        try {
+            setBoolean(find("btnRun"), "enabled", false);
+            setBoolean(find("btnStop"), "enabled", true);
 
-		runner = null;
-		cx = null;
-		scope = null;
+            cx = Context.enter();
+            scope = cx.initStandardObjects();
 
-	} // End of method run
+            log = new StringBuffer();
+            setString(console, "text", "");
 
-	/*****************************************************************************/
+            updateflame = true;
+            resetlocation = false;
 
-	int getLineNumber(Throwable t, int nprefix) {
+            cpf = Global.main.cps;
 
-		StackTraceElement[] s = t.getStackTrace();
-		for (StackTraceElement element : s) {
-			if (element.getFileName().equals("<cmd>")) {
-				if (element.getLineNumber() > 0) {
-					if (element.getLineNumber() > nprefix) {
-						return element.getLineNumber() - nprefix;
-					}
-				}
-			}
-		}
+            cp.copy(Global.mainCP);
+            _at_ = Global.editor.selectedTriangle;
+            if ((_at_ < 0) || (_at_ >= Global.mainCP.nxforms)) {
+                _at_ = 0;
+            }
 
-		return 0;
-	}
+            renderer.Width = 320;
+            renderer.Height = 240;
+            renderer.Watermark = Global.watermark == 1;
+            renderer.Encrypted = Global.encryptedComment == 1;
+            renderer.Comment = Global.jpegComment == 1;
 
-	/*****************************************************************************/
+            createEnvironment();
 
-	String getMessage(Throwable t) {
-		String msg = t.getMessage();
-		if (msg == null) {
-			return null;
-		}
+            java2js();
 
-		int i = msg.indexOf('(');
-		if (i > 0) {
-			msg = msg.substring(0, i);
-		}
+            String s = getPrefixScript() + getLibraryScript();
+            nprefix = countLines(s);
+            s = s + userscript + getPostfixScript();
 
-		return msg;
-	}
+            cx.evaluateString(scope, s, "<cmd>", 1, null);
 
-	/*****************************************************************************/
+            // save javascript environment
+            js2java();
 
-	void createEnvironment() {
-		String curdir = System.getProperty("user.dir") + "/";
-		ScriptableObject.putProperty(scope, "INSTALLPATH",
-				Context.javaToJS(curdir, scope));
+            Global.main.stopThread();
 
-		ScriptableObject.putProperty(scope, "Options",
-				Context.javaToJS(options, scope));
+            Global.main.updateUndo();
+            Global.mainCP = new ControlPoint();
+            Global.mainCP.copy(cp);
+            Global.transforms = Global.mainCP.nxforms;
+            Global.main.updateWindows();
 
-		ScriptableObject.putProperty(scope, "Flame",
-				Context.javaToJS(flame, scope));
+            if (resetlocation) {
+                Global.main.resetLocation();
+            }
 
-		ScriptableObject.putProperty(scope, "Transform",
-				Context.javaToJS(transform, scope));
+            if (updateflame) {
+                Global.main.timer.enable();
+            }
 
-		ScriptableObject.putProperty(scope, "Renderer",
-				Context.javaToJS(renderer, scope));
+        } catch (WrappedException wex) {
+            Throwable t = wex.getWrappedException();
+            errmsg = getMessage(t);
+            if (errmsg == null) {
+                errmsg = getMessage(wex);
+            }
+            lineno = getLineNumber(t, nprefix);
+            if (!(t instanceof ExitException)) {
+                _print(errmsg + " (line " + lineno + ")");
+            }
+        } catch (RhinoException rex) {
+            errmsg = getMessage(rex);
+            lineno = getLineNumber(rex, nprefix);
+            _print(errmsg + " (line " + lineno + ")");
+        } catch (Exception ex) {
+            System.out.println("THIS IS AN EXCEPTION");
+            ex.printStackTrace();
+            System.out.println("--------------------------");
+            _print(ex.toString());
+        }
 
-		ScriptableObject.putProperty(scope, "TStringList",
-				Context.javaToJS(stringlist, scope));
+        setBoolean(find("btnRun"), "enabled", true);
+        setBoolean(find("btnStop"), "enabled", false);
 
-		ScriptableObject.putProperty(scope, "PI",
-				Context.javaToJS(new Double(Math.PI), scope));
+        runner = null;
+        cx = null;
+        scope = null;
 
-		ScriptableObject.putProperty(scope, "NXFORMS",
-				Context.javaToJS(Integer.valueOf(NXFORMS), scope));
+    } // End of method run
 
-		int nv = XForm.getNrVariations();
-		ScriptableObject.putProperty(scope, "NVARS",
-				Context.javaToJS(Integer.valueOf(nv), scope));
+    /*****************************************************************************/
 
-		int np = XForm.getNrParameters();
-		ScriptableObject.putProperty(scope, "NumVariables",
-				Context.javaToJS(Integer.valueOf(np), scope));
+    int getLineNumber(Throwable t, int nprefix) {
 
-		ScriptableObject.putProperty(scope, "SYM_NONE",
-				Context.javaToJS(Integer.valueOf(0), scope));
+        StackTraceElement[] s = t.getStackTrace();
+        for (StackTraceElement element : s) {
+            if (element.getFileName().equals("<cmd>")) {
+                if (element.getLineNumber() > 0) {
+                    if (element.getLineNumber() > nprefix) {
+                        return element.getLineNumber() - nprefix;
+                    }
+                }
+            }
+        }
 
-		ScriptableObject.putProperty(scope, "SYM_BILATERAL",
-				Context.javaToJS(Integer.valueOf(1), scope));
+        return 0;
+    }
 
-		ScriptableObject.putProperty(scope, "SYM_ROTATIONAL",
-				Context.javaToJS(Integer.valueOf(2), scope));
+    /*****************************************************************************/
 
-		ScriptableObject.putProperty(scope, "SYM_DIHEDRAL",
-				Context.javaToJS(Integer.valueOf(3), scope));
+    String getMessage(Throwable t) {
+        String msg = t.getMessage();
+        if (msg == null) {
+            return null;
+        }
 
-		for (int i = 0; i < nv; i++) {
-			String vname = XForm.getVariation(i).getName().toUpperCase();
-			ScriptableObject.putProperty(scope, "V_" + vname,
-					Context.javaToJS(Integer.valueOf(i), scope));
-		}
+        int i = msg.indexOf('(');
+        if (i > 0) {
+            msg = msg.substring(0, i);
+        }
 
-		int ip = 0;
-		for (int i = 0; i < nv; i++) {
-			Variation variation = XForm.getVariation(i);
-			np = variation.getNrParameters();
-			for (int j = 0; j < np; j++) {
-				String pname = variation.getParameterName(j).toUpperCase();
-				ScriptableObject.putProperty(scope, "V_" + pname,
-						Context.javaToJS(Integer.valueOf(ip), scope));
-				ip++;
-			}
-		}
+        return msg;
+    }
 
-		ScriptableObject.putProperty(scope, "__me",
-				Context.javaToJS(this, scope));
+    /*****************************************************************************/
 
-	} // End of method createEnvironment
+    void createEnvironment() {
+        String curdir = System.getProperty("user.dir") + "/";
+        ScriptableObject.putProperty(scope, "INSTALLPATH", Context.javaToJS(curdir, scope));
 
-	/*****************************************************************************/
+        ScriptableObject.putProperty(scope, "Options", Context.javaToJS(options, scope));
 
-	public void caretChange(Object textarea) {
+        ScriptableObject.putProperty(scope, "Flame", Context.javaToJS(flame, scope));
 
-		int pos = getInteger(textarea, "end");
-		char[] c = getString(textarea, "text").toCharArray();
-		int line = 1;
-		for (int i = 0; i < pos; i++) {
-			if (c[i] == '\n') {
-				line++;
-			}
-		}
+        ScriptableObject.putProperty(scope, "Transform", Context.javaToJS(transform, scope));
 
-		showStatus("Line " + line);
-	}
+        ScriptableObject.putProperty(scope, "Renderer", Context.javaToJS(renderer, scope));
 
-	/*****************************************************************************/
+        ScriptableObject.putProperty(scope, "TStringList", Context.javaToJS(stringlist, scope));
 
-	public void showStatus(String msg) {
-		setString(find("StatusBar"), "text", msg);
-	}
+        ScriptableObject.putProperty(scope, "PI", Context.javaToJS(new Double(Math.PI), scope));
 
-	/*****************************************************************************/
+        ScriptableObject.putProperty(scope, "NXFORMS", Context.javaToJS(Integer.valueOf(NXFORMS), scope));
 
-	void clearTransform() {
-		js2java();
-		cp.xform[_at_].clear();
-		if (_at_ < cp.nxforms) {
-			cp.xform[_at_].density = 0.5;
-		} else {
-			cp.xform[_at_].density = 1.0;
-		}
-		java2js();
-	}
+        int nv = XForm.getNrVariations();
+        ScriptableObject.putProperty(scope, "NVARS", Context.javaToJS(Integer.valueOf(nv), scope));
 
-	/*****************************************************************************/
+        int np = XForm.getNrParameters();
+        ScriptableObject.putProperty(scope, "NumVariables", Context.javaToJS(Integer.valueOf(np), scope));
 
-	void rotateTransform(double degrees) {
-		js2java();
+        ScriptableObject.putProperty(scope, "SYM_NONE", Context.javaToJS(Integer.valueOf(0), scope));
 
-		double radians = degrees * Math.PI / 180.0;
+        ScriptableObject.putProperty(scope, "SYM_BILATERAL", Context.javaToJS(Integer.valueOf(1), scope));
 
-		SPoint pivot = Global.editor.getPivot();
-		cp.trianglesFromCP(triangles);
-		triangles[_at_].rotateAroundPoint(pivot.x, pivot.y, radians);
-		cp.getFromTriangles(triangles, cp.nxforms);
+        ScriptableObject.putProperty(scope, "SYM_ROTATIONAL", Context.javaToJS(Integer.valueOf(2), scope));
 
-		java2js();
-	}
+        ScriptableObject.putProperty(scope, "SYM_DIHEDRAL", Context.javaToJS(Integer.valueOf(3), scope));
 
-	/*****************************************************************************/
+        for (int i = 0; i < nv; i++) {
+            String vname = XForm.getVariation(i).getName().toUpperCase();
+            ScriptableObject.putProperty(scope, "V_" + vname, Context.javaToJS(Integer.valueOf(i), scope));
+        }
 
-	void scaleTransform(double s) {
-		js2java();
+        int ip = 0;
+        for (int i = 0; i < nv; i++) {
+            Variation variation = XForm.getVariation(i);
+            np = variation.getNrParameters();
+            for (int j = 0; j < np; j++) {
+                String pname = variation.getParameterName(j).toUpperCase();
+                ScriptableObject.putProperty(scope, "V_" + pname, Context.javaToJS(Integer.valueOf(ip), scope));
+                ip++;
+            }
+        }
 
-		SPoint pivot = Global.editor.getPivot();
-		cp.trianglesFromCP(triangles);
-		triangles[_at_].scaleAroundPoint(pivot.x, pivot.y, s);
-		cp.getFromTriangles(triangles, cp.nxforms);
+        ScriptableObject.putProperty(scope, "__me", Context.javaToJS(this, scope));
 
-		java2js();
-	}
+    } // End of method createEnvironment
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	void rotateOriginTransform(double degrees) {
-		js2java();
+    public void caretChange(Object textarea) {
 
-		double radians = degrees * Math.PI / 180.0;
-		double cos = Math.cos(radians);
-		double sin = Math.sin(radians);
+        int pos = getInteger(textarea, "end");
+        char[] c = getString(textarea, "text").toCharArray();
+        int line = 1;
+        for (int i = 0; i < pos; i++) {
+            if (c[i] == '\n') {
+                line++;
+            }
+        }
 
-		int oldmode = Global.editor.pivotMode;
-		Global.editor.pivotMode = Editor.PIVOT_WORLD;
-		SPoint pivot = Global.editor.getPivot();
-		Global.editor.pivotMode = oldmode;
+        showStatus("Line " + line);
+    }
 
-		XForm xform = cp.xform[_at_];
-		double tx = pivot.x + (xform.c20 - pivot.x) * cos
-				- (-xform.c21 - pivot.y) * sin;
-		double ty = pivot.y + (xform.c20 - pivot.x) * sin
-				+ (-xform.c21 - pivot.y) * cos;
-		xform.c20 = tx;
-		xform.c21 = -ty;
+    /*****************************************************************************/
 
-		java2js();
-	}
+    public void showStatus(String msg) {
+        setString(find("StatusBar"), "text", msg);
+    }
 
-	/*****************************************************************************/
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	class OpenTask implements Task {
+    void clearTransform() {
+        js2java();
+        cp.xform[_at_].clear();
+        if (_at_ < cp.nxforms) {
+            cp.xform[_at_].density = 0.5;
+        } else {
+            cp.xform[_at_].density = 1.0;
+        }
+        java2js();
+    }
 
-	    @Override
-		public void execute() {
-			Global.browserPath = Global.opendialog.getBrowserPath();
+    /*****************************************************************************/
 
-			String ext = "ajs";
-			int i = Global.opendialog.filename.lastIndexOf('.');
-			if (i > 0) {
-				ext = Global.opendialog.filename.substring(i + 1);
-			}
+    void rotateTransform(double degrees) {
+        js2java();
 
-			boolean mustconvert = ext.equals("asc");
-			openFile(Global.opendialog.filename, mustconvert);
-		}
+        double radians = (degrees * Math.PI) / 180.0;
 
-	} // End of class OpenTask
+        SPoint pivot = Global.editor.getPivot();
+        cp.trianglesFromCP(triangles);
+        triangles[_at_].rotateAroundPoint(pivot.x, pivot.y, radians);
+        cp.getFromTriangles(triangles, cp.nxforms);
 
-	/*****************************************************************************/
-	/*****************************************************************************/
+        java2js();
+    }
 
-	class SaveTask implements Task {
+    /*****************************************************************************/
 
-	    @Override
-		public void execute() {
-			Global.browserPath = Global.savedialog.getBrowserPath();
-			saveFile(Global.savedialog.filename);
-		}
+    void scaleTransform(double s) {
+        js2java();
 
-	} // End of class SaveTask
+        SPoint pivot = Global.editor.getPivot();
+        cp.trianglesFromCP(triangles);
+        triangles[_at_].scaleAroundPoint(pivot.x, pivot.y, s);
+        cp.getFromTriangles(triangles, cp.nxforms);
 
-	/*****************************************************************************/
-	/*****************************************************************************/
+        java2js();
+    }
 
-	class Runner extends Thread {
+    /*****************************************************************************/
 
-		@Override
-		public void run() {
-			executeScript();
-		}
+    void rotateOriginTransform(double degrees) {
+        js2java();
 
-	} // End of class Runner
+        double radians = (degrees * Math.PI) / 180.0;
+        double cos = Math.cos(radians);
+        double sin = Math.sin(radians);
 
-	/*****************************************************************************/
-	/*****************************************************************************/
+        int oldmode = Global.editor.pivotMode;
+        Global.editor.pivotMode = Editor.PIVOT_WORLD;
+        SPoint pivot = Global.editor.getPivot();
+        Global.editor.pivotMode = oldmode;
 
-	static class ExitException extends RuntimeException {
-	}
+        XForm xform = cp.xform[_at_];
+        double tx = (pivot.x + ((xform.c20 - pivot.x) * cos)) - ((-xform.c21 - pivot.y) * sin);
+        double ty = pivot.y + ((xform.c20 - pivot.x) * sin) + ((-xform.c21 - pivot.y) * cos);
+        xform.c20 = tx;
+        xform.c21 = -ty;
 
-	/*****************************************************************************/
-	/*****************************************************************************/
+        java2js();
+    }
+
+    /*****************************************************************************/
+    /*****************************************************************************/
+
+    class OpenTask implements Task {
+
+        @Override
+        public void execute() {
+            Global.browserPath = Global.opendialog.getBrowserPath();
+
+            String ext = "ajs";
+            int i = Global.opendialog.filename.lastIndexOf('.');
+            if (i > 0) {
+                ext = Global.opendialog.filename.substring(i + 1);
+            }
+
+            boolean mustconvert = ext.equals("asc");
+            openFile(Global.opendialog.filename, mustconvert);
+        }
+
+    } // End of class OpenTask
+
+    /*****************************************************************************/
+    /*****************************************************************************/
+
+    class SaveTask implements Task {
+
+        @Override
+        public void execute() {
+            Global.browserPath = Global.savedialog.getBrowserPath();
+            saveFile(Global.savedialog.filename);
+        }
+
+    } // End of class SaveTask
+
+    /*****************************************************************************/
+    /*****************************************************************************/
+
+    class Runner extends Thread {
+
+        @Override
+        public void run() {
+            executeScript();
+        }
+
+    } // End of class Runner
+
+    /*****************************************************************************/
+    /*****************************************************************************/
+
+    static class ExitException extends RuntimeException {
+    }
+
+    /*****************************************************************************/
+    /*****************************************************************************/
 
 } // End of class Script
-

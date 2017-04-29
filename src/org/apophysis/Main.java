@@ -55,6 +55,8 @@ import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -65,3149 +67,3066 @@ import java.util.StringTokenizer;
 
 import javax.imageio.ImageIO;
 
-public class Main extends MyThinlet implements Constants, ThreadTarget,
-		DropTargetListener {
+public class Main extends MyThinlet implements Constants, ThreadTarget, DropTargetListener {
 
-	/*****************************************************************************/
-	// CONSTANTS
+    /*****************************************************************************/
+    // CONSTANTS
 
-	static final double SNAP_ANGLE = 15.0 * Math.PI / 180.0;
-	static final int CORNER_SIZE = 32;
+    static final double SNAP_ANGLE = (15.0 * Math.PI) / 180.0;
+    static final int CORNER_SIZE = 32;
 
-	/*****************************************************************************/
-	// FIELDS
+    /*****************************************************************************/
+    // FIELDS
 
-	// ScriptForm Fields
+    // ScriptForm Fields
 
-	String lastParseError;
-	int numTransforms;
-	int activeTransform;
-	String lastError;
-	double color;
-	boolean stopped, resetLocation, updateIt;
-	String paramFile;
-	String filelist[];
+    String lastParseError;
+    int numTransforms;
+    int activeTransform;
+    String lastError;
+    double color;
+    boolean stopped, resetLocation, updateIt;
+    String paramFile;
+    String filelist[];
 
-	private long startTime;
+    private long startTime;
 
-	private final Object canvas;
-	private int imagewidth, imageheight; // image dimension
+    private final Object canvas;
+    private int imagewidth, imageheight; // image dimension
 
-	private int fmousemovestate = msUsual;
-	private final MouseRect click = new MouseRect();
-	private final MouseRect select = new MouseRect();
-	private double rotateangle, clickangle;
-	private boolean drawselection = true;
-	private BasicStroke dots, basic;
+    private int fmousemovestate = msUsual;
+    private final MouseRect click = new MouseRect();
+    private final MouseRect select = new MouseRect();
+    private double rotateangle, clickangle;
+    private boolean drawselection = true;
+    private BasicStroke dots, basic;
 
-	private RenderThread renderthread;
+    private RenderThread renderthread;
 
-	private ControlPoint renderCP = null;
+    private ControlPoint renderCP = null;
 
-	final double[] center = new double[2];
-	private final double[] viewpos = new double[2];
-	private final double[] viewoldpos = new double[2];
-	private double viewscale;
+    final double[] center = new double[2];
+    private final double[] viewpos = new double[2];
+    private final double[] viewoldpos = new double[2];
+    private double viewscale;
 
-	Timer timer = null;
+    Timer timer = null;
 
-	private Image image = null;
+    private Image image = null;
 
-	private final Font font = new Font("Helvetica", Font.PLAIN, 12);
+    private final Font font = new Font("Helvetica", Font.PLAIN, 12);
 
-	int panelwidth = 0, panelheight = 0;
+    int panelwidth = 0, panelheight = 0;
 
-	private final Color grayf0 = new Color(0xF0, 0xF0, 0xF0);
-	private final Color grayc0 = new Color(0xC0, 0xC0, 0xC0);
+    private final Color grayf0 = new Color(0xF0, 0xF0, 0xF0);
+    private final Color grayc0 = new Color(0xC0, 0xC0, 0xC0);
 
-	List<ControlPoint> cps;
+    List<ControlPoint> cps;
 
-	private int splitpos = 160;
+    private int splitpos = 160;
 
-	private int xview = 0;
-	private int yview = 0;
+    private int xview = 0;
+    private int yview = 0;
 
-	// for undo / redo
-	private final List<ControlPoint> history;
-	int undoindex;
+    // for undo / redo
+    private final List<ControlPoint> history;
+    int undoindex;
 
-	// for drag and drop
-	private DropTarget droptarget = null;
+    // for drag and drop
+    private DropTarget droptarget = null;
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	Main(String title, String xmlfile, int width, int height) throws Exception {
-		super(title, xmlfile, width, height);
+    Main(String title, String xmlfile, int width, int height) throws Exception {
+        super(title, xmlfile, width, height);
 
-		checkEnvironment();
+        checkEnvironment();
 
-		initStrokes();
+        initStrokes();
 
-		canvas = find("MainCanvas");
+        canvas = find("MainCanvas");
 
-		for (int i = 0; i < Global.mainTriangles.length; i++) {
-			Global.mainTriangles[i] = new Triangle();
-		}
+        for (int i = 0; i < Global.mainTriangles.length; i++) {
+            Global.mainTriangles[i] = new Triangle();
+        }
 
-		// Global.readSettings();
+        // Global.readSettings();
 
-		history = new ArrayList<ControlPoint>();
-		undoindex = 0;
+        history = new ArrayList<>();
+        undoindex = 0;
 
-		droptarget = new DropTarget(this, this);
+        droptarget = new DropTarget(this, this);
 
-		XForm.registerPluginVariations(this);
+        XForm.registerPluginVariations(this);
 
-		Global.readSettings();
+        Global.readSettings();
 
-		// get sheep variations
-		(new Sheep()).start();
+        // get sheep variations
+        (new Sheep()).start();
 
-		Global.mainCP = new ControlPoint();
+        Global.mainCP = new ControlPoint();
 
-		renderCP = new ControlPoint();
+        renderCP = new ControlPoint();
 
-		restoreWindowPosition();
+        restoreWindowPosition();
 
-	}
+    }
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	void checkEnvironment() {
-		File home = new File(System.getProperty("user.home"));
-		File adir = new File(home, DIRNAME);
+    void checkEnvironment() {
+        File home = new File(System.getProperty("user.home"));
+        File adir = new File(home, DIRNAME);
 
-		if (!adir.exists()) {
-			adir.mkdir();
-		}
+        if (!adir.exists()) {
+            adir.mkdir();
+        }
 
-		if (adir.exists() && adir.isDirectory()) {
-			Global.apopath = adir.getAbsolutePath();
+        if (adir.exists() && adir.isDirectory()) {
+            Global.apopath = adir.getAbsolutePath();
 
-			// check if old config file
-			File fcon = new File(home, ".apophysis.conf");
-			if (fcon.exists()) {
-				File fnew = new File(Global.apopath, CONFNAME);
-				fcon.renameTo(fnew);
-			}
+            // check if old config file
+            File fcon = new File(home, ".apophysis.conf");
+            if (fcon.exists()) {
+                File fnew = new File(Global.apopath, CONFNAME);
+                fcon.renameTo(fnew);
+            }
 
-			// check old render preset file
-			File fpreset = new File(home, PRSTNAME);
-			if (fpreset.exists()) {
-				File fnew = new File(Global.apopath, PRSTNAME);
-				fpreset.renameTo(fnew);
-			}
+            // check old render preset file
+            File fpreset = new File(home, PRSTNAME);
+            if (fpreset.exists()) {
+                File fnew = new File(Global.apopath, PRSTNAME);
+                fpreset.renameTo(fnew);
+            }
 
-			// check if plugin directory exists
-			File fplugin = new File(Global.apopath, PLUGNAME);
-			if (!fplugin.exists()) {
-				fplugin.mkdir();
-			}
-		}
+            // check if plugin directory exists
+            File fplugin = new File(Global.apopath, PLUGNAME);
+            if (!fplugin.exists()) {
+                fplugin.mkdir();
+            }
+        }
 
-	} // End of method checkEnvironement
+    } // End of method checkEnvironement
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	@Override
-	public void show() {
-		super.show();
+    @Override
+    public void show() {
+        super.show();
 
-		if (Global.apopath == null) {
-			File home = new File(System.getProperty("user.home"));
-			File dir = new File(home, DIRNAME);
-			String dirname = dir.getAbsolutePath();
-			alert("Cannot create directory " + dirname, new QuitTask());
-			return;
-		}
+        if (Global.apopath == null) {
+            File home = new File(System.getProperty("user.home"));
+            File dir = new File(home, DIRNAME);
+            String dirname = dir.getAbsolutePath();
+            alert("Cannot create directory " + dirname, new QuitTask());
+            return;
+        }
 
-		buildVariationMenu();
+        buildVariationMenu();
 
-		Global.editor.buildVariationList();
-		Global.editor.buildParameterList();
+        Global.editor.buildVariationList();
+        Global.editor.buildParameterList();
 
-		updateFavorites();
+        updateFavorites();
 
-		int quality = (int) Global.defSampleDensity;
-		setString(find("tbQualityBox"), "text", "" + quality);
+        int quality = (int) Global.defSampleDensity;
+        setString(find("tbQualityBox"), "text", "" + quality);
 
-		undoindex = 0;
-		history.clear();
-		updateUndoControls();
-
-		fmousemovestate = msDrag;
-		setBoolean(find("tbDrag"), "selected", true);
-
-		timer = new Timer();
-		timer.start();
-
-		Global.mainCP.width = Global.panelWidth;
-		Global.mainCP.height = Global.panelHeight;
-
-		mnuRandomBatchClick();
-
-		setMenuShortcuts();
-
-	}
-
-	/*****************************************************************************/
-
-	void dumpVariations() {
-		int nv = XForm.getNrVariations();
-		for (int i = 0; i < nv; i++) {
-			System.out.println(XForm.getVariation(i).getName());
-		}
-	}
-
-	/*****************************************************************************/
-
-	public void mnuOpenClick() {
-
-		// Global.editor.stopped = true;
-
-		Task task = new OpenFileTask();
-		Global.opendialog = new OpenDialog(this, Global.browserPath, task);
-
-		Global.opendialog.addFilter("Flame files (*.flame)", "*.flame");
-		Global.opendialog.addFilter("Fla files (*.fla)", "*.fla");
-		Global.opendialog.addFilter("Ultrafractal files (*.upr)", "*upr");
-		Global.opendialog.addFilter("JPEG image files (*.jpg)", "*.jpg");
-		Global.opendialog.addFilter("PNG image files (*.png)", "*.png");
-		// Global.opendialog.addFilter("IFS files (*.ifs)","*.ifs");
-
-		Global.opendialog.show();
-
-	} // End of method mnuOpenClick
-
-	/*****************************************************************************/
-
-	List<ControlPoint> openFLAFile(String filename) {
-		ControlPoint cp = new ControlPoint();
-		String temp = null;
-		int ixform = 0;
-
-		List<ControlPoint> newcps = new ArrayList<ControlPoint>();
-
-		try (BufferedReader r = new BufferedReader(new FileReader(filename))) {
-
-			while (true) {
-				String line = r.readLine();
-				if (line == null) {
-					break;
-				}
-
-				cp.nxforms = 0;
-
-				// name of flame
-				StringTokenizer tk = new StringTokenizer(line);
-				if (tk.countTokens() != 2) {
-					break;
-				}
-				cp.name = tk.nextToken();
-				temp = tk.nextToken();
-				if (!temp.equals("{")) {
-					break;
-				}
-
-				while (true) {
-					line = r.readLine();
-					if (line == null) {
-						break;
-					}
-
-					tk = new StringTokenizer(line);
-					while (tk.hasMoreTokens()) {
-						temp = tk.nextToken();
-						if (temp.equals("time")) {
-							cp.time = Double.parseDouble(tk.nextToken())
-									;
-						} else if (temp.equals("zoom")) {
-							cp.zoom = Double.parseDouble(tk.nextToken())
-									;
-						} else if (temp.equals("angle")) {
-							cp.fangle = Double.parseDouble(tk.nextToken())
-									;
-						} else if (temp.equals("image_size")) {
-							cp.width = Integer.parseInt(tk.nextToken());
-							cp.height = Integer.parseInt(tk.nextToken());
-						} else if (temp.equals("center")) {
-							cp.center[0] = Double.parseDouble(tk.nextToken())
-									;
-							cp.center[1] = Double.parseDouble(tk.nextToken())
-									;
-						} else if (temp.equals("pixels_per_unit")) {
-							cp.pixels_per_unit = Double.parseDouble(tk.nextToken())
-									;
-						} else if (temp.equals("spatial_oversample")) {
-							cp.spatial_oversample = Integer.parseInt(tk
-									.nextToken());
-						} else if (temp.equals("spatial_filter_radius")) {
-							cp.spatial_filter_radius = Double.parseDouble(
-									tk.nextToken());
-						} else if (temp.equals("sample_density")) {
-							cp.sample_density = Double.parseDouble(tk.nextToken())
-									;
-						} else if (temp.equals("background")) {
-							cp.background[0] = Integer.parseInt(tk.nextToken());
-							cp.background[1] = Integer.parseInt(tk.nextToken());
-							cp.background[2] = Integer.parseInt(tk.nextToken());
-						} else if (temp.equals("brightness")) {
-							cp.brightness = Double.parseDouble(tk.nextToken())
-									;
-						} else if (temp.equals("gamma")) {
-							cp.gamma = Double.parseDouble(tk.nextToken())
-									;
-						} else if (temp.equals("vibrancy")) {
-							cp.vibrancy = Double.parseDouble(tk.nextToken())
-									;
-						} else if (temp.equals("hue_rotation")) {
-							cp.hue_rotation = Double.parseDouble(tk.nextToken())
-									;
-						} else if (temp.equals("finalzformenabled")) {
-							cp.finalXformEnabled = (!tk.nextToken().equals("0"));
-						} else if (temp.equals("xform")) {
-							ixform = Integer.parseInt(tk.nextToken());
-						} else if (temp.equals("density")) {
-							cp.xform[ixform].density = Double.parseDouble(tk.nextToken());
-						} else if (temp.equals("color")) {
-							cp.xform[ixform].color = Double.parseDouble(tk.nextToken());
-						} else if (temp.equals("symmetry")) {
-							cp.xform[ixform].symmetry = Double.parseDouble(tk.nextToken());
-						} else if (temp.equals("vars")) {
-							int iv = 0;
-							while (tk.hasMoreTokens()) {
-								cp.xform[ixform].vars[iv++] = Double.parseDouble(tk.nextToken());
-							}
-							break;
-						} else if (temp.equals("coefs")) {
-							cp.xform[ixform].c00 = Double.parseDouble(tk.nextToken());
-							cp.xform[ixform].c01 = Double.parseDouble(tk.nextToken());
-							cp.xform[ixform].c10 = Double.parseDouble(tk.nextToken());
-							cp.xform[ixform].c11 = Double.parseDouble(tk.nextToken());
-							cp.xform[ixform].c20 = Double.parseDouble(tk.nextToken());
-							cp.xform[ixform].c21 = Double.parseDouble(tk.nextToken());
-						} else if (temp.equals("post")) {
-							cp.xform[ixform].p00 = Double.parseDouble(tk.nextToken());
-							cp.xform[ixform].p01 = Double.parseDouble(tk.nextToken());
-							cp.xform[ixform].p10 = Double.parseDouble(tk.nextToken());
-							cp.xform[ixform].p11 = Double.parseDouble(tk.nextToken());
-							cp.xform[ixform].p20 = Double.parseDouble(tk.nextToken());
-							cp.xform[ixform].p21 = Double.parseDouble(tk.nextToken());
-						} else if (temp.equals("palette:")) {
-							for (int i = 0; i < 256; i++) {
-								line = r.readLine();
-								if (line == null) {
-								    break;
-								}
-								tk = new StringTokenizer(line);
-								cp.cmap[i][0] = Integer
-										.parseInt(tk.nextToken());
-								cp.cmap[i][1] = Integer
-										.parseInt(tk.nextToken());
-								cp.cmap[i][2] = Integer
-										.parseInt(tk.nextToken());
-							}
-						}
-					}
-				}
-			}
-
-			cp.nxforms = 0;
-			for (int i = 0; i < cp.xform.length; i++) {
-				if (cp.xform[i].density != 0) {
-					cp.nxforms = i + 1;
-				}
-			}
-
-			if (cp.nxforms > 0) {
-				newcps.add(cp);
-			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-
-		return newcps;
-
-	} // End of method openFLAFile
-
-	/*****************************************************************************/
-
-	List<ControlPoint> openJPGFile(String filename) {
-		String comment = CommentExtractor.readJpegComment(filename);
-		if (comment.length() == 0) {
-			// try to open the corresponding flame file
-			int i = filename.lastIndexOf('.');
-			if (i > 0) {
-				filename = filename.substring(0, i) + ".flame";
-			} else {
-				filename = filename + ".flame";
-			}
-			return openXMLFile(filename);
-		} else {
-			int i = comment.indexOf("<flame");
-			if (i < 0) {
-				return new ArrayList<ControlPoint>();
-			}
-
-			if (i > 0) {
-				comment = comment.substring(i);
-			}
-			return readXML(new StringReader(comment));
-		}
-
-	} // End of method openJPGFile
-
-	/*****************************************************************************/
-
-	List<ControlPoint> openPNGFile(String filename) {
-		String comment = CommentExtractor.readPngComment(filename);
-		if (comment.length() == 0) {
-			// try to open the corresponding flame file
-			int i = filename.lastIndexOf('.');
-			if (i > 0) {
-				filename = filename.substring(0, i) + ".flame";
-			} else {
-				filename = filename + ".flame";
-			}
-			return openXMLFile(filename);
-		} else {
-			int i = comment.indexOf("<flame");
-			if (i < 0) {
-				return new ArrayList<ControlPoint>();
-			}
-
-			if (i > 0) {
-				comment = comment.substring(i);
-			}
-			return readXML(new StringReader(comment));
-		}
-
-	} // End of method openPNGFile
-
-	/*****************************************************************************/
-
-	void openUPRFile(String filename) {
-		int i;
-
-		cps = new ArrayList<ControlPoint>();
-
-		try (BufferedReader r = new BufferedReader(new FileReader(filename))) {
-
-			while (true) {
-				String line = r.readLine();
-				if (line == null) {
-					break;
-				}
-
-				if (line.trim().endsWith("{")) {
-					// read parameters
-					Map<String, String> h = new HashMap<String, String>();
-					while (true) {
-						line = r.readLine();
-						if (line == null) {
-							break;
-						}
-						i = line.indexOf("gradient:");
-						if (i >= 0) {
-							break;
-						}
-						StringTokenizer tk = new StringTokenizer(line);
-						while (tk.hasMoreTokens()) {
-							String token = tk.nextToken();
-							i = token.indexOf('=');
-							if (i < 0) {
-								continue;
-							}
-							String key = token.substring(0, i);
-							String val = token.substring(i + 1);
-							h.put(key, val);
-						}
-					}
-
-					List<int[]> v = new ArrayList<int[]>();
-					// read gradient
-					while (true) {
-						line = r.readLine();
-						if (line == null) {
-							break;
-						}
-						if (line.startsWith("}")) {
-							break;
-						}
-
-						StringTokenizer tk = new StringTokenizer(line);
-						if (tk.countTokens() != 2) {
-							continue;
-						}
-
-						String token = tk.nextToken();
-						i = token.indexOf('=');
-						if (i < 0) {
-							continue;
-						}
-						if (!token.substring(0, i).equals("index")) {
-							continue;
-						}
-						int index = Integer.parseInt(token.substring(i + 1));
-						if (index < 0) {
-							continue;
-						}
-						if (index >= 400) {
-							continue;
-						}
-
-						token = tk.nextToken();
-						i = token.indexOf('=');
-						if (i < 0) {
-							continue;
-						}
-						if (!token.substring(0, i).equals("color")) {
-							continue;
-						}
-						int color = Integer.parseInt(token.substring(i + 1));
-						v.add(new int[] { index, color });
-					}
-					ControlPoint cp = new ControlPoint(h, v);
-					cps.add(cp);
-				}
-			}
-
-			Global.openFile = filename;
-			Global.openFileType = ftUPR;
-
-			updateFlameList();
-
-			// select the first flame and force drawing
-
-			Object list = find("ListView");
-			setBoolean(getItem(list, 0), "selected", true);
-			listViewChange(list);
-
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-
-	} // End of method openUPRFile
-
-	/*****************************************************************************/
-
-	List<ControlPoint> openXMLFile(String filename) {
-		List<ControlPoint> v;
-
-		Reader r = null;
-		try {
-			r = new BufferedReader(new FileReader(filename));
-			v = readXML(r);
-		} catch (Exception ex) {
-			v = new ArrayList<ControlPoint>();
-		} finally {
-		    IOUtils.close(r);
-		}
-		return v;
-	}
-
-	/*****************************************************************************/
-
-	List<ControlPoint> readXML(Reader reader) {
-		List<ControlPoint> mycps = new ArrayList<ControlPoint>();
-
-		try (BufferedReader r = new BufferedReader(reader)) {
-
-			while (true) {
-				ControlPoint cp = readControlPoint(r);
-				if (cp == null) {
-					break;
-				}
-				mycps.add(cp);
-			}
-
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-
-		return mycps;
-
-	} // End of method OpenFile
-
-	/*****************************************************************************/
-
-	ControlPoint readControlPoint(BufferedReader r) throws Exception {
-		ControlPoint cp = null;
-		String line = null;
-		List<String> unknown = new ArrayList<String>();
-
-		while (true) {
-			line = r.readLine();
-			if (line == null) {
-				return null;
-			}
-			int i = line.indexOf("<flame ");
-			if (i < 0) {
-				continue;
-			}
-			line = line.substring(i).trim();
-			break;
-		}
-
-		XmlTag tag = new XmlTag(line);
-		cp = new ControlPoint(tag);
-
-		while (true) {
-			line = r.readLine();
-			if (line == null) {
-				break;
-			}
-			if (line.indexOf('<') < 0) {
-				continue;
-			}
-
-			if (line.indexOf("</flame") >= 0) {
-				break;
-			}
-
-			tag = new XmlTag(line.trim());
-			if (tag.getName().equals("xform")) {
-				cp.addXForm(tag);
-				appendUnknown(unknown, tag);
-			} else if (tag.getName().equals("finalxform")) {
-				cp.addFinalXForm(tag);
-				appendUnknown(unknown, tag);
-			} else if (tag.getName().equals("color")) {
-				cp.addColor(tag);
-			} else if (tag.getName().equals("palette") && (!tag.isClosed())) {
-				while (true) {
-					line = r.readLine();
-					if (line == null) {
-						break;
-					}
-					if (line.indexOf("</palette") >= 0) {
-						break;
-					}
-					tag.appendData(line.trim());
-				}
-				cp.setPalette(tag.getInt("count", 0), tag.getData());
-			} else if (tag.getName().equals("colors")) {
-				while (true) {
-					line = r.readLine();
-					if (line == null) {
-						break;
-					}
-					int k = line.indexOf("\"/>");
-					if (k > 0) {
-						tag.appendAttribute("data", line.substring(0, k).trim());
-						break;
-					} else {
-						tag.appendAttribute("data", line.trim());
-					}
-				}
-				cp.setPalette(tag.getInt("count", 0), tag.getAttribute("data"));
-			}
-		}
-
-		if (unknown.size() > 0) {
-			cp.unknown = unknown;
-		}
-
-		return cp;
-
-	} // End of method readControlPoint
-
-	/*****************************************************************************/
-
-	void appendUnknown(List<String> v, XmlTag tag) {
-		Iterator<String> e = tag.getUnreclaimedKeys();
-		while (e.hasNext()) {
-			String s = e.next();
-			int k = s.indexOf('_');
-			if (k > 0) {
-				s = s.substring(0, k);
-			}
-
-			if (!v.contains(s)) {
-				v.add(s);
-			}
-		}
-	}
-
-	/*****************************************************************************/
-
-	void updateFlameList() {
-		Object title = find("ListTitle");
-		setString(title, "text", cps.size() + " flame"
-				+ (cps.size() != 1 ? "s" : ""));
-		setString(title, "tooltip", Global.openFile);
-
-		Object list = find("ListView");
-
-		removeAll(list);
-
-		int ncp = cps.size();
-		for (int i = 0; i < ncp; i++) {
-			ControlPoint cp = cps.get(i);
-
-			Object item = createImpl("item");
-			setString(item, "text", cp.name);
-			setFont(item, font);
-			if (cp.unknown != null) {
-				setColor(item, "foreground", Color.red);
-				setString(item, "tooltip", "unknown variation");
-			}
-
-			add(list, item);
-		}
-
-		requestFocus(list);
-
-	} // End of method updateFlameList
-
-	/*****************************************************************************/
-
-	Object buildPopup() {
-		Object popup = createImpl("popupmenu");
-
-		Object item1 = createImpl("menuitem");
-		setString(item1, "text", "Delete");
-		add(popup, item1);
-
-		Object item2 = createImpl("menuitem");
-		setString(item2, "text", "Rename");
-		add(popup, item2);
-
-		return popup;
-	}
-
-	/*****************************************************************************/
-
-	public void mnuSaveAsClick() {
-		String filename = Global.mainCP.name + ".flame";
-		filename = filename.replace(' ', '_');
-
-		Task task = new SaveFileTask(Global.mainCP);
-		Global.savedialog = new SaveDialog(this, Global.browserPath, filename,
-				task);
-		Global.savedialog.warning = "Append to";
-		Global.savedialog.show();
-
-	} // End of method mnuSaveAsClick
-
-	/*****************************************************************************/
-
-	public void mnuSaveAllAsClick() {
-		String filename = "apophysis.flame";
-
-		Task task = new SaveFileTask(null);
-		Global.savedialog = new SaveDialog(this, Global.browserPath, filename,
-				task);
-		Global.savedialog.warning = "Append to";
-		Global.savedialog.show();
-
-	} // End of method mnuSaveAllAsClick
-
-	/*****************************************************************************/
-
-	public void saveXMLFile(ControlPoint cp, String filename) {
-		List<ControlPoint> mycps;
-
-		BufferedReader r = null;
-		try {
-			r = new BufferedReader(new FileReader(filename));
-			mycps = readXML(r);
-		} catch (Exception ex) {
-			mycps = new ArrayList<ControlPoint>();
-		} finally {
-		    IOUtils.close(r);
-		}
-
-		if (cp != null) {
-			addFlame(mycps, cp);
-		} else {
-			int nc = cps.size();
-			for (int i = 0; i < nc; i++) {
-				addFlame(mycps, cps.get(i));
-			}
-		}
-
-		try {
-			File file = new File(filename);
-			String title = file.getName();
-			int k = title.indexOf('.');
-			if (k > 0) {
-				title = title.substring(0, k);
-			}
-
-			try (PrintWriter w = new PrintWriter(new FileWriter(file))) {
-
-    			w.println("<Flames name=\"" + title + "\">");
-    
-    			int nc = mycps.size();
-    			for (int i = 0; i < nc; i++) {
-    				cp = mycps.get(i);
-    				cp.save(w);
-    			}
-    
-    			// plplpl added the missing terminal ">" !
-    			w.println("</Flames>");
-			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-
-	} // End of method saveXMLFlame
-
-	/*****************************************************************************/
-
-	void addFlame(List<ControlPoint> v, ControlPoint newcp) {
-		// check if flame already exists
-		int n = v.size();
-		for (int i = n - 1; i >= 0; i--) {
-			ControlPoint oldcp = v.get(i);
-			if (oldcp.name.equals(newcp.name)) {
-				v.remove(i);
-			}
-		}
-
-		v.add(newcp);
-
-	} // End of method addFlame
-
-	/*****************************************************************************/
-
-	public void mnuExitClick() {
-
-		if (Global.confirmExit) {
-			confirm("Do you really want to quit? All unsaved data will be lost!",
-					new QuitTask());
-		} else {
-			quitApplication();
-			System.exit(0);
-		}
-
-	} // End of method mnuExitClick
-
-	/*****************************************************************************/
-
-	public void listViewDoubleClick(Object list) {
-		int index = getSelectedIndex(list);
-		if (index < 0) {
-			beep();
-			return;
-		}
-
-		ControlPoint cp = cps.get(index);
-
-		ask("Name of the flame :", cp.name, new FlameRenameTask(index));
-
-	} // End of method listViewDoubleClick
-
-	/*****************************************************************************/
-
-	void renameFlame(int index, String newname) {
-
-		ControlPoint cp = cps.get(index);
-		cp.name = newname;
-
-		updateFlameList();
-
-		Object list = find("ListView");
-		setBoolean(getItem(list, index), "selected", true);
-
-		setStatus(newname);
-
-	}
-
-	/*****************************************************************************/
-
-	public void listViewChange(Object list) {
-		int index = getSelectedIndex(list);
-		if (index < 0) {
-			return;
-		}
-
-		Global.mainCP = cps.get(index);
-
-		clearUndo();
-
-		Global.transforms = Global.mainCP.trianglesFromCP(Global.mainTriangles);
-
-		updateWindows();
-
-		setStatus(Global.mainCP.name);
-
-		timer.enable();
-
-		resizeImage();
-
-	} // End of method listViewChange
-
-	/*****************************************************************************/
-
-	public void updateWindows() {
-		if (Global.editor.visible()) {
-			Global.editor.updateDisplay();
-		}
-		if (Global.adjust.visible()) {
-			Global.adjust.updateDisplay();
-		}
-		if (Global.mutate.visible()) {
-			Global.mutate.updateDisplay();
-		}
-	}
-
-	/*****************************************************************************/
-
-	Point getPositionInDesktop(Object component) {
-		int x, y;
-
-		Rectangle r = getRectangle(component, "bounds");
-		x = r.x;
-		y = r.y;
-		while (true) {
-			component = getParent(component);
-			if (component == null) {
-				break;
-			}
-			r = getRectangle(component, "bounds");
-			x += r.x;
-			y += r.y;
-		}
-
-		return new Point(x, y);
-
-	} // End of method getPositionInDesktop
-
-	/*****************************************************************************/
-
-	public void drawMainCanvas(Graphics g, Rectangle bounds) {
-
-		if (Global.showTransparency) {
-			g.setColor(grayf0);
-			g.fillRect(0, 0, bounds.width, bounds.height);
-			g.setColor(grayc0);
-			int w = (bounds.width - 1) >> 3;
-			int h = (bounds.height - 1) >> 3;
-			for (int i = 0; i <= w; i++) {
-				for (int j = 0; j <= h; j++) {
-					if (((i + j) % 2) == 1) {
-						g.fillRect(i << 3, j << 3, 8, 8);
-					}
-				}
-			}
-		} else {
-			g.setColor(new Color(Global.mainCP.background[0],
-					Global.mainCP.background[1], Global.mainCP.background[2]));
-			g.fillRect(0, 0, bounds.width, bounds.height);
-		}
-
-		if (image != null) {
-			g.drawImage(image, xview, yview, imagewidth, imageheight, null);
-		}
-
-	}
-
-	/*****************************************************************************/
-
-	public void mnuEditorClick() {
-		Global.editor.show();
-	} // End of method mnuEditorClick
-
-	/*****************************************************************************/
-
-	public void mnuGradClick() {
-		Global.adjust.updateDisplay();
-		Global.adjust.setTab(2);
-		Global.adjust.show();
-	} // End of method mnuGradClick
-
-	/*****************************************************************************/
-
-	void saveFlame() {
-		ControlPoint cp = new ControlPoint();
-		cp.clone(Global.mainCP);
-		history.add(cp);
-
-	} // End of method saveFlame
-
-	/*****************************************************************************/
-
-	void loadFlame(int index) {
-		Global.mainCP = history.get(index);
-
-		center[0] = Global.mainCP.center[0];
-		center[1] = Global.mainCP.center[1];
-
-		Global.transforms = Global.mainCP.trianglesFromCP(Global.mainTriangles);
-
-		timer.enable();
-
-		updateWindows();
-
-	}
-
-	/*****************************************************************************/
-
-	public void clearUndo() {
-		history.clear();
-		undoindex = 0;
-		updateUndoControls();
-	}
-
-	/*****************************************************************************/
-
-	public void updateUndo() {
-		while (history.size() > undoindex) {
-			history.remove(history.get(history.size() - 1));
-		}
-		saveFlame();
-		undoindex++;
-		updateUndoControls();
-	}
-
-	/*****************************************************************************/
-
-	void updateUndoControls() {
-		setBoolean(find("mnuUndo"), "enabled", undoindex > 0);
-		setBoolean(find("btnUndo"), "enabled", undoindex > 0);
-		setBoolean(find("mnuPopupUndo"), "enabled", undoindex > 0);
-
-		setBoolean(find("mnuRedo"), "enabled", undoindex < history.size() - 1);
-		setBoolean(find("btnRedo"), "enabled", undoindex < history.size() - 1);
-		setBoolean(find("mnuPopupRedo"), "enabled",
-				undoindex < history.size() - 1);
-
-		if (Global.editor != null) {
-			Global.editor.updateUndoControls(undoindex, history.size() - 1);
-		}
-
-		if (Global.adjust != null) {
-			Global.adjust.updateUndoControls(undoindex, history.size() - 1);
-		}
-
-	} // End of method updateUndo
-
-	/*****************************************************************************/
-
-	public void undo() {
-		if (undoindex == history.size()) {
-			saveFlame();
-		}
-
-		stopThread();
-
-		undoindex--;
-		loadFlame(undoindex);
-
-		updateUndoControls();
-
-	} // End of method undo
-
-	/*****************************************************************************/
-
-	public void redo() {
-		// should not happen
-		if (undoindex >= history.size()) {
-			return;
-		}
-
-		stopThread();
-
-		undoindex++;
-
-		loadFlame(undoindex);
-
-		updateUndoControls();
-
-	} // End of method redo
-
-	/*****************************************************************************/
-
-	public void mnuAdjustClick() {
-
-		Global.adjust.updateDisplay();
-		Global.adjust.setTab(0);
-		Global.adjust.show();
-
-	} // End of method mnuAdjustClick
-
-	/*****************************************************************************/
-
-	public void mnuMutateClick() {
-		Global.mutate.show();
-		Global.mutate.updateDisplay();
-	}
-
-	/*****************************************************************************/
-
-	void redrawTimerTimer() {
-
-		if (fmousemovestate == msZoomWindowMove) {
-			return;
-		}
-		if (fmousemovestate == msZoomOutWindowMove) {
-			return;
-		}
-		if (fmousemovestate == msDragMove) {
-			return;
-		}
-		if (fmousemovestate == msRotateMove) {
-			return;
-		}
-
-		timer.disable();
-
-		drawFlame();
-
-	} // End of method redrawTimerTimer
-
-	/*****************************************************************************/
-
-	void drawFlame() {
-		timer.disable();
-
-		if (renderthread != null) {
-			renderthread.terminate();
-		}
-
-		renderCP.clone(Global.mainCP);
-
-		renderCP.adjustScale(imagewidth, imageheight);
-
-		renderCP.sample_density = Global.defSampleDensity;
-
-		renderCP.spatial_oversample = 1;
-		renderCP.spatial_filter_radius = 0.001;
-		renderCP.transparency = true;
-
-		viewoldpos[0] = viewpos[0];
-		viewoldpos[1] = viewpos[1];
-
-		startTime = System.currentTimeMillis();
-		setString(find("Status0"), "text", "");
-
-		renderthread = new RenderThread(this);
-
-		renderthread.setCP(renderCP);
-
-		renderthread.start();
-
-	} // End of method drawFlame
-
-	/*****************************************************************************/
-
-	public void mnuOptionsClick() {
-
-		Global.options.show();
-
-	}
-
-	/*****************************************************************************/
-
-	public void mnuOptionsClick2() {
-
-		stopThread();
-		timer.enable();
-		setString(find("tbQualityBox"), "text", "" + Global.defSampleDensity);
-
-		updateWindows();
-
-	} // End of method mnuOptionsClick
-
-	/*****************************************************************************/
-
-	public void btShowAlphaClick(Object button) {
-
-		Global.showTransparency = getBoolean(button, "selected");
-
-		repaint();
-
-	} // End of method btShowAlphaClick
-
-	/*****************************************************************************/
-
-	public void mnuSmoothGradientClick() {
-
-		Task task = new SmoothPaletteTask();
-		Global.opendialog = new OpenDialog(this, Global.browserPath, task);
-
-		Global.opendialog.addFilter("JPEG images (*.jpg,*.jpeg)",
-				"*.jpg;*.jpeg");
-		Global.opendialog.addFilter("GIF images (*.gif)", "*.gif");
-		Global.opendialog.addFilter("PNG images (*.png)", "*.png");
-
-		Global.opendialog.show();
-
-	} // End of method smoothGradientClick
-
-	/*****************************************************************************/
-
-	void smoothPalette() {
-		int cmap_best[] = new int[256];
-		int[] original = new int[256];
-		int[] clist = new int[256];
-		int len = 0, len_best = 0, as_is = 0, swapd = 0;
-		int rand, tryit, i0, i1, x, y, i, iw, ih;
-
-		try {
-			File file = new File(Global.opendialog.filename);
-			if (!file.exists()) {
-				beep();
-				return;
-			}
-
-			Image image = ImageIO.read(file);
-			iw = image.getWidth(null);
-			ih = image.getHeight(null);
-
-			BufferedImage bimage = new BufferedImage(iw, ih,
-					BufferedImage.TYPE_INT_RGB);
-			Graphics g = bimage.createGraphics();
-			g.drawImage(image, 0, 0, null);
-			g.dispose();
-			image = null;
-
-			Random ran = new Random();
-			// pick 256 random pixels
-			for (i = 0; i < 256; i++) {
-				x = ran.nextInt(iw);
-				y = ran.nextInt(ih);
-				clist[i] = bimage.getRGB(x, y);
-			}
-
-			System.arraycopy(clist, 0, original, 0, clist.length);
-			System.arraycopy(clist, 0, cmap_best, 0, clist.length);
-
-			for (tryit = 1; tryit <= Global.numTries; tryit++) {
-				System.arraycopy(original, 0, clist, 0, original.length);
-
-				// scramble
-				for (i = 0; i < 256; i++) {
-					rand = ran.nextInt(256);
-					int z = clist[i];
-					clist[i] = clist[rand];
-					clist[rand] = z;
-				}
-
-				// measure
-				len = 0;
-				for (i = 0; i < 255; i++) {
-					len += diffcolor(clist, i, i + 1);
-				}
-
-				// improve
-				for (i = 1; i <= Global.tryLength; i++) {
-					i0 = 1 + ran.nextInt(254);
-					i1 = 1 + ran.nextInt(254);
-					if ((i0 - i1) == 1) {
-						as_is = diffcolor(clist, i1 - 1, i1)
-								+ diffcolor(clist, i0, i0 + 1);
-						swapd = diffcolor(clist, i1 - 1, i0)
-								+ diffcolor(clist, i1, i0 + 1);
-					} else if ((i1 - i0) == 1) {
-						as_is = diffcolor(clist, i0 - 1, i0)
-								+ diffcolor(clist, i1, i1 + 1);
-						swapd = diffcolor(clist, i0 - 1, i1)
-								+ diffcolor(clist, i0, i1 + 1);
-					} else {
-						as_is = diffcolor(clist, i0, i0 + 1)
-								+ diffcolor(clist, i0, i0 - 1)
-								+ diffcolor(clist, i1, i1 + 1)
-								+ diffcolor(clist, i1, i1 - 1);
-						swapd = diffcolor(clist, i1, i0 + 1)
-								+ diffcolor(clist, i1, i0 - 1)
-								+ diffcolor(clist, i0, i1 + 1)
-								+ diffcolor(clist, i0, i1 - 1);
-					}
-
-					if (swapd < as_is) {
-						int z = clist[i0];
-						clist[i0] = clist[i1];
-						clist[i1] = z;
-						len = Math.abs(len + swapd - as_is);
-					}
-				}
-				if ((tryit == 1) || (len < len_best)) {
-					System.arraycopy(clist, 0, cmap_best, 0, clist.length);
-					len_best = len;
-				}
-			}
-
-			System.arraycopy(cmap_best, 0, clist, 0, cmap_best.length);
-
-			// clean
-			for (i = 1; i <= 1024; i++) {
-				i0 = 1 + ran.nextInt(253);
-				i1 = i0 + 1;
-				as_is = diffcolor(clist, i0 - 1, i0)
-						+ diffcolor(clist, i1, i1 + 1);
-				swapd = diffcolor(clist, i0 - 1, i1)
-						+ diffcolor(clist, i0, i1 + 1);
-				if (swapd < as_is) {
-					int z = clist[i0];
-					clist[i0] = clist[i1];
-					clist[i1] = z;
-					len_best = len_best + swapd - as_is;
-				}
-			}
-
-			// create palette
-			int[][] pal = new int[256][3];
-			for (i = 0; i < 256; i++) {
-				pal[i][0] = (clist[i] >> 16) & 0xFF;
-				pal[i][1] = (clist[i] >> 8) & 0xFF;
-				pal[i][2] = (clist[i]) & 0xFF;
-			}
-
-			CMap.copyPalette(pal, Global.mainCP.cmap);
-			Global.mainCP.cmapindex = -1;
-
-			Global.adjust.updateDisplay();
-			if (Global.mutate.visible()) {
-				Global.mutate.updateDisplay();
-			}
-
-			timer.enable();
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-
-	} // End of method smoothPalette
-
-	/*****************************************************************************/
-
-	static final int diffcolor(int clist[], int i, int j) {
-		int r1, g1, b1, r2, b2, g2;
-
-		r1 = (clist[j] >> 16) & 0xFF;
-		g1 = (clist[j] >> 8) & 0xFF;
-		b1 = (clist[j]) & 0xFF;
-
-		r2 = (clist[i] >> 16) & 0xFF;
-		g2 = (clist[i] >> 8) & 0xFF;
-		b2 = (clist[i]) & 0xFF;
-
-		return ((r1 - r2) * (r1 - r2)) + ((g1 - g2) * (g1 - g2))
-				+ ((b1 - b2) * (b1 - b2));
-
-	}
-
-	/*****************************************************************************/
-
-	public void mnuOpenGradientClick() {
-
-		Global.browser.show();
-
-	} // End of method mnuOpenGradientClick
-
-	/*****************************************************************************/
-
-	public void mnuExportFlameClick() {
-
-		if (Global.flam3Path.length() == 0) {
-			alert("The flam3-render renderer is not defined. Check your options");
-			return;
-		}
-
-		File file = new File(Global.flam3Path);
-		if (!file.exists()) {
-			alert("The flam3-render renderer could not be found. Check your options");
-			return;
-		}
-
-		String ext = "";
-		switch (Global.exportFileFormat) {
-		case 1:
-			ext = "jpg";
-			break;
-		case 2:
-			ext = "ppm";
-			break;
-		case 3:
-			ext = "png";
-			break;
-		}
-
-		String filename = (Global.mainCP.name + "." + ext).replace(' ', '_');
-		file = new File(Global.renderPath, filename);
-		Global.export.filename = file.getAbsolutePath();
-
-		Global.export.show();
-
-	} // End of method mnuExportFlameClick
-
-	/*****************************************************************************/
-
-	public void mnuRenderClick() {
-
-		if (Global.render.renderthread != null) {
-			confirm("Do you want to abort the current render ?",
-					new RenderTask(false));
-		} else {
-			renderToDisk(false);
-		}
-
-	} // End of method mnuRenderClick
-
-	/*****************************************************************************/
-
-	void renderToDisk(boolean all) {
-		if (Global.render.renderthread != null) {
-			Global.render.renderthread.terminate();
-		}
-
-		Global.render.resetControls();
-		Global.render.setTab(0);
-
-		String ext = ".jpg";
-		switch (Global.renderFileFormat) {
-		case 0:
-			ext = ".bmp";
-			break;
-		case 1:
-			ext = ".png";
-			break;
-		case 2:
-			ext = ".jpg";
-			break;
-		}
-
-		System.out.println("mainCP = " + Global.mainCP);
-		System.out.println("name   = " + Global.mainCP.name);
-		String filename = Global.mainCP.name.replace(' ', '_');
-
-		File file = new File(Global.renderPath, filename + ext);
-		Global.render.filename = file.getAbsolutePath();
-
-		Global.render.cp.copy(Global.mainCP);
-
-		CMap.copyPalette(Global.mainCP.cmap, Global.render.cp.cmap);
-		Global.render.zoom = Global.mainCP.zoom;
-		Global.render.center[0] = Global.mainCP.center[0];
-		Global.render.center[1] = Global.mainCP.center[1];
-
-		Global.render.renderall = all;
-
-		Global.render.show();
-
-	}
-
-	/*****************************************************************************/
-
-	public void mnuRenderAllClick() {
-
-		if (Global.render.renderthread != null) {
-			confirm("Do you want to abort the current render ?",
-					new RenderTask(true));
-		} else {
-			renderToDisk(true);
-		}
-
-	} // End of method mnuRenderClick
-
-	/*****************************************************************************/
-
-	public void mnuToolBarClick(Object button) {
-		setBoolean(find("ToolBar"), "visible", getBoolean(button, "selected"));
-	}
-
-	/*****************************************************************************/
-
-	public void mnuStatusBarClick(Object button) {
-		setBoolean(find("MainStatusBar"), "visible",
-				getBoolean(button, "selected"));
-	}
-
-	/*****************************************************************************/
-
-	public void mnuFileContentsClick(Object button) {
-		Object splitter = find("Splitter");
-
-		if (getBoolean(button, "selected")) {
-			setInteger(splitter, "divider", splitpos);
-		} else {
-			splitpos = getInteger(splitter, "divider");
-			setInteger(splitter, "divider", 0);
-		}
-	}
-
-	/*****************************************************************************/
-
-	public void mnuRandomBatchClick() {
-
-		randomBatch();
-
-		updateFlameList();
-
-		// select the first flame and force drawing
-
-		Object list = find("ListView");
-		setBoolean(getItem(list, 0), "selected", true);
-		listViewChange(list);
-
-	} // End of method mnuRandomBatchClick
-
-	/*****************************************************************************/
-
-	void randomBatch() {
-		int b = Global.batchSize;
-		if (b == 0) {
-			b = 1;
-		}
-
-		cps = new ArrayList<ControlPoint>();
-
-		for (int i = 0; i < b; i++) {
-			ControlPoint cp = ControlPoint.randomFlame(Global.mainCP);
-			Global.randomIndex++;
-			cp.name = Global.randomPrefix + Global.randomDate + "-"
-					+ Global.randomIndex;
-			cps.add(cp);
-		}
-
-		Global.openFile = "";
-	}
-
-	/*****************************************************************************/
-
-	void buildVariationMenu() {
-		Object menu = find("mnuVar");
-
-		int nv = XForm.getNrVariations();
-
-		// create all the needed groups
-
-		Color color = new Color(0xD1CCC6);
-
-		int ig = 0;
-		while (true) {
-			ig++;
-
-			// count the number of variations in this group
-			int n = 0;
-			for (int i = 0; i < nv; i++) {
-				if (XForm.getVariation(i).getGroup() == ig) {
-					n++;
-				}
-			}
-
-			if (n == 0) {
-				break;
-			}
-
-			Object submenu = createImpl("menu");
-			setString(submenu, "text", "Group " + ig);
-			setColor(submenu, "background", color);
-
-			add(menu, submenu);
-
-			for (int i = 0; i < nv; i++) {
-				if (XForm.getVariation(i).getGroup() == ig) {
-					Object item = createImpl("checkboxmenuitem");
-					setString(item, "text", XForm.getVariation(i).getName());
-					setMethod(item, "action", "variantMenuClick(this," + i
-							+ ")", item, this);
-					setString(item, "group", "variations");
-					setColor(item, "background", color);
-
-					add(submenu, item);
-				}
-			}
-
-		}
-
-	} // End of method fillVariantMenu
-
-	/*****************************************************************************/
-
-	public void variantMenuClick(Object item, int index) {
-		unselectItems(find("mnuVar"));
-		setBoolean(item, "selected", true);
-
-		Global.variation = index;
-
-		updateUndo();
-		Global.mainCP.setVariation(index);
-		resetLocation();
-
-		timer.enable();
-
-		updateWindows();
-
-	}
-
-	/*****************************************************************************/
-
-	void unselectItems(Object menu) {
-		Object[] items = getItems(menu);
-		for (Object item : items) {
-			if ("menu".equals(getClass(item))) {
-				unselectItems(item);
-			} else if ("checkboxmenuitem".equals(getClass(item))) {
-				setBoolean(item, "selected", false);
-			}
-		}
-	}
-
-	/*****************************************************************************/
-
-	void resetLocation() {
-		Global.mainCP.zoom = 0.0;
-		Global.mainCP.calcBoundBox();
-		center[0] = Global.mainCP.center[0];
-		center[1] = Global.mainCP.center[1];
-	}
-
-	/*****************************************************************************/
-
-	public void mnuFullScreenClick() {
-		if (image == null) {
-			return;
-		}
-
-		Global.fullscreen.cp.copy(Global.mainCP);
-		Global.fullscreen.center[0] = Global.mainCP.center[0];
-		Global.fullscreen.center[1] = Global.mainCP.center[1];
-		CMap.copyPalette(Global.mainCP.cmap, Global.fullscreen.cp.cmap);
-
-		Global.fullscreen.image = image;
-
-		Global.fullscreen.show();
-
-	} // End of method mnuFullScreenClick
-
-	/*****************************************************************************/
-
-	public void mnuRandomClick() {
-		stopThread();
-		updateUndo();
-
-		Global.mainCP = ControlPoint.randomFlame(Global.mainCP);
-
-		Global.randomIndex++;
-		Global.mainCP.name = Global.randomPrefix + Global.randomDate + "-"
-				+ Global.randomIndex;
-
-		Global.transforms = Global.mainCP.trianglesFromCP(Global.mainTriangles);
-
-		if (Global.adjust.visible()) {
-			Global.adjust.updateDisplay();
-		}
-
-		resetLocation();
-
-		timer.enable();
-
-		updateWindows();
-
-	} // End of method mnuRandomClick
-
-	/*****************************************************************************/
-
-	public void mnuRWeightsClick() {
-		stopThread();
-		updateUndo();
-		Global.mainCP.randomizeWeights();
-
-		timer.enable();
-
-		updateWindows();
-
-	} // End of method mnuRWeightsClick
-
-	/*****************************************************************************/
-
-	public void mnuEqualizeClick() {
-		stopThread();
-		updateUndo();
-
-		Global.mainCP.equalizeWeights();
-
-		timer.enable();
-
-		updateWindows();
-	}
-
-	/*****************************************************************************/
-
-	public void mnuNormalWeightsClick() {
-		stopThread();
-		updateUndo();
-
-		// todo ...
-
-		timer.enable();
-
-		updateWindows();
-
-	}
-
-	/*****************************************************************************/
-
-	public void mnuCalculateColorsClick() {
-		stopThread();
-		updateUndo();
-
-		for (int i = 0; i < Global.transforms; i++) {
-			Global.mainCP.xform[i].color = ((double)i) / (Global.transforms - 1);
-		}
-
-		timer.enable();
-
-		updateWindows();
-
-	} // End of method mnuCalculateColorsClick
-
-	/*****************************************************************************/
-
-	public void mnuRandomizeColorsClick() {
-		stopThread();
-		updateUndo();
-
-		for (int i = 0; i < Global.transforms; i++) {
-			Global.mainCP.xform[i].color = Math.random();
-		}
-
-		timer.enable();
-
-		updateWindows();
-	}
-
-	/*****************************************************************************/
-
-	public void mnuRandomGradientClick() {
-		int n = CMap.cmapnames.length;
-		int i = (int) (Math.random() * n);
-
-		stopThread();
-		updateUndo();
-
-		Global.mainCP.cmapindex = i;
-		CMap.getCMap(i, 1, Global.mainCP.cmap);
-
-		timer.enable();
-
-		updateWindows();
-
-	} // End of method mnuRandomGradientClick
-
-	/*****************************************************************************/
-
-	public void mnuRandomizeGradientClick() {
-		stopThread();
-		updateUndo();
+        undoindex = 0;
+        history.clear();
+        updateUndoControls();
 
-		Global.mainCP.cmapindex = -1;
-		CMap.copyPalette(CMap.randomGradient(), Global.mainCP.cmap);
-
-		timer.enable();
-
-		updateWindows();
+        fmousemovestate = msDrag;
+        setBoolean(find("tbDrag"), "selected", true);
+
+        timer = new Timer();
+        timer.start();
+
+        Global.mainCP.width = Global.panelWidth;
+        Global.mainCP.height = Global.panelHeight;
+
+        mnuRandomBatchClick();
+
+        setMenuShortcuts();
+
+    }
+
+    /*****************************************************************************/
+
+    void dumpVariations() {
+        int nv = XForm.getNrVariations();
+        for (int i = 0; i < nv; i++) {
+            System.out.println(XForm.getVariation(i).getName());
+        }
+    }
+
+    /*****************************************************************************/
+
+    public void mnuOpenClick() {
+
+        // Global.editor.stopped = true;
+
+        Task task = new OpenFileTask();
+        Global.opendialog = new OpenDialog(this, Global.browserPath, task);
+
+        Global.opendialog.addFilter("Flame files (*.flame)", "*.flame");
+        Global.opendialog.addFilter("Fla files (*.fla)", "*.fla");
+        Global.opendialog.addFilter("Ultrafractal files (*.upr)", "*upr");
+        Global.opendialog.addFilter("JPEG image files (*.jpg)", "*.jpg");
+        Global.opendialog.addFilter("PNG image files (*.png)", "*.png");
+        // Global.opendialog.addFilter("IFS files (*.ifs)","*.ifs");
+
+        Global.opendialog.show();
+
+    } // End of method mnuOpenClick
+
+    /*****************************************************************************/
+
+    List<ControlPoint> openFLAFile(String filename) {
+        ControlPoint cp = new ControlPoint();
+        String temp = null;
+        int ixform = 0;
+
+        List<ControlPoint> newcps = new ArrayList<>();
+
+        try (BufferedReader r = new BufferedReader(new FileReader(filename))) {
+
+            while (true) {
+                String line = r.readLine();
+                if (line == null) {
+                    break;
+                }
+
+                cp.nxforms = 0;
+
+                // name of flame
+                StringTokenizer tk = new StringTokenizer(line);
+                if (tk.countTokens() != 2) {
+                    break;
+                }
+                cp.name = tk.nextToken();
+                temp = tk.nextToken();
+                if (!temp.equals("{")) {
+                    break;
+                }
+
+                while (true) {
+                    line = r.readLine();
+                    if (line == null) {
+                        break;
+                    }
+
+                    tk = new StringTokenizer(line);
+                    while (tk.hasMoreTokens()) {
+                        temp = tk.nextToken();
+                        if (temp.equals("time")) {
+                            cp.time = Double.parseDouble(tk.nextToken());
+                        } else if (temp.equals("zoom")) {
+                            cp.zoom = Double.parseDouble(tk.nextToken());
+                        } else if (temp.equals("angle")) {
+                            cp.fangle = Double.parseDouble(tk.nextToken());
+                        } else if (temp.equals("image_size")) {
+                            cp.width = Integer.parseInt(tk.nextToken());
+                            cp.height = Integer.parseInt(tk.nextToken());
+                        } else if (temp.equals("center")) {
+                            cp.center[0] = Double.parseDouble(tk.nextToken());
+                            cp.center[1] = Double.parseDouble(tk.nextToken());
+                        } else if (temp.equals("pixels_per_unit")) {
+                            cp.pixels_per_unit = Double.parseDouble(tk.nextToken());
+                        } else if (temp.equals("spatial_oversample")) {
+                            cp.spatial_oversample = Integer.parseInt(tk.nextToken());
+                        } else if (temp.equals("spatial_filter_radius")) {
+                            cp.spatial_filter_radius = Double.parseDouble(tk.nextToken());
+                        } else if (temp.equals("sample_density")) {
+                            cp.sample_density = Double.parseDouble(tk.nextToken());
+                        } else if (temp.equals("background")) {
+                            cp.background[0] = Integer.parseInt(tk.nextToken());
+                            cp.background[1] = Integer.parseInt(tk.nextToken());
+                            cp.background[2] = Integer.parseInt(tk.nextToken());
+                        } else if (temp.equals("brightness")) {
+                            cp.brightness = Double.parseDouble(tk.nextToken());
+                        } else if (temp.equals("gamma")) {
+                            cp.gamma = Double.parseDouble(tk.nextToken());
+                        } else if (temp.equals("vibrancy")) {
+                            cp.vibrancy = Double.parseDouble(tk.nextToken());
+                        } else if (temp.equals("hue_rotation")) {
+                            cp.hue_rotation = Double.parseDouble(tk.nextToken());
+                        } else if (temp.equals("finalzformenabled")) {
+                            cp.finalXformEnabled = (!tk.nextToken().equals("0"));
+                        } else if (temp.equals("xform")) {
+                            ixform = Integer.parseInt(tk.nextToken());
+                        } else if (temp.equals("density")) {
+                            cp.xform[ixform].density = Double.parseDouble(tk.nextToken());
+                        } else if (temp.equals("color")) {
+                            cp.xform[ixform].color = Double.parseDouble(tk.nextToken());
+                        } else if (temp.equals("symmetry")) {
+                            cp.xform[ixform].symmetry = Double.parseDouble(tk.nextToken());
+                        } else if (temp.equals("vars")) {
+                            int iv = 0;
+                            while (tk.hasMoreTokens()) {
+                                cp.xform[ixform].vars[iv++] = Double.parseDouble(tk.nextToken());
+                            }
+                            break;
+                        } else if (temp.equals("coefs")) {
+                            cp.xform[ixform].c00 = Double.parseDouble(tk.nextToken());
+                            cp.xform[ixform].c01 = Double.parseDouble(tk.nextToken());
+                            cp.xform[ixform].c10 = Double.parseDouble(tk.nextToken());
+                            cp.xform[ixform].c11 = Double.parseDouble(tk.nextToken());
+                            cp.xform[ixform].c20 = Double.parseDouble(tk.nextToken());
+                            cp.xform[ixform].c21 = Double.parseDouble(tk.nextToken());
+                        } else if (temp.equals("post")) {
+                            cp.xform[ixform].p00 = Double.parseDouble(tk.nextToken());
+                            cp.xform[ixform].p01 = Double.parseDouble(tk.nextToken());
+                            cp.xform[ixform].p10 = Double.parseDouble(tk.nextToken());
+                            cp.xform[ixform].p11 = Double.parseDouble(tk.nextToken());
+                            cp.xform[ixform].p20 = Double.parseDouble(tk.nextToken());
+                            cp.xform[ixform].p21 = Double.parseDouble(tk.nextToken());
+                        } else if (temp.equals("palette:")) {
+                            for (int i = 0; i < 256; i++) {
+                                line = r.readLine();
+                                if (line == null) {
+                                    break;
+                                }
+                                tk = new StringTokenizer(line);
+                                cp.cmap[i][0] = Integer.parseInt(tk.nextToken());
+                                cp.cmap[i][1] = Integer.parseInt(tk.nextToken());
+                                cp.cmap[i][2] = Integer.parseInt(tk.nextToken());
+                            }
+                        }
+                    }
+                }
+            }
+
+            cp.nxforms = 0;
+            for (int i = 0; i < cp.xform.length; i++) {
+                if (cp.xform[i].density != 0) {
+                    cp.nxforms = i + 1;
+                }
+            }
+
+            if (cp.nxforms > 0) {
+                newcps.add(cp);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return newcps;
+
+    } // End of method openFLAFile
+
+    /*****************************************************************************/
+
+    List<ControlPoint> openJPGFile(String filename) {
+        String comment = CommentExtractor.readJpegComment(filename);
+        if (comment.length() == 0) {
+            // try to open the corresponding flame file
+            int i = filename.lastIndexOf('.');
+            if (i > 0) {
+                filename = filename.substring(0, i) + ".flame";
+            } else {
+                filename = filename + ".flame";
+            }
+            return openXMLFile(filename);
+        } else {
+            int i = comment.indexOf("<flame");
+            if (i < 0) {
+                return new ArrayList<>();
+            }
+
+            if (i > 0) {
+                comment = comment.substring(i);
+            }
+            return readXML(new StringReader(comment));
+        }
+
+    } // End of method openJPGFile
+
+    /*****************************************************************************/
+
+    List<ControlPoint> openPNGFile(String filename) {
+        String comment = CommentExtractor.readPngComment(filename);
+        if (comment.length() == 0) {
+            // try to open the corresponding flame file
+            int i = filename.lastIndexOf('.');
+            if (i > 0) {
+                filename = filename.substring(0, i) + ".flame";
+            } else {
+                filename = filename + ".flame";
+            }
+            return openXMLFile(filename);
+        } else {
+            int i = comment.indexOf("<flame");
+            if (i < 0) {
+                return new ArrayList<>();
+            }
+
+            if (i > 0) {
+                comment = comment.substring(i);
+            }
+            return readXML(new StringReader(comment));
+        }
+
+    } // End of method openPNGFile
+
+    /*****************************************************************************/
+
+    void openUPRFile(String filename) {
+        int i;
+
+        cps = new ArrayList<>();
+
+        try (BufferedReader r = new BufferedReader(new FileReader(filename))) {
+
+            while (true) {
+                String line = r.readLine();
+                if (line == null) {
+                    break;
+                }
+
+                if (line.trim().endsWith("{")) {
+                    // read parameters
+                    Map<String, String> h = new HashMap<>();
+                    while (true) {
+                        line = r.readLine();
+                        if (line == null) {
+                            break;
+                        }
+                        i = line.indexOf("gradient:");
+                        if (i >= 0) {
+                            break;
+                        }
+                        StringTokenizer tk = new StringTokenizer(line);
+                        while (tk.hasMoreTokens()) {
+                            String token = tk.nextToken();
+                            i = token.indexOf('=');
+                            if (i < 0) {
+                                continue;
+                            }
+                            String key = token.substring(0, i);
+                            String val = token.substring(i + 1);
+                            h.put(key, val);
+                        }
+                    }
+
+                    List<int[]> v = new ArrayList<>();
+                    // read gradient
+                    while (true) {
+                        line = r.readLine();
+                        if (line == null) {
+                            break;
+                        }
+                        if (line.startsWith("}")) {
+                            break;
+                        }
+
+                        StringTokenizer tk = new StringTokenizer(line);
+                        if (tk.countTokens() != 2) {
+                            continue;
+                        }
+
+                        String token = tk.nextToken();
+                        i = token.indexOf('=');
+                        if (i < 0) {
+                            continue;
+                        }
+                        if (!token.substring(0, i).equals("index")) {
+                            continue;
+                        }
+                        int index = Integer.parseInt(token.substring(i + 1));
+                        if (index < 0) {
+                            continue;
+                        }
+                        if (index >= 400) {
+                            continue;
+                        }
+
+                        token = tk.nextToken();
+                        i = token.indexOf('=');
+                        if (i < 0) {
+                            continue;
+                        }
+                        if (!token.substring(0, i).equals("color")) {
+                            continue;
+                        }
+                        int color = Integer.parseInt(token.substring(i + 1));
+                        v.add(new int[] { index, color });
+                    }
+                    ControlPoint cp = new ControlPoint(h, v);
+                    cps.add(cp);
+                }
+            }
+
+            Global.openFile = filename;
+            Global.openFileType = ftUPR;
+
+            updateFlameList();
+
+            // select the first flame and force drawing
+
+            Object list = find("ListView");
+            setBoolean(getItem(list, 0), "selected", true);
+            listViewChange(list);
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+    } // End of method openUPRFile
+
+    /*****************************************************************************/
+
+    List<ControlPoint> openXMLFile(String filename) {
+        List<ControlPoint> v;
+
+        try (Reader r = Files.newBufferedReader(Paths.get(filename))) {
+            v = readXML(r);
+        } catch (Exception ex) {
+            v = new ArrayList<>();
+        }
+        return v;
+    }
+
+    /*****************************************************************************/
+
+    List<ControlPoint> readXML(Reader reader) {
+        List<ControlPoint> mycps = new ArrayList<>();
+
+        try (BufferedReader r = new BufferedReader(reader)) {
+
+            while (true) {
+                ControlPoint cp = readControlPoint(r);
+                if (cp == null) {
+                    break;
+                }
+                mycps.add(cp);
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return mycps;
+
+    } // End of method OpenFile
+
+    /*****************************************************************************/
+
+    ControlPoint readControlPoint(BufferedReader r) throws Exception {
+        ControlPoint cp = null;
+        String line = null;
+        List<String> unknown = new ArrayList<>();
+
+        while (true) {
+            line = r.readLine();
+            if (line == null) {
+                return null;
+            }
+            int i = line.indexOf("<flame ");
+            if (i < 0) {
+                continue;
+            }
+            line = line.substring(i).trim();
+            break;
+        }
+
+        XmlTag tag = new XmlTag(line);
+        cp = new ControlPoint(tag);
+
+        while (true) {
+            line = r.readLine();
+            if (line == null) {
+                break;
+            }
+            if (line.indexOf('<') < 0) {
+                continue;
+            }
+
+            if (line.indexOf("</flame") >= 0) {
+                break;
+            }
+
+            tag = new XmlTag(line.trim());
+            if (tag.getName().equals("xform")) {
+                cp.addXForm(tag);
+                appendUnknown(unknown, tag);
+            } else if (tag.getName().equals("finalxform")) {
+                cp.addFinalXForm(tag);
+                appendUnknown(unknown, tag);
+            } else if (tag.getName().equals("color")) {
+                cp.addColor(tag);
+            } else if (tag.getName().equals("palette") && (!tag.isClosed())) {
+                while (true) {
+                    line = r.readLine();
+                    if (line == null) {
+                        break;
+                    }
+                    if (line.indexOf("</palette") >= 0) {
+                        break;
+                    }
+                    tag.appendData(line.trim());
+                }
+                cp.setPalette(tag.getInt("count", 0), tag.getData());
+            } else if (tag.getName().equals("colors")) {
+                while (true) {
+                    line = r.readLine();
+                    if (line == null) {
+                        break;
+                    }
+                    int k = line.indexOf("\"/>");
+                    if (k > 0) {
+                        tag.appendAttribute("data", line.substring(0, k).trim());
+                        break;
+                    } else {
+                        tag.appendAttribute("data", line.trim());
+                    }
+                }
+                cp.setPalette(tag.getInt("count", 0), tag.getAttribute("data"));
+            }
+        }
+
+        if (unknown.size() > 0) {
+            cp.unknown = unknown;
+        }
+
+        return cp;
+
+    } // End of method readControlPoint
+
+    /*****************************************************************************/
+
+    void appendUnknown(List<String> v, XmlTag tag) {
+        Iterator<String> e = tag.getUnreclaimedKeys();
+        while (e.hasNext()) {
+            String s = e.next();
+            int k = s.indexOf('_');
+            if (k > 0) {
+                s = s.substring(0, k);
+            }
+
+            if (!v.contains(s)) {
+                v.add(s);
+            }
+        }
+    }
+
+    /*****************************************************************************/
+
+    void updateFlameList() {
+        Object title = find("ListTitle");
+        setString(title, "text", cps.size() + " flame" + (cps.size() != 1 ? "s" : ""));
+        setString(title, "tooltip", Global.openFile);
+
+        Object list = find("ListView");
+
+        removeAll(list);
+
+        int ncp = cps.size();
+        for (int i = 0; i < ncp; i++) {
+            ControlPoint cp = cps.get(i);
+
+            Object item = createImpl("item");
+            setString(item, "text", cp.name);
+            setFont(item, font);
+            if (cp.unknown != null) {
+                setColor(item, "foreground", Color.red);
+                setString(item, "tooltip", "unknown variation");
+            }
+
+            add(list, item);
+        }
+
+        requestFocus(list);
+
+    } // End of method updateFlameList
+
+    /*****************************************************************************/
+
+    Object buildPopup() {
+        Object popup = createImpl("popupmenu");
+
+        Object item1 = createImpl("menuitem");
+        setString(item1, "text", "Delete");
+        add(popup, item1);
+
+        Object item2 = createImpl("menuitem");
+        setString(item2, "text", "Rename");
+        add(popup, item2);
+
+        return popup;
+    }
+
+    /*****************************************************************************/
+
+    public void mnuSaveAsClick() {
+        String filename = Global.mainCP.name + ".flame";
+        filename = filename.replace(' ', '_');
+
+        Task task = new SaveFileTask(Global.mainCP);
+        Global.savedialog = new SaveDialog(this, Global.browserPath, filename, task);
+        Global.savedialog.warning = "Append to";
+        Global.savedialog.show();
+
+    } // End of method mnuSaveAsClick
+
+    /*****************************************************************************/
+
+    public void mnuSaveAllAsClick() {
+        String filename = "apophysis.flame";
+
+        Task task = new SaveFileTask(null);
+        Global.savedialog = new SaveDialog(this, Global.browserPath, filename, task);
+        Global.savedialog.warning = "Append to";
+        Global.savedialog.show();
+
+    } // End of method mnuSaveAllAsClick
+
+    /*****************************************************************************/
+
+    public void saveXMLFile(ControlPoint cp, String filename) {
+        List<ControlPoint> mycps;
+
+        BufferedReader r = null;
+        try {
+            r = new BufferedReader(new FileReader(filename));
+            mycps = readXML(r);
+        } catch (Exception ex) {
+            mycps = new ArrayList<>();
+        } finally {
+            IOUtils.close(r);
+        }
+
+        if (cp != null) {
+            addFlame(mycps, cp);
+        } else {
+            int nc = cps.size();
+            for (int i = 0; i < nc; i++) {
+                addFlame(mycps, cps.get(i));
+            }
+        }
+
+        try {
+            File file = new File(filename);
+            String title = file.getName();
+            int k = title.indexOf('.');
+            if (k > 0) {
+                title = title.substring(0, k);
+            }
+
+            try (PrintWriter w = new PrintWriter(new FileWriter(file))) {
+
+                w.println("<Flames name=\"" + title + "\">");
+
+                int nc = mycps.size();
+                for (int i = 0; i < nc; i++) {
+                    cp = mycps.get(i);
+                    cp.save(w);
+                }
+
+                // plplpl added the missing terminal ">" !
+                w.println("</Flames>");
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+    } // End of method saveXMLFlame
+
+    /*****************************************************************************/
+
+    void addFlame(List<ControlPoint> v, ControlPoint newcp) {
+        // check if flame already exists
+        int n = v.size();
+        for (int i = n - 1; i >= 0; i--) {
+            ControlPoint oldcp = v.get(i);
+            if (oldcp.name.equals(newcp.name)) {
+                v.remove(i);
+            }
+        }
+
+        v.add(newcp);
+
+    } // End of method addFlame
+
+    /*****************************************************************************/
+
+    public void mnuExitClick() {
+
+        if (Global.confirmExit) {
+            confirm("Do you really want to quit? All unsaved data will be lost!", new QuitTask());
+        } else {
+            quitApplication();
+            System.exit(0);
+        }
+
+    } // End of method mnuExitClick
+
+    /*****************************************************************************/
+
+    public void listViewDoubleClick(Object list) {
+        int index = getSelectedIndex(list);
+        if (index < 0) {
+            beep();
+            return;
+        }
+
+        ControlPoint cp = cps.get(index);
+
+        ask("Name of the flame :", cp.name, new FlameRenameTask(index));
+
+    } // End of method listViewDoubleClick
+
+    /*****************************************************************************/
+
+    void renameFlame(int index, String newname) {
+
+        ControlPoint cp = cps.get(index);
+        cp.name = newname;
+
+        updateFlameList();
+
+        Object list = find("ListView");
+        setBoolean(getItem(list, index), "selected", true);
+
+        setStatus(newname);
+
+    }
+
+    /*****************************************************************************/
+
+    public void listViewChange(Object list) {
+        int index = getSelectedIndex(list);
+        if (index < 0) {
+            return;
+        }
+
+        Global.mainCP = cps.get(index);
+
+        clearUndo();
+
+        Global.transforms = Global.mainCP.trianglesFromCP(Global.mainTriangles);
+
+        updateWindows();
+
+        setStatus(Global.mainCP.name);
+
+        timer.enable();
+
+        resizeImage();
+
+    } // End of method listViewChange
+
+    /*****************************************************************************/
+
+    public void updateWindows() {
+        if (Global.editor.visible()) {
+            Global.editor.updateDisplay();
+        }
+        if (Global.adjust.visible()) {
+            Global.adjust.updateDisplay();
+        }
+        if (Global.mutate.visible()) {
+            Global.mutate.updateDisplay();
+        }
+    }
+
+    /*****************************************************************************/
+
+    Point getPositionInDesktop(Object component) {
+        int x, y;
+
+        Rectangle r = getRectangle(component, "bounds");
+        x = r.x;
+        y = r.y;
+        while (true) {
+            component = getParent(component);
+            if (component == null) {
+                break;
+            }
+            r = getRectangle(component, "bounds");
+            x += r.x;
+            y += r.y;
+        }
+
+        return new Point(x, y);
+
+    } // End of method getPositionInDesktop
+
+    /*****************************************************************************/
+
+    public void drawMainCanvas(Graphics g, Rectangle bounds) {
+
+        if (Global.showTransparency) {
+            g.setColor(grayf0);
+            g.fillRect(0, 0, bounds.width, bounds.height);
+            g.setColor(grayc0);
+            int w = (bounds.width - 1) >> 3;
+            int h = (bounds.height - 1) >> 3;
+            for (int i = 0; i <= w; i++) {
+                for (int j = 0; j <= h; j++) {
+                    if (((i + j) % 2) == 1) {
+                        g.fillRect(i << 3, j << 3, 8, 8);
+                    }
+                }
+            }
+        } else {
+            g.setColor(new Color(Global.mainCP.background[0], Global.mainCP.background[1], Global.mainCP.background[2]));
+            g.fillRect(0, 0, bounds.width, bounds.height);
+        }
+
+        if (image != null) {
+            g.drawImage(image, xview, yview, imagewidth, imageheight, null);
+        }
+
+    }
+
+    /*****************************************************************************/
+
+    public void mnuEditorClick() {
+        Global.editor.show();
+    } // End of method mnuEditorClick
+
+    /*****************************************************************************/
+
+    public void mnuGradClick() {
+        Global.adjust.updateDisplay();
+        Global.adjust.setTab(2);
+        Global.adjust.show();
+    } // End of method mnuGradClick
+
+    /*****************************************************************************/
+
+    void saveFlame() {
+        ControlPoint cp = new ControlPoint();
+        cp.clone(Global.mainCP);
+        history.add(cp);
+
+    } // End of method saveFlame
+
+    /*****************************************************************************/
+
+    void loadFlame(int index) {
+        Global.mainCP = history.get(index);
+
+        center[0] = Global.mainCP.center[0];
+        center[1] = Global.mainCP.center[1];
+
+        Global.transforms = Global.mainCP.trianglesFromCP(Global.mainTriangles);
+
+        timer.enable();
+
+        updateWindows();
+
+    }
+
+    /*****************************************************************************/
+
+    public void clearUndo() {
+        history.clear();
+        undoindex = 0;
+        updateUndoControls();
+    }
+
+    /*****************************************************************************/
+
+    public void updateUndo() {
+        while (history.size() > undoindex) {
+            history.remove(history.get(history.size() - 1));
+        }
+        saveFlame();
+        undoindex++;
+        updateUndoControls();
+    }
+
+    /*****************************************************************************/
+
+    void updateUndoControls() {
+        setBoolean(find("mnuUndo"), "enabled", undoindex > 0);
+        setBoolean(find("btnUndo"), "enabled", undoindex > 0);
+        setBoolean(find("mnuPopupUndo"), "enabled", undoindex > 0);
+
+        setBoolean(find("mnuRedo"), "enabled", undoindex < (history.size() - 1));
+        setBoolean(find("btnRedo"), "enabled", undoindex < (history.size() - 1));
+        setBoolean(find("mnuPopupRedo"), "enabled", undoindex < (history.size() - 1));
+
+        if (Global.editor != null) {
+            Global.editor.updateUndoControls(undoindex, history.size() - 1);
+        }
+
+        if (Global.adjust != null) {
+            Global.adjust.updateUndoControls(undoindex, history.size() - 1);
+        }
+
+    } // End of method updateUndo
+
+    /*****************************************************************************/
+
+    public void undo() {
+        if (undoindex == history.size()) {
+            saveFlame();
+        }
+
+        stopThread();
+
+        undoindex--;
+        loadFlame(undoindex);
+
+        updateUndoControls();
+
+    } // End of method undo
+
+    /*****************************************************************************/
+
+    public void redo() {
+        // should not happen
+        if (undoindex >= history.size()) {
+            return;
+        }
+
+        stopThread();
+
+        undoindex++;
+
+        loadFlame(undoindex);
+
+        updateUndoControls();
+
+    } // End of method redo
+
+    /*****************************************************************************/
+
+    public void mnuAdjustClick() {
+
+        Global.adjust.updateDisplay();
+        Global.adjust.setTab(0);
+        Global.adjust.show();
+
+    } // End of method mnuAdjustClick
+
+    /*****************************************************************************/
+
+    public void mnuMutateClick() {
+        Global.mutate.show();
+        Global.mutate.updateDisplay();
+    }
+
+    /*****************************************************************************/
+
+    void redrawTimerTimer() {
+
+        if (fmousemovestate == msZoomWindowMove) {
+            return;
+        }
+        if (fmousemovestate == msZoomOutWindowMove) {
+            return;
+        }
+        if (fmousemovestate == msDragMove) {
+            return;
+        }
+        if (fmousemovestate == msRotateMove) {
+            return;
+        }
+
+        timer.disable();
+
+        drawFlame();
+
+    } // End of method redrawTimerTimer
+
+    /*****************************************************************************/
+
+    void drawFlame() {
+        timer.disable();
+
+        if (renderthread != null) {
+            renderthread.terminate();
+        }
+
+        renderCP.clone(Global.mainCP);
+
+        renderCP.adjustScale(imagewidth, imageheight);
+
+        renderCP.sample_density = Global.defSampleDensity;
+
+        renderCP.spatial_oversample = 1;
+        renderCP.spatial_filter_radius = 0.001;
+        renderCP.transparency = true;
+
+        viewoldpos[0] = viewpos[0];
+        viewoldpos[1] = viewpos[1];
+
+        startTime = System.currentTimeMillis();
+        setString(find("Status0"), "text", "");
+
+        renderthread = new RenderThread(this);
+
+        renderthread.setCP(renderCP);
+
+        renderthread.start();
+
+    } // End of method drawFlame
+
+    /*****************************************************************************/
+
+    public void mnuOptionsClick() {
+
+        Global.options.show();
+
+    }
+
+    /*****************************************************************************/
+
+    public void mnuOptionsClick2() {
+
+        stopThread();
+        timer.enable();
+        setString(find("tbQualityBox"), "text", "" + Global.defSampleDensity);
+
+        updateWindows();
+
+    } // End of method mnuOptionsClick
+
+    /*****************************************************************************/
+
+    public void btShowAlphaClick(Object button) {
+
+        Global.showTransparency = getBoolean(button, "selected");
+
+        repaint();
+
+    } // End of method btShowAlphaClick
+
+    /*****************************************************************************/
+
+    public void mnuSmoothGradientClick() {
+
+        Task task = new SmoothPaletteTask();
+        Global.opendialog = new OpenDialog(this, Global.browserPath, task);
+
+        Global.opendialog.addFilter("JPEG images (*.jpg,*.jpeg)", "*.jpg;*.jpeg");
+        Global.opendialog.addFilter("GIF images (*.gif)", "*.gif");
+        Global.opendialog.addFilter("PNG images (*.png)", "*.png");
+
+        Global.opendialog.show();
+
+    } // End of method smoothGradientClick
+
+    /*****************************************************************************/
+
+    void smoothPalette() {
+        int cmap_best[] = new int[256];
+        int[] original = new int[256];
+        int[] clist = new int[256];
+        int len = 0, len_best = 0, as_is = 0, swapd = 0;
+        int rand, tryit, i0, i1, x, y, i, iw, ih;
+
+        try {
+            File file = new File(Global.opendialog.filename);
+            if (!file.exists()) {
+                beep();
+                return;
+            }
+
+            Image image = ImageIO.read(file);
+            iw = image.getWidth(null);
+            ih = image.getHeight(null);
+
+            BufferedImage bimage = new BufferedImage(iw, ih, BufferedImage.TYPE_INT_RGB);
+            Graphics g = bimage.createGraphics();
+            g.drawImage(image, 0, 0, null);
+            g.dispose();
+            image = null;
+
+            Random ran = new Random();
+            // pick 256 random pixels
+            for (i = 0; i < 256; i++) {
+                x = ran.nextInt(iw);
+                y = ran.nextInt(ih);
+                clist[i] = bimage.getRGB(x, y);
+            }
+
+            System.arraycopy(clist, 0, original, 0, clist.length);
+            System.arraycopy(clist, 0, cmap_best, 0, clist.length);
+
+            for (tryit = 1; tryit <= Global.numTries; tryit++) {
+                System.arraycopy(original, 0, clist, 0, original.length);
+
+                // scramble
+                for (i = 0; i < 256; i++) {
+                    rand = ran.nextInt(256);
+                    int z = clist[i];
+                    clist[i] = clist[rand];
+                    clist[rand] = z;
+                }
+
+                // measure
+                len = 0;
+                for (i = 0; i < 255; i++) {
+                    len += diffcolor(clist, i, i + 1);
+                }
+
+                // improve
+                for (i = 1; i <= Global.tryLength; i++) {
+                    i0 = 1 + ran.nextInt(254);
+                    i1 = 1 + ran.nextInt(254);
+                    if ((i0 - i1) == 1) {
+                        as_is = diffcolor(clist, i1 - 1, i1) + diffcolor(clist, i0, i0 + 1);
+                        swapd = diffcolor(clist, i1 - 1, i0) + diffcolor(clist, i1, i0 + 1);
+                    } else if ((i1 - i0) == 1) {
+                        as_is = diffcolor(clist, i0 - 1, i0) + diffcolor(clist, i1, i1 + 1);
+                        swapd = diffcolor(clist, i0 - 1, i1) + diffcolor(clist, i0, i1 + 1);
+                    } else {
+                        as_is = diffcolor(clist, i0, i0 + 1) + diffcolor(clist, i0, i0 - 1) + diffcolor(clist, i1, i1 + 1) + diffcolor(clist, i1, i1 - 1);
+                        swapd = diffcolor(clist, i1, i0 + 1) + diffcolor(clist, i1, i0 - 1) + diffcolor(clist, i0, i1 + 1) + diffcolor(clist, i0, i1 - 1);
+                    }
+
+                    if (swapd < as_is) {
+                        int z = clist[i0];
+                        clist[i0] = clist[i1];
+                        clist[i1] = z;
+                        len = Math.abs((len + swapd) - as_is);
+                    }
+                }
+                if ((tryit == 1) || (len < len_best)) {
+                    System.arraycopy(clist, 0, cmap_best, 0, clist.length);
+                    len_best = len;
+                }
+            }
+
+            System.arraycopy(cmap_best, 0, clist, 0, cmap_best.length);
+
+            // clean
+            for (i = 1; i <= 1024; i++) {
+                i0 = 1 + ran.nextInt(253);
+                i1 = i0 + 1;
+                as_is = diffcolor(clist, i0 - 1, i0) + diffcolor(clist, i1, i1 + 1);
+                swapd = diffcolor(clist, i0 - 1, i1) + diffcolor(clist, i0, i1 + 1);
+                if (swapd < as_is) {
+                    int z = clist[i0];
+                    clist[i0] = clist[i1];
+                    clist[i1] = z;
+                    len_best = (len_best + swapd) - as_is;
+                }
+            }
+
+            // create palette
+            int[][] pal = new int[256][3];
+            for (i = 0; i < 256; i++) {
+                pal[i][0] = (clist[i] >> 16) & 0xFF;
+                pal[i][1] = (clist[i] >> 8) & 0xFF;
+                pal[i][2] = (clist[i]) & 0xFF;
+            }
+
+            CMap.copyPalette(pal, Global.mainCP.cmap);
+            Global.mainCP.cmapindex = -1;
+
+            Global.adjust.updateDisplay();
+            if (Global.mutate.visible()) {
+                Global.mutate.updateDisplay();
+            }
+
+            timer.enable();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+    } // End of method smoothPalette
+
+    /*****************************************************************************/
+
+    static final int diffcolor(int clist[], int i, int j) {
+        int r1, g1, b1, r2, b2, g2;
+
+        r1 = (clist[j] >> 16) & 0xFF;
+        g1 = (clist[j] >> 8) & 0xFF;
+        b1 = (clist[j]) & 0xFF;
+
+        r2 = (clist[i] >> 16) & 0xFF;
+        g2 = (clist[i] >> 8) & 0xFF;
+        b2 = (clist[i]) & 0xFF;
+
+        return ((r1 - r2) * (r1 - r2)) + ((g1 - g2) * (g1 - g2)) + ((b1 - b2) * (b1 - b2));
+
+    }
+
+    /*****************************************************************************/
+
+    public void mnuOpenGradientClick() {
+
+        Global.browser.show();
+
+    } // End of method mnuOpenGradientClick
+
+    /*****************************************************************************/
+
+    public void mnuExportFlameClick() {
+
+        if (Global.flam3Path.length() == 0) {
+            alert("The flam3-render renderer is not defined. Check your options");
+            return;
+        }
+
+        File file = new File(Global.flam3Path);
+        if (!file.exists()) {
+            alert("The flam3-render renderer could not be found. Check your options");
+            return;
+        }
+
+        String ext = "";
+        switch (Global.exportFileFormat) {
+            case 1:
+                ext = "jpg";
+            break;
+            case 2:
+                ext = "ppm";
+            break;
+            case 3:
+                ext = "png";
+            break;
+        }
+
+        String filename = (Global.mainCP.name + "." + ext).replace(' ', '_');
+        file = new File(Global.renderPath, filename);
+        Global.export.filename = file.getAbsolutePath();
+
+        Global.export.show();
+
+    } // End of method mnuExportFlameClick
+
+    /*****************************************************************************/
+
+    public void mnuRenderClick() {
+
+        if (Global.render.renderthread != null) {
+            confirm("Do you want to abort the current render ?", new RenderTask(false));
+        } else {
+            renderToDisk(false);
+        }
+
+    } // End of method mnuRenderClick
+
+    /*****************************************************************************/
+
+    void renderToDisk(boolean all) {
+        if (Global.render.renderthread != null) {
+            Global.render.renderthread.terminate();
+        }
+
+        Global.render.resetControls();
+        Global.render.setTab(0);
+
+        String ext = ".jpg";
+        switch (Global.renderFileFormat) {
+            case 0:
+                ext = ".bmp";
+            break;
+            case 1:
+                ext = ".png";
+            break;
+            case 2:
+                ext = ".jpg";
+            break;
+        }
+
+        System.out.println("mainCP = " + Global.mainCP);
+        System.out.println("name   = " + Global.mainCP.name);
+        String filename = Global.mainCP.name.replace(' ', '_');
+
+        File file = new File(Global.renderPath, filename + ext);
+        Global.render.filename = file.getAbsolutePath();
+
+        Global.render.cp.copy(Global.mainCP);
+
+        CMap.copyPalette(Global.mainCP.cmap, Global.render.cp.cmap);
+        Global.render.zoom = Global.mainCP.zoom;
+        Global.render.center[0] = Global.mainCP.center[0];
+        Global.render.center[1] = Global.mainCP.center[1];
+
+        Global.render.renderall = all;
+
+        Global.render.show();
+
+    }
+
+    /*****************************************************************************/
+
+    public void mnuRenderAllClick() {
+
+        if (Global.render.renderthread != null) {
+            confirm("Do you want to abort the current render ?", new RenderTask(true));
+        } else {
+            renderToDisk(true);
+        }
+
+    } // End of method mnuRenderClick
+
+    /*****************************************************************************/
+
+    public void mnuToolBarClick(Object button) {
+        setBoolean(find("ToolBar"), "visible", getBoolean(button, "selected"));
+    }
+
+    /*****************************************************************************/
+
+    public void mnuStatusBarClick(Object button) {
+        setBoolean(find("MainStatusBar"), "visible", getBoolean(button, "selected"));
+    }
+
+    /*****************************************************************************/
+
+    public void mnuFileContentsClick(Object button) {
+        Object splitter = find("Splitter");
+
+        if (getBoolean(button, "selected")) {
+            setInteger(splitter, "divider", splitpos);
+        } else {
+            splitpos = getInteger(splitter, "divider");
+            setInteger(splitter, "divider", 0);
+        }
+    }
+
+    /*****************************************************************************/
+
+    public void mnuRandomBatchClick() {
+
+        randomBatch();
+
+        updateFlameList();
+
+        // select the first flame and force drawing
+
+        Object list = find("ListView");
+        setBoolean(getItem(list, 0), "selected", true);
+        listViewChange(list);
+
+    } // End of method mnuRandomBatchClick
+
+    /*****************************************************************************/
+
+    void randomBatch() {
+        int b = Global.batchSize;
+        if (b == 0) {
+            b = 1;
+        }
+
+        cps = new ArrayList<>();
+
+        for (int i = 0; i < b; i++) {
+            ControlPoint cp = ControlPoint.randomFlame(Global.mainCP);
+            Global.randomIndex++;
+            cp.name = Global.randomPrefix + Global.randomDate + "-" + Global.randomIndex;
+            cps.add(cp);
+        }
+
+        Global.openFile = "";
+    }
+
+    /*****************************************************************************/
+
+    void buildVariationMenu() {
+        Object menu = find("mnuVar");
+
+        int nv = XForm.getNrVariations();
+
+        // create all the needed groups
+
+        Color color = new Color(0xD1CCC6);
+
+        int ig = 0;
+        while (true) {
+            ig++;
+
+            // count the number of variations in this group
+            int n = 0;
+            for (int i = 0; i < nv; i++) {
+                if (XForm.getVariation(i).getGroup() == ig) {
+                    n++;
+                }
+            }
+
+            if (n == 0) {
+                break;
+            }
+
+            Object submenu = createImpl("menu");
+            setString(submenu, "text", "Group " + ig);
+            setColor(submenu, "background", color);
+
+            add(menu, submenu);
+
+            for (int i = 0; i < nv; i++) {
+                if (XForm.getVariation(i).getGroup() == ig) {
+                    Object item = createImpl("checkboxmenuitem");
+                    setString(item, "text", XForm.getVariation(i).getName());
+                    setMethod(item, "action", "variantMenuClick(this," + i + ")", item, this);
+                    setString(item, "group", "variations");
+                    setColor(item, "background", color);
+
+                    add(submenu, item);
+                }
+            }
+
+        }
+
+    } // End of method fillVariantMenu
+
+    /*****************************************************************************/
+
+    public void variantMenuClick(Object item, int index) {
+        unselectItems(find("mnuVar"));
+        setBoolean(item, "selected", true);
+
+        Global.variation = index;
+
+        updateUndo();
+        Global.mainCP.setVariation(index);
+        resetLocation();
+
+        timer.enable();
+
+        updateWindows();
+
+    }
+
+    /*****************************************************************************/
+
+    void unselectItems(Object menu) {
+        Object[] items = getItems(menu);
+        for (Object item : items) {
+            if ("menu".equals(getClass(item))) {
+                unselectItems(item);
+            } else if ("checkboxmenuitem".equals(getClass(item))) {
+                setBoolean(item, "selected", false);
+            }
+        }
+    }
 
-	} // End of method mnuRandomizeGradientClick
+    /*****************************************************************************/
 
-	/*****************************************************************************/
+    void resetLocation() {
+        Global.mainCP.zoom = 0.0;
+        Global.mainCP.calcBoundBox();
+        center[0] = Global.mainCP.center[0];
+        center[1] = Global.mainCP.center[1];
+    }
 
-	public void mnuImageClick() {
-	} // End of method mnuImageClick
+    /*****************************************************************************/
 
-	/*****************************************************************************/
+    public void mnuFullScreenClick() {
+        if (image == null) {
+            return;
+        }
 
-	public void mnuImageSizeClick() {
+        Global.fullscreen.cp.copy(Global.mainCP);
+        Global.fullscreen.center[0] = Global.mainCP.center[0];
+        Global.fullscreen.center[1] = Global.mainCP.center[1];
+        CMap.copyPalette(Global.mainCP.cmap, Global.fullscreen.cp.cmap);
 
-		Global.adjust.updateDisplay();
-		Global.adjust.setTab(3);
-		Global.adjust.show();
+        Global.fullscreen.image = image;
 
-	} // End of method mnuImageSizeClick
+        Global.fullscreen.show();
 
-	/*****************************************************************************/
+    } // End of method mnuFullScreenClick
 
-	public void tbQualityBoxSet(Object combo) {
+    /*****************************************************************************/
 
-		try {
-			int quality = Integer.parseInt(getString(combo, "text"));
+    public void mnuRandomClick() {
+        stopThread();
+        updateUndo();
 
-			Global.defSampleDensity = quality;
+        Global.mainCP = ControlPoint.randomFlame(Global.mainCP);
 
-			stopThread();
-			timer.enable();
-			updateWindows();
-		} catch (Exception ex) {
-		}
+        Global.randomIndex++;
+        Global.mainCP.name = Global.randomPrefix + Global.randomDate + "-" + Global.randomIndex;
 
-	} // End of method tbQualityBoxSet
+        Global.transforms = Global.mainCP.trianglesFromCP(Global.mainTriangles);
 
-	/*****************************************************************************/
+        if (Global.adjust.visible()) {
+            Global.adjust.updateDisplay();
+        }
 
-	public void mnuItemDeleteClick() {
-		Object list = find("ListView");
-		int index = getSelectedIndex(list);
-		if (index < 0) {
-			beep();
-			return;
-		}
+        resetLocation();
 
-		if (Global.confirmDelete) {
-			ControlPoint cp = cps.get(index);
-			confirm("Permanently delete flame '" + cp.name + "' ?",
-					new DeleteTask(index));
-		} else {
-			deleteFlame(index);
-		}
+        timer.enable();
 
-	} // End of method mnuItemDeleteClick
+        updateWindows();
 
-	/*****************************************************************************/
+    } // End of method mnuRandomClick
 
-	void deleteFlame(int index) {
-		cps.remove(index);
+    /*****************************************************************************/
 
-		updateFlameList();
+    public void mnuRWeightsClick() {
+        stopThread();
+        updateUndo();
+        Global.mainCP.randomizeWeights();
 
-		Object list = find("ListView");
+        timer.enable();
 
-		if (cps.size() > index) {
-			setBoolean(getItem(list, index), "selected", true);
-			listViewChange(list);
-		} else if (cps.size() > 0) {
-			setBoolean(getItem(list, cps.size() - 1), "selected", true);
-			listViewChange(list);
-		}
+        updateWindows();
 
-	} // End of method deleteFlame
+    } // End of method mnuRWeightsClick
 
-	/*****************************************************************************/
-
-	public void mnuItemRenameClick() {
-		Object list = find("ListView");
-		int index = getSelectedIndex(list);
-		if (index < 0) {
-			beep();
-			return;
-		}
+    /*****************************************************************************/
 
-		ControlPoint cp = cps.get(index);
+    public void mnuEqualizeClick() {
+        stopThread();
+        updateUndo();
 
-		ask("Name of the flame :", cp.name, new FlameRenameTask(index));
+        Global.mainCP.equalizeWeights();
 
-	} // End of method mnuItemRenameClick
+        timer.enable();
 
-	/*****************************************************************************/
+        updateWindows();
+    }
 
-	public void mnuResetLocationClick() {
-		double scale;
-		double dx, dy, cdx, cdy;
-		double sina, cosa;
+    /*****************************************************************************/
 
-		updateUndo();
+    public void mnuNormalWeightsClick() {
+        stopThread();
+        updateUndo();
 
-		double p2 = Math.pow(2, Global.mainCP.zoom);
-		scale = Global.mainCP.pixels_per_unit / Global.mainCP.width * p2;
+        // todo ...
 
-		cdx = Global.mainCP.center[0];
-		cdy = Global.mainCP.center[1];
-
-		resetLocation();
-
-		cdx = Global.mainCP.center[0] - cdx;
-		cdy = Global.mainCP.center[1] - cdy;
-
-		sina = Math.sin(Global.mainCP.fangle);
-		cosa = Math.cos(Global.mainCP.fangle);
-
-		if (sina == 0) {
-			dy = cdy * cosa;
-			dx = cdx / cosa;
-		} else {
-			dx = cdy * sina + cdx * cosa;
-			dy = (dx * cosa - cdx) / sina;
-		}
-
-		viewpos[0] = viewpos[0] - dx * scale * imagewidth;
-		viewpos[1] = viewpos[1] - dy * scale * imageheight;
-
-		p2 = Math.pow(2, Global.mainCP.zoom);
-		viewscale = viewscale * Global.mainCP.pixels_per_unit
-				/ Global.mainCP.width * p2 / scale;
-
-		// drawImageView();
-
-		timer.enable();
-
-		updateWindows();
-
-	} // End of method mnuResetLocationClick
-
-	/*****************************************************************************/
-
-	public void imageMouseDown(MouseEvent e, Rectangle bounds) {
-		if (e.isPopupTrigger()) {
-			Object canvas = find("MainCanvas");
-			Rectangle r = new Rectangle(bounds);
-			setToAbsolutePosition(canvas, r);
-			Object popup = find("MainPopup");
-			popupPopup(popup, r.x + e.getX(), r.y + e.getY());
-			return;
-		}
-
-		click.top = click.bottom = e.getY();
-		click.left = click.right = e.getX();
-
-		switch (fmousemovestate) {
-		case msZoomWindow:
-			select.top = select.bottom = e.getY();
-			select.left = select.right = e.getX();
-			drawZoomWindow();
-			fmousemovestate = msZoomWindowMove;
-			break;
-
-		case msZoomOutWindow:
-			select.top = select.bottom = e.getY();
-			select.left = select.right = e.getX();
-			drawZoomWindow();
-			fmousemovestate = msZoomOutWindowMove;
-			break;
-
-		case msDrag:
-			fmousemovestate = msDragMove;
-			break;
-
-		case msRotate:
-			clickangle = Math.atan2(e.getY() - imageheight / 2, imagewidth / 2
-					- e.getX());
-			rotateangle = 0;
-			drawRotateLines(rotateangle);
-			fmousemovestate = msRotateMove;
-			break;
-		}
-
-	} // End of method imageMouseDown
-
-	/*****************************************************************************/
-
-	int xdrag = 0;
-	int ydrag = 0;
-
-	public void imageMouseDrag(MouseEvent e, Rectangle bounds) {
-		double dx, dy, cx, cy;
-		int sgn;
-
-		if ((e.getX() == xdrag) && (e.getY() == ydrag)) {
-			return;
-		}
-
-		xdrag = e.getX();
-		ydrag = e.getY();
-
-		switch (fmousemovestate) {
-		case msZoomWindowMove:
-		case msZoomOutWindowMove:
-			// erase previous selection
-			if (drawselection) {
-				drawZoomWindow();
-			}
-			click.bottom = ydrag;
-			click.right = xdrag;
-			dx = xdrag - click.left;
-			dy = ydrag - click.top;
-
-			sgn = (dy * dx >= 0) ? 1 : -1;
-			if ((dy == 0)
-					|| (Math.abs(dx / dy) >= imagewidth * 1.0 / imageheight)) {
-				cy = (ydrag + click.top) / 2.0;
-				select.left = click.left;
-				select.right = xdrag;
-				select.top = (int) (cy - sgn
-						* Math.round(dx / 2 / imagewidth * imageheight));
-				select.bottom = (int) (cy + sgn
-						* Math.round(dx / 2 / imagewidth * imageheight));
-			} else {
-				cx = (xdrag + click.left) / 2.0;
-				select.left = (int) (cx - sgn
-						* Math.round(dy / 2 / imageheight * imagewidth));
-				select.right = (int) (cx + sgn
-						* Math.round(dy / 2 / imageheight * imagewidth));
-				select.top = click.top;
-				select.bottom = ydrag;
-			}
-			drawZoomWindow();
-			drawselection = true;
-			break;
-
-		case msDragMove:
-			xview = xdrag - click.left;
-			yview = ydrag - click.top;
-			repaint();
-			break;
-
-		case msRotateMove:
-			if (drawselection) {
-				drawRotateLines(rotateangle);
-			}
-			rotateangle = Math.atan2(ydrag - imageheight / 2, imagewidth / 2
-					- xdrag)
-					- clickangle;
-			drawRotateLines(rotateangle);
-			drawselection = true;
-			break;
-		}
-
-	} // End of method imageMouseDrag
-
-	/*****************************************************************************/
-
-	public void imageMouseUp(MouseEvent e, Rectangle bounds) {
-		double scale;
-
-		switch (fmousemovestate) {
-		case msZoomWindowMove:
-			drawZoomWindow();
-			fmousemovestate = msZoomWindow;
-			if (Math.abs(select.left - select.right) < 10) {
-				return;
-			}
-			if (Math.abs(select.top - select.bottom) < 10) {
-				return;
-			}
-			stopThread();
-			updateUndo();
-			scale = Global.mainCP.width * 1.0 / imagewidth;
-			Global.mainCP.zoomToRect(scaleRect(select, scale));
-			timer.enable();
-			updateWindows();
-			break;
-
-		case msZoomOutWindowMove:
-			drawZoomWindow();
-			fmousemovestate = msZoomOutWindow;
-			if (Math.abs(select.left - select.right) < 10) {
-				return;
-			}
-			if (Math.abs(select.top - select.bottom) < 10) {
-				return;
-			}
-			stopThread();
-			updateUndo();
-			scale = Global.mainCP.width * 1.0 / imagewidth;
-			Global.mainCP.zoomOutToRect(scaleRect(select, scale));
-			scale = ((double)imagewidth) / Math.abs(select.right - select.left);
-			timer.enable();
-			updateWindows();
-			break;
-
-		case msDragMove:
-			fmousemovestate = msDrag;
-			scale = Global.mainCP.width * 1.0 / imagewidth;
-			double dx = (xdrag - click.left) * scale;
-			double dy = (ydrag - click.top) * scale;
-			stopThread();
-			updateUndo();
-			Global.mainCP.translate(dx, dy);
-			timer.enable();
-			updateWindows();
-			break;
-
-		case msRotateMove:
-			drawRotateLines(rotateangle);
-			fmousemovestate = msRotate;
-			if (rotateangle == 0) {
-				return;
-			}
-			stopThread();
-			updateUndo();
-			if (Global.rotationMode == 0) {
-				Global.mainCP.rotate(rotateangle);
-			} else {
-				Global.mainCP.rotate(-rotateangle);
-			}
-			timer.enable();
-			updateWindows();
-			break;
-		}
-
-	} // End of method imageMouseUp
-
-	/*****************************************************************************/
-
-	void drawZoomWindow() {
-		int dx, dy;
-		int l, r, t, b;
-
-		Point pos = getPositionInDesktop(canvas);
-
-		Graphics2D g = (Graphics2D) getGraphics();
-		g.translate(pos.x, pos.y);
-
-		g.setXORMode(Color.black);
-		g.setColor(Color.white);
-
-		g.setStroke(dots);
-		g.drawRect(click.left, click.top, click.right - click.left,
-				click.bottom - click.top);
-
-		g.setStroke(basic);
-
-		dx = select.right - select.left;
-		if (dx >= 0) {
-			l = select.left - 1;
-			r = select.right;
-		} else {
-			dx = -dx;
-			l = select.right - 1;
-			r = select.left;
-		}
-		dx = Math.min(dx / 2 - 1, CORNER_SIZE);
-
-		dy = select.bottom - select.top;
-		if (dy >= 0) {
-			t = select.top - 1;
-			b = select.bottom;
-		} else {
-			dy = -dy;
-			t = select.bottom - 1;
-			b = select.top;
-		}
-		dy = Math.min(dy / 2, CORNER_SIZE);
-
-		g.drawLine(l + dx, t, l, t);
-		g.drawLine(l, t, l, t + dy);
-		g.drawLine(r - dx, t, r, t);
-		g.drawLine(r, t, r, t + dy);
-		g.drawLine(r - dx, b, r, b);
-		g.drawLine(r, b, r, b - dy);
-		g.drawLine(l + dx, b, l, b);
-		g.drawLine(l, b, l, b - dy);
-
-		g.setPaintMode();
-		g.setStroke(basic);
-		g.translate(-pos.x, -pos.y);
-
-	} // End of method drawZoomWindow
-
-	/*****************************************************************************/
-
-	void drawRotateLines(double angle) {
-		int[][] points = new int[4][2];
-		int x, y;
-		int p0x, p0y, p1x, p1y, p2x, p2y, p3x, p3y;
-
-		points[0][0] = imagewidth / 2 - 1;
-		points[0][1] = imageheight / 2 - 1;
-		points[1][0] = imagewidth / 2 - 1;
-		points[1][0] = -imageheight / 2;
-		points[2][0] = -imagewidth / 2;
-		points[2][1] = -imageheight / 2;
-		points[3][0] = -imagewidth / 2;
-		points[3][1] = imageheight / 2 - 1;
-
-		x = imagewidth / 2 - 1;
-		y = imageheight / 2 - 1;
-		p0x = (int) Math.round(Math.cos(angle) * x + Math.sin(angle) * y)
-				+ imagewidth / 2;
-		p0y = (int) Math.round(-Math.sin(angle) * x + Math.cos(angle) * y)
-				+ imageheight / 2;
-
-		x = imagewidth / 2 - 1;
-		y = -imageheight / 2;
-		p1x = (int) Math.round(Math.cos(angle) * x + Math.sin(angle) * y)
-				+ imagewidth / 2;
-		p1y = (int) Math.round(-Math.sin(angle) * x + Math.cos(angle) * y)
-				+ imageheight / 2;
-
-		x = -imagewidth / 2;
-		y = -imageheight / 2;
-		p2x = (int) Math.round(Math.cos(angle) * x + Math.sin(angle) * y)
-				+ imagewidth / 2;
-		p2y = (int) Math.round(-Math.sin(angle) * x + Math.cos(angle) * y)
-				+ imageheight / 2;
-
-		x = -imagewidth / 2;
-		y = imageheight / 2 - 1;
-		p3x = (int) Math.round(Math.cos(angle) * x + Math.sin(angle) * y)
-				+ imagewidth / 2;
-		p3y = (int) Math.round(-Math.sin(angle) * x + Math.cos(angle) * y)
-				+ imageheight / 2;
-
-		Point pos = getPositionInDesktop(canvas);
-
-		Graphics2D g = (Graphics2D) getGraphics();
-		g.translate(pos.x, pos.y);
-
-		g.setXORMode(Color.black);
-		g.setColor(Color.white);
-
-		g.setStroke(dots);
-
-		g.drawLine(p0x, p0y, p1x, p1y);
-		g.drawLine(p1x, p1y, p2x, p2y);
-		g.drawLine(p2x, p2y, p3x, p3y);
-		g.drawLine(p3x, p3y, p0x, p0y);
-
-		g.setPaintMode();
-		g.setStroke(basic);
-		g.translate(-pos.x, -pos.y);
-
-	} // End of method drawRotateLines
-
-	/*****************************************************************************/
-
-	SRect scaleRect(MouseRect r, double scale) {
-		return new SRect(scale * r.left, scale * r.top, scale * r.right, scale
-				* r.bottom);
-	} // End of method scaleRect
-
-	/*****************************************************************************/
-
-	public void tbZoomWindowClick() {
-		fmousemovestate = msZoomWindow;
-	}
-
-	public void tbZoomOutWindowClick() {
-		fmousemovestate = msZoomOutWindow;
-	}
-
-	public void tbDragClick() {
-		fmousemovestate = msDrag;
-	}
-
-	public void tbRotateClick() {
-		fmousemovestate = msRotate;
-	}
-
-	/*****************************************************************************/
-	/*****************************************************************************/
-
-	@Override
-	public boolean destroy() {
-		if (Global.confirmExit) {
-			confirm("Do you really want to quit? All unsaved data will be lost!",
-					new QuitTask());
-			return false;
-		} else {
-			quitApplication();
-			return true;
-		}
-
-	}
-
-	/*****************************************************************************/
-
-	void quitApplication() {
-
-		Rectangle bounds = launcher.getBounds();
-		Global.windowX = bounds.x;
-		Global.windowY = bounds.y;
-		Global.windowWidth = bounds.width;
-		Global.windowHeight = bounds.height;
-
-		bounds = getRectangle(find("BackPanel"), "bounds");
-		if (bounds != null) {
-			Global.panelWidth = bounds.width;
-			Global.panelHeight = bounds.height;
-		}
-
-		Global.writeSettings();
-	}
-
-	/*****************************************************************************/
-	// ThreadTarget implementation
-
-	@Override
-	public void message(int index) {
-		if (index == WM_THREAD_COMPLETE) {
-			handleThreadCompletion();
-		}
-	}
-
-	/*****************************************************************************/
-
-	void handleThreadCompletion() {
-
-		if (renderthread != null) {
-			xview = 0;
-			yview = 0;
-			image = renderthread.getImage();
-			repaint();
-		}
-
-	}
-
-	/*****************************************************************************/
-
-	void restoreWindowPosition() {
-
-		if ((Global.windowX >= 0) && (Global.windowY >= 0)) {
-			launcher.setLocation(Global.windowX, Global.windowY);
-		}
-		launcher.setSize(Global.windowWidth, Global.windowHeight);
-
-	} // End of method restoreBackPanelSize
-
-	/*****************************************************************************/
-
-	@Override
-	protected void doLayout(Object component) {
-		super.doLayout(component);
-
-		if (component == find("BackPanel")) {
-			if (timer != null) {
-				backPanelResize();
-			}
-		}
-	}
-
-	/*****************************************************************************/
-
-	void backPanelResize() {
-
-		Rectangle bounds = getRectangle(find("BackPanel"), "bounds");
-		if ((bounds.width == panelwidth) && (bounds.height == panelheight)) {
-			return;
-		}
-
-		panelwidth = bounds.width;
-		panelheight = bounds.height;
-
-		stopThread();
-
-		if (Global.canDrawOnResize) {
-			timer.enable();
-		}
-
-		resizeImage();
-
-		drawImageView();
-
-	} // End of method backPanelResize
-
-	/*****************************************************************************/
-
-	public void setWindowSize(int width, int height, boolean resize) {
-
-		Global.mainCP.adjustScale(width, height);
-
-		if (resize) {
-			Rectangle rpan = getRectangle(find("BackPanel"), "bounds");
-			if (rpan != null) {
-				Rectangle rwin = launcher.getBounds();
-				rwin.width += width - rpan.width;
-				rwin.height += height - rpan.height;
-				launcher.setBounds(rwin);
-				launcher.doLayout();
-			}
-		} else {
-			resizeImage();
-			timer.enable();
-			updateWindows();
-		}
-
-		/*
-		 * resizeImage();
-		 *
-		 * timer.enable(); updateWindows();
-		 */
-
-	} // End of method setWindowSize
-
-	/*****************************************************************************/
-
-	void stopThread() {
-		timer.disable();
-
-		if (renderthread != null) {
-			renderthread.terminate();
-		}
-
-	} // End of method stopThread
-
-	/*****************************************************************************/
-
-	public void mnuOpenScriptClick() {
-		Global.script.show();
-		Global.script.btnOpenClick();
-	}
-
-	/*****************************************************************************/
-
-	public void mnuEditScriptClick() {
-		Global.script.show();
-	} // End of method mnuEditScriptClick
-
-	/*****************************************************************************/
-
-	public void mnuRunScriptClick() {
-		Global.script.btnRunClick();
-	}
-
-	/*****************************************************************************/
-
-	public void mnuStopScriptClick() {
-		Global.script.btnStopClick();
-	}
-
-	/*****************************************************************************/
-
-	public void mnuHelpClick() {
-		Global.helper.show();
-		Global.helper.setTopicByName("introduction");
-	} // End of method mnuHelpClick
-
-	/*****************************************************************************/
-
-	public void mnuAboutClick() {
-		try {
-			Object dialog = parse("/org/apophysis/thinletxml/about.xml");
-			add(dialog);
-
-			setString(find("aboutname"), "text", APPNAME);
-			setString(find("aboutversion"), "text", "Version " + VERSION);
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-	}
-
-	/*****************************************************************************/
-
-	public void closeAbout() {
-		remove(find("aboutdialog"));
-	}
-
-	/*****************************************************************************/
-
-	public void mnuManageFavoritesClick() {
-		Global.favorites.show();
-	} // End of method mnuManageFavoritesClick
-
-	/*****************************************************************************/
-
-	public void mnuPostSheepClick() {
-		Sheep.send(Global.mainCP);
-	}
-
-	/*****************************************************************************/
-
-	public void mnuCopyClick() {
-
-		try (StringWriter sw = new StringWriter();
-             PrintWriter w = new PrintWriter(sw)) {
-			
-			Global.mainCP.save(w);
-			w.flush();
-
-			setClipboard(sw.toString());
-
-		} catch (Exception ex) {
-		}
-
-	} // End of method mnuCopyClick
-
-	/*****************************************************************************/
-
-	public void mnuPasteClick() {
-		Object list = find("ListView");
-		int index = getSelectedIndex(list);
-		if (index < 0) {
-			return;
-		}
-
-		String s = getClipboard();
-		int i = s.indexOf("<flame ");
-		if (i < 0) {
-			return;
-		}
-
-		s = s.substring(i);
-
-		try {
-			BufferedReader r = new BufferedReader(new StringReader(s));
-			ControlPoint cp = readControlPoint(r);
-
-			if (cp == null) {
-				return;
-			}
-
-			updateUndo();
-			stopThread();
-
-			Global.mainCP.copy(cp);
-			Global.transforms = Global.mainCP
-					.trianglesFromCP(Global.mainTriangles);
-
-			Object item = getItem(list, index);
-			setString(item, "text", cp.name);
-			cps.set(index, Global.mainCP);
-			setStatus(cp.name);
-
-			timer.enable();
-			updateWindows();
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-
-	} // End of method mnuPasteClick
-
-	/*****************************************************************************/
-	/*****************************************************************************/
-
-	void resizeImage()
-
-	{
-		int pw, ph;
-
-		Rectangle bounds = getRectangle(find("BackPanel"), "bounds");
-
-		if (bounds == null) {
-			return;
-		}
-
-		pw = bounds.width - 2;
-		ph = bounds.height - 2;
-		if ((1.0 * Global.mainCP.width / Global.mainCP.height) > (1.0 * pw / ph)) {
-			imagewidth = pw;
-			imageheight = (int) (Global.mainCP.height * pw
-					/ (double)Global.mainCP.width + 0.5);
-		} else {
-			imageheight = ph;
-			imagewidth = (int) (Global.mainCP.width * ph / (double)Global.mainCP.height + 0.5);
-		}
-
-		setInteger(canvas, "width", imagewidth);
-		setInteger(canvas, "height", imageheight);
-		int x = bounds.width / 2 - imagewidth / 2;
-		int y = bounds.height / 2 - imageheight / 2;
-		setRectangle(canvas, "bounds", x, y, imagewidth, imageheight);
-
-	}
-
-	/*****************************************************************************/
-
-	void drawImageView() {
-	}
-
-	/*****************************************************************************/
-	// ThreadTarget implementation
-
-	@Override
-	public void output(String msg) {
-	}
-
-	@Override
-	public void progress(double value) {
-
-		int ivalue = (int) (value * 100);
-		if (ivalue < 0) {
-			ivalue = 0;
-		}
-		if (ivalue > 100) {
-			ivalue = 100;
-		}
-
-		setInteger(find("Status1"), "value", ivalue);
-
-		if (value >= 1.0) {
-			long elapsed = System.currentTimeMillis() - startTime;
-
-			long mil = elapsed % 1000;
-			elapsed /= 1000;
-
-			long sec = elapsed % 60;
-			elapsed /= 60;
-
-			long min = elapsed % 60;
-			elapsed /= 60;
-
-			long hou = elapsed;
-
-			String s = "Elapsed : "
-					+ ((hou < 10) ? ("0" + hou) : ("" + hou))
-					+ ":"
-					+ ((min < 10) ? ("0" + min) : ("" + min))
-					+ ":"
-					+ ((sec < 10) ? ("0" + sec) : ("" + sec))
-					+ ":"
-					+ ((mil < 10) ? ("00" + min) : (mil < 100) ? ("0" + mil)
-							: ("" + mil));
-
-			setString(find("Status0"), "text", s);
-		}
-
-	} // End of method progress
-
-	/*****************************************************************************/
-	// Drag and drop implementation
-
-	@Override
-	public void dragEnter(DropTargetDragEvent e) {
-	}
-
-	@Override
-	public void dragOver(DropTargetDragEvent e) {
-	}
-
-	@Override
-	public void dragExit(DropTargetEvent e) {
-	}
-
-	@Override
-	public void dropActionChanged(DropTargetDragEvent e) {
-	}
-
-	@Override
-	public void drop(DropTargetDropEvent e) {
-		Transferable t;
-
-		try {
-			e.acceptDrop(DnDConstants.ACTION_COPY_OR_MOVE);
-			t = e.getTransferable();
-			File[] files = getFiles(t);
-			e.getDropTargetContext().dropComplete(true);
-			openFiles(files);
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-
-	} // End of method drop
-
-	/*****************************************************************************/
-
-	File[] getFiles(Transferable t) throws Exception {
-
-		DataFlavor[] flavors = t.getTransferDataFlavors();
-		int nf = flavors.length;
-		for (int i = 0; i < nf; i++) {
-			Object o = t.getTransferData(flavors[i]);
-			if (!(o instanceof List)) {
-				continue;
-			}
-			List<?> list = (List<?>) o;
-			if (list.isEmpty()) {
-				continue;
-			}
-
-			if (list.get(0) instanceof File) {
-				return list.toArray(new File[list.size()]);
-			}
-		}
-
-		return null;
-
-	} // End of method getURL
-
-	/*****************************************************************************/
-
-	public void openFiles(File files[]) {
-		boolean scriptloaded = false;
-		List<ControlPoint> newcps = new ArrayList<ControlPoint>();
-
-		for (int i = 0; i < files.length; i++) {
-			// should not occur
-			if (!files[i].exists()) {
-				continue;
-			}
-
-			String fname = files[i].getAbsolutePath();
-			int k = fname.lastIndexOf('.');
-			String ext = (k < 0) ? "" : fname.toLowerCase().substring(k + 1);
-
-			if (ext.equals("flame")) {
-				List<ControlPoint> v = openXMLFile(fname);
-				if (newcps.size() == 0) {
-					Global.openFile = fname;
-				}
-				appendFlames(v, newcps);
-			} else if (ext.equals("fla")) {
-				List<ControlPoint> v = openFLAFile(fname);
-				if (newcps.size() == 0) {
-					Global.openFile = fname;
-				}
-				appendFlames(v, newcps);
-			} else if (ext.equals("upr")) {
-				openUPRFile(fname);
-			} else if (ext.equals("class")) {
-				XForm.installPlugin(files[i]);
-			} else if (ext.equals("jpg")) {
-				List<ControlPoint> v = openJPGFile(fname);
-				if (newcps.size() == 0) {
-					Global.openFile = fname;
-				}
-				appendFlames(v, newcps);
-			} else if (ext.equals("png")) {
-				List<ControlPoint> v = openPNGFile(fname);
-				if (newcps.size() == 0) {
-					Global.openFile = fname;
-				}
-				appendFlames(v, newcps);
-			} else if (ext.equals("ajs")) {
-				Global.script.openFile(fname, false);
-				scriptloaded = true;
-			} else if (ext.equals("asc")) {
-				Global.script.openFile(fname, true);
-				scriptloaded = true;
-			}
-		}
-
-		if (newcps.size() > 0) {
-			cps = newcps;
-			updateFlameList();
-
-			// select the first flame and force drawing
-			Object list = find("ListView");
-			setBoolean(getItem(list, 0), "selected", true);
-			listViewChange(list);
-
-			checkUnknown();
-		}
-
-		if (scriptloaded) {
-			Global.script.btnRunClick();
-		}
-
-	} // End of method openFile
-
-	/*****************************************************************************/
-
-	void appendFlames(List<ControlPoint> v, List<ControlPoint> newcps) {
-		int n = v.size();
-		for (int i = 0; i < n; i++) {
-			newcps.add(v.get(i));
-		}
-	}
-
-	/*****************************************************************************/
-
-	void checkUnknown() {
-		// list of all unknown variations
-		List<String> unknown = new ArrayList<String>();
-
-		int n = cps.size();
-		for (int i = 0; i < n; i++) {
-			ControlPoint cp = cps.get(i);
-			if (cp.unknown != null) {
-				int nu = cp.unknown.size();
-				for (int j = 0; j < nu; j++) {
-					String s = cp.unknown.get(j);
-					if (!unknown.contains(s)) {
-						unknown.add(s);
-					}
-				}
-			}
-		}
-
-		String msg = "";
-		String sep = "";
-
-		int nu = unknown.size();
-		int k = 0;
-		for (int j = 0; j < nu; j++) {
-			msg += sep + unknown.get(j);
-			sep = ", ";
-			k++;
-		}
-
-		if (k == 1) {
-			alert("Unknown variation : " + msg);
-		} else if (k > 1) {
-			alert("Unknown variations : " + msg);
-		}
-
-	}
-
-	/*****************************************************************************/
-
-	void initStrokes() {
-		float thickness = 1f;
-		float miterLimit = 5f;
-		float[] dashPattern = { 5f };
-		float dashPhase = 2.5f;
-
-		dots = new BasicStroke(thickness, BasicStroke.CAP_BUTT,
-				BasicStroke.JOIN_MITER, miterLimit, dashPattern, dashPhase);
-
-		basic = new BasicStroke();
-
-	} // End of method initStrokes
-
-	/*****************************************************************************/
-
-	public void updateFavorites() {
-		List<File> v = Global.readFavorites();
-
-		Object menu = find("mnuScript");
-
-		Object[] items = getItems(menu);
-		for (int i = 8; i < items.length; i++) {
-			remove(items[i]);
-		}
-
-		Color color = new Color(0xD1CCC6);
-
-		int n = v.size();
-		for (int i = 0; i < n; i++) {
-			File f = v.get(i);
-			String title = f.getName();
-			int k = title.lastIndexOf('.');
-			if (k >= 0) {
-				title = title.substring(0, k);
-			}
-
-			Object menuitem = createImpl("menuitem");
-			setString(menuitem, "text", title);
-			setColor(menuitem, "background", color);
-			putProperty(menuitem, "file", f);
-
-			setMethod(menuitem, "action", "favoriteClick(this)", getDesktop(),
-					this);
-
-			add(menu, menuitem);
-		}
-
-	} // End of method updateFavorites
-
-	/*****************************************************************************/
-
-	public void favoriteClick(Object menuitem) {
-		File f = (File) getProperty(menuitem, "file");
-		if (f == null) {
-			return;
-		}
-
-		String path = f.getAbsolutePath();
-		String ext = "ajs";
-		int i = path.lastIndexOf('.');
-		if (i > 0) {
-			ext = path.substring(i + 1);
-		}
-
-		boolean mustconvert = ext.equals("asc");
-		Global.script.openFile(path, mustconvert);
-		Global.script.btnRunClick();
-
-	} // End of method favoriteClick
-
-	/*****************************************************************************/
-
-	public void mnuSortClick(int option) {
-		Object list = find("ListView");
-		int index = getSelectedIndex(list);
-
-		Object o = (index >= 0) ? cps.get(index) : null;
-
-		int n = cps.size();
-		SortableControlPoint[] ss = new SortableControlPoint[n];
-		for (int i = 0; i < n; i++) {
-			ss[i] = new SortableControlPoint(cps.get(i),
-					option);
-		}
-
-		QuickSort.qsort(ss);
-
-		for (int i = 0; i < n; i++) {
-			cps.set((option % 2) == 0 ? i : n - 1 - i, ss[i].cp);
-		}
-
-		updateFlameList();
-
-		int k = -1;
-		for (int i = 0; i < n; i++) {
-			if (cps.get(i) == o) {
-				k = i;
-			}
-		}
-
-		if (k >= 0) {
-			setBoolean(getItem(list, k), "selected", true);
-		} else {
-			setBoolean(getItem(list, 0), "selected", true);
-			listViewChange(list);
-		}
-
-	} // End of method mnuSortClick
-
-	/*****************************************************************************/
-
-	public void setStatus(String msg) {
-		setString(find("Status2"), "text", msg);
-	}
-
-	/*****************************************************************************/
-
-	void showMemory(String msg) {
-		Runtime r = Runtime.getRuntime();
-		long free = r.freeMemory();
-		long total = r.totalMemory();
-		long max = r.maxMemory();
-
-		String sfree = free + "";
-		while (sfree.length() < 10) {
-			sfree = " " + sfree;
-		}
-
-		String stotal = total + "";
-		while (stotal.length() < 10) {
-			stotal = " " + stotal;
-		}
-
-		String smax = max + "";
-		while (smax.length() < 10) {
-			smax = " " + smax;
-		}
-
-		System.out.print("MEMORY ");
-		System.out.print(sfree);
-		System.out.print(stotal);
-		System.out.print(smax);
-		System.out.print("  ");
-		System.out.println(msg);
-
-	}
-
-	/*****************************************************************************/
-
-	String getClipboard() {
-		String s = "";
-
-		Toolkit tk = Toolkit.getDefaultToolkit();
-		Transferable t = tk.getSystemClipboard().getContents(null);
-		if (t == null) {
-			return "";
-		}
-
-		try {
-			if (t.isDataFlavorSupported(DataFlavor.stringFlavor)) {
-				s = (String) t.getTransferData(DataFlavor.stringFlavor);
-			}
-		} catch (Exception ex) {
-		}
-
-		return s;
-
-	} // End of method getClipboard
-
-	/*****************************************************************************/
-
-	void setClipboard(String s) {
-
-		StringSelection ss = new StringSelection(s);
-		Toolkit tk = Toolkit.getDefaultToolkit();
-		tk.getSystemClipboard().setContents(ss, null);
-
-	} // End of method setClipboard
-
-	/*****************************************************************************/
-
-	void setMenuShortcuts() {
-
-		// look for the shortcut mask
-		Toolkit tk = Toolkit.getDefaultToolkit();
-		long mask = tk.getMenuShortcutKeyMask();
-
-		Object menubar = find("MainMenu");
-		Object[] menus = getItems(menubar);
-		for (Object menu : menus) {
-			int n = getCount(menu);
-			for (int j = 0; j < n; j++) {
-				Object item = getItem(menu, j);
-				Long L = (Long) get(item, "accelerator");
-				if (L == null) {
-					continue;
-				}
-				long acc = L.longValue();
-				long mod = L.longValue() >> 32;
-				if ((mod & java.awt.Event.META_MASK) != 0) {
-					mod = (mod & ~java.awt.Event.META_MASK) | mask;
-					acc = (acc & 0xFFFFFFFFL) | (mod << 32);
-					set(item, "accelerator", Long.valueOf(acc));
-				}
-			}
-		}
-
-	} // End of method setMenuShortcuts
-
-	/*****************************************************************************/
-
-	class OpenFileTask implements Task {
-
-		@Override
-		public void execute() {
-			Global.browserPath = Global.opendialog.getBrowserPath();
-			File file = new File(Global.opendialog.filename);
-			File[] files = new File[] { file };
-			openFiles(files);
-		}
-
-	} // End of class OpenFileTask
-
-	/*****************************************************************************/
-	/*****************************************************************************/
-
-	class SaveFileTask implements Task {
-
-		ControlPoint cp;
-
-		SaveFileTask(ControlPoint cp) {
-			this.cp = cp;
-		}
-
-		@Override
-		public void execute() {
-			Global.browserPath = Global.savedialog.getBrowserPath();
-			saveXMLFile(cp, Global.savedialog.filename);
-		}
-
-	} // End of class SaveFlameTask
-
-	/*****************************************************************************/
-	/*****************************************************************************/
-
-	class SmoothPaletteTask implements Task {
-
-		@Override
-		public void execute() {
-			Global.browserPath = Global.opendialog.getBrowserPath();
-			smoothPalette();
-		}
-
-	} // End of class SmoothPaletteTask
-
-	/*****************************************************************************/
-
-	class FlameRenameTask implements Task {
-
-		int index;
-
-		FlameRenameTask(int index) {
-			this.index = index;
-		}
-
-		@Override
-		public void execute() {
-			renameFlame(index, _answer);
-		}
-
-	}
-
-	/*****************************************************************************/
-	/*****************************************************************************/
-
-	class DeleteTask implements Task {
-
-		int index;
-
-		DeleteTask(int index) {
-			this.index = index;
-		}
-
-		@Override
-		public void execute() {
-			deleteFlame(index);
-		}
-
-	} // End of class DeleteTask
-
-	/*****************************************************************************/
-	/*****************************************************************************/
-
-	class RenderTask implements Task {
-
-		boolean all = false;
-
-		RenderTask(boolean all) {
-			this.all = all;
-		}
-
-		@Override
-		public void execute() {
-			renderToDisk(all);
-		}
-
-	}
-
-	/*****************************************************************************/
-	/*****************************************************************************/
-
-	class QuitTask implements Task {
-
-		@Override
-		public void execute() {
-			quitApplication();
-			System.exit(0);
-		}
-
-	}
-
-	/*****************************************************************************/
-	/*****************************************************************************/
-
-	class Timer extends Thread {
-
-		int timerid = 0;
-
-		synchronized public void enable() {
-			timerid++;
-			notify();
-		}
-
-		synchronized public void disable() {
-			timerid = 0;
-		}
-
-		@Override
-		public void run() {
-			int oldid = 0;
-
-			while (true) {
-				synchronized (this) {
-					try {
-						wait(100);
-					} catch (Exception ex) {
-					}
-
-					// if still the same after 100 ms
-					if ((timerid > 0) && (timerid == oldid)) {
-						redrawTimerTimer();
-					} else {
-						oldid = timerid;
-					}
-				}
-			}
-		}
-
-	} // End of class Timer
-
-	/*****************************************************************************/
-	/*****************************************************************************/
-
-	static class SortableControlPoint implements MySortable {
-
-		ControlPoint cp;
-		String name;
-
-		SortableControlPoint(ControlPoint cp, int option) {
-			this.cp = cp;
-			switch (option) {
-			case 0:
-			case 1:
-				name = cp.name;
-				break;
-
-			case 2:
-			case 3:
-				StringBuilder sb = new StringBuilder(cp.name);
-				sb.reverse();
-				name = sb.toString();
-				break;
-			}
-
-		}
-
-		@Override
-		public long compare(MySortable s) {
-			SortableControlPoint scp = (SortableControlPoint) s;
-			return name.compareTo(scp.name);
-		}
-
-	}
-
-	/*****************************************************************************/
-	/*****************************************************************************/
+        timer.enable();
+
+        updateWindows();
+
+    }
+
+    /*****************************************************************************/
+
+    public void mnuCalculateColorsClick() {
+        stopThread();
+        updateUndo();
+
+        for (int i = 0; i < Global.transforms; i++) {
+            Global.mainCP.xform[i].color = ((double) i) / (Global.transforms - 1);
+        }
+
+        timer.enable();
+
+        updateWindows();
+
+    } // End of method mnuCalculateColorsClick
+
+    /*****************************************************************************/
+
+    public void mnuRandomizeColorsClick() {
+        stopThread();
+        updateUndo();
+
+        for (int i = 0; i < Global.transforms; i++) {
+            Global.mainCP.xform[i].color = Math.random();
+        }
+
+        timer.enable();
+
+        updateWindows();
+    }
+
+    /*****************************************************************************/
+
+    public void mnuRandomGradientClick() {
+        int n = CMap.cmapnames.length;
+        int i = (int) (Math.random() * n);
+
+        stopThread();
+        updateUndo();
+
+        Global.mainCP.cmapindex = i;
+        CMap.getCMap(i, 1, Global.mainCP.cmap);
+
+        timer.enable();
+
+        updateWindows();
+
+    } // End of method mnuRandomGradientClick
+
+    /*****************************************************************************/
+
+    public void mnuRandomizeGradientClick() {
+        stopThread();
+        updateUndo();
+
+        Global.mainCP.cmapindex = -1;
+        CMap.copyPalette(CMap.randomGradient(), Global.mainCP.cmap);
+
+        timer.enable();
+
+        updateWindows();
+
+    } // End of method mnuRandomizeGradientClick
+
+    /*****************************************************************************/
+
+    public void mnuImageClick() {
+    } // End of method mnuImageClick
+
+    /*****************************************************************************/
+
+    public void mnuImageSizeClick() {
+
+        Global.adjust.updateDisplay();
+        Global.adjust.setTab(3);
+        Global.adjust.show();
+
+    } // End of method mnuImageSizeClick
+
+    /*****************************************************************************/
+
+    public void tbQualityBoxSet(Object combo) {
+
+        try {
+            int quality = Integer.parseInt(getString(combo, "text"));
+
+            Global.defSampleDensity = quality;
+
+            stopThread();
+            timer.enable();
+            updateWindows();
+        } catch (Exception ex) {
+        }
+
+    } // End of method tbQualityBoxSet
+
+    /*****************************************************************************/
+
+    public void mnuItemDeleteClick() {
+        Object list = find("ListView");
+        int index = getSelectedIndex(list);
+        if (index < 0) {
+            beep();
+            return;
+        }
+
+        if (Global.confirmDelete) {
+            ControlPoint cp = cps.get(index);
+            confirm("Permanently delete flame '" + cp.name + "' ?", new DeleteTask(index));
+        } else {
+            deleteFlame(index);
+        }
+
+    } // End of method mnuItemDeleteClick
+
+    /*****************************************************************************/
+
+    void deleteFlame(int index) {
+        cps.remove(index);
+
+        updateFlameList();
+
+        Object list = find("ListView");
+
+        if (cps.size() > index) {
+            setBoolean(getItem(list, index), "selected", true);
+            listViewChange(list);
+        } else if (cps.size() > 0) {
+            setBoolean(getItem(list, cps.size() - 1), "selected", true);
+            listViewChange(list);
+        }
+
+    } // End of method deleteFlame
+
+    /*****************************************************************************/
+
+    public void mnuItemRenameClick() {
+        Object list = find("ListView");
+        int index = getSelectedIndex(list);
+        if (index < 0) {
+            beep();
+            return;
+        }
+
+        ControlPoint cp = cps.get(index);
+
+        ask("Name of the flame :", cp.name, new FlameRenameTask(index));
+
+    } // End of method mnuItemRenameClick
+
+    /*****************************************************************************/
+
+    public void mnuResetLocationClick() {
+        double scale;
+        double dx, dy, cdx, cdy;
+        double sina, cosa;
+
+        updateUndo();
+
+        double p2 = Math.pow(2, Global.mainCP.zoom);
+        scale = (Global.mainCP.pixels_per_unit / Global.mainCP.width) * p2;
+
+        cdx = Global.mainCP.center[0];
+        cdy = Global.mainCP.center[1];
+
+        resetLocation();
+
+        cdx = Global.mainCP.center[0] - cdx;
+        cdy = Global.mainCP.center[1] - cdy;
+
+        sina = Math.sin(Global.mainCP.fangle);
+        cosa = Math.cos(Global.mainCP.fangle);
+
+        if (sina == 0) {
+            dy = cdy * cosa;
+            dx = cdx / cosa;
+        } else {
+            dx = (cdy * sina) + (cdx * cosa);
+            dy = ((dx * cosa) - cdx) / sina;
+        }
+
+        viewpos[0] = viewpos[0] - (dx * scale * imagewidth);
+        viewpos[1] = viewpos[1] - (dy * scale * imageheight);
+
+        p2 = Math.pow(2, Global.mainCP.zoom);
+        viewscale = (((viewscale * Global.mainCP.pixels_per_unit) / Global.mainCP.width) * p2) / scale;
+
+        // drawImageView();
+
+        timer.enable();
+
+        updateWindows();
+
+    } // End of method mnuResetLocationClick
+
+    /*****************************************************************************/
+
+    public void imageMouseDown(MouseEvent e, Rectangle bounds) {
+        if (e.isPopupTrigger()) {
+            Object canvas = find("MainCanvas");
+            Rectangle r = new Rectangle(bounds);
+            setToAbsolutePosition(canvas, r);
+            Object popup = find("MainPopup");
+            popupPopup(popup, r.x + e.getX(), r.y + e.getY());
+            return;
+        }
+
+        click.top = click.bottom = e.getY();
+        click.left = click.right = e.getX();
+
+        switch (fmousemovestate) {
+            case msZoomWindow:
+                select.top = select.bottom = e.getY();
+                select.left = select.right = e.getX();
+                drawZoomWindow();
+                fmousemovestate = msZoomWindowMove;
+            break;
+
+            case msZoomOutWindow:
+                select.top = select.bottom = e.getY();
+                select.left = select.right = e.getX();
+                drawZoomWindow();
+                fmousemovestate = msZoomOutWindowMove;
+            break;
+
+            case msDrag:
+                fmousemovestate = msDragMove;
+            break;
+
+            case msRotate:
+                clickangle = Math.atan2(e.getY() - (imageheight / 2), (imagewidth / 2) - e.getX());
+                rotateangle = 0;
+                drawRotateLines(rotateangle);
+                fmousemovestate = msRotateMove;
+            break;
+        }
+
+    } // End of method imageMouseDown
+
+    /*****************************************************************************/
+
+    int xdrag = 0;
+    int ydrag = 0;
+
+    public void imageMouseDrag(MouseEvent e, Rectangle bounds) {
+        double dx, dy, cx, cy;
+        int sgn;
+
+        if ((e.getX() == xdrag) && (e.getY() == ydrag)) {
+            return;
+        }
+
+        xdrag = e.getX();
+        ydrag = e.getY();
+
+        switch (fmousemovestate) {
+            case msZoomWindowMove:
+            case msZoomOutWindowMove:
+                // erase previous selection
+                if (drawselection) {
+                    drawZoomWindow();
+                }
+                click.bottom = ydrag;
+                click.right = xdrag;
+                dx = xdrag - click.left;
+                dy = ydrag - click.top;
+
+                sgn = ((dy * dx) >= 0) ? 1 : -1;
+                if ((dy == 0) || (Math.abs(dx / dy) >= ((imagewidth * 1.0) / imageheight))) {
+                    cy = (ydrag + click.top) / 2.0;
+                    select.left = click.left;
+                    select.right = xdrag;
+                    select.top = (int) (cy - (sgn * Math.round((dx / 2 / imagewidth) * imageheight)));
+                    select.bottom = (int) (cy + (sgn * Math.round((dx / 2 / imagewidth) * imageheight)));
+                } else {
+                    cx = (xdrag + click.left) / 2.0;
+                    select.left = (int) (cx - (sgn * Math.round((dy / 2 / imageheight) * imagewidth)));
+                    select.right = (int) (cx + (sgn * Math.round((dy / 2 / imageheight) * imagewidth)));
+                    select.top = click.top;
+                    select.bottom = ydrag;
+                }
+                drawZoomWindow();
+                drawselection = true;
+            break;
+
+            case msDragMove:
+                xview = xdrag - click.left;
+                yview = ydrag - click.top;
+                repaint();
+            break;
+
+            case msRotateMove:
+                if (drawselection) {
+                    drawRotateLines(rotateangle);
+                }
+                rotateangle = Math.atan2(ydrag - (imageheight / 2), (imagewidth / 2) - xdrag) - clickangle;
+                drawRotateLines(rotateangle);
+                drawselection = true;
+            break;
+        }
+
+    } // End of method imageMouseDrag
+
+    /*****************************************************************************/
+
+    public void imageMouseUp(MouseEvent e, Rectangle bounds) {
+        double scale;
+
+        switch (fmousemovestate) {
+            case msZoomWindowMove:
+                drawZoomWindow();
+                fmousemovestate = msZoomWindow;
+                if (Math.abs(select.left - select.right) < 10) {
+                    return;
+                }
+                if (Math.abs(select.top - select.bottom) < 10) {
+                    return;
+                }
+                stopThread();
+                updateUndo();
+                scale = (Global.mainCP.width * 1.0) / imagewidth;
+                Global.mainCP.zoomToRect(scaleRect(select, scale));
+                timer.enable();
+                updateWindows();
+            break;
+
+            case msZoomOutWindowMove:
+                drawZoomWindow();
+                fmousemovestate = msZoomOutWindow;
+                if (Math.abs(select.left - select.right) < 10) {
+                    return;
+                }
+                if (Math.abs(select.top - select.bottom) < 10) {
+                    return;
+                }
+                stopThread();
+                updateUndo();
+                scale = (Global.mainCP.width * 1.0) / imagewidth;
+                Global.mainCP.zoomOutToRect(scaleRect(select, scale));
+                scale = ((double) imagewidth) / Math.abs(select.right - select.left);
+                timer.enable();
+                updateWindows();
+            break;
+
+            case msDragMove:
+                fmousemovestate = msDrag;
+                scale = (Global.mainCP.width * 1.0) / imagewidth;
+                double dx = (xdrag - click.left) * scale;
+                double dy = (ydrag - click.top) * scale;
+                stopThread();
+                updateUndo();
+                Global.mainCP.translate(dx, dy);
+                timer.enable();
+                updateWindows();
+            break;
+
+            case msRotateMove:
+                drawRotateLines(rotateangle);
+                fmousemovestate = msRotate;
+                if (rotateangle == 0) {
+                    return;
+                }
+                stopThread();
+                updateUndo();
+                if (Global.rotationMode == 0) {
+                    Global.mainCP.rotate(rotateangle);
+                } else {
+                    Global.mainCP.rotate(-rotateangle);
+                }
+                timer.enable();
+                updateWindows();
+            break;
+        }
+
+    } // End of method imageMouseUp
+
+    /*****************************************************************************/
+
+    void drawZoomWindow() {
+        int dx, dy;
+        int l, r, t, b;
+
+        Point pos = getPositionInDesktop(canvas);
+
+        Graphics2D g = (Graphics2D) getGraphics();
+        g.translate(pos.x, pos.y);
+
+        g.setXORMode(Color.black);
+        g.setColor(Color.white);
+
+        g.setStroke(dots);
+        g.drawRect(click.left, click.top, click.right - click.left, click.bottom - click.top);
+
+        g.setStroke(basic);
+
+        dx = select.right - select.left;
+        if (dx >= 0) {
+            l = select.left - 1;
+            r = select.right;
+        } else {
+            dx = -dx;
+            l = select.right - 1;
+            r = select.left;
+        }
+        dx = Math.min((dx / 2) - 1, CORNER_SIZE);
+
+        dy = select.bottom - select.top;
+        if (dy >= 0) {
+            t = select.top - 1;
+            b = select.bottom;
+        } else {
+            dy = -dy;
+            t = select.bottom - 1;
+            b = select.top;
+        }
+        dy = Math.min(dy / 2, CORNER_SIZE);
+
+        g.drawLine(l + dx, t, l, t);
+        g.drawLine(l, t, l, t + dy);
+        g.drawLine(r - dx, t, r, t);
+        g.drawLine(r, t, r, t + dy);
+        g.drawLine(r - dx, b, r, b);
+        g.drawLine(r, b, r, b - dy);
+        g.drawLine(l + dx, b, l, b);
+        g.drawLine(l, b, l, b - dy);
+
+        g.setPaintMode();
+        g.setStroke(basic);
+        g.translate(-pos.x, -pos.y);
+
+    } // End of method drawZoomWindow
+
+    /*****************************************************************************/
+
+    void drawRotateLines(double angle) {
+        int[][] points = new int[4][2];
+        int x, y;
+        int p0x, p0y, p1x, p1y, p2x, p2y, p3x, p3y;
+
+        points[0][0] = (imagewidth / 2) - 1;
+        points[0][1] = (imageheight / 2) - 1;
+        points[1][0] = (imagewidth / 2) - 1;
+        points[1][0] = -imageheight / 2;
+        points[2][0] = -imagewidth / 2;
+        points[2][1] = -imageheight / 2;
+        points[3][0] = -imagewidth / 2;
+        points[3][1] = (imageheight / 2) - 1;
+
+        x = (imagewidth / 2) - 1;
+        y = (imageheight / 2) - 1;
+        p0x = (int) Math.round((Math.cos(angle) * x) + (Math.sin(angle) * y)) + (imagewidth / 2);
+        p0y = (int) Math.round((-Math.sin(angle) * x) + (Math.cos(angle) * y)) + (imageheight / 2);
+
+        x = (imagewidth / 2) - 1;
+        y = -imageheight / 2;
+        p1x = (int) Math.round((Math.cos(angle) * x) + (Math.sin(angle) * y)) + (imagewidth / 2);
+        p1y = (int) Math.round((-Math.sin(angle) * x) + (Math.cos(angle) * y)) + (imageheight / 2);
+
+        x = -imagewidth / 2;
+        y = -imageheight / 2;
+        p2x = (int) Math.round((Math.cos(angle) * x) + (Math.sin(angle) * y)) + (imagewidth / 2);
+        p2y = (int) Math.round((-Math.sin(angle) * x) + (Math.cos(angle) * y)) + (imageheight / 2);
+
+        x = -imagewidth / 2;
+        y = (imageheight / 2) - 1;
+        p3x = (int) Math.round((Math.cos(angle) * x) + (Math.sin(angle) * y)) + (imagewidth / 2);
+        p3y = (int) Math.round((-Math.sin(angle) * x) + (Math.cos(angle) * y)) + (imageheight / 2);
+
+        Point pos = getPositionInDesktop(canvas);
+
+        Graphics2D g = (Graphics2D) getGraphics();
+        g.translate(pos.x, pos.y);
+
+        g.setXORMode(Color.black);
+        g.setColor(Color.white);
+
+        g.setStroke(dots);
+
+        g.drawLine(p0x, p0y, p1x, p1y);
+        g.drawLine(p1x, p1y, p2x, p2y);
+        g.drawLine(p2x, p2y, p3x, p3y);
+        g.drawLine(p3x, p3y, p0x, p0y);
+
+        g.setPaintMode();
+        g.setStroke(basic);
+        g.translate(-pos.x, -pos.y);
+
+    } // End of method drawRotateLines
+
+    /*****************************************************************************/
+
+    SRect scaleRect(MouseRect r, double scale) {
+        return new SRect(scale * r.left, scale * r.top, scale * r.right, scale * r.bottom);
+    } // End of method scaleRect
+
+    /*****************************************************************************/
+
+    public void tbZoomWindowClick() {
+        fmousemovestate = msZoomWindow;
+    }
+
+    public void tbZoomOutWindowClick() {
+        fmousemovestate = msZoomOutWindow;
+    }
+
+    public void tbDragClick() {
+        fmousemovestate = msDrag;
+    }
+
+    public void tbRotateClick() {
+        fmousemovestate = msRotate;
+    }
+
+    /*****************************************************************************/
+    /*****************************************************************************/
+
+    @Override
+    public boolean destroy() {
+        if (Global.confirmExit) {
+            confirm("Do you really want to quit? All unsaved data will be lost!", new QuitTask());
+            return false;
+        } else {
+            quitApplication();
+            return true;
+        }
+
+    }
+
+    /*****************************************************************************/
+
+    void quitApplication() {
+
+        Rectangle bounds = launcher.getBounds();
+        Global.windowX = bounds.x;
+        Global.windowY = bounds.y;
+        Global.windowWidth = bounds.width;
+        Global.windowHeight = bounds.height;
+
+        bounds = getRectangle(find("BackPanel"), "bounds");
+        if (bounds != null) {
+            Global.panelWidth = bounds.width;
+            Global.panelHeight = bounds.height;
+        }
+
+        Global.writeSettings();
+    }
+
+    /*****************************************************************************/
+    // ThreadTarget implementation
+
+    @Override
+    public void message(int index) {
+        if (index == WM_THREAD_COMPLETE) {
+            handleThreadCompletion();
+        }
+    }
+
+    /*****************************************************************************/
+
+    void handleThreadCompletion() {
+
+        if (renderthread != null) {
+            xview = 0;
+            yview = 0;
+            image = renderthread.getImage();
+            repaint();
+        }
+
+    }
+
+    /*****************************************************************************/
+
+    void restoreWindowPosition() {
+
+        if ((Global.windowX >= 0) && (Global.windowY >= 0)) {
+            launcher.setLocation(Global.windowX, Global.windowY);
+        }
+        launcher.setSize(Global.windowWidth, Global.windowHeight);
+
+    } // End of method restoreBackPanelSize
+
+    /*****************************************************************************/
+
+    @Override
+    protected void doLayout(Object component) {
+        super.doLayout(component);
+
+        if (component == find("BackPanel")) {
+            if (timer != null) {
+                backPanelResize();
+            }
+        }
+    }
+
+    /*****************************************************************************/
+
+    void backPanelResize() {
+
+        Rectangle bounds = getRectangle(find("BackPanel"), "bounds");
+        if ((bounds.width == panelwidth) && (bounds.height == panelheight)) {
+            return;
+        }
+
+        panelwidth = bounds.width;
+        panelheight = bounds.height;
+
+        stopThread();
+
+        if (Global.canDrawOnResize) {
+            timer.enable();
+        }
+
+        resizeImage();
+
+        drawImageView();
+
+    } // End of method backPanelResize
+
+    /*****************************************************************************/
+
+    public void setWindowSize(int width, int height, boolean resize) {
+
+        Global.mainCP.adjustScale(width, height);
+
+        if (resize) {
+            Rectangle rpan = getRectangle(find("BackPanel"), "bounds");
+            if (rpan != null) {
+                Rectangle rwin = launcher.getBounds();
+                rwin.width += width - rpan.width;
+                rwin.height += height - rpan.height;
+                launcher.setBounds(rwin);
+                launcher.doLayout();
+            }
+        } else {
+            resizeImage();
+            timer.enable();
+            updateWindows();
+        }
+
+        /*
+         * resizeImage();
+         *
+         * timer.enable(); updateWindows();
+         */
+
+    } // End of method setWindowSize
+
+    /*****************************************************************************/
+
+    void stopThread() {
+        timer.disable();
+
+        if (renderthread != null) {
+            renderthread.terminate();
+        }
+
+    } // End of method stopThread
+
+    /*****************************************************************************/
+
+    public void mnuOpenScriptClick() {
+        Global.script.show();
+        Global.script.btnOpenClick();
+    }
+
+    /*****************************************************************************/
+
+    public void mnuEditScriptClick() {
+        Global.script.show();
+    } // End of method mnuEditScriptClick
+
+    /*****************************************************************************/
+
+    public void mnuRunScriptClick() {
+        Global.script.btnRunClick();
+    }
+
+    /*****************************************************************************/
+
+    public void mnuStopScriptClick() {
+        Global.script.btnStopClick();
+    }
+
+    /*****************************************************************************/
+
+    public void mnuHelpClick() {
+        Global.helper.show();
+        Global.helper.setTopicByName("introduction");
+    } // End of method mnuHelpClick
+
+    /*****************************************************************************/
+
+    public void mnuAboutClick() {
+        try {
+            Object dialog = parse("/org/apophysis/thinletxml/about.xml");
+            add(dialog);
+
+            setString(find("aboutname"), "text", APPNAME);
+            setString(find("aboutversion"), "text", "Version " + VERSION);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    /*****************************************************************************/
+
+    public void closeAbout() {
+        remove(find("aboutdialog"));
+    }
+
+    /*****************************************************************************/
+
+    public void mnuManageFavoritesClick() {
+        Global.favorites.show();
+    } // End of method mnuManageFavoritesClick
+
+    /*****************************************************************************/
+
+    public void mnuPostSheepClick() {
+        Sheep.send(Global.mainCP);
+    }
+
+    /*****************************************************************************/
+
+    public void mnuCopyClick() {
+
+        try (StringWriter sw = new StringWriter(); PrintWriter w = new PrintWriter(sw)) {
+
+            Global.mainCP.save(w);
+            w.flush();
+
+            setClipboard(sw.toString());
+
+        } catch (Exception ex) {
+        }
+
+    } // End of method mnuCopyClick
+
+    /*****************************************************************************/
+
+    public void mnuPasteClick() {
+        Object list = find("ListView");
+        int index = getSelectedIndex(list);
+        if (index < 0) {
+            return;
+        }
+
+        String s = getClipboard();
+        int i = s.indexOf("<flame ");
+        if (i < 0) {
+            return;
+        }
+
+        s = s.substring(i);
+
+        try {
+            BufferedReader r = new BufferedReader(new StringReader(s));
+            ControlPoint cp = readControlPoint(r);
+
+            if (cp == null) {
+                return;
+            }
+
+            updateUndo();
+            stopThread();
+
+            Global.mainCP.copy(cp);
+            Global.transforms = Global.mainCP.trianglesFromCP(Global.mainTriangles);
+
+            Object item = getItem(list, index);
+            setString(item, "text", cp.name);
+            cps.set(index, Global.mainCP);
+            setStatus(cp.name);
+
+            timer.enable();
+            updateWindows();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+    } // End of method mnuPasteClick
+
+    /*****************************************************************************/
+    /*****************************************************************************/
+
+    void resizeImage()
+
+    {
+        int pw, ph;
+
+        Rectangle bounds = getRectangle(find("BackPanel"), "bounds");
+
+        if (bounds == null) {
+            return;
+        }
+
+        pw = bounds.width - 2;
+        ph = bounds.height - 2;
+        if (((1.0 * Global.mainCP.width) / Global.mainCP.height) > ((1.0 * pw) / ph)) {
+            imagewidth = pw;
+            imageheight = (int) (((Global.mainCP.height * pw) / (double) Global.mainCP.width) + 0.5);
+        } else {
+            imageheight = ph;
+            imagewidth = (int) (((Global.mainCP.width * ph) / (double) Global.mainCP.height) + 0.5);
+        }
+
+        setInteger(canvas, "width", imagewidth);
+        setInteger(canvas, "height", imageheight);
+        int x = (bounds.width / 2) - (imagewidth / 2);
+        int y = (bounds.height / 2) - (imageheight / 2);
+        setRectangle(canvas, "bounds", x, y, imagewidth, imageheight);
+
+    }
+
+    /*****************************************************************************/
+
+    void drawImageView() {
+    }
+
+    /*****************************************************************************/
+    // ThreadTarget implementation
+
+    @Override
+    public void output(String msg) {
+    }
+
+    @Override
+    public void progress(double value) {
+
+        int ivalue = (int) (value * 100);
+        if (ivalue < 0) {
+            ivalue = 0;
+        }
+        if (ivalue > 100) {
+            ivalue = 100;
+        }
+
+        setInteger(find("Status1"), "value", ivalue);
+
+        if (value >= 1.0) {
+            long elapsed = System.currentTimeMillis() - startTime;
+
+            long mil = elapsed % 1000;
+            elapsed /= 1000;
+
+            long sec = elapsed % 60;
+            elapsed /= 60;
+
+            long min = elapsed % 60;
+            elapsed /= 60;
+
+            long hou = elapsed;
+
+            String s = "Elapsed : " + ((hou < 10) ? ("0" + hou) : ("" + hou)) + ":" + ((min < 10) ? ("0" + min) : ("" + min)) + ":"
+                    + ((sec < 10) ? ("0" + sec) : ("" + sec)) + ":" + ((mil < 10) ? ("00" + min) : (mil < 100) ? ("0" + mil) : ("" + mil));
+
+            setString(find("Status0"), "text", s);
+        }
+
+    } // End of method progress
+
+    /*****************************************************************************/
+    // Drag and drop implementation
+
+    @Override
+    public void dragEnter(DropTargetDragEvent e) {
+    }
+
+    @Override
+    public void dragOver(DropTargetDragEvent e) {
+    }
+
+    @Override
+    public void dragExit(DropTargetEvent e) {
+    }
+
+    @Override
+    public void dropActionChanged(DropTargetDragEvent e) {
+    }
+
+    @Override
+    public void drop(DropTargetDropEvent e) {
+        Transferable t;
+
+        try {
+            e.acceptDrop(DnDConstants.ACTION_COPY_OR_MOVE);
+            t = e.getTransferable();
+            File[] files = getFiles(t);
+            e.getDropTargetContext().dropComplete(true);
+            openFiles(files);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+    } // End of method drop
+
+    /*****************************************************************************/
+
+    File[] getFiles(Transferable t) throws Exception {
+
+        DataFlavor[] flavors = t.getTransferDataFlavors();
+        int nf = flavors.length;
+        for (int i = 0; i < nf; i++) {
+            Object o = t.getTransferData(flavors[i]);
+            if (!(o instanceof List)) {
+                continue;
+            }
+            List<?> list = (List<?>) o;
+            if (list.isEmpty()) {
+                continue;
+            }
+
+            if (list.get(0) instanceof File) {
+                return list.toArray(new File[list.size()]);
+            }
+        }
+
+        return null;
+
+    } // End of method getURL
+
+    /*****************************************************************************/
+
+    public void openFiles(File files[]) {
+        boolean scriptloaded = false;
+        List<ControlPoint> newcps = new ArrayList<>();
+
+        for (int i = 0; i < files.length; i++) {
+            // should not occur
+            if (!files[i].exists()) {
+                continue;
+            }
+
+            String fname = files[i].getAbsolutePath();
+            int k = fname.lastIndexOf('.');
+            String ext = (k < 0) ? "" : fname.toLowerCase().substring(k + 1);
+
+            if (ext.equals("flame")) {
+                List<ControlPoint> v = openXMLFile(fname);
+                if (newcps.size() == 0) {
+                    Global.openFile = fname;
+                }
+                appendFlames(v, newcps);
+            } else if (ext.equals("fla")) {
+                List<ControlPoint> v = openFLAFile(fname);
+                if (newcps.size() == 0) {
+                    Global.openFile = fname;
+                }
+                appendFlames(v, newcps);
+            } else if (ext.equals("upr")) {
+                openUPRFile(fname);
+            } else if (ext.equals("class")) {
+                XForm.installPlugin(files[i]);
+            } else if (ext.equals("jpg")) {
+                List<ControlPoint> v = openJPGFile(fname);
+                if (newcps.size() == 0) {
+                    Global.openFile = fname;
+                }
+                appendFlames(v, newcps);
+            } else if (ext.equals("png")) {
+                List<ControlPoint> v = openPNGFile(fname);
+                if (newcps.size() == 0) {
+                    Global.openFile = fname;
+                }
+                appendFlames(v, newcps);
+            } else if (ext.equals("ajs")) {
+                Global.script.openFile(fname, false);
+                scriptloaded = true;
+            } else if (ext.equals("asc")) {
+                Global.script.openFile(fname, true);
+                scriptloaded = true;
+            }
+        }
+
+        if (newcps.size() > 0) {
+            cps = newcps;
+            updateFlameList();
+
+            // select the first flame and force drawing
+            Object list = find("ListView");
+            setBoolean(getItem(list, 0), "selected", true);
+            listViewChange(list);
+
+            checkUnknown();
+        }
+
+        if (scriptloaded) {
+            Global.script.btnRunClick();
+        }
+
+    } // End of method openFile
+
+    /*****************************************************************************/
+
+    void appendFlames(List<ControlPoint> v, List<ControlPoint> newcps) {
+        int n = v.size();
+        for (int i = 0; i < n; i++) {
+            newcps.add(v.get(i));
+        }
+    }
+
+    /*****************************************************************************/
+
+    void checkUnknown() {
+        // list of all unknown variations
+        List<String> unknown = new ArrayList<>();
+
+        int n = cps.size();
+        for (int i = 0; i < n; i++) {
+            ControlPoint cp = cps.get(i);
+            if (cp.unknown != null) {
+                int nu = cp.unknown.size();
+                for (int j = 0; j < nu; j++) {
+                    String s = cp.unknown.get(j);
+                    if (!unknown.contains(s)) {
+                        unknown.add(s);
+                    }
+                }
+            }
+        }
+
+        String msg = "";
+        String sep = "";
+
+        int nu = unknown.size();
+        int k = 0;
+        for (int j = 0; j < nu; j++) {
+            msg += sep + unknown.get(j);
+            sep = ", ";
+            k++;
+        }
+
+        if (k == 1) {
+            alert("Unknown variation : " + msg);
+        } else if (k > 1) {
+            alert("Unknown variations : " + msg);
+        }
+
+    }
+
+    /*****************************************************************************/
+
+    void initStrokes() {
+        float thickness = 1f;
+        float miterLimit = 5f;
+        float[] dashPattern = { 5f };
+        float dashPhase = 2.5f;
+
+        dots = new BasicStroke(thickness, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, miterLimit, dashPattern, dashPhase);
+
+        basic = new BasicStroke();
+
+    } // End of method initStrokes
+
+    /*****************************************************************************/
+
+    public void updateFavorites() {
+        List<File> v = Global.readFavorites();
+
+        Object menu = find("mnuScript");
+
+        Object[] items = getItems(menu);
+        for (int i = 8; i < items.length; i++) {
+            remove(items[i]);
+        }
+
+        Color color = new Color(0xD1CCC6);
+
+        int n = v.size();
+        for (int i = 0; i < n; i++) {
+            File f = v.get(i);
+            String title = f.getName();
+            int k = title.lastIndexOf('.');
+            if (k >= 0) {
+                title = title.substring(0, k);
+            }
+
+            Object menuitem = createImpl("menuitem");
+            setString(menuitem, "text", title);
+            setColor(menuitem, "background", color);
+            putProperty(menuitem, "file", f);
+
+            setMethod(menuitem, "action", "favoriteClick(this)", getDesktop(), this);
+
+            add(menu, menuitem);
+        }
+
+    } // End of method updateFavorites
+
+    /*****************************************************************************/
+
+    public void favoriteClick(Object menuitem) {
+        File f = (File) getProperty(menuitem, "file");
+        if (f == null) {
+            return;
+        }
+
+        String path = f.getAbsolutePath();
+        String ext = "ajs";
+        int i = path.lastIndexOf('.');
+        if (i > 0) {
+            ext = path.substring(i + 1);
+        }
+
+        boolean mustconvert = ext.equals("asc");
+        Global.script.openFile(path, mustconvert);
+        Global.script.btnRunClick();
+
+    } // End of method favoriteClick
+
+    /*****************************************************************************/
+
+    public void mnuSortClick(int option) {
+        Object list = find("ListView");
+        int index = getSelectedIndex(list);
+
+        Object o = (index >= 0) ? cps.get(index) : null;
+
+        int n = cps.size();
+        SortableControlPoint[] ss = new SortableControlPoint[n];
+        for (int i = 0; i < n; i++) {
+            ss[i] = new SortableControlPoint(cps.get(i), option);
+        }
+
+        QuickSort.qsort(ss);
+
+        for (int i = 0; i < n; i++) {
+            cps.set((option % 2) == 0 ? i : n - 1 - i, ss[i].cp);
+        }
+
+        updateFlameList();
+
+        int k = -1;
+        for (int i = 0; i < n; i++) {
+            if (cps.get(i) == o) {
+                k = i;
+            }
+        }
+
+        if (k >= 0) {
+            setBoolean(getItem(list, k), "selected", true);
+        } else {
+            setBoolean(getItem(list, 0), "selected", true);
+            listViewChange(list);
+        }
+
+    } // End of method mnuSortClick
+
+    /*****************************************************************************/
+
+    public void setStatus(String msg) {
+        setString(find("Status2"), "text", msg);
+    }
+
+    /*****************************************************************************/
+
+    void showMemory(String msg) {
+        Runtime r = Runtime.getRuntime();
+        long free = r.freeMemory();
+        long total = r.totalMemory();
+        long max = r.maxMemory();
+
+        String sfree = free + "";
+        while (sfree.length() < 10) {
+            sfree = " " + sfree;
+        }
+
+        String stotal = total + "";
+        while (stotal.length() < 10) {
+            stotal = " " + stotal;
+        }
+
+        String smax = max + "";
+        while (smax.length() < 10) {
+            smax = " " + smax;
+        }
+
+        System.out.print("MEMORY ");
+        System.out.print(sfree);
+        System.out.print(stotal);
+        System.out.print(smax);
+        System.out.print("  ");
+        System.out.println(msg);
+
+    }
+
+    /*****************************************************************************/
+
+    String getClipboard() {
+        String s = "";
+
+        Toolkit tk = Toolkit.getDefaultToolkit();
+        Transferable t = tk.getSystemClipboard().getContents(null);
+        if (t == null) {
+            return "";
+        }
+
+        try {
+            if (t.isDataFlavorSupported(DataFlavor.stringFlavor)) {
+                s = (String) t.getTransferData(DataFlavor.stringFlavor);
+            }
+        } catch (Exception ex) {
+        }
+
+        return s;
+
+    } // End of method getClipboard
+
+    /*****************************************************************************/
+
+    void setClipboard(String s) {
+
+        StringSelection ss = new StringSelection(s);
+        Toolkit tk = Toolkit.getDefaultToolkit();
+        tk.getSystemClipboard().setContents(ss, null);
+
+    } // End of method setClipboard
+
+    /*****************************************************************************/
+
+    void setMenuShortcuts() {
+
+        // look for the shortcut mask
+        Toolkit tk = Toolkit.getDefaultToolkit();
+        long mask = tk.getMenuShortcutKeyMask();
+
+        Object menubar = find("MainMenu");
+        Object[] menus = getItems(menubar);
+        for (Object menu : menus) {
+            int n = getCount(menu);
+            for (int j = 0; j < n; j++) {
+                Object item = getItem(menu, j);
+                Long L = (Long) get(item, "accelerator");
+                if (L == null) {
+                    continue;
+                }
+                long acc = L.longValue();
+                long mod = L.longValue() >> 32;
+                if ((mod & java.awt.Event.META_MASK) != 0) {
+                    mod = (mod & ~java.awt.Event.META_MASK) | mask;
+                    acc = (acc & 0xFFFFFFFFL) | (mod << 32);
+                    set(item, "accelerator", Long.valueOf(acc));
+                }
+            }
+        }
+
+    } // End of method setMenuShortcuts
+
+    /*****************************************************************************/
+
+    class OpenFileTask implements Task {
+
+        @Override
+        public void execute() {
+            Global.browserPath = Global.opendialog.getBrowserPath();
+            File file = new File(Global.opendialog.filename);
+            File[] files = new File[] { file };
+            openFiles(files);
+        }
+
+    } // End of class OpenFileTask
+
+    /*****************************************************************************/
+    /*****************************************************************************/
+
+    class SaveFileTask implements Task {
+
+        ControlPoint cp;
+
+        SaveFileTask(ControlPoint cp) {
+            this.cp = cp;
+        }
+
+        @Override
+        public void execute() {
+            Global.browserPath = Global.savedialog.getBrowserPath();
+            saveXMLFile(cp, Global.savedialog.filename);
+        }
+
+    } // End of class SaveFlameTask
+
+    /*****************************************************************************/
+    /*****************************************************************************/
+
+    class SmoothPaletteTask implements Task {
+
+        @Override
+        public void execute() {
+            Global.browserPath = Global.opendialog.getBrowserPath();
+            smoothPalette();
+        }
+
+    } // End of class SmoothPaletteTask
+
+    /*****************************************************************************/
+
+    class FlameRenameTask implements Task {
+
+        int index;
+
+        FlameRenameTask(int index) {
+            this.index = index;
+        }
+
+        @Override
+        public void execute() {
+            renameFlame(index, _answer);
+        }
+
+    }
+
+    /*****************************************************************************/
+    /*****************************************************************************/
+
+    class DeleteTask implements Task {
+
+        int index;
+
+        DeleteTask(int index) {
+            this.index = index;
+        }
+
+        @Override
+        public void execute() {
+            deleteFlame(index);
+        }
+
+    } // End of class DeleteTask
+
+    /*****************************************************************************/
+    /*****************************************************************************/
+
+    class RenderTask implements Task {
+
+        boolean all = false;
+
+        RenderTask(boolean all) {
+            this.all = all;
+        }
+
+        @Override
+        public void execute() {
+            renderToDisk(all);
+        }
+
+    }
+
+    /*****************************************************************************/
+    /*****************************************************************************/
+
+    class QuitTask implements Task {
+
+        @Override
+        public void execute() {
+            quitApplication();
+            System.exit(0);
+        }
+
+    }
+
+    /*****************************************************************************/
+    /*****************************************************************************/
+
+    class Timer extends Thread {
+
+        int timerid = 0;
+
+        synchronized public void enable() {
+            timerid++;
+            notify();
+        }
+
+        synchronized public void disable() {
+            timerid = 0;
+        }
+
+        @Override
+        public void run() {
+            int oldid = 0;
+
+            while (true) {
+                synchronized (this) {
+                    try {
+                        wait(100);
+                    } catch (Exception ex) {
+                    }
+
+                    // if still the same after 100 ms
+                    if ((timerid > 0) && (timerid == oldid)) {
+                        redrawTimerTimer();
+                    } else {
+                        oldid = timerid;
+                    }
+                }
+            }
+        }
+
+    } // End of class Timer
+
+    /*****************************************************************************/
+    /*****************************************************************************/
+
+    static class SortableControlPoint implements MySortable {
+
+        ControlPoint cp;
+        String name;
+
+        SortableControlPoint(ControlPoint cp, int option) {
+            this.cp = cp;
+            switch (option) {
+                case 0:
+                case 1:
+                    name = cp.name;
+                break;
+
+                case 2:
+                case 3:
+                    StringBuilder sb = new StringBuilder(cp.name);
+                    sb.reverse();
+                    name = sb.toString();
+                break;
+            }
+
+        }
+
+        @Override
+        public long compare(MySortable s) {
+            SortableControlPoint scp = (SortableControlPoint) s;
+            return name.compareTo(scp.name);
+        }
+
+    }
+
+    /*****************************************************************************/
+    /*****************************************************************************/
 
 } // End of class Main
-
