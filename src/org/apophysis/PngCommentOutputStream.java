@@ -29,175 +29,173 @@ package org.apophysis;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.zip.CRC32;
 import java.util.zip.DeflaterOutputStream;
 
 public class PngCommentOutputStream extends OutputStream implements Constants {
 
-	/*****************************************************************************/
-	// CONSTANTS
+    /*****************************************************************************/
+    // CONSTANTS
 
-	/*****************************************************************************/
-	// FIELDS
+    /*****************************************************************************/
+    // FIELDS
 
-	FileOutputStream os = null;
-	String comment = null;
+    OutputStream os = null;
+    String comment = null;
 
-	boolean mustWriteComment = true;
+    boolean mustWriteComment = true;
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	PngCommentOutputStream(File file, String comment) throws IOException {
-		os = new FileOutputStream(file);
-		this.comment = comment;
-	}
+    PngCommentOutputStream(File file, String comment) throws IOException {
+        os = Files.newOutputStream(file.toPath());
+        this.comment = comment;
+    }
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	@Override
-	public void close() throws IOException {
-		os.close();
-	}
+    @Override
+    public void close() throws IOException {
+        os.close();
+    }
 
-	@Override
-	public void flush() throws IOException {
-		os.flush();
-	}
+    @Override
+    public void flush() throws IOException {
+        os.flush();
+    }
 
-	@Override
-	public void write(byte b[]) throws IOException {
-		write(b, 0, b.length);
-	}
+    @Override
+    public void write(byte b[]) throws IOException {
+        write(b, 0, b.length);
+    }
 
-	@Override
-	public void write(int b) throws IOException {
-		os.write(b);
-	}
+    @Override
+    public void write(int b) throws IOException {
+        os.write(b);
+    }
 
-	@Override
-	public void write(byte b[], int off, int len) throws IOException {
-		if (mustWriteComment) {
-			// write png signature + iHDR chunk
-			os.write(b, off, 8 + 25);
+    @Override
+    public void write(byte b[], int off, int len) throws IOException {
+        if (mustWriteComment) {
+            // write png signature + iHDR chunk
+            os.write(b, off, 8 + 25);
 
-			// write comment chunk
-			writeCompressedComment();
-			// writeComment();
+            // write comment chunk
+            writeCompressedComment();
+            // writeComment();
 
-			// write rest of buffer
-			os.write(b, off + 8 + 25, len - 8 - 25);
+            // write rest of buffer
+            os.write(b, off + 8 + 25, len - 8 - 25);
 
-			mustWriteComment = false;
-		} else {
-			os.write(b, off, len);
-		}
-	}
+            mustWriteComment = false;
+        } else {
+            os.write(b, off, len);
+        }
+    }
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	void writeCompressedComment() throws IOException {
-		byte[] b1 = ("genome").getBytes();
-		int sep = 0; // separator
-		int comp = 0; // compression method
-		byte[] b2 = deflate(comment);
+    void writeCompressedComment() throws IOException {
+        byte[] b1 = ("genome").getBytes();
+        int sep = 0; // separator
+        int comp = 0; // compression method
+        byte[] b2 = deflate(comment);
 
-		int len = b1.length + 2 + b2.length;
+        int len = b1.length + 2 + b2.length;
 
-		// write len
-		os.write((len >> 24) & 0xFF);
-		os.write((len >> 16) & 0xFF);
-		os.write((len >> 8) & 0xFF);
-		os.write(len & 0xFF);
+        // write len
+        os.write((len >> 24) & 0xFF);
+        os.write((len >> 16) & 0xFF);
+        os.write((len >> 8) & 0xFF);
+        os.write(len & 0xFF);
 
-		// write chunck type
-		os.write('z');
-		os.write('T');
-		os.write('X');
-		os.write('t');
+        // write chunck type
+        os.write('z');
+        os.write('T');
+        os.write('X');
+        os.write('t');
 
-		// write data
-		os.write(b1);
-		os.write(sep);
-		os.write(comp);
-		os.write(b2);
+        // write data
+        os.write(b1);
+        os.write(sep);
+        os.write(comp);
+        os.write(b2);
 
-		// compute crc
-		CRC32 crc = new CRC32();
-		crc.update('z');
-		crc.update('T');
-		crc.update('X');
-		crc.update('t');
-		crc.update(b1);
-		crc.update(sep);
-		crc.update(comp);
-		crc.update(b2);
-		int value = (int) crc.getValue();
+        // compute crc
+        CRC32 crc = new CRC32();
+        crc.update('z');
+        crc.update('T');
+        crc.update('X');
+        crc.update('t');
+        crc.update(b1);
+        crc.update(sep);
+        crc.update(comp);
+        crc.update(b2);
+        int value = (int) crc.getValue();
 
-		// write crc
-		os.write((value >> 24) & 0xFF);
-		os.write((value >> 16) & 0xFF);
-		os.write((value >> 8) & 0xFF);
-		os.write(value & 0xFF);
+        // write crc
+        os.write((value >> 24) & 0xFF);
+        os.write((value >> 16) & 0xFF);
+        os.write((value >> 8) & 0xFF);
+        os.write(value & 0xFF);
 
-	}
+    }
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	byte[] deflate(String s) throws IOException {
-		try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		     DeflaterOutputStream dos = new DeflaterOutputStream(bos)) {
-			int n = s.length();
-			for (int i = 0; i < n; i++) {
-				dos.write(s.charAt(i));
-			}
-			dos.flush();
-			return bos.toByteArray();
-		}
-	}
+    byte[] deflate(String s) throws IOException {
+        try (ByteArrayOutputStream bos = new ByteArrayOutputStream(); DeflaterOutputStream dos = new DeflaterOutputStream(bos)) {
+            int n = s.length();
+            for (int i = 0; i < n; i++) {
+                dos.write(s.charAt(i));
+            }
+            dos.flush();
+            return bos.toByteArray();
+        }
+    }
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	void writeComment() throws IOException {
-		byte[] b = ("genome\000" + comment).getBytes();
+    void writeComment() throws IOException {
+        byte[] b = ("genome\000" + comment).getBytes();
 
-		int len = b.length;
+        int len = b.length;
 
-		// write len
-		os.write((len >> 24) & 0xFF);
-		os.write((len >> 16) & 0xFF);
-		os.write((len >> 8) & 0xFF);
-		os.write(len & 0xFF);
+        // write len
+        os.write((len >> 24) & 0xFF);
+        os.write((len >> 16) & 0xFF);
+        os.write((len >> 8) & 0xFF);
+        os.write(len & 0xFF);
 
-		// write chunck type
-		os.write('t');
-		os.write('E');
-		os.write('X');
-		os.write('t');
+        // write chunck type
+        os.write('t');
+        os.write('E');
+        os.write('X');
+        os.write('t');
 
-		// write data
-		os.write(b);
+        // write data
+        os.write(b);
 
-		// compute crc
-		CRC32 crc = new CRC32();
-		crc.update('t');
-		crc.update('E');
-		crc.update('X');
-		crc.update('t');
-		crc.update(b);
-		int value = (int) crc.getValue();
+        // compute crc
+        CRC32 crc = new CRC32();
+        crc.update('t');
+        crc.update('E');
+        crc.update('X');
+        crc.update('t');
+        crc.update(b);
+        int value = (int) crc.getValue();
 
-		// write crc
-		os.write((value >> 24) & 0xFF);
-		os.write((value >> 16) & 0xFF);
-		os.write((value >> 8) & 0xFF);
-		os.write(value & 0xFF);
+        // write crc
+        os.write((value >> 24) & 0xFF);
+        os.write((value >> 16) & 0xFF);
+        os.write((value >> 8) & 0xFF);
+        os.write(value & 0xFF);
 
-	}
+    }
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
 } // End of class CommentOuputStream
-
