@@ -38,20 +38,10 @@ import java.util.StringTokenizer;
 public class ScriptConverter {
 
     /*****************************************************************************/
-    // CONSTANTS
-
-    /*****************************************************************************/
-    // FIELDS
-
-    static Map<String, String> sub; // substitution table
-
-    static List<String> functions;
-
-    /*****************************************************************************/
 
     static void convert(StringBuilder stringbuffer) {
-        sub = new HashMap<>();
-        functions = new ArrayList<>();
+        Map<String, String> sub = new HashMap<>();
+        List<String> functions = new ArrayList<>();
 
         // save comments
         while (true) {
@@ -64,7 +54,7 @@ public class ScriptConverter {
                 break;
             }
             String comment = stringbuffer.substring(i + 1, j);
-            substitute(stringbuffer, i, j + 1, "/*" + comment + "*/");
+            substitute(stringbuffer, sub, i, j + 1, "/*" + comment + "*/");
         }
 
         while (true) {
@@ -77,10 +67,10 @@ public class ScriptConverter {
                 break;
             }
             String comment = stringbuffer.substring(i + 2, j);
-            substitute(stringbuffer, i, j, "/* " + comment + " */");
+            substitute(stringbuffer, sub, i, j, "/* " + comment + " */");
         }
 
-        while (processFormat(stringbuffer)) {
+        while (processFormat(stringbuffer, sub)) {
         }
 
         // save literals
@@ -100,41 +90,41 @@ public class ScriptConverter {
                 if (k < 0) {
                     break;
                 }
-                substitute(stringbuffer2, k, k + 1, "\\\\");
+                substitute(stringbuffer2, sub, k, k + 1, "\\\\");
             }
             while (true) {
                 int k = stringbuffer2.indexOf("\n");
                 if (k < 0) {
                     break;
                 }
-                substitute(stringbuffer2, k, k + 1, "\\n");
+                substitute(stringbuffer2, sub, k, k + 1, "\\n");
             }
             String newlit = stringbuffer2.toString();
-            substitute(stringbuffer, i, j + 1, newlit);
+            substitute(stringbuffer, sub, i, j + 1, newlit);
         }
 
-        while (processInputQuery(stringbuffer)) {
+        while (processInputQuery(stringbuffer, sub)) {
         }
-        while (processProcedure(stringbuffer)) {
+        while (processProcedure(stringbuffer, functions)) {
         }
-        while (processWith(stringbuffer)) {
+        while (processWith(stringbuffer, sub)) {
         }
 
-        processStructure(stringbuffer, "Flame", JSFlame.class);
-        processStructure(stringbuffer, "Transform", JSTransform.class);
-        processStructure(stringbuffer, "Options", JSOptions.class);
-        processStructure(stringbuffer, "Renderer", JSRenderer.class);
-        processStructure(stringbuffer, "TStringList", JSStringList.class);
+        processStructure(stringbuffer, sub, "Flame", JSFlame.class);
+        processStructure(stringbuffer, sub, "Transform", JSTransform.class);
+        processStructure(stringbuffer, sub, "Options", JSOptions.class);
+        processStructure(stringbuffer, sub, "Renderer", JSRenderer.class);
+        processStructure(stringbuffer, sub, "TStringList", JSStringList.class);
 
-        replaceWord(stringbuffer, "Transforms", "Transforms");
+        replaceWord(stringbuffer, sub, "Transforms", "Transforms");
 
-        replaceWord(stringbuffer, "True", "true");
-        replaceWord(stringbuffer, "False", "false");
-        replaceWord(stringbuffer, "and", "&&");
-        replaceWord(stringbuffer, "or", "||");
-        replaceWord(stringbuffer, "not", "!");
-        replaceWord(stringbuffer, "mod", "%");
-        replaceWord(stringbuffer, "div", "/");
+        replaceWord(stringbuffer, sub, "True", "true");
+        replaceWord(stringbuffer, sub, "False", "false");
+        replaceWord(stringbuffer, sub, "and", "&&");
+        replaceWord(stringbuffer, sub, "or", "||");
+        replaceWord(stringbuffer, sub, "not", "!");
+        replaceWord(stringbuffer, sub, "mod", "%");
+        replaceWord(stringbuffer, sub, "div", "/");
 
         // process IF statements
         while (true) {
@@ -162,8 +152,8 @@ public class ScriptConverter {
                 stringbuffer.replace(j + 4, k, "{ " + stmt + " }");
             }
 
-            substitute(stringbuffer, j, j + 4, ")");
-            substitute(stringbuffer, i, i + 3, "if(");
+            substitute(stringbuffer, sub, j, j + 4, ")");
+            substitute(stringbuffer, sub, i, i + 3, "if(");
         }
 
         // process ELSE statements
@@ -180,7 +170,7 @@ public class ScriptConverter {
                 stringbuffer.replace(i + 4, j, "{ " + stmt + " }");
             }
 
-            substitute(stringbuffer, i, i + 4, "else");
+            substitute(stringbuffer, sub, i, i + 4, "else");
         }
 
         // process WHILE statements
@@ -190,8 +180,8 @@ public class ScriptConverter {
                 break;
             }
             int j = stringbuffer.indexOf("do", i);
-            substitute(stringbuffer, j, j + 2, ")");
-            substitute(stringbuffer, i, i + 5, "while(");
+            substitute(stringbuffer, sub, j, j + 2, ")");
+            substitute(stringbuffer, sub, i, i + 5, "while(");
         }
 
         // process FOR statements
@@ -223,19 +213,19 @@ public class ScriptConverter {
             String stmt = "(" + index + ":=" + start + ";" + index + "<=" + limit + ";" + index + "++)";
 
             stringbuffer.replace(i + 3, l + 2, stmt);
-            substitute(stringbuffer, i, i + 3, "for");
+            substitute(stringbuffer, sub, i, i + 3, "for");
         }
 
         // process CASE statements
-        while (processCaseStatement(stringbuffer)) {
+        while (processCaseStatement(stringbuffer, sub)) {
         }
 
         // process DELETE statements
-        while (processDeleteStatement(stringbuffer)) {
+        while (processDeleteStatement(stringbuffer, sub)) {
         }
 
-        replaceWord(stringbuffer, "begin", "{");
-        replaceWord(stringbuffer, "end", "}");
+        replaceWord(stringbuffer, sub, "begin", "{");
+        replaceWord(stringbuffer, sub, "end", "}");
 
         while (true) {
             int i = find(stringbuffer, "inc");
@@ -248,13 +238,13 @@ public class ScriptConverter {
             if (stringbuffer.charAt(i + 3) == '(') {
                 int j = stringbuffer.indexOf(")", i + 3);
                 if (j < 0) {
-                    substitute(stringbuffer, i, i + 3, "inc");
+                    substitute(stringbuffer, sub, i, i + 3, "inc");
                 } else {
                     String index = stringbuffer.substring(i + 4, j);
-                    substitute(stringbuffer, i, j + 1, index + "++");
+                    substitute(stringbuffer, sub, i, j + 1, index + "++");
                 }
             } else {
-                substitute(stringbuffer, i, i + 3, "inc");
+                substitute(stringbuffer, sub, i, i + 3, "inc");
             }
         }
 
@@ -269,32 +259,32 @@ public class ScriptConverter {
             if (stringbuffer.charAt(i + 3) == '(') {
                 int j = stringbuffer.indexOf(")", i + 3);
                 if (j < 0) {
-                    substitute(stringbuffer, i, i + 3, "dec");
+                    substitute(stringbuffer, sub, i, i + 3, "dec");
                 } else {
                     String index = stringbuffer.substring(i + 4, j);
-                    substitute(stringbuffer, i, j + 1, index + "--");
+                    substitute(stringbuffer, sub, i, j + 1, index + "--");
                 }
             } else {
-                substitute(stringbuffer, i, i + 3, "dec");
+                substitute(stringbuffer, sub, i, i + 3, "dec");
             }
         }
 
-        replaceString(stringbuffer, "<=", "<=");
-        replaceString(stringbuffer, ">=", ">=");
-        replaceString(stringbuffer, ":=", "=");
-        replaceString(stringbuffer, "=", "==");
-        replaceString(stringbuffer, "<>", "!=");
-        replaceString(stringbuffer, ";\n", "\n");
+        replaceString(stringbuffer, sub, "<=", "<=");
+        replaceString(stringbuffer, sub, ">=", ">=");
+        replaceString(stringbuffer, sub, ":=", "=");
+        replaceString(stringbuffer, sub, "=", "==");
+        replaceString(stringbuffer, sub, "<>", "!=");
+        replaceString(stringbuffer, sub, ";\n", "\n");
 
         // getNiladicFunctions();
 
-        processFunctionCalls(stringbuffer);
+        processFunctionCalls(stringbuffer, sub);
 
         // check calls to no-arg functions
         int nf = functions.size();
         for (int i = 0; i < nf; i++) {
             String funcname = functions.get(i);
-            replaceWord(stringbuffer, funcname, funcname + "()");
+            replaceWord(stringbuffer, sub, funcname, funcname + "()");
         }
 
         // put final substitutions back
@@ -316,64 +306,79 @@ public class ScriptConverter {
 
     } // End of method convertScript
 
-    /*****************************************************************************/
+    /**
+     * @param sub
+     *            TODO
+     ***************************************************************************/
 
-    static void substitute(StringBuilder stringbuffer, int i, int j, String s) {
+    private static void substitute(StringBuilder stringbuffer, Map<String, String> sub, int i, int j, String s) {
         String key = "<@" + sub.size() + "@>";
         sub.put(key, s);
         stringbuffer.replace(i, j, key);
     }
 
-    /*****************************************************************************/
+    /**
+     * @param sub
+     *            TODO
+     ***************************************************************************/
 
-    static void replaceWord(StringBuilder stringbuffer, String s1, String s2) {
+    private static void replaceWord(StringBuilder stringbuffer, Map<String, String> sub, String s1, String s2) {
 
         while (true) {
             int i = find(stringbuffer, s1);
             if (i < 0) {
                 break;
             }
-            substitute(stringbuffer, i, i + s1.length(), s2);
+            substitute(stringbuffer, sub, i, i + s1.length(), s2);
         }
 
     } // End of method replace
 
-    /*****************************************************************************/
+    /**
+     * @param sub
+     *            TODO
+     ***************************************************************************/
 
-    static void replaceString(StringBuilder stringbuffer, String s1, String s2) {
+    private static void replaceString(StringBuilder stringbuffer, Map<String, String> sub, String s1, String s2) {
 
         while (true) {
             int i = stringbuffer.indexOf(s1);
             if (i < 0) {
                 break;
             }
-            substitute(stringbuffer, i, i + s1.length(), s2);
+            substitute(stringbuffer, sub, i, i + s1.length(), s2);
         }
 
     } // End of method replaceString
 
-    /*****************************************************************************/
+    /**
+     * @param sub
+     *            TODO
+     ***************************************************************************/
 
-    static void processStructure(StringBuilder stringbuffer, String sname, Class<?> klass) {
+    private static void processStructure(StringBuilder stringbuffer, Map<String, String> sub, String sname, Class<?> klass) {
 
         try {
             Field[] fields = klass.getDeclaredFields();
             int nf = fields.length;
             for (int i = 0; i < nf; i++) {
                 String fname = sname + "." + fields[i].getName();
-                replaceWord(stringbuffer, fname, fname);
+                replaceWord(stringbuffer, sub, fname, fname);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
 
-        replaceWord(stringbuffer, sname, sname);
+        replaceWord(stringbuffer, sub, sname, sname);
 
     } // End of method processStructure
 
-    /*****************************************************************************/
+    /**
+     * @param sub
+     *            TODO
+     ***************************************************************************/
 
-    static boolean processFormat(StringBuilder stringbuffer) {
+    private static boolean processFormat(StringBuilder stringbuffer, Map<String, String> sub) {
         int i = find(stringbuffer, "Format");
         System.out.println("format i=" + i);
         if (i < 0) {
@@ -429,7 +434,7 @@ public class ScriptConverter {
 
         System.out.println("new : " + snew);
 
-        replaceWord(snew, "Format", "Format");
+        replaceWord(snew, sub, "Format", "Format");
         stringbuffer.replace(i, o + 1, snew.toString());
 
         return true;
@@ -437,7 +442,7 @@ public class ScriptConverter {
 
     /*****************************************************************************/
 
-    static int immediateIndexOf(StringBuilder stringbuffer, String what, int start) {
+    private static int immediateIndexOf(StringBuilder stringbuffer, String what, int start) {
         int i = stringbuffer.indexOf(what, start);
         if (i < 0) {
             return i;
@@ -450,9 +455,12 @@ public class ScriptConverter {
         return i;
     }
 
-    /*****************************************************************************/
+    /**
+     * @param sub
+     *            TODO
+     ***************************************************************************/
 
-    static boolean processInputQuery(StringBuilder stringbuffer) {
+    private static boolean processInputQuery(StringBuilder stringbuffer, Map<String, String> sub) {
         int i = find(stringbuffer, "InputQuery");
         if (i < 0) {
             return false;
@@ -478,16 +486,19 @@ public class ScriptConverter {
 
         StringBuilder stringbuffernew = new StringBuilder(varname).append(":=").append(call);
 
-        replaceWord(stringbuffernew, "InputQuery", "InputQuery");
+        replaceWord(stringbuffernew, sub, "InputQuery", "InputQuery");
         stringbuffer.replace(i, l + 1, stringbuffernew.toString());
 
         return true;
 
     } // End of method processInputQuery
 
-    /*****************************************************************************/
+    /**
+     * @param functions
+     *            TODO
+     ***************************************************************************/
 
-    static boolean processProcedure(StringBuilder stringbuffer) {
+    private static boolean processProcedure(StringBuilder stringbuffer, List<String> functions) {
         int i = find(stringbuffer, "procedure");
         if (i < 0) {
             return false;
@@ -543,7 +554,7 @@ public class ScriptConverter {
 
     /*****************************************************************************/
 
-    static boolean isInName(char c) {
+    private static boolean isInName(char c) {
         if ((c >= 'a') && (c <= 'z')) {
             return true;
         }
@@ -559,31 +570,12 @@ public class ScriptConverter {
         return false;
     }
 
-    /*****************************************************************************/
+    /**
+     * @param sub
+     *            TODO
+     ***************************************************************************/
 
-    static void processArguments(StringBuffer s) {
-        int j, k;
-
-        while (true) {
-            j = s.indexOf(":");
-            if (j < 0) {
-                break;
-            }
-            k = s.indexOf(";", j + 1);
-            if (k < 0) {
-                // last argument
-                k = s.indexOf(")", j + 1);
-                s.delete(j, k);
-            } else {
-                s.replace(j, k, ",");
-            }
-        }
-
-    } // End of method processArguments
-
-    /*****************************************************************************/
-
-    static boolean processWith(StringBuilder stringbuffer) {
+    private static boolean processWith(StringBuilder stringbuffer, Map<String, String> sub) {
         int i = find(stringbuffer, "with");
         if (i < 0) {
             return false;
@@ -608,15 +600,15 @@ public class ScriptConverter {
         StringBuilder stringbufferlock = new StringBuilder(stringbuffer.substring(k + 5, l));
 
         if (var.equals("Flame")) {
-            processFields(stringbufferlock, var, JSFlame.class);
+            processFields(stringbufferlock, sub, var, JSFlame.class);
         } else if (var.equals("Transform")) {
-            processFields(stringbufferlock, var, JSTransform.class);
+            processFields(stringbufferlock, sub, var, JSTransform.class);
         } else if (var.equals("Options")) {
-            processFields(stringbufferlock, var, JSOptions.class);
+            processFields(stringbufferlock, sub, var, JSOptions.class);
         } else if (var.equals("Renderer")) {
-            processFields(stringbufferlock, var, JSRenderer.class);
+            processFields(stringbufferlock, sub, var, JSRenderer.class);
         } else if (var.equals("TStringList")) {
-            processFields(stringbufferlock, var, JSStringList.class);
+            processFields(stringbufferlock, sub, var, JSStringList.class);
         }
 
         stringbuffer.replace(k + 5, l, stringbufferlock.toString());
@@ -626,25 +618,31 @@ public class ScriptConverter {
 
     } // End of method processWithStatements
 
-    /*****************************************************************************/
+    /**
+     * @param sub
+     *            TODO
+     ***************************************************************************/
 
-    static void processFields(StringBuilder stringbuffer, String varname, Class<?> klass) {
+    private static void processFields(StringBuilder stringbuffer, Map<String, String> sub, String varname, Class<?> klass) {
         try {
             Field[] fields = klass.getDeclaredFields();
             int nf = fields.length;
             for (int i = 0; i < nf; i++) {
                 String name = fields[i].getName();
-                replaceWord(stringbuffer, varname + "." + name, varname + "." + name);
-                replaceWord(stringbuffer, name, varname + "." + name);
+                replaceWord(stringbuffer, sub, varname + "." + name, varname + "." + name);
+                replaceWord(stringbuffer, sub, name, varname + "." + name);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     } // End of method processFields
 
-    /*****************************************************************************/
+    /**
+     * @param sub
+     *            TODO
+     ***************************************************************************/
 
-    static boolean processCaseStatement(StringBuilder stringbuffer) {
+    private static boolean processCaseStatement(StringBuilder stringbuffer, Map<String, String> sub) {
         int i = find(stringbuffer, "case");
         if (i < 0) {
             return false;
@@ -679,7 +677,7 @@ public class ScriptConverter {
             l = i2 + 4;
         }
 
-        replaceWord(stringbufferlock, "case", "case");
+        replaceWord(stringbufferlock, sub, "case", "case");
 
         stringbuffer.replace(i, k + 3, "switch(" + control + ")\n{\n" + stringbufferlock.toString() + "}");
 
@@ -687,9 +685,12 @@ public class ScriptConverter {
 
     } // End of method processCaseStatement
 
-    /*****************************************************************************/
+    /**
+     * @param sub
+     *            TODO
+     ***************************************************************************/
 
-    static boolean processDeleteStatement(StringBuilder stringbuffer) {
+    private static boolean processDeleteStatement(StringBuilder stringbuffer, Map<String, String> sub) {
         int i = find(stringbuffer, "delete");
         if (i < 0) {
             return false;
@@ -721,7 +722,7 @@ public class ScriptConverter {
 
         StringBuilder stringbuffernew = new StringBuilder(varname).append(" := ").append("Delete(").append(varname).append(',').append(from).append(',')
                 .append(len).append(')');
-        replaceWord(stringbuffernew, "delete", "Delete");
+        replaceWord(stringbuffernew, sub, "delete", "Delete");
 
         stringbuffer.replace(i, m + 1, stringbuffernew.toString());
 
@@ -729,9 +730,12 @@ public class ScriptConverter {
 
     } // End of method processDeleteStatement
 
-    /*****************************************************************************/
+    /**
+     * @param functions
+     *            TODO
+     ***************************************************************************/
 
-    static void getNiladicFunctions() {
+    private static void getNiladicFunctions(List<String> functions) {
         Method[] m = Script.class.getDeclaredMethods();
         for (Method element : m) {
             String name = element.getName();
@@ -751,11 +755,11 @@ public class ScriptConverter {
 
     /*****************************************************************************/
 
-    static int find(StringBuilder stringbuffer, String word) {
+    private static int find(StringBuilder stringbuffer, String word) {
         return find(stringbuffer, word, 0);
     }
 
-    static int find(StringBuilder stringbuffer, String word, int istart) {
+    private static int find(StringBuilder stringbuffer, String word, int istart) {
         int l = word.length();
         int i = -1;
 
@@ -815,9 +819,12 @@ public class ScriptConverter {
         return i;
     }
 
-    /*****************************************************************************/
+    /**
+     * @param sub
+     *            TODO
+     ***************************************************************************/
 
-    static void processFunctionCalls(StringBuilder stringbuffer) {
+    private static void processFunctionCalls(StringBuilder stringbuffer, Map<String, String> sub) {
 
         // check function calls for spelling and parentheses
 
@@ -830,9 +837,9 @@ public class ScriptConverter {
                 Class<?>[] params = methods[i].getParameterTypes();
                 String myname = methods[i].getName().substring(1);
                 if (params.length == 0) {
-                    replaceWord(stringbuffer, myname, myname + "()");
+                    replaceWord(stringbuffer, sub, myname, myname + "()");
                 } else {
-                    replaceWord(stringbuffer, myname, myname);
+                    replaceWord(stringbuffer, sub, myname, myname);
                 }
             }
         } catch (Exception ex) {
