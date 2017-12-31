@@ -148,7 +148,7 @@ public class Script extends MyThinlet implements Constants {
     /*****************************************************************************/
 
     String readScript(File file, boolean mustconvert) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
 
         try (BufferedReader r = new BufferedReader(new FileReader(file))) {
             while (true) {
