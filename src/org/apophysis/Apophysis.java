@@ -31,43 +31,40 @@ import java.util.Random;
 
 public class Apophysis implements Constants {
 
-	/*****************************************************************************/
-	// CONSTANTS
+    /*****************************************************************************/
+    // CONSTANTS
 
-	public static void main(String args[]) {
+    public static void main(String args[]) {
 
-		System.setProperty("com.apple.mrj.application.apple.menu.about.name",
-				"Apophysis-j");
+        System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Apophysis-j");
 
-		try {
-			String title = APPNAME + " " + VERSION;
+        try {
+            String title = APPNAME + " " + VERSION;
 
-			Global.randomGenerator = new Random();
+            Global.randomGenerator = new Random();
 
-			Global.main = new Main(title, "/org/apophysis/thinletxml/main.xml", 800, 600);
-			Global.editor = new Editor("Editor", "/org/apophysis/thinletxml/editor.xml", 760, 556);
-			Global.adjust = new Adjust("Adjust", "/org/apophysis/thinletxml/adjust.xml", 450, 380);
-			Global.browser = new Browser("Browser", "/org/apophysis/thinletxml/browser.xml", 500, 350);
-			Global.mutate = new Mutate("Mutate", "/org/apophysis/thinletxml/mutate.xml", 370, 400);
-			Global.options = new Options("Options", "/org/apophysis/thinletxml/options.xml", 520, 400);
-			Global.export = new Export("Export Flame", "/org/apophysis/thinletxml/export.xml", 420, 390);
-			Global.script = new Script("Script Editor", "/org/apophysis/thinletxml/script.xml", 540, 490);
-			Global.helper = new Helper("Help", "/org/apophysis/thinletxml/helper.xml", 520, 520);
-			Global.preview = new Preview("Preview", "/org/apophysis/thinletxml/preview.xml", 212, 180);
-			Global.favorites = new Favorites("Favorite Scripts",
-					"/org/apophysis/thinletxml/favorites.xml", 400, 400);
-			Global.fullscreen = new Fullscreen("Full Screen", "/org/apophysis/thinletxml/fullscreen.xml",
-					100, 100);
-			Global.render = new Render("Render", "/org/apophysis/thinletxml/render.xml", 470, 470);
+            Global.main = new Main(title, "/org/apophysis/thinletxml/main.xml", 800, 600);
+            Global.editor = new Editor("Editor", "/org/apophysis/thinletxml/editor.xml", 760, 556);
+            Global.adjust = new Adjust("Adjust", "/org/apophysis/thinletxml/adjust.xml", 450, 380);
+            Global.browser = new Browser("Browser", "/org/apophysis/thinletxml/browser.xml", 500, 350);
+            Global.mutate = new Mutate("Mutate", "/org/apophysis/thinletxml/mutate.xml", 370, 400);
+            Global.options = new Options("Options", "/org/apophysis/thinletxml/options.xml", 520, 400);
+            Global.export = new Export("Export Flame", "/org/apophysis/thinletxml/export.xml", 420, 390);
+            Global.script = new Script("Script Editor", "/org/apophysis/thinletxml/script.xml", 540, 490);
+            Global.helper = new Helper("Help", "/org/apophysis/thinletxml/helper.xml", 520, 520);
+            Global.preview = new Preview("Preview", "/org/apophysis/thinletxml/preview.xml", 212, 180);
+            Global.favorites = new Favorites("Favorite Scripts", "/org/apophysis/thinletxml/favorites.xml", 400, 400);
+            Global.fullscreen = new Fullscreen("Full Screen", "/org/apophysis/thinletxml/fullscreen.xml", 100, 100);
+            Global.render = new Render("Render", "/org/apophysis/thinletxml/render.xml", 470, 470);
 
-			Global.main.show();
+            Global.main.setVisible(true);
 
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
 
-	} // End of method main
+    } // End of method main
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
 } // End of class Apophysis

@@ -32,162 +32,161 @@ import java.util.List;
 
 public class Favorites extends MyThinlet implements Constants {
 
-	/*****************************************************************************/
-	// CONSTANTS
+    /*****************************************************************************/
+    // CONSTANTS
 
-	/*****************************************************************************/
-	// FIELDS
+    /*****************************************************************************/
+    // FIELDS
 
-	private List<File> scripts = null;
+    private List<File> scripts = null;
 
-	private Object listview = null;
+    private Object listview = null;
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	Favorites(String title, String xmlfile, int width, int height)
-			throws Exception {
-		super(title, xmlfile, width, height);
+    Favorites(String title, String xmlfile, int width, int height) throws Exception {
+        super(title, xmlfile, width, height);
 
-		launcher.setResizable(false);
+        launcher.setResizable(false);
 
-		listview = find("ListView");
-	}
+        listview = find("ListView");
+    }
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	@Override
-	public boolean destroy() {
-		hide();
-		return false;
-	}
+    @Override
+    public boolean destroy() {
+        super.setVisible(false);
+        return false;
+    }
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	@Override
-	public void show() {
-		super.show();
+    @Override
+    public void setVisible(boolean visible) {
+        super.setVisible(visible);
 
-		scripts = Global.readFavorites();
-		updateList();
+        if (visible) {
+            scripts = Global.readFavorites();
+            updateList();
+        }
 
-	} // End of method show
+    } // End of method show
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	void updateList() {
+    void updateList() {
 
-		removeAll(listview);
+        removeAll(listview);
 
-		int n = scripts.size();
-		for (int i = 0; i < n; i++) {
-			File f = scripts.get(i);
-			String title = f.getName();
-			int k = title.lastIndexOf('.');
-			if (k >= 0) {
-				title = title.substring(0, k);
-			}
+        int n = scripts.size();
+        for (int i = 0; i < n; i++) {
+            File f = scripts.get(i);
+            String title = f.getName();
+            int k = title.lastIndexOf('.');
+            if (k >= 0) {
+                title = title.substring(0, k);
+            }
 
-			Object item = createImpl("item");
-			setString(item, "text", title);
+            Object item = createImpl("item");
+            setString(item, "text", title);
 
-			add(listview, item);
-		}
+            add(listview, item);
+        }
 
-	}
+    }
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	public void btnAddClick() {
-		Global.opendialog = new OpenDialog(this, Global.browserPath,
-				new AddTask());
-		Global.opendialog.addFilter("Apophysis-j scripts (*.ajs)", "*.ajs");
-		Global.opendialog.addFilter("Apophysis scripts (*.asc)", "*asc");
-		Global.opendialog.show();
-	} // End of method btnAddClick
+    public void btnAddClick() {
+        Global.opendialog = new OpenDialog(this, Global.browserPath, new AddTask());
+        Global.opendialog.addFilter("Apophysis-j scripts (*.ajs)", "*.ajs");
+        Global.opendialog.addFilter("Apophysis scripts (*.asc)", "*asc");
+        Global.opendialog.setVisible(true);
+    } // End of method btnAddClick
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	void addScript(String filename) {
-		scripts.add(new File(filename));
-		updateList();
-	}
+    void addScript(String filename) {
+        scripts.add(new File(filename));
+        updateList();
+    }
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	public void btnRemoveClick() {
-		int index = getSelectedIndex(listview);
-		if (index < 0) {
-			return;
-		}
+    public void btnRemoveClick() {
+        int index = getSelectedIndex(listview);
+        if (index < 0) {
+            return;
+        }
 
-		scripts.remove(index);
-		updateList();
-	}
+        scripts.remove(index);
+        updateList();
+    }
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	public void btnMoveUpClick() {
-		int index = getSelectedIndex(listview);
-		if (index <= 0) {
-			return;
-		}
+    public void btnMoveUpClick() {
+        int index = getSelectedIndex(listview);
+        if (index <= 0) {
+            return;
+        }
 
-		File f = scripts.get(index);
-		scripts.remove(index);
-		scripts.add(index - 1, f);
-		updateList();
+        File f = scripts.get(index);
+        scripts.remove(index);
+        scripts.add(index - 1, f);
+        updateList();
 
-		Object item = getItem(listview, index - 1);
-		setBoolean(item, "selected", true);
-	}
+        Object item = getItem(listview, index - 1);
+        setBoolean(item, "selected", true);
+    }
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	public void btnMoveDownClick() {
-		int index = getSelectedIndex(listview);
+    public void btnMoveDownClick() {
+        int index = getSelectedIndex(listview);
 
-		System.out.println("down index=" + index);
-		if (index == scripts.size() - 1) {
-			return;
-		}
+        System.out.println("down index=" + index);
+        if (index == (scripts.size() - 1)) {
+            return;
+        }
 
-		File f = scripts.get(index);
-		scripts.remove(index);
-		scripts.add(index + 1, f);
-		updateList();
+        File f = scripts.get(index);
+        scripts.remove(index);
+        scripts.add(index + 1, f);
+        updateList();
 
-		Object item = getItem(listview, index + 1);
-		setBoolean(item, "selected", true);
-	}
+        Object item = getItem(listview, index + 1);
+        setBoolean(item, "selected", true);
+    }
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	public void btnCancelClick() {
-		hide();
-	}
+    public void btnCancelClick() {
+        setVisible(false);
+    }
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	public void btnOKClick() {
-		Global.writeFavorites(scripts);
-		Global.main.updateFavorites();
-		hide();
-	}
+    public void btnOKClick() {
+        Global.writeFavorites(scripts);
+        Global.main.updateFavorites();
+        setVisible(false);
+    }
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	class AddTask implements Task {
+    class AddTask implements Task {
 
-	    @Override
-		public void execute() {
-			Global.browserPath = Global.opendialog.getBrowserPath();
-			addScript(Global.opendialog.filename);
-		}
+        @Override
+        public void execute() {
+            Global.browserPath = Global.opendialog.getBrowserPath();
+            addScript(Global.opendialog.filename);
+        }
 
-	}
+    }
 
-	/*****************************************************************************/
-	/*****************************************************************************/
+    /*****************************************************************************/
+    /*****************************************************************************/
 
 } // End of class Favorites
-

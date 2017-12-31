@@ -33,756 +33,742 @@ import java.util.List;
 
 public class Render extends MyThinlet implements Constants, ThreadTarget {
 
-	/*****************************************************************************/
-	// CONSTANTS
+    /*****************************************************************************/
+    // CONSTANTS
 
-	/*****************************************************************************/
-	// FIELDS
+    /*****************************************************************************/
+    // FIELDS
 
-	RenderThread renderthread = null;
+    RenderThread renderthread = null;
 
-	boolean canceled = false;
+    boolean canceled = false;
 
-	long starttime, endtime, oldelapsed, edt;
-	double oldprog;
-	long approxsamples;
+    long starttime, endtime, oldelapsed, edt;
+    double oldprog;
+    long approxsamples;
 
-	long physicalmemory, approxmemory, totalphysicalmemory;
-	int[][] colormap = new int[256][3];
-	ControlPoint cp;
-	String filename;
-	int imagewidth, imageheight, oversample;
-	int bitspersample;
-	double zoom, sample_density, brightness, gamma, vibrancy, filter_radius;
-	double[] center = new double[2];
-	int maxmemory;
-	boolean renderall = false;
+    long physicalmemory, approxmemory, totalphysicalmemory;
+    int[][] colormap = new int[256][3];
+    ControlPoint cp;
+    String filename;
+    int imagewidth, imageheight, oversample;
+    int bitspersample;
+    double zoom, sample_density, brightness, gamma, vibrancy, filter_radius;
+    double[] center = new double[2];
+    int maxmemory;
+    boolean renderall = false;
 
-	double ratio;
+    double ratio;
 
-	boolean paused = false;
+    boolean paused = false;
 
-	int index = -1; // current cp being renderer
+    int index = -1; // current cp being renderer
 
-	StringBuffer sb = new StringBuffer();
-	int nlines = 0;
+    StringBuffer sb = new StringBuffer();
+    int nlines = 0;
 
-	List<Preset> presets = null;
+    List<Preset> presets = null;
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	Render(String title, String xmlfile, int width, int height)
-			throws Exception {
-		super(title, xmlfile, width, height);
+    Render(String title, String xmlfile, int width, int height) throws Exception {
+        super(title, xmlfile, width, height);
 
-		launcher.setResizable(false);
+        launcher.setResizable(false);
 
-		cp = new ControlPoint();
-		bitspersample = 0;
+        cp = new ControlPoint();
+        bitspersample = 0;
 
-	}
+    }
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	@Override
-	public boolean destroy() {
-		hide();
-		return false;
-	}
+    @Override
+    public boolean destroy() {
+        setVisible(false);
+        return false;
+    }
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	@Override
-	public void show() {
+    @Override
+    public void setVisible(boolean visible) {
 
-		if (renderall) {
-			launcher.setTitle("Render all flames");
-		}
+        if (visible) {
+            if (renderall) {
+                launcher.setTitle("Render all flames");
+            }
 
-		presets = Global.readPresets();
+            presets = Global.readPresets();
 
-		listPresets();
+            listPresets();
 
-		System.gc();
+            System.gc();
 
-		Runtime runtime = Runtime.getRuntime();
+            Runtime runtime = Runtime.getRuntime();
 
-		long maxmem = runtime.maxMemory()
-				- (runtime.totalMemory() - runtime.freeMemory());
-		maxmem = maxmem / 1024 / 1024;
-		setString(find("lblPhysical"), "text", maxmem + " MB");
+            long maxmem = runtime.maxMemory() - (runtime.totalMemory() - runtime.freeMemory());
+            maxmem = maxmem / 1024 / 1024;
+            setString(find("lblPhysical"), "text", maxmem + " MB");
 
-		setString(find("txtFilename"), "text", filename);
+            setString(find("txtFilename"), "text", filename);
 
-		sample_density = Math.max(cp.sample_density, Global.renderDensity);
-		setString(find("txtDensity"), "text", "" + sample_density);
+            sample_density = Math.max(cp.sample_density, Global.renderDensity);
+            setString(find("txtDensity"), "text", "" + sample_density);
 
-		oversample = Math.max(cp.spatial_oversample, Global.renderOversample);
-		setString(find("txtOversample"), "text", "" + oversample);
+            oversample = Math.max(cp.spatial_oversample, Global.renderOversample);
+            setString(find("txtOversample"), "text", "" + oversample);
 
-		filter_radius = Math.max(cp.spatial_filter_radius,
-				Global.renderFilterRadius);
-		setString(find("txtFilterRadius"), "text", "" + filter_radius);
+            filter_radius = Math.max(cp.spatial_filter_radius, Global.renderFilterRadius);
+            setString(find("txtFilterRadius"), "text", "" + filter_radius);
 
-		imagewidth = cp.width;
-		imageheight = cp.height;
-		setString(find("cbWidth"), "text", "" + cp.width);
-		setString(find("cbHeight"), "text", "" + cp.height);
+            imagewidth = cp.width;
+            imageheight = cp.height;
+            setString(find("cbWidth"), "text", "" + cp.width);
+            setString(find("cbHeight"), "text", "" + cp.height);
 
-		setBoolean(find("chkWatermark"), "selected", Global.watermark == 1);
-		setBoolean(find("chkComment"), "selected", Global.jpegComment == 1);
-		setBoolean(find("chkPassword"), "selected",
-				Global.encryptedComment == 1);
-		updatePasswordOption();
+            setBoolean(find("chkWatermark"), "selected", Global.watermark == 1);
+            setBoolean(find("chkComment"), "selected", Global.jpegComment == 1);
+            setBoolean(find("chkPassword"), "selected", Global.encryptedComment == 1);
+            updatePasswordOption();
 
-		showMemory();
+            showMemory();
 
-		bitspersample = Global.renderBitsPerSample;
+            bitspersample = Global.renderBitsPerSample;
 
-		ratio = imagewidth * 1.0 / imageheight;
+            ratio = (imagewidth * 1.0) / imageheight;
 
-		super.show();
+        }
+        super.setVisible(visible);
 
-	}
+    }
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	void showMemory() {
-		try {
-			imagewidth = Integer.parseInt(getString(find("cbWidth"), "text"));
-			imageheight = Integer.parseInt(getString(find("cbHeight"), "text"));
+    void showMemory() {
+        try {
+            imagewidth = Integer.parseInt(getString(find("cbWidth"), "text"));
+            imageheight = Integer.parseInt(getString(find("cbHeight"), "text"));
 
-			/*
-			 * Runtime runtime = Runtime.getRuntime(); long maxmem =
-			 * runtime.maxMemory()-(runtime.totalMemory()-runtime.freeMemory());
-			 * maxmem = maxmem/1024/1024;
-			 * setString(find("lblPhysical"),"text",maxmem+" MB");
-			 */
+            /*
+             * Runtime runtime = Runtime.getRuntime(); long maxmem =
+             * runtime.maxMemory()-(runtime.totalMemory()-runtime.freeMemory());
+             * maxmem = maxmem/1024/1024;
+             * setString(find("lblPhysical"),"text",maxmem+" MB");
+             */
 
-			long need = imageheight * imagewidth * oversample * oversample * 16
-					/ 1000 / 1000;
-			setString(find("lblApproxMem"), "text", need + " MB");
+            long need = (imageheight * imagewidth * oversample * oversample * 16) / 1000 / 1000;
+            setString(find("lblApproxMem"), "text", need + " MB");
 
-			double z = sample_density * Math.pow(2, cp.zoom)
-					* Math.pow(2, cp.zoom) * imagewidth * imageheight
-					/ oversample / oversample;
+            double z = (sample_density * Math.pow(2, cp.zoom) * Math.pow(2, cp.zoom) * imagewidth * imageheight) / oversample / oversample;
 
-			z = Math.log(z) / Math.log(2);
-			long maxbits = (long) (8 + z);
-			setString(find("lblMaxbits"), "text", "" + maxbits);
-		} catch (Exception ex) {
-		}
-	}
+            z = Math.log(z) / Math.log(2);
+            long maxbits = (long) (8 + z);
+            setString(find("lblMaxbits"), "text", "" + maxbits);
+        } catch (Exception ex) {
+        }
+    }
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	public void setTab(int index) {
-		setInteger(find("PageCtrl"), "selected", index);
-	}
+    public void setTab(int index) {
+        setInteger(find("PageCtrl"), "selected", index);
+    }
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	void resetControls() {
+    void resetControls() {
 
-		setBoolean(find("txtFilename"), "enabled", true);
-		setBoolean(find("btnBrowse"), "enabled", true);
-		setBoolean(find("cbWidth"), "enabled", true);
-		setBoolean(find("cbHeight"), "enabled", true);
-		setBoolean(find("txtDensity"), "enabled", true);
-		setBoolean(find("txtFilterRadius"), "enabled", true);
-		setBoolean(find("txtOversample"), "enabled", true);
-		setBoolean(find("btnRender"), "enabled", true);
-		setBoolean(find("cmbPreset"), "enabled", true);
-		setBoolean(find("btnSavePreset"), "enabled", true);
-		setBoolean(find("btnDeletePreset"), "enabled", true);
-		setBoolean(find("btnPause"), "enabled", false);
-		setString(find("btnCancel"), "text", "  Close  ");
-		setInteger(find("ProgressBar"), "value", 0);
+        setBoolean(find("txtFilename"), "enabled", true);
+        setBoolean(find("btnBrowse"), "enabled", true);
+        setBoolean(find("cbWidth"), "enabled", true);
+        setBoolean(find("cbHeight"), "enabled", true);
+        setBoolean(find("txtDensity"), "enabled", true);
+        setBoolean(find("txtFilterRadius"), "enabled", true);
+        setBoolean(find("txtOversample"), "enabled", true);
+        setBoolean(find("btnRender"), "enabled", true);
+        setBoolean(find("cmbPreset"), "enabled", true);
+        setBoolean(find("btnSavePreset"), "enabled", true);
+        setBoolean(find("btnDeletePreset"), "enabled", true);
+        setBoolean(find("btnPause"), "enabled", false);
+        setString(find("btnCancel"), "text", "  Close  ");
+        setInteger(find("ProgressBar"), "value", 0);
 
-		showMemoryStatus();
+        showMemoryStatus();
 
-	} // End of method resetControl
+    } // End of method resetControl
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	void showMemoryStatus() {
-	} // End of method showMemoryStatus
+    void showMemoryStatus() {
+    } // End of method showMemoryStatus
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	void listPresets() {
-		Object combo = find("cmbPreset");
-		removeAll(combo);
+    void listPresets() {
+        Object combo = find("cmbPreset");
+        removeAll(combo);
 
-		int np = presets.size();
-		for (int i = 0; i < np; i++) {
-			Preset preset = presets.get(i);
+        int np = presets.size();
+        for (int i = 0; i < np; i++) {
+            Preset preset = presets.get(i);
 
-			Object choice = createImpl("choice");
-			setString(choice, "text", preset.name);
+            Object choice = createImpl("choice");
+            setString(choice, "text", preset.name);
 
-			add(combo, choice);
-		}
+            add(combo, choice);
+        }
 
-		setInteger(combo, "selected", -1);
-		setString(combo, "text", "");
+        setInteger(combo, "selected", -1);
+        setString(combo, "text", "");
 
-	} // End of method listPresets
+    } // End of method listPresets
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	public void btnRenderClick() {
+    public void btnRenderClick() {
 
-		Global.watermark = getBoolean(find("chkWatermark"), "selected") ? 1 : 0;
-		Global.jpegComment = getBoolean(find("chkComment"), "selected") ? 1 : 0;
-		Global.encryptedComment = getBoolean(find("chkPassword"), "selected") ? 1
-				: 0;
+        Global.watermark = getBoolean(find("chkWatermark"), "selected") ? 1 : 0;
+        Global.jpegComment = getBoolean(find("chkComment"), "selected") ? 1 : 0;
+        Global.encryptedComment = getBoolean(find("chkPassword"), "selected") ? 1 : 0;
 
-		String s = getString(find("txtFilename"), "text");
-		File file = new File(s);
-		if (file.getParent() != null) {
-			Global.renderPath = file.getParent();
-		}
+        String s = getString(find("txtFilename"), "text");
+        File file = new File(s);
+        if (file.getParent() != null) {
+            Global.renderPath = file.getParent();
+        }
 
-		sb = new StringBuffer();
+        sb = new StringBuffer();
 
-		paused = false;
-		canceled = false;
+        paused = false;
+        canceled = false;
 
-		starttime = System.currentTimeMillis();
+        starttime = System.currentTimeMillis();
 
-		if (renderall) {
-			index = -1;
-			loop();
-		} else {
-			renderOne();
-		}
-	}
+        if (renderall) {
+            index = -1;
+            loop();
+        } else {
+            renderOne();
+        }
+    }
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	void loop() {
+    void loop() {
 
-		index++;
-		if ((index < Global.main.cps.size()) && !canceled) {
-			cp.copy(Global.main.cps.get(index));
-			renderOne();
-		} else {
-			if (Global.playSoundOnRenderComplete) {
-				playSound();
-			}
-			resetControls();
-		}
+        index++;
+        if ((index < Global.main.cps.size()) && !canceled) {
+            cp.copy(Global.main.cps.get(index));
+            renderOne();
+        } else {
+            if (Global.playSoundOnRenderComplete) {
+                playSound();
+            }
+            resetControls();
+        }
 
-	} // End of method loop
+    } // End of method loop
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	void renderOne() {
-		String ext;
+    void renderOne() {
+        String ext;
 
-		imagewidth = Integer.parseInt(getString(find("cbWidth"), "text"));
-		imageheight = Integer.parseInt(getString(find("cbHeight"), "text"));
-
-		oversample = Integer.parseInt(getString(find("txtOversample"), "text"));
-		filter_radius = Double.parseDouble(
-				getString(find("txtFilterRadius"), "text"));
-		sample_density = Double.parseDouble(getString(find("txtDensity"), "text"));
+        imagewidth = Integer.parseInt(getString(find("cbWidth"), "text"));
+        imageheight = Integer.parseInt(getString(find("cbHeight"), "text"));
 
-		filename = getString(find("txtFilename"), "text");
-		if (filename.length() == 0) {
-			alert("File name not specified");
-			return;
-		}
-
-		if (renderall) {
-			File file = new File(filename);
-			File dir = new File(file.getParent());
+        oversample = Integer.parseInt(getString(find("txtOversample"), "text"));
+        filter_radius = Double.parseDouble(getString(find("txtFilterRadius"), "text"));
+        sample_density = Double.parseDouble(getString(find("txtDensity"), "text"));
 
-			int k = filename.lastIndexOf('.');
-			ext = (k > 0) ? filename.substring(k) : ".jpg";
-			file = new File(dir, cp.name + ext);
-			filename = file.getAbsolutePath();
-		}
+        filename = getString(find("txtFilename"), "text");
+        if (filename.length() == 0) {
+            alert("File name not specified");
+            return;
+        }
 
-		if (sample_density <= 0) {
-			alert("Invalid sample density");
-			return;
-		}
+        if (renderall) {
+            File file = new File(filename);
+            File dir = new File(file.getParent());
 
-		if (filter_radius <= 0) {
-			alert("Invalid filter radius");
-			return;
-		}
+            int k = filename.lastIndexOf('.');
+            ext = (k > 0) ? filename.substring(k) : ".jpg";
+            file = new File(dir, cp.name + ext);
+            filename = file.getAbsolutePath();
+        }
 
-		if (oversample < 1) {
-			alert("Invalid oversample");
-			return;
-		}
+        if (sample_density <= 0) {
+            alert("Invalid sample density");
+            return;
+        }
 
-		if (imagewidth < 1) {
-			alert("Invalid image width");
-			return;
-		}
+        if (filter_radius <= 0) {
+            alert("Invalid filter radius");
+            return;
+        }
 
-		if (imageheight < 1) {
-			alert("Invalid image height");
-			return;
-		}
+        if (oversample < 1) {
+            alert("Invalid oversample");
+            return;
+        }
 
-		setBoolean(find("txtFilename"), "enabled", false);
-		setBoolean(find("btnBrowse"), "enabled", false);
-		setBoolean(find("cbWidth"), "enabled", false);
-		setBoolean(find("cbHeight"), "enabled", false);
-		setBoolean(find("txtDensity"), "enabled", false);
-		setBoolean(find("txtFilterRadius"), "enabled", false);
-		setBoolean(find("txtOversample"), "enabled", false);
-		setBoolean(find("btnSavePreset"), "enabled", false);
-		setBoolean(find("btnDeletePreset"), "enabled", false);
+        if (imagewidth < 1) {
+            alert("Invalid image width");
+            return;
+        }
 
-		setBoolean(find("btnRender"), "enabled", false);
-		setBoolean(find("btnPause"), "enabled", true);
-		setString(find("btnCancel"), "text", " Cancel ");
-		setBoolean(find("btnCancel"), "enabled", true);
+        if (imageheight < 1) {
+            alert("Invalid image height");
+            return;
+        }
 
-		if (nlines > 1000) {
-			sb.setLength(0);
-		}
-
-		zoom = cp.zoom;
-		center[0] = cp.center[0];
-		center[1] = cp.center[1];
+        setBoolean(find("txtFilename"), "enabled", false);
+        setBoolean(find("btnBrowse"), "enabled", false);
+        setBoolean(find("cbWidth"), "enabled", false);
+        setBoolean(find("cbHeight"), "enabled", false);
+        setBoolean(find("txtDensity"), "enabled", false);
+        setBoolean(find("txtFilterRadius"), "enabled", false);
+        setBoolean(find("txtOversample"), "enabled", false);
+        setBoolean(find("btnSavePreset"), "enabled", false);
+        setBoolean(find("btnDeletePreset"), "enabled", false);
 
-		output("\n");
-
-		output("--- Rendering ");
-		output(filename);
-		output("\n");
-
-		output("  Size : ");
-		output("" + imagewidth);
-		output(" x ");
-		output("" + imageheight);
-		output("\n");
+        setBoolean(find("btnRender"), "enabled", false);
+        setBoolean(find("btnPause"), "enabled", true);
+        setString(find("btnCancel"), "text", " Cancel ");
+        setBoolean(find("btnCancel"), "enabled", true);
 
-		output("  Quality: ");
-		output("" + sample_density);
-		output("\n");
+        if (nlines > 1000) {
+            sb.setLength(0);
+        }
 
-		output("  Oversample : ");
-		output("" + oversample);
-		output(", Filter: ");
-		output("" + filter_radius);
-		output("\n");
+        zoom = cp.zoom;
+        center[0] = cp.center[0];
+        center[1] = cp.center[1];
 
-		output("  Buffer depth: ");
-		output("\n");
+        output("\n");
 
-		cp.sample_density = sample_density;
-		cp.spatial_oversample = oversample;
-		cp.spatial_filter_radius = filter_radius;
-		cp.adjustScale(imagewidth, imageheight);
-		cp.transparency = false;
+        output("--- Rendering ");
+        output(filename);
+        output("\n");
 
-		oldprog = 0;
-		oldelapsed = 0;
-		edt = 0;
+        output("  Size : ");
+        output("" + imagewidth);
+        output(" x ");
+        output("" + imageheight);
+        output("\n");
 
-		double pzoom = Math.pow(2, cp.zoom);
-		double appnum = sample_density * pzoom * pzoom;
-		double appden = imageheight * 1.0 * imagewidth
-				/ (oversample * oversample);
+        output("  Quality: ");
+        output("" + sample_density);
+        output("\n");
 
-		approxsamples = (long) (appnum / appden);
+        output("  Oversample : ");
+        output("" + oversample);
+        output(", Filter: ");
+        output("" + filter_radius);
+        output("\n");
 
-		renderthread = new RenderThread(this);
+        output("  Buffer depth: ");
+        output("\n");
 
-		renderthread.setCP(cp);
-		renderthread.start();
+        cp.sample_density = sample_density;
+        cp.spatial_oversample = oversample;
+        cp.spatial_filter_radius = filter_radius;
+        cp.adjustScale(imagewidth, imageheight);
+        cp.transparency = false;
 
-		setString(find("output"), "text", sb.toString());
-		setTab(1);
+        oldprog = 0;
+        oldelapsed = 0;
+        edt = 0;
 
-	} // End of method renderOne
+        double pzoom = Math.pow(2, cp.zoom);
+        double appnum = sample_density * pzoom * pzoom;
+        double appden = (imageheight * 1.0 * imagewidth) / (oversample * oversample);
 
-	/*****************************************************************************/
+        approxsamples = (long) (appnum / appden);
 
-	public void btnCancelClick() {
-		if (renderthread == null) {
-			hide();
-		} else {
-			canceled = true;
-			renderthread.terminate();
-		}
+        renderthread = new RenderThread(this);
 
-	} // End of method btnCancelClick
+        renderthread.setCP(cp);
+        renderthread.start();
 
-	/*****************************************************************************/
+        setString(find("output"), "text", sb.toString());
+        setTab(1);
 
-	@Override
-	public void message(int msg) {
-		System.out.println("render received message = " + msg);
+    } // End of method renderOne
 
-		if (msg == WM_THREAD_COMPLETE) {
-			endtime = System.currentTimeMillis();
+    /*****************************************************************************/
 
-			try {
-				System.out.println("saving " + filename);
-				boolean watermark = getBoolean(find("chkWatermark"), "selected");
-				boolean encrypt = getBoolean(find("chkPassword"), "selected");
-				boolean comment = getBoolean(find("chkComment"), "selected");
-				renderthread.saveImage(filename, comment, encrypt, watermark);
-			} catch (Exception ex) {
-				ex.printStackTrace();
-				output("Error saving image ! \n");
-			}
+    public void btnCancelClick() {
+        if (renderthread == null) {
+            setVisible(false);
+        } else {
+            canceled = true;
+            renderthread.terminate();
+        }
 
-			if (!renderall) {
-				if (Global.playSoundOnRenderComplete) {
-					playSound();
-				}
-			}
+    } // End of method btnCancelClick
 
-			if (Global.showRenderStats) {
-				renderthread.showBigStats();
-			} else {
-				renderthread.showSmallStats();
-			}
+    /*****************************************************************************/
 
-			renderthread = null;
+    @Override
+    public void message(int msg) {
+        System.out.println("render received message = " + msg);
 
-			if (!renderall) {
-				resetControls();
-			}
-		}
+        if (msg == WM_THREAD_COMPLETE) {
+            endtime = System.currentTimeMillis();
 
-		else if (msg == WM_THREAD_TERMINATE) {
-			renderthread = null;
+            try {
+                System.out.println("saving " + filename);
+                boolean watermark = getBoolean(find("chkWatermark"), "selected");
+                boolean encrypt = getBoolean(find("chkPassword"), "selected");
+                boolean comment = getBoolean(find("chkComment"), "selected");
+                renderthread.saveImage(filename, comment, encrypt, watermark);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                output("Error saving image ! \n");
+            }
 
-			output("Aborted !\n");
+            if (!renderall) {
+                if (Global.playSoundOnRenderComplete) {
+                    playSound();
+                }
+            }
 
-			if (!renderall) {
-				resetControls();
-			}
-		}
+            if (Global.showRenderStats) {
+                renderthread.showBigStats();
+            } else {
+                renderthread.showSmallStats();
+            }
 
-		if (renderall) {
-			loop();
-		}
+            renderthread = null;
 
-	} // End of method message
+            if (!renderall) {
+                resetControls();
+            }
+        }
 
-	/*****************************************************************************/
+        else if (msg == WM_THREAD_TERMINATE) {
+            renderthread = null;
 
-	public void cmbPresetChange(Object combo) {
-		int index = getSelectedIndex(combo);
-		if (index < 0) {
-			return;
-		}
+            output("Aborted !\n");
 
-		Preset preset = presets.get(index);
+            if (!renderall) {
+                resetControls();
+            }
+        }
 
-		oversample = preset.oversample;
-		setString(find("txtOversample"), "text", "" + oversample);
+        if (renderall) {
+            loop();
+        }
 
-		filter_radius = preset.filter_radius;
-		setString(find("txtFilterRadius"), "text", "" + filter_radius);
+    } // End of method message
 
-		imagewidth = preset.width;
-		imageheight = preset.height;
-		setString(find("cbWidth"), "text", "" + imagewidth);
-		setString(find("cbHeight"), "text", "" + imageheight);
+    /*****************************************************************************/
 
-		sample_density = preset.density;
-		setString(find("txtDensity"), "text", "" + sample_density);
+    public void cmbPresetChange(Object combo) {
+        int index = getSelectedIndex(combo);
+        if (index < 0) {
+            return;
+        }
 
-	} // End of method cmbPresetChange
+        Preset preset = presets.get(index);
 
-	/*****************************************************************************/
+        oversample = preset.oversample;
+        setString(find("txtOversample"), "text", "" + oversample);
 
-	public void btnBrowseClick() {
+        filter_radius = preset.filter_radius;
+        setString(find("txtFilterRadius"), "text", "" + filter_radius);
 
-		File file = new File(filename);
-		String path = file.getParent();
-		if (path == null) {
-			path = Global.browserPath;
-		}
+        imagewidth = preset.width;
+        imageheight = preset.height;
+        setString(find("cbWidth"), "text", "" + imagewidth);
+        setString(find("cbHeight"), "text", "" + imageheight);
 
-		Task task = new FilenameTask();
-		Global.savedialog = new SaveDialog(this, path, file.getName(), task);
+        sample_density = preset.density;
+        setString(find("txtDensity"), "text", "" + sample_density);
 
-		Global.savedialog.show();
+    } // End of method cmbPresetChange
 
-	} // End of method btnBrowseClick
+    /*****************************************************************************/
 
-	/*****************************************************************************/
+    public void btnBrowseClick() {
 
-	public void btnSavePresetClick() {
-		Task task = new PresetTask();
-		ask("Preset name :", "", task);
-	}
-
-	/*****************************************************************************/
-
-	void savePreset() {
-		if (_answer.equals("")) {
-			return;
-		}
+        File file = new File(filename);
+        String path = file.getParent();
+        if (path == null) {
+            path = Global.browserPath;
+        }
 
-		Preset preset = new Preset();
-
-		preset.name = _answer;
-		preset.width = Integer.parseInt(getString(find("cbWidth"), "text"));
-		preset.height = Integer.parseInt(getString(find("cbHeight"), "text"));
-		preset.density = Double.parseDouble(getString(find("txtDensity"), "text"));
-		preset.filter_radius = Double.parseDouble(
-				getString(find("txtFilterRadius"), "text"));
-		preset.oversample = Integer.parseInt(getString(find("txtOversample"),
-				"text"));
-		preset.format = ".jpg";
-		preset.limitmem = false;
-		preset.indexmem = -1;
-		preset.memory = 64;
+        Task task = new FilenameTask();
+        Global.savedialog = new SaveDialog(this, path, file.getName(), task);
 
-		deletePreset(_answer);
-		presets.add(preset);
-		listPresets();
+        Global.savedialog.setVisible(true);
 
-		setString(find("cmbPreset"), "text", preset.name);
+    } // End of method btnBrowseClick
 
-		Global.writePresets(presets);
+    /*****************************************************************************/
 
-	} // End of method savePreset
+    public void btnSavePresetClick() {
+        Task task = new PresetTask();
+        ask("Preset name :", "", task);
+    }
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	public void btnDeletePresetClick() {
-		Object combo = find("cmbPreset");
-		String name = getString(combo, "text");
-		deletePreset(name);
-		Global.writePresets(presets);
-	}
+    void savePreset() {
+        if (_answer.equals("")) {
+            return;
+        }
 
-	/*****************************************************************************/
+        Preset preset = new Preset();
 
-	void deletePreset(String name) {
+        preset.name = _answer;
+        preset.width = Integer.parseInt(getString(find("cbWidth"), "text"));
+        preset.height = Integer.parseInt(getString(find("cbHeight"), "text"));
+        preset.density = Double.parseDouble(getString(find("txtDensity"), "text"));
+        preset.filter_radius = Double.parseDouble(getString(find("txtFilterRadius"), "text"));
+        preset.oversample = Integer.parseInt(getString(find("txtOversample"), "text"));
+        preset.format = ".jpg";
+        preset.limitmem = false;
+        preset.indexmem = -1;
+        preset.memory = 64;
 
-		int np = presets.size();
-		for (int i = 0; i < np; i++) {
-			Preset preset = presets.get(i);
-			if (preset.name.equals(name)) {
-				presets.remove(i);
-				listPresets();
-				return;
-			}
-		}
+        deletePreset(_answer);
+        presets.add(preset);
+        listPresets();
 
-	} // End of method deletePreset
+        setString(find("cmbPreset"), "text", preset.name);
 
-	/*****************************************************************************/
+        Global.writePresets(presets);
 
-	public void widthChanged(Object combo, int option) {
-		int index = getSelectedIndex(combo);
-		if ((index < 0) && (option == 0)) {
-			return;
-		}
+    } // End of method savePreset
 
-		try {
-			if (getBoolean(find("chkMaintain"), "selected")) {
-				int w = Integer.parseInt(getString(combo, "text"));
-				int h = w * cp.height / cp.width;
-				setString(find("cbHeight"), "text", "" + h);
-			}
-			setBoolean(find("btnRender"), "enabled", true);
-			showMemory();
-		} catch (Exception ex) {
-			setBoolean(find("btnRender"), "enabled", false);
-		}
-	}
+    /*****************************************************************************/
 
-	/*****************************************************************************/
+    public void btnDeletePresetClick() {
+        Object combo = find("cmbPreset");
+        String name = getString(combo, "text");
+        deletePreset(name);
+        Global.writePresets(presets);
+    }
 
-	public void heightChanged(Object combo, int option) {
-		int index = getSelectedIndex(combo);
-		System.out.println("index=" + index + " option=" + option);
-		if ((index < 0) && (option == 0)) {
-			return;
-		}
+    /*****************************************************************************/
 
-		try {
-			if (getBoolean(find("chkMaintain"), "selected")) {
-				int h = Integer.parseInt(getString(combo, "text"));
-				int w = h * cp.width / cp.height;
-				setString(find("cbWidth"), "text", "" + w);
-			}
-			setBoolean(find("btnRender"), "enabled", true);
-			showMemory();
-		} catch (Exception ex) {
-			setBoolean(find("btnRender"), "enabled", false);
-		}
-	}
+    void deletePreset(String name) {
 
-	/*****************************************************************************/
+        int np = presets.size();
+        for (int i = 0; i < np; i++) {
+            Preset preset = presets.get(i);
+            if (preset.name.equals(name)) {
+                presets.remove(i);
+                listPresets();
+                return;
+            }
+        }
 
-	public void paramChanged() {
-		String s;
-
-		try {
-			s = getString(find("txtDensity"), "text");
-			sample_density = Double.parseDouble(s);
+    } // End of method deletePreset
 
-			s = getString(find("txtFilterRadius"), "text");
-			filter_radius = Double.parseDouble(s);
+    /*****************************************************************************/
 
-			s = getString(find("txtOversample"), "text");
-			oversample = Integer.parseInt(s);
+    public void widthChanged(Object combo, int option) {
+        int index = getSelectedIndex(combo);
+        if ((index < 0) && (option == 0)) {
+            return;
+        }
 
-			showMemory();
-		} catch (Exception ex) {
-		}
+        try {
+            if (getBoolean(find("chkMaintain"), "selected")) {
+                int w = Integer.parseInt(getString(combo, "text"));
+                int h = (w * cp.height) / cp.width;
+                setString(find("cbHeight"), "text", "" + h);
+            }
+            setBoolean(find("btnRender"), "enabled", true);
+            showMemory();
+        } catch (Exception ex) {
+            setBoolean(find("btnRender"), "enabled", false);
+        }
+    }
 
-	}
+    /*****************************************************************************/
 
-	/*****************************************************************************/
+    public void heightChanged(Object combo, int option) {
+        int index = getSelectedIndex(combo);
+        System.out.println("index=" + index + " option=" + option);
+        if ((index < 0) && (option == 0)) {
+            return;
+        }
 
-	public void btnPauseClick(Object button) {
-		if (renderthread == null) {
-			return;
-		}
+        try {
+            if (getBoolean(find("chkMaintain"), "selected")) {
+                int h = Integer.parseInt(getString(combo, "text"));
+                int w = (h * cp.width) / cp.height;
+                setString(find("cbWidth"), "text", "" + w);
+            }
+            setBoolean(find("btnRender"), "enabled", true);
+            showMemory();
+        } catch (Exception ex) {
+            setBoolean(find("btnRender"), "enabled", false);
+        }
+    }
 
-		if (paused) {
-			renderthread.unpause();
-			paused = false;
-			setString(button, "text", " Pause ");
-		} else {
-			renderthread.pause();
-			paused = true;
-			setString(button, "text", " Restart ");
-		}
+    /*****************************************************************************/
 
-	}
+    public void paramChanged() {
+        String s;
 
-	/*****************************************************************************/
+        try {
+            s = getString(find("txtDensity"), "text");
+            sample_density = Double.parseDouble(s);
 
-	public void btnHelpClick() {
-		Global.helper.show();
-		Global.helper.setTopicByName("memory");
-	}
+            s = getString(find("txtFilterRadius"), "text");
+            filter_radius = Double.parseDouble(s);
 
-	/*****************************************************************************/
+            s = getString(find("txtOversample"), "text");
+            oversample = Integer.parseInt(s);
 
-	public void chkCommentClick(Object button) {
-		updatePasswordOption();
-	}
+            showMemory();
+        } catch (Exception ex) {
+        }
 
-	/*****************************************************************************/
+    }
 
-	void updatePasswordOption() {
-		setBoolean(find("chkPassword"), "enabled",
-				getBoolean(find("chkComment"), "selected")
-						&& (Global.passwordText.length() > 0));
-	}
+    /*****************************************************************************/
 
-	/*****************************************************************************/
+    public void btnPauseClick(Object button) {
+        if (renderthread == null) {
+            return;
+        }
 
-	void setFilename() {
-		filename = Global.savedialog.filename;
-		setString(find("txtFilename"), "text", filename);
-	}
+        if (paused) {
+            renderthread.unpause();
+            paused = false;
+            setString(button, "text", " Pause ");
+        } else {
+            renderthread.pause();
+            paused = true;
+            setString(button, "text", " Restart ");
+        }
 
-	/*****************************************************************************/
+    }
 
-	void playSound() {
-		File file = new File(Global.renderCompleteSoundFile);
-		if (file.exists()) {
-			Sound sound = new Sound(file);
-			sound.play();
-		} else {
-			Toolkit.getDefaultToolkit().beep();
-		}
-	}
+    /*****************************************************************************/
 
-	/*****************************************************************************/
+    public void btnHelpClick() {
+        Global.helper.setVisible(true);
+        Global.helper.setTopicByName("memory");
+    }
 
-	@Override
-	public void progress(double value) {
+    /*****************************************************************************/
 
-		if (renderall) {
-			value = (index + value) / Global.main.cps.size();
-		}
+    public void chkCommentClick(Object button) {
+        updatePasswordOption();
+    }
 
-		int i = (int) (100 * value);
-		if (i < 0) {
-			i = 0;
-		} else if (i > 100) {
-			i = 100;
-		}
+    /*****************************************************************************/
 
-		setInteger(find("ProgressBar"), "value", i);
+    void updatePasswordOption() {
+        setBoolean(find("chkPassword"), "enabled", getBoolean(find("chkComment"), "selected") && (Global.passwordText.length() > 0));
+    }
 
-		if (value > 0.05) {
-			long elapsed = System.currentTimeMillis() - starttime;
-			long remaining = (long) ((1 - value) * elapsed / value);
-			String s = convertTime(remaining);
-			setString(find("StatusBar"), "text", "Remaining :" + s);
-		}
+    /*****************************************************************************/
 
-	}
+    void setFilename() {
+        filename = Global.savedialog.filename;
+        setString(find("txtFilename"), "text", filename);
+    }
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	@Override
-	public void output(String msg) {
-		sb.append(msg);
+    void playSound() {
+        File file = new File(Global.renderCompleteSoundFile);
+        if (file.exists()) {
+            Sound sound = new Sound(file);
+            sound.play();
+        } else {
+            Toolkit.getDefaultToolkit().beep();
+        }
+    }
 
-		Object output = find("output");
-		setString(output, "text", sb.toString());
-		setInteger(output, "start", sb.length());
-		setInteger(output, "end", sb.length());
-		repaint();
-	}
+    /*****************************************************************************/
 
-	/*****************************************************************************/
+    @Override
+    public void progress(double value) {
 
-	String convertTime(long millis) {
-		long hr = millis / 3600000L;
-		millis -= hr * 3600000L;
+        if (renderall) {
+            value = (index + value) / Global.main.cps.size();
+        }
 
-		long mn = millis / 60000L;
-		millis -= mn * 60000L;
+        int i = (int) (100 * value);
+        if (i < 0) {
+            i = 0;
+        } else if (i > 100) {
+            i = 100;
+        }
 
-		long sc = millis / 1000L;
+        setInteger(find("ProgressBar"), "value", i);
 
-		return ((hr < 10) ? ("0" + hr) : ("" + hr)) + ":"
-				+ ((mn < 10) ? ("0" + mn) : ("" + mn)) + ":"
-				+ ((sc < 10) ? ("0" + sc) : ("" + sc));
+        if (value > 0.05) {
+            long elapsed = System.currentTimeMillis() - starttime;
+            long remaining = (long) (((1 - value) * elapsed) / value);
+            String s = convertTime(remaining);
+            setString(find("StatusBar"), "text", "Remaining :" + s);
+        }
 
-	}
+    }
 
-	/*****************************************************************************/
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	class PresetTask implements Task {
+    @Override
+    public void output(String msg) {
+        sb.append(msg);
 
-	    @Override
-		public void execute() {
-			savePreset();
-		}
+        Object output = find("output");
+        setString(output, "text", sb.toString());
+        setInteger(output, "start", sb.length());
+        setInteger(output, "end", sb.length());
+        repaint();
+    }
 
-	}
+    /*****************************************************************************/
 
-	/*****************************************************************************/
-	/*****************************************************************************/
+    String convertTime(long millis) {
+        long hr = millis / 3600000L;
+        millis -= hr * 3600000L;
 
-	class FilenameTask implements Task {
+        long mn = millis / 60000L;
+        millis -= mn * 60000L;
 
-	    @Override
-		public void execute() {
-			setFilename();
-		}
-	}
+        long sc = millis / 1000L;
 
-	/*****************************************************************************/
-	/*****************************************************************************/
+        return ((hr < 10) ? ("0" + hr) : ("" + hr)) + ":" + ((mn < 10) ? ("0" + mn) : ("" + mn)) + ":" + ((sc < 10) ? ("0" + sc) : ("" + sc));
+
+    }
+
+    /*****************************************************************************/
+    /*****************************************************************************/
+
+    class PresetTask implements Task {
+
+        @Override
+        public void execute() {
+            savePreset();
+        }
+
+    }
+
+    /*****************************************************************************/
+    /*****************************************************************************/
+
+    class FilenameTask implements Task {
+
+        @Override
+        public void execute() {
+            setFilename();
+        }
+    }
+
+    /*****************************************************************************/
+    /*****************************************************************************/
 
 } // End of class Render

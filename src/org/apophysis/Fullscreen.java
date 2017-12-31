@@ -42,139 +42,143 @@ import java.awt.event.MouseListener;
 
 public class Fullscreen extends MyThinlet implements Constants {
 
-	/*****************************************************************************/
-	// CONSTANTS
+    /*****************************************************************************/
+    // CONSTANTS
 
-	/*****************************************************************************/
-	// FIELDS
+    /*****************************************************************************/
+    // FIELDS
 
-	Image image = null;
+    Image image = null;
 
-	final ControlPoint cp = new ControlPoint();
-	final double[] center = new double[2];
+    final ControlPoint cp = new ControlPoint();
+    final double[] center = new double[2];
 
-	private final GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-	private final GraphicsDevice gd = ge.getDefaultScreenDevice();
+    private final GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+    private final GraphicsDevice gd = ge.getDefaultScreenDevice();
 
-	private Window wscreen = null;
+    private Window wscreen = null;
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	Fullscreen(String title, String xmlfile, int width, int height)
-			throws Exception {
-		super(title, xmlfile, width, height);
+    Fullscreen(String title, String xmlfile, int width, int height) throws Exception {
+        super(title, xmlfile, width, height);
 
-		launcher.setResizable(false);
+        launcher.setResizable(false);
 
-	}
+    }
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	@Override
-	public boolean destroy() {
-		hide();
-		return false;
-	}
+    @Override
+    public boolean destroy() {
+        super.setVisible(false);
+        return false;
+    }
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	@Override
-	public void show() {
+    @Override
+    public void setVisible(boolean visible) {
 
-		wscreen = new ScreenWindow(launcher);
+        if (visible) {
+            wscreen = new ScreenWindow(launcher);
 
-		boolean ok = gd.isFullScreenSupported();
-		if (ok) {
-			gd.setFullScreenWindow(wscreen);
-		} else {
-			Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-			wscreen.setBounds(0, 0, d.width, d.height);
-			wscreen.setVisible(true);
-		}
-	}
+            boolean ok = gd.isFullScreenSupported();
+            if (ok) {
+                gd.setFullScreenWindow(wscreen);
+            } else {
+                Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+                wscreen.setBounds(0, 0, d.width, d.height);
+                wscreen.setVisible(true);
+            }
+        }
+    }
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	void terminate() {
-		try {
-			gd.setFullScreenWindow(null);
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
+    void terminate() {
+        try {
+            gd.setFullScreenWindow(null);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
 
-		wscreen.setVisible(false);
-		wscreen.dispose();
-		wscreen = null;
-		image = null;
+        wscreen.setVisible(false);
+        wscreen.dispose();
+        wscreen = null;
+        image = null;
 
-		launcher.setLocation(-200, -200);
+        launcher.setLocation(-200, -200);
 
-		// hide();
+        // setVisible(false);
 
-		System.out.println("full screen terminated!");
+        System.out.println("full screen terminated!");
 
-	}
+    }
 
-	/*****************************************************************************/
-	/*****************************************************************************/
+    /*****************************************************************************/
+    /*****************************************************************************/
 
-	class ScreenWindow extends Window implements MouseListener {
+    class ScreenWindow extends Window implements MouseListener {
 
-		/*****************************************************************************/
+        /*****************************************************************************/
 
-		ScreenWindow(Frame frame) {
-			super(frame);
-			addMouseListener(this);
-		}
+        ScreenWindow(Frame frame) {
+            super(frame);
+            addMouseListener(this);
+        }
 
-		/*****************************************************************************/
+        /*****************************************************************************/
 
-		@Override
-		public void paint(Graphics g) {
-			Rectangle bounds = getBounds();
+        @Override
+        public void paint(Graphics g) {
+            Rectangle bounds = getBounds();
 
-			g.setColor(Color.black);
-			g.fillRect(0, 0, bounds.width, bounds.height);
+            g.setColor(Color.black);
+            g.fillRect(0, 0, bounds.width, bounds.height);
 
-			int w = image.getWidth(null);
-			int h = image.getHeight(null);
+            int w = image.getWidth(null);
+            int h = image.getHeight(null);
 
-			int h2 = bounds.width * h / w;
+            int h2 = (bounds.width * h) / w;
 
-			if (h2 < bounds.height) {
-				g.drawImage(image, 0, bounds.height / 2 - h2 / 2, bounds.width,
-						h2, null);
-			} else {
-				int w2 = bounds.height * w / h;
-				g.drawImage(image, bounds.width / 2 - w2 / 2, 0, w2,
-						bounds.height, null);
-			}
-		} // End of method paint
+            if (h2 < bounds.height) {
+                g.drawImage(image, 0, (bounds.height / 2) - (h2 / 2), bounds.width, h2, null);
+            } else {
+                int w2 = (bounds.height * w) / h;
+                g.drawImage(image, (bounds.width / 2) - (w2 / 2), 0, w2, bounds.height, null);
+            }
+        } // End of method paint
 
-		/*****************************************************************************/
+        /*****************************************************************************/
 
-		public void mouseEntered(MouseEvent e) {
-		}
+        @Override
+        public void mouseEntered(MouseEvent e) {
+        }
 
-		public void mouseExited(MouseEvent e) {
-		}
+        @Override
+        public void mouseExited(MouseEvent e) {
+        }
 
-		public void mouseReleased(MouseEvent e) {
-		}
+        @Override
+        public void mouseReleased(MouseEvent e) {
+        }
 
-		public void mouseClicked(MouseEvent e) {
-		}
+        @Override
+        public void mouseClicked(MouseEvent e) {
+        }
 
-		public void mouseMoved(MouseEvent e) {
-		}
+        public void mouseMoved(MouseEvent e) {
+        }
 
-		public void mousePressed(MouseEvent e) {
-			terminate();
-		}
+        @Override
+        public void mousePressed(MouseEvent e) {
+            terminate();
+        }
 
-	} // End of class ScreenWindow
+    } // End of class ScreenWindow
 
-	/*****************************************************************************/
-	/*****************************************************************************/
+    /*****************************************************************************/
+    /*****************************************************************************/
 
 } // End of class Fullscreen

@@ -42,362 +42,360 @@ import java.util.StringTokenizer;
 
 public class Browser extends MyThinlet implements Constants {
 
-	/*****************************************************************************/
-	// CONSTANTS
+    /*****************************************************************************/
+    // CONSTANTS
 
-	static final int pixelCountMax = 32768;
-	static final int paletteTooltipTimeout = 1500;
+    static final int pixelCountMax = 32768;
+    static final int paletteTooltipTimeout = 1500;
 
-	/*****************************************************************************/
-	// FIELDS
+    /*****************************************************************************/
+    // FIELDS
 
+    private String filename;
+    private final int[][] palette = new int[256][3];
 
-	private String filename;
-	private final int[][] palette = new int[256][3];
+    private final int[] indices = new int[400];
+    private final int[] colors = new int[400];
 
-	private final int[] indices = new int[400];
-	private final int[] colors = new int[400];
+    private Image pimage = null;
 
-	private Image pimage = null;
+    /*****************************************************************************/
 
-	/*****************************************************************************/
+    Browser(String title, String xmlfile, int width, int height) throws Exception {
+        super(title, xmlfile, width, height);
 
-	Browser(String title, String xmlfile, int width, int height)
-			throws Exception {
-		super(title, xmlfile, width, height);
+    }
 
-	}
+    /*****************************************************************************/
 
-	/*****************************************************************************/
+    @Override
+    public boolean destroy() {
+        super.setVisible(false);
+        return false;
+    }
 
-	@Override
-	public boolean destroy() {
-		hide();
-		return false;
-	}
+    /*****************************************************************************/
 
-	/*****************************************************************************/
+    @Override
+    public void setVisible(boolean visible) {
 
-	@Override
-	public void show() {
+        super.setVisible(visible);
 
-		super.show();
+    }
 
-	}
+    /*****************************************************************************/
 
-	/*****************************************************************************/
+    public void listViewChange(Object list) {
+        Object item = getSelectedItem(list);
+        if (item == null) {
+            return;
+        }
 
-	public void listViewChange(Object list) {
-		Object item = getSelectedItem(list);
-		if (item == null) {
-			return;
-		}
+        String name = getString(item, "text");
 
-		String name = getString(item, "text");
+        createPalette(name);
 
-		createPalette(name);
+    } // End of method listViewChange
 
-	} // End of method listViewChange
+    /*****************************************************************************/
 
-	/*****************************************************************************/
+    void createPalette(String name) {
+        int ind, rgb, i, k;
 
-	void createPalette(String name) {
-		int ind, rgb, i, k;
+        for (i = 0; i < 256; i++) {
+            palette[i][0] = palette[i][1] = palette[i][2] = 0;
+        }
 
-		for (i = 0; i < 256; i++) {
-			palette[i][0] = palette[i][1] = palette[i][2] = 0;
-		}
+        try (BufferedReader r = new BufferedReader(new FileReader(filename))) {
 
-		try (BufferedReader r = new BufferedReader(new FileReader(filename))) {
+            // look for the right gradient
 
-			// look for the right gradient
+            while (true) {
+                String line = r.readLine();
+                if (line == null) {
+                    throw new IOException("Gradient " + name + " not found");
+                }
 
-			while (true) {
-				String line = r.readLine();
-				if (line == null) {
-					throw new IOException("Gradient " + name + " not found");
-				}
+                line = line.trim();
+                if (!line.endsWith("{")) {
+                    continue;
+                }
 
-				line = line.trim();
-				if (!line.endsWith("{")) {
-					continue;
-				}
+                String pname = line.substring(0, line.length() - 1).trim();
+                if (pname.equals(name)) {
+                    break;
+                }
+            }
 
-				String pname = line.substring(0, line.length() - 1).trim();
-				if (pname.equals(name)) {
-					break;
-				}
-			}
+            // we are at the beginning of the gradient
 
-			// we are at the beginning of the gradient
+            k = 0;
 
-			k = 0;
+            while (true) {
+                String line = r.readLine();
+                if (line == null) {
+                    throw new IOException("Gradient " + name + " not complete");
+                }
 
-			while (true) {
-				String line = r.readLine();
-				if (line == null) {
-					throw new IOException("Gradient " + name + " not complete");
-				}
+                if (line.indexOf("}") >= 0) {
+                    break;
+                }
 
-				if (line.indexOf("}") >= 0) {
-					break;
-				}
+                ind = -1;
+                rgb = -1;
+
+                StringTokenizer tk = new StringTokenizer(line);
+
+                while (tk.hasMoreTokens()) {
+                    String token = tk.nextToken();
+                    i = token.indexOf("=");
+                    if (i <= 0) {
+                        continue;
+                    }
+
+                    String key = token.substring(0, i);
+                    String val = token.substring(i + 1);
+
+                    if (key.equals("index")) {
+                        ind = Integer.parseInt(val);
+                    } else if (key.equals("color")) {
+                        rgb = Integer.parseInt(val);
+                    }
+                }
+
+                if ((ind >= 0) && (rgb >= 0)) {
+                    indices[k] = ind;
+                    colors[k] = rgb;
+                    k++;
+                }
+            }
+
+            for (i = 0; i < k; i++) {
+                ind = indices[i];
+                while (ind < 0) {
+                    ind += 400;
+                }
+                ind = (int) (((((double) ind) * 255) / 399) + 0.5);
+                indices[i] = ind;
+
+                palette[ind][0] = (colors[i]) & 0xFF;
+                palette[ind][1] = (colors[i] >> 8) & 0xFF;
+                palette[ind][2] = (colors[i] >> 16) & 0xFF;
+            }
+
+            i = 1;
+            while (true) {
+                int a = indices[i - 1];
+                int b = indices[i];
+                rgbBlend(a, b);
+                i++;
+                if (i == k) {
+                    break;
+                }
+            }
+
+            if ((indices[0] != 0) || (indices[k - 1] != 255)) {
+                int a = indices[k - 1];
+                int b = indices[0] + 256;
+                rgbBlend(a, b);
+            }
+
+            pimage = buildGradientImage(palette);
+            repaint();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+    } // End of method listViewChange
+
+    /*****************************************************************************/
 
-				ind = -1;
-				rgb = -1;
-
-				StringTokenizer tk = new StringTokenizer(line);
-
-				while (tk.hasMoreTokens()) {
-					String token = tk.nextToken();
-					i = token.indexOf("=");
-					if (i <= 0) {
-						continue;
-					}
-
-					String key = token.substring(0, i);
-					String val = token.substring(i + 1);
-
-					if (key.equals("index")) {
-						ind = Integer.parseInt(val);
-					} else if (key.equals("color")) {
-						rgb = Integer.parseInt(val);
-					}
-				}
-
-				if ((ind >= 0) && (rgb >= 0)) {
-					indices[k] = ind;
-					colors[k] = rgb;
-					k++;
-				}
-			}
-
-			for (i = 0; i < k; i++) {
-				ind = indices[i];
-				while (ind < 0) {
-					ind += 400;
-				}
-				ind = (int) (((double) ind) * 255 / 399 + 0.5);
-				indices[i] = ind;
-
-				palette[ind][0] = (colors[i]) & 0xFF;
-				palette[ind][1] = (colors[i] >> 8) & 0xFF;
-				palette[ind][2] = (colors[i] >> 16) & 0xFF;
-			}
-
-			i = 1;
-			while (true) {
-				int a = indices[i - 1];
-				int b = indices[i];
-				rgbBlend(a, b);
-				i++;
-				if (i == k) {
-					break;
-				}
-			}
-
-			if ((indices[0] != 0) || (indices[k - 1] != 255)) {
-				int a = indices[k - 1];
-				int b = indices[0] + 256;
-				rgbBlend(a, b);
-			}
-
-			pimage = buildGradientImage(palette);
-			repaint();
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-
-	} // End of method listViewChange
+    // linear blending between indices a and b
+
+    void rgbBlend(int a, int b) {
+        double c, v;
+        double vrange, range;
+
+        if (a == b) {
+            return;
+        }
+
+        range = b - a;
+        vrange = palette[b % 256][0] - palette[a % 256][0];
+        c = palette[a % 256][0];
+        v = vrange / range;
+        for (int i = a + 1; i < b; i++) {
+            c += v;
+            palette[i % 256][0] = (int) (c + 0.5);
+        }
+
+        vrange = palette[b % 256][1] - palette[a % 256][1];
+        c = palette[a % 256][1];
+        v = vrange / range;
+        for (int i = a + 1; i < b; i++) {
+            c += v;
+            palette[i % 256][1] = (int) (c + 0.5);
+        }
+
+        vrange = palette[b % 256][2] - palette[a % 256][2];
+        c = palette[a % 256][2];
+        v = vrange / range;
+        for (int i = a + 1; i < b; i++) {
+            c += v;
+            palette[i % 256][2] = (int) (c + 0.5);
+        }
+    }
+
+    /*****************************************************************************/
+
+    public void listViewOpen(Object list) {
+        apply();
+    } // End of method listViewOpen
+
+    /*****************************************************************************/
 
-	/*****************************************************************************/
+    public void btnDefGradientClick() {
 
-	// linear blending between indices a and b
+        Task task = new OpenFileTask();
+        Global.opendialog = new OpenDialog(this, Global.browserPath, task);
 
-	void rgbBlend(int a, int b) {
-		double c, v;
-		double vrange, range;
+        Global.opendialog.addFilter("Gradient files (*.ugr)", "*.ugr");
+        Global.opendialog.addFilter("Fractint map files (*.map)", "*.map");
 
-		if (a == b) {
-			return;
-		}
-
-		range = b - a;
-		vrange = palette[b % 256][0] - palette[a % 256][0];
-		c = palette[a % 256][0];
-		v = vrange / range;
-		for (int i = a + 1; i < b; i++) {
-			c += v;
-			palette[i % 256][0] = (int) (c + 0.5);
-		}
+        Global.opendialog.setVisible(true);
 
-		vrange = palette[b % 256][1] - palette[a % 256][1];
-		c = palette[a % 256][1];
-		v = vrange / range;
-		for (int i = a + 1; i < b; i++) {
-			c += v;
-			palette[i % 256][1] = (int) (c + 0.5);
-		}
-
-		vrange = palette[b % 256][2] - palette[a % 256][2];
-		c = palette[a % 256][2];
-		v = vrange / range;
-		for (int i = a + 1; i < b; i++) {
-			c += v;
-			palette[i % 256][2] = (int) (c + 0.5);
-		}
-	}
-
-	/*****************************************************************************/
+    } // End of method btnDefGradientClick
 
-	public void listViewOpen(Object list) {
-		apply();
-	} // End of method listViewOpen
+    /*****************************************************************************/
 
-	/*****************************************************************************/
+    void openFile() {
+        if (Global.opendialog.filename != null) {
+            filename = Global.opendialog.filename;
 
-	public void btnDefGradientClick() {
+            Global.browserPath = (new File(filename)).getParent();
 
-		Task task = new OpenFileTask();
-		Global.opendialog = new OpenDialog(this, Global.browserPath, task);
+            Global.gradientFile = filename;
 
-		Global.opendialog.addFilter("Gradient files (*.ugr)", "*.ugr");
-		Global.opendialog.addFilter("Fractint map files (*.map)", "*.map");
+            if (filename.toLowerCase().endsWith(".map")) {
+                listMapContents(filename);
+            } else {
+                listUgrContents(filename);
+            }
+        }
 
-		Global.opendialog.show();
+        Global.opendialog = null;
 
-	} // End of method btnDefGradientClick
+    }
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	void openFile() {
-		if (Global.opendialog.filename != null) {
-			filename = Global.opendialog.filename;
+    void listMapContents(String filename) {
+        Object list = find("ListView");
+        removeAll(list);
 
-			Global.browserPath = (new File(filename)).getParent();
+        Object item = createImpl("item");
+        setString(item, "text", (new File(filename)).getName());
 
-			Global.gradientFile = filename;
+        add(list, item);
 
-			if (filename.toLowerCase().endsWith(".map")) {
-				listMapContents(filename);
-			} else {
-				listUgrContents(filename);
-			}
-		}
+    } // End of method listFileContents
 
-		Global.opendialog = null;
+    /*****************************************************************************/
 
-	}
+    void listUgrContents(String filename) {
+        Object list = find("ListView");
+        removeAll(list);
 
-	/*****************************************************************************/
+        List<MySortable> v = new ArrayList<>();
 
-	void listMapContents(String filename) {
-		Object list = find("ListView");
-		removeAll(list);
+        try (BufferedReader r = new BufferedReader(new FileReader(filename))) {
+            while (true) {
+                String line = r.readLine();
+                if (line == null) {
+                    break;
+                }
 
-		Object item = createImpl("item");
-		setString(item, "text", (new File(filename)).getName());
+                line = line.trim();
+                if (!line.endsWith("{")) {
+                    continue;
+                }
 
-		add(list, item);
+                String name = line.substring(0, line.length() - 1).trim();
+                v.add(new SortableString(name));
+            }
 
-	} // End of method listFileContents
+            QuickSort.qsort(v);
 
-	/*****************************************************************************/
+            int n = v.size();
+            for (int i = 0; i < n; i++) {
+                SortableString s = (SortableString) v.get(i);
+                Object item = createImpl("item");
+                setString(item, "text", s.string);
+                add(list, item);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
 
-	void listUgrContents(String filename) {
-		Object list = find("ListView");
-		removeAll(list);
+    } // End of method listUgrContents
 
-		List<MySortable> v = new ArrayList<MySortable>();
+    /*****************************************************************************/
 
-		try (BufferedReader r = new BufferedReader(new FileReader(filename))) {
-			while (true) {
-				String line = r.readLine();
-				if (line == null) {
-					break;
-				}
+    public void drawPreview(Graphics g, Rectangle bounds) {
 
-				line = line.trim();
-				if (!line.endsWith("{")) {
-					continue;
-				}
+        g.setColor(Color.black);
+        g.fillRect(0, 0, bounds.width, bounds.height);
 
-				String name = line.substring(0, line.length() - 1).trim();
-				v.add(new SortableString(name));
-			}
+        if (pimage != null) {
+            g.drawImage(pimage, 1, 1, bounds.width - 2, bounds.height - 2, null);
+        }
 
-			QuickSort.qsort(v);
+    } // End of method drawPreview
 
-			int n = v.size();
-			for (int i = 0; i < n; i++) {
-				SortableString s = (SortableString) v.get(i);
-				Object item = createImpl("item");
-				setString(item, "text", s.string);
-				add(list, item);
-			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
+    /*****************************************************************************/
 
-	} // End of method listUgrContents
+    Image buildGradientImage(int palette[][]) {
+        int[] pixels = new int[256];
 
-	/*****************************************************************************/
+        for (int i = 0; i < 256; i++) {
+            Color color = new Color(palette[i][0], palette[i][1], palette[i][2]);
+            pixels[i] = color.getRGB();
+        }
 
-	public void drawPreview(Graphics g, Rectangle bounds) {
+        MemoryImageSource source = new MemoryImageSource(256, 1, pixels, 0, 256);
 
-		g.setColor(Color.black);
-		g.fillRect(0, 0, bounds.width, bounds.height);
+        return createImage(source);
 
-		if (pimage != null) {
-			g.drawImage(pimage, 1, 1, bounds.width - 2, bounds.height - 2, null);
-		}
+    }
 
-	} // End of method drawPreview
+    /*****************************************************************************/
 
-	/*****************************************************************************/
+    void apply() {
+        Global.main.stopThread();
+        Global.main.updateUndo();
+        CMap.copyPalette(palette, Global.mainCP.cmap);
+        Global.mainCP.cmapindex = -1;
+        if (Global.adjust.visible()) {
+            Global.adjust.updateDisplay();
+        }
+        if (Global.mutate.visible()) {
+            Global.mutate.updateDisplay();
+        }
+        Global.main.timer.enable();
+    }
 
-	Image buildGradientImage(int palette[][]) {
-		int[] pixels = new int[256];
+    /*****************************************************************************/
 
-		for (int i = 0; i < 256; i++) {
-			Color color = new Color(palette[i][0], palette[i][1], palette[i][2]);
-			pixels[i] = color.getRGB();
-		}
+    class OpenFileTask implements Task {
 
-		MemoryImageSource source = new MemoryImageSource(256, 1, pixels, 0, 256);
+        @Override
+        public void execute() {
+            openFile();
+        }
 
-		return createImage(source);
+    } // End of class OpenFileTask
 
-	}
-
-	/*****************************************************************************/
-
-	void apply() {
-		Global.main.stopThread();
-		Global.main.updateUndo();
-		CMap.copyPalette(palette, Global.mainCP.cmap);
-		Global.mainCP.cmapindex = -1;
-		if (Global.adjust.visible()) {
-			Global.adjust.updateDisplay();
-		}
-		if (Global.mutate.visible()) {
-			Global.mutate.updateDisplay();
-		}
-		Global.main.timer.enable();
-	}
-
-	/*****************************************************************************/
-
-	class OpenFileTask implements Task {
-
-		@Override
-		public void execute() {
-			openFile();
-		}
-
-	} // End of class OpenFileTask
-
-	/*****************************************************************************/
-	/*****************************************************************************/
+    /*****************************************************************************/
+    /*****************************************************************************/
 
 } // End of class Browser

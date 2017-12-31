@@ -135,16 +135,16 @@ public class Adjust extends MyThinlet implements Constants, ThreadTarget {
 
     @Override
     public boolean destroy() {
-        hide();
+        super.setVisible(false);
         return false;
     }
 
     /*****************************************************************************/
 
     @Override
-    public void show() {
+    public void setVisible(boolean visible) {
 
-        super.show();
+        super.setVisible(visible);
 
     }
 
@@ -559,7 +559,7 @@ public class Adjust extends MyThinlet implements Constants, ThreadTarget {
 
     public void btnOpenClick() {
 
-        Global.browser.show();
+        Global.browser.setVisible(true);
 
     } // End of method btnOpenClick
 
@@ -916,7 +916,7 @@ public class Adjust extends MyThinlet implements Constants, ThreadTarget {
 
         Global.colordialog = new ColorDialog(this, color);
         Global.colordialog.setTask(new ColorTask());
-        Global.colordialog.show();
+        Global.colordialog.setVisible(true);
 
     }
 
@@ -1108,7 +1108,7 @@ public class Adjust extends MyThinlet implements Constants, ThreadTarget {
     /*****************************************************************************/
 
     public void mnuOpenClick() {
-        Global.browser.show();
+        Global.browser.setVisible(true);
     }
 
     /*****************************************************************************/
@@ -1123,7 +1123,7 @@ public class Adjust extends MyThinlet implements Constants, ThreadTarget {
 
         Task task = new SaveGradientTask();
         Global.entrydialog = new EntryDialog(this, Global.gradientFile, ename, task);
-        Global.entrydialog.show();
+        Global.entrydialog.setVisible(true);
 
     } // End of method mnuSaveGradientClick
 
@@ -1141,7 +1141,7 @@ public class Adjust extends MyThinlet implements Constants, ThreadTarget {
         Task task = new SaveMapTask();
         String name = Global.mainCP.name + ".map";
         Global.savedialog = new SaveDialog(this, Global.browserPath, name, task);
-        Global.savedialog.show();
+        Global.savedialog.setVisible(true);
 
     }
 

@@ -211,43 +211,45 @@ public class Main extends MyThinlet implements Constants, ThreadTarget, DropTarg
     /*****************************************************************************/
 
     @Override
-    public void show() {
-        super.show();
+    public void setVisible(boolean visible) {
+        super.setVisible(visible);
 
-        if (Global.apopath == null) {
-            File home = new File(System.getProperty("user.home"));
-            File dir = new File(home, DIRNAME);
-            String dirname = dir.getAbsolutePath();
-            alert("Cannot create directory " + dirname, new QuitTask());
-            return;
+        if (visible) {
+            if (Global.apopath == null) {
+                File home = new File(System.getProperty("user.home"));
+                File dir = new File(home, DIRNAME);
+                String dirname = dir.getAbsolutePath();
+                alert("Cannot create directory " + dirname, new QuitTask());
+                return;
+            }
+
+            buildVariationMenu();
+
+            Global.editor.buildVariationList();
+            Global.editor.buildParameterList();
+
+            updateFavorites();
+
+            int quality = (int) Global.defSampleDensity;
+            setString(find("tbQualityBox"), "text", "" + quality);
+
+            undoindex = 0;
+            history.clear();
+            updateUndoControls();
+
+            fmousemovestate = msDrag;
+            setBoolean(find("tbDrag"), "selected", true);
+
+            timer = new Timer();
+            timer.start();
+
+            Global.mainCP.width = Global.panelWidth;
+            Global.mainCP.height = Global.panelHeight;
+
+            mnuRandomBatchClick();
+
+            setMenuShortcuts();
         }
-
-        buildVariationMenu();
-
-        Global.editor.buildVariationList();
-        Global.editor.buildParameterList();
-
-        updateFavorites();
-
-        int quality = (int) Global.defSampleDensity;
-        setString(find("tbQualityBox"), "text", "" + quality);
-
-        undoindex = 0;
-        history.clear();
-        updateUndoControls();
-
-        fmousemovestate = msDrag;
-        setBoolean(find("tbDrag"), "selected", true);
-
-        timer = new Timer();
-        timer.start();
-
-        Global.mainCP.width = Global.panelWidth;
-        Global.mainCP.height = Global.panelHeight;
-
-        mnuRandomBatchClick();
-
-        setMenuShortcuts();
 
     }
 
@@ -276,7 +278,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget, DropTarg
         Global.opendialog.addFilter("PNG image files (*.png)", "*.png");
         // Global.opendialog.addFilter("IFS files (*.ifs)","*.ifs");
 
-        Global.opendialog.show();
+        Global.opendialog.setVisible(true);
 
     } // End of method mnuOpenClick
 
@@ -765,7 +767,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget, DropTarg
         Task task = new SaveFileTask(Global.mainCP);
         Global.savedialog = new SaveDialog(this, Global.browserPath, filename, task);
         Global.savedialog.warning = "Append to";
-        Global.savedialog.show();
+        Global.savedialog.setVisible(true);
 
     } // End of method mnuSaveAsClick
 
@@ -777,7 +779,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget, DropTarg
         Task task = new SaveFileTask(null);
         Global.savedialog = new SaveDialog(this, Global.browserPath, filename, task);
         Global.savedialog.warning = "Append to";
-        Global.savedialog.show();
+        Global.savedialog.setVisible(true);
 
     } // End of method mnuSaveAllAsClick
 
@@ -983,7 +985,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget, DropTarg
     /*****************************************************************************/
 
     public void mnuEditorClick() {
-        Global.editor.show();
+        Global.editor.setVisible(true);
     } // End of method mnuEditorClick
 
     /*****************************************************************************/
@@ -991,7 +993,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget, DropTarg
     public void mnuGradClick() {
         Global.adjust.updateDisplay();
         Global.adjust.setTab(2);
-        Global.adjust.show();
+        Global.adjust.setVisible(true);
     } // End of method mnuGradClick
 
     /*****************************************************************************/
@@ -1099,14 +1101,14 @@ public class Main extends MyThinlet implements Constants, ThreadTarget, DropTarg
 
         Global.adjust.updateDisplay();
         Global.adjust.setTab(0);
-        Global.adjust.show();
+        Global.adjust.setVisible(true);
 
     } // End of method mnuAdjustClick
 
     /*****************************************************************************/
 
     public void mnuMutateClick() {
-        Global.mutate.show();
+        Global.mutate.setVisible(true);
         Global.mutate.updateDisplay();
     }
 
@@ -1170,7 +1172,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget, DropTarg
 
     public void mnuOptionsClick() {
 
-        Global.options.show();
+        Global.options.setVisible(true);
 
     }
 
@@ -1207,7 +1209,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget, DropTarg
         Global.opendialog.addFilter("GIF images (*.gif)", "*.gif");
         Global.opendialog.addFilter("PNG images (*.png)", "*.png");
 
-        Global.opendialog.show();
+        Global.opendialog.setVisible(true);
 
     } // End of method smoothGradientClick
 
@@ -1353,7 +1355,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget, DropTarg
 
     public void mnuOpenGradientClick() {
 
-        Global.browser.show();
+        Global.browser.setVisible(true);
 
     } // End of method mnuOpenGradientClick
 
@@ -1389,7 +1391,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget, DropTarg
         file = new File(Global.renderPath, filename);
         Global.export.filename = file.getAbsolutePath();
 
-        Global.export.show();
+        Global.export.setVisible(true);
 
     } // End of method mnuExportFlameClick
 
@@ -1444,7 +1446,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget, DropTarg
 
         Global.render.renderall = all;
 
-        Global.render.show();
+        Global.render.setVisible(true);
 
     }
 
@@ -1624,7 +1626,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget, DropTarg
 
         Global.fullscreen.image = image;
 
-        Global.fullscreen.show();
+        Global.fullscreen.setVisible(true);
 
     } // End of method mnuFullScreenClick
 
@@ -1768,7 +1770,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget, DropTarg
 
         Global.adjust.updateDisplay();
         Global.adjust.setTab(3);
-        Global.adjust.show();
+        Global.adjust.setVisible(true);
 
     } // End of method mnuImageSizeClick
 
@@ -2354,14 +2356,14 @@ public class Main extends MyThinlet implements Constants, ThreadTarget, DropTarg
     /*****************************************************************************/
 
     public void mnuOpenScriptClick() {
-        Global.script.show();
+        Global.script.setVisible(true);
         Global.script.btnOpenClick();
     }
 
     /*****************************************************************************/
 
     public void mnuEditScriptClick() {
-        Global.script.show();
+        Global.script.setVisible(true);
     } // End of method mnuEditScriptClick
 
     /*****************************************************************************/
@@ -2379,7 +2381,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget, DropTarg
     /*****************************************************************************/
 
     public void mnuHelpClick() {
-        Global.helper.show();
+        Global.helper.setVisible(true);
         Global.helper.setTopicByName("introduction");
     } // End of method mnuHelpClick
 
@@ -2406,7 +2408,7 @@ public class Main extends MyThinlet implements Constants, ThreadTarget, DropTarg
     /*****************************************************************************/
 
     public void mnuManageFavoritesClick() {
-        Global.favorites.show();
+        Global.favorites.setVisible(true);
     } // End of method mnuManageFavoritesClick
 
     /*****************************************************************************/

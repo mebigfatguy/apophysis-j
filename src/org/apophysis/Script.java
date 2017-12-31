@@ -102,17 +102,19 @@ public class Script extends MyThinlet implements Constants {
 
     @Override
     public boolean destroy() {
-        hide();
+        super.setVisible(false);
         return false;
     }
 
     /*****************************************************************************/
 
     @Override
-    public void show() {
-        super.show();
+    public void setVisible(boolean visible) {
+        super.setVisible(visible);
 
-        launcher.setTitle(scriptName);
+        if (visible) {
+            launcher.setTitle(scriptName);
+        }
 
     } // End of method show
 
@@ -134,7 +136,7 @@ public class Script extends MyThinlet implements Constants {
         Global.opendialog.addFilter("Apophysis-j script files (*.ajs)", "*.ajs");
         Global.opendialog.addFilter("Apophysis script files (*.asc)", "*.asc");
 
-        Global.opendialog.show();
+        Global.opendialog.setVisible(true);
 
     } // End of method btnOpenClick
 
@@ -195,7 +197,7 @@ public class Script extends MyThinlet implements Constants {
     public void btnSaveClick() {
         Task task = new SaveTask();
         Global.savedialog = new SaveDialog(this, Global.browserPath, scriptName + ".ajs", task);
-        Global.savedialog.show();
+        Global.savedialog.setVisible(true);
 
     }
 
@@ -248,7 +250,7 @@ public class Script extends MyThinlet implements Constants {
     /*****************************************************************************/
 
     public void btnHelpClick() {
-        Global.helper.show();
+        Global.helper.setVisible(true);
         Global.helper.setTopicByName("scripting");
     }
 
@@ -576,7 +578,7 @@ public class Script extends MyThinlet implements Constants {
         if (cp.nxforms > 0) {
             js2java();
             Global.preview.cp.copy(cp);
-            Global.preview.show();
+            Global.preview.setVisible(true);
             Global.preview.drawFlame();
         }
     }
@@ -589,7 +591,7 @@ public class Script extends MyThinlet implements Constants {
         try {
             ScriptRenderer srenderer = new ScriptRenderer("Rendering", "srenderer.xml", 270, 90, this, renderer);
 
-            srenderer.show();
+            srenderer.setVisible(true);
             srenderer.render();
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -690,7 +692,7 @@ public class Script extends MyThinlet implements Constants {
         Global.opendialog.addFilter("Flame files (*.flame)", "*.flame");
         Global.opendialog.addFilter("Fla files (*.fla)", "*.fla");
         Global.opendialog.addFilter("All files (*.*)", "*.*");
-        Global.opendialog.show();
+        Global.opendialog.setVisible(true);
 
         Global.main.launcher.toFront();
         Global.main.requestFocus();
@@ -809,7 +811,7 @@ public class Script extends MyThinlet implements Constants {
             filename = "";
         }
         Global.savedialog = new SaveDialog(Global.main, Global.browserPath, filename, null);
-        Global.savedialog.show();
+        Global.savedialog.setVisible(true);
 
         Global.main.launcher.toFront();
         Global.main.requestFocus();

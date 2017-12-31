@@ -35,262 +35,269 @@ import com.thinlet.Thinlet;
 
 public class MyThinlet extends Thinlet {
 
-	/*****************************************************************************/
-	// CONSTANTS
+    /*****************************************************************************/
+    // CONSTANTS
 
-	static final int ivigibg = 0xD1CCC6;
-	// static final int ivigitxt = 0x30444F;
-	static final int ivigitxt = 0x000000;
-	static final int ivigitxtbg = 0xFFFFFF;
-	static final int ivigiborder = 0x587F3B;
-	static final int ivigidisable = 0xB0B0B0;
-	static final int ivigihover = 0xEdEDED;
-	static final int ivigipress = 0x898989;
-	static final int ivigifocus = 0x89899A;
-	static final int ivigiselect = 0xC5C5DD;
+    static final int ivigibg = 0xD1CCC6;
+    // static final int ivigitxt = 0x30444F;
+    static final int ivigitxt = 0x000000;
+    static final int ivigitxtbg = 0xFFFFFF;
+    static final int ivigiborder = 0x587F3B;
+    static final int ivigidisable = 0xB0B0B0;
+    static final int ivigihover = 0xEdEDED;
+    static final int ivigipress = 0x898989;
+    static final int ivigifocus = 0x89899A;
+    static final int ivigiselect = 0xC5C5DD;
 
-	/*****************************************************************************/
-	// FIELDS
+    /*****************************************************************************/
+    // FIELDS
 
-	FrameLauncher launcher = null;
+    FrameLauncher launcher = null;
 
-	String _answer = null;
-	Task _endtask = null;
+    String _answer = null;
+    Task _endtask = null;
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	public MyThinlet(String title, String xmlfile, int width, int height)
-			throws Exception {
+    public MyThinlet(String title, String xmlfile, int width, int height) throws Exception {
 
-		add(parse(xmlfile));
+        add(parse(xmlfile));
 
-		setColors(ivigibg, ivigitxt, ivigitxtbg, ivigiborder, ivigidisable,
-				ivigihover, ivigipress, ivigifocus, ivigiselect);
+        setColors(ivigibg, ivigitxt, ivigitxtbg, ivigiborder, ivigidisable, ivigihover, ivigipress, ivigifocus, ivigiselect);
 
-		launcher = new FrameLauncher(title, this, width, height, false);
-	}
+        launcher = new FrameLauncher(title, this, width, height, false);
+    }
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	@Override
-	public void show() {
-		launcher.setVisible(true);
-	}
-
-	/*****************************************************************************/
+    @Override
+    public void setVisible(boolean visible) {
+        launcher.setVisible(visible);
+    }
 
-	@Override
-	public void hide() {
-		launcher.setVisible(false);
-	}
+    /*****************************************************************************/
 
-	/*****************************************************************************/
+    @Override
+    @Deprecated
+    public void show() {
+        launcher.setVisible(true);
+    }
 
-	public boolean visible() {
-		return launcher.isVisible();
-	}
+    /*****************************************************************************/
 
-	/*****************************************************************************/
+    @Override
+    @Deprecated
+    public void hide() {
+        launcher.setVisible(false);
+    }
 
-	void beep() {
-		Toolkit.getDefaultToolkit().beep();
-	}
+    /*****************************************************************************/
 
-	/*****************************************************************************/
+    public boolean visible() {
+        return launcher.isVisible();
+    }
 
-	void tilt(String msg) {
-		System.out.println(msg);
-	}
+    /*****************************************************************************/
 
-	/*****************************************************************************/
+    void beep() {
+        Toolkit.getDefaultToolkit().beep();
+    }
 
-	public void alert(String msg) {
-		alert(msg, null);
-	}
+    /*****************************************************************************/
 
-	public void alert(String msg, Task task) {
-		try {
-			_endtask = task;
-			Object dialog = parse("/org/apophysis/thinletxml/alert.xml");
-			add(dialog);
-			setString(find("alertmessage"), "text", msg);
-			launcher.toFront();
-			requestFocus();
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
+    void tilt(String msg) {
+        System.out.println(msg);
+    }
 
-	} // End of method showAlert
+    /*****************************************************************************/
 
-	/*****************************************************************************/
+    public void alert(String msg) {
+        alert(msg, null);
+    }
 
-	public void closeAlert() {
-		remove(find("alertdialog"));
+    public void alert(String msg, Task task) {
+        try {
+            _endtask = task;
+            Object dialog = parse("/org/apophysis/thinletxml/alert.xml");
+            add(dialog);
+            setString(find("alertmessage"), "text", msg);
+            launcher.toFront();
+            requestFocus();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
 
-		if (_endtask != null) {
-			_endtask.execute();
-		}
+    } // End of method showAlert
 
-		_endtask = null;
+    /*****************************************************************************/
 
-	} // End of method closeAlert
+    public void closeAlert() {
+        remove(find("alertdialog"));
 
-	/*****************************************************************************/
-
-	public void alertAndWait(String msg) {
-		try {
-			Object dialog = parse("/org/apophysis/thinletxml/alert.xml");
-			add(dialog);
-			setString(find("alertmessage"), "text", msg);
-			launcher.toFront();
-			requestFocus();
+        if (_endtask != null) {
+            _endtask.execute();
+        }
 
-			while (true) {
-				try {
-					Thread.sleep(100);
-				} catch (Exception rex) {
-				}
-				if (find("alertdialog") == null) {
-					break;
-				}
-			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-
-	} // End of method alertAndWait
-
-	/*****************************************************************************/
-
-	public void confirm(String text, Task task) {
-		try {
-			_endtask = task;
-			Object dialog = parse("/org/apophysis/thinletxml/confirm.xml");
-			add(dialog);
-			setString(find("question"), "text", text);
-			launcher.toFront();
-			requestFocus();
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-	}
-
-	/*****************************************************************************/
-
-	public void cancelConfirm() {
-		remove(find("confirmdialog"));
-
-		_endtask = null;
-	}
-
-	/*****************************************************************************/
-
-	public void acceptConfirm() {
-		remove(find("confirmdialog"));
-
-		if (_endtask != null) {
-			_endtask.execute();
-		}
-
-		_endtask = null;
-
-	}
-
-	/*****************************************************************************/
-
-	public void ask(String question, String value, Task task) {
-		try {
-			_endtask = task;
-			Object dialog = parse("/org/apophysis/thinletxml/ask.xml");
-			add(dialog);
-			setString(find("question"), "text", question);
-			setString(find("answer"), "text", value);
-			setInteger(find("answer"), "end", value.length());
-			launcher.toFront();
-			requestFocus();
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-
-	}
-
-	/*****************************************************************************/
-
-	public void cancelAsk() {
-		remove(find("askdialog"));
-
-		_endtask = null;
-	}
-
-	/*****************************************************************************/
-
-	public void acceptAsk() {
-
-		_answer = getString(find("answer"), "text");
-
-		remove(find("askdialog"));
-
-		if (_endtask != null) {
-			_endtask.execute();
-		}
-
-		_endtask = null;
-	}
-
-	/*****************************************************************************/
-
-	public String askAndWait(String question, String value) {
-		_answer = null;
-
-		try {
-			_endtask = null;
-			Object dialog = parse("/org/apophysis/thinletxml/ask.xml");
-			add(dialog);
-			setString(find("question"), "text", question);
-			setString(find("answer"), "text", value);
-			setInteger(find("answer"), "end", value.length());
-			launcher.toFront();
-
-			while (true) {
-				try {
-					Thread.sleep(100);
-				} catch (Exception runex) {
-				}
-				if (find("askdialog") == null) {
-					break;
-				}
-			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-
-		return _answer;
-	}
-
-	/*****************************************************************************/
-
-	void setToAbsolutePosition(Object component, Rectangle bounds) {
-		int x, y;
-
-		Rectangle r = getRectangle(component, "bounds");
-		x = r.x;
-		y = r.y;
-
-		while (true) {
-			component = getParent(component);
-			if (component == null) {
-				break;
-			}
-			r = getRectangle(component, "bounds");
-			x += r.x;
-			y += r.y;
-		}
-
-		bounds.x = x;
-		bounds.y = y;
-
-	} // End of method setToAbsolutePosition
-
-	/*****************************************************************************/
+        _endtask = null;
+
+    } // End of method closeAlert
+
+    /*****************************************************************************/
+
+    public void alertAndWait(String msg) {
+        try {
+            Object dialog = parse("/org/apophysis/thinletxml/alert.xml");
+            add(dialog);
+            setString(find("alertmessage"), "text", msg);
+            launcher.toFront();
+            requestFocus();
+
+            while (true) {
+                try {
+                    Thread.sleep(100);
+                } catch (Exception rex) {
+                }
+                if (find("alertdialog") == null) {
+                    break;
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+    } // End of method alertAndWait
+
+    /*****************************************************************************/
+
+    public void confirm(String text, Task task) {
+        try {
+            _endtask = task;
+            Object dialog = parse("/org/apophysis/thinletxml/confirm.xml");
+            add(dialog);
+            setString(find("question"), "text", text);
+            launcher.toFront();
+            requestFocus();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    /*****************************************************************************/
+
+    public void cancelConfirm() {
+        remove(find("confirmdialog"));
+
+        _endtask = null;
+    }
+
+    /*****************************************************************************/
+
+    public void acceptConfirm() {
+        remove(find("confirmdialog"));
+
+        if (_endtask != null) {
+            _endtask.execute();
+        }
+
+        _endtask = null;
+
+    }
+
+    /*****************************************************************************/
+
+    public void ask(String question, String value, Task task) {
+        try {
+            _endtask = task;
+            Object dialog = parse("/org/apophysis/thinletxml/ask.xml");
+            add(dialog);
+            setString(find("question"), "text", question);
+            setString(find("answer"), "text", value);
+            setInteger(find("answer"), "end", value.length());
+            launcher.toFront();
+            requestFocus();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+    }
+
+    /*****************************************************************************/
+
+    public void cancelAsk() {
+        remove(find("askdialog"));
+
+        _endtask = null;
+    }
+
+    /*****************************************************************************/
+
+    public void acceptAsk() {
+
+        _answer = getString(find("answer"), "text");
+
+        remove(find("askdialog"));
+
+        if (_endtask != null) {
+            _endtask.execute();
+        }
+
+        _endtask = null;
+    }
+
+    /*****************************************************************************/
+
+    public String askAndWait(String question, String value) {
+        _answer = null;
+
+        try {
+            _endtask = null;
+            Object dialog = parse("/org/apophysis/thinletxml/ask.xml");
+            add(dialog);
+            setString(find("question"), "text", question);
+            setString(find("answer"), "text", value);
+            setInteger(find("answer"), "end", value.length());
+            launcher.toFront();
+
+            while (true) {
+                try {
+                    Thread.sleep(100);
+                } catch (Exception runex) {
+                }
+                if (find("askdialog") == null) {
+                    break;
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return _answer;
+    }
+
+    /*****************************************************************************/
+
+    void setToAbsolutePosition(Object component, Rectangle bounds) {
+        int x, y;
+
+        Rectangle r = getRectangle(component, "bounds");
+        x = r.x;
+        y = r.y;
+
+        while (true) {
+            component = getParent(component);
+            if (component == null) {
+                break;
+            }
+            r = getRectangle(component, "bounds");
+            x += r.x;
+            y += r.y;
+        }
+
+        bounds.x = x;
+        bounds.y = y;
+
+    } // End of method setToAbsolutePosition
+
+    /*****************************************************************************/
 
 } // End of class MyThinlet

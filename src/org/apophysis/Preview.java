@@ -35,119 +35,118 @@ import java.awt.event.MouseEvent;
 
 public class Preview extends MyThinlet implements Constants, ThreadTarget {
 
-	/*****************************************************************************/
-	// CONSTANTS
+    /*****************************************************************************/
+    // CONSTANTS
 
-	/*****************************************************************************/
-	// FIELDS
+    /*****************************************************************************/
+    // FIELDS
 
-	ControlPoint cp = new ControlPoint();
-	Renderer renderer = new Renderer(this);
+    ControlPoint cp = new ControlPoint();
+    Renderer renderer = new Renderer(this);
 
-	int imagewidth;
-	int imageheight;
+    int imagewidth;
+    int imageheight;
 
-	Image image = null;
+    Image image = null;
 
-	boolean mustdraw = false;
+    boolean mustdraw = false;
 
-	Object lock = new Object();
+    Object lock = new Object();
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	Preview(String title, String xmlfile, int width, int height)
-			throws Exception {
-		super(title, xmlfile, width, height);
+    Preview(String title, String xmlfile, int width, int height) throws Exception {
+        super(title, xmlfile, width, height);
 
-	}
+    }
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	@Override
-	public boolean destroy() {
-		hide();
+    @Override
+    public boolean destroy() {
+        super.setVisible(false);
 
-		Global.script.btnStopClick();
+        Global.script.btnStopClick();
 
-		return false;
-	}
+        return false;
+    }
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	@Override
-	public void show() {
-		super.show();
+    @Override
+    public void setVisible(boolean visible) {
+        super.setVisible(visible);
 
-	} // End of method show
+    } // End of method show
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	public void drawFlame() {
-		if (imagewidth == 0)
-			return;
+    public void drawFlame() {
+        if (imagewidth == 0) {
+            return;
+        }
 
-		renderAndDrawFlame();
+        renderAndDrawFlame();
 
-	} // End of method drawFlame
+    } // End of method drawFlame
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	void renderAndDrawFlame() {
-		renderer.stop();
+    void renderAndDrawFlame() {
+        renderer.stop();
 
-		cp.adjustScale(imagewidth, imageheight);
-		cp.width = imagewidth;
-		cp.height = imageheight;
-		renderer.setCP(cp);
-		renderer.render();
+        cp.adjustScale(imagewidth, imageheight);
+        cp.width = imagewidth;
+        cp.height = imageheight;
+        renderer.setCP(cp);
+        renderer.render();
 
-		synchronized (lock) {
-			image = renderer.getImage();
-		}
+        synchronized (lock) {
+            image = renderer.getImage();
+        }
 
-		repaint();
+        repaint();
 
-	} // End of method drawFlame
+    } // End of method drawFlame
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	public void drawBackPanel(Graphics g, Rectangle bounds) {
-		imagewidth = bounds.width;
-		imageheight = bounds.height;
+    public void drawBackPanel(Graphics g, Rectangle bounds) {
+        imagewidth = bounds.width;
+        imageheight = bounds.height;
 
-		g.setColor(new Color(cp.background[0], cp.background[1],
-				cp.background[2]));
-		g.fillRect(0, 0, bounds.width, bounds.height);
+        g.setColor(new Color(cp.background[0], cp.background[1], cp.background[2]));
+        g.fillRect(0, 0, bounds.width, bounds.height);
 
-		synchronized (lock) {
-			if (image != null)
-				g.drawImage(image, 0, 0, null);
-		}
+        synchronized (lock) {
+            if (image != null) {
+                g.drawImage(image, 0, 0, null);
+            }
+        }
 
-	} // End of method drawBackPanel
+    } // End of method drawBackPanel
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	public void pressBackPanel(MouseEvent e) {
-		Global.script.btnStopClick();
-	} // End of method pressBackPanel
+    public void pressBackPanel(MouseEvent e) {
+        Global.script.btnStopClick();
+    } // End of method pressBackPanel
 
-	/*****************************************************************************/
-	// ThreadTarget implementation
+    /*****************************************************************************/
+    // ThreadTarget implementation
 
-	@Override
-	public void message(int msg) {
-	}
+    @Override
+    public void message(int msg) {
+    }
 
-	@Override
-	public void progress(double value) {
-	}
+    @Override
+    public void progress(double value) {
+    }
 
-	@Override
-	public void output(String msg) {
-	}
+    @Override
+    public void output(String msg) {
+    }
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
 } // End of class Preview
-

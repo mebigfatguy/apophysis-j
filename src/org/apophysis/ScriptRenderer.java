@@ -27,164 +27,161 @@
 
 package org.apophysis;
 
-public class ScriptRenderer extends MyThinlet implements Constants,
-		ThreadTarget {
+public class ScriptRenderer extends MyThinlet implements Constants, ThreadTarget {
 
-	/*****************************************************************************/
-	// CONSTANTS
+    /*****************************************************************************/
+    // CONSTANTS
 
-	/*****************************************************************************/
-	// FIELDS
+    /*****************************************************************************/
+    // FIELDS
 
-	double pixels_per_unit;
-	long starttime;
+    double pixels_per_unit;
+    long starttime;
 
-	ControlPoint cp = new ControlPoint();
-	Renderer renderer = null;
-	int[][] colormap = new int[256][3];
-	String filename;
-	int imagewidth, imageheight;
-	int oversample;
-	double zoom, sample_density, brightness, gamma, vibrancy, filter_radius;
-	double[] center = new double[2];
+    ControlPoint cp = new ControlPoint();
+    Renderer renderer = null;
+    int[][] colormap = new int[256][3];
+    String filename;
+    int imagewidth, imageheight;
+    int oversample;
+    double zoom, sample_density, brightness, gamma, vibrancy, filter_radius;
+    double[] center = new double[2];
 
-	boolean cancelled = false;
+    boolean cancelled = false;
 
-	Script script = null;
-	JSRenderer jsrenderer = null;
+    Script script = null;
+    JSRenderer jsrenderer = null;
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	ScriptRenderer(String title, String xmlfile, int width, int height,
-			Script script, JSRenderer jsrenderer) throws Exception {
-		super(title, xmlfile, width, height);
+    ScriptRenderer(String title, String xmlfile, int width, int height, Script script, JSRenderer jsrenderer) throws Exception {
+        super(title, xmlfile, width, height);
 
-		this.script = script;
-		this.jsrenderer = jsrenderer;
+        this.script = script;
+        this.jsrenderer = jsrenderer;
 
-		launcher.setResizable(false);
+        launcher.setResizable(false);
 
-	}
+    }
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	@Override
-	public boolean destroy() {
-		hide();
-		return false;
-	}
+    @Override
+    public boolean destroy() {
+        super.setVisible(false);
+        return false;
+    }
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	@Override
-	public void show() {
-		super.show();
+    @Override
+    public void setVisible(boolean visible) {
+        super.setVisible(visible);
 
-	} // End of method show
+    } // End of method show
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	public void setRenderBounds() {
-		cp.copy(Global.script.cp);
-		cp.adjustScale(Global.script.renderer.Width,
-				Global.script.renderer.Height);
-		cp.center[0] = Global.script.cp.center[0];
-		cp.center[1] = Global.script.cp.center[1];
-		cp.zoom = Global.script.cp.zoom;
+    public void setRenderBounds() {
+        cp.copy(Global.script.cp);
+        cp.adjustScale(Global.script.renderer.Width, Global.script.renderer.Height);
+        cp.center[0] = Global.script.cp.center[0];
+        cp.center[1] = Global.script.cp.center[1];
+        cp.zoom = Global.script.cp.zoom;
 
-	} // End of method setRenderBounds
+    } // End of method setRenderBounds
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	public void render() {
-		if (renderer != null)
-			return;
+    public void render() {
+        if (renderer != null) {
+            return;
+        }
 
-		renderer = new Renderer(this);
+        renderer = new Renderer(this);
 
-		cp.copy(Global.script.cp);
-		filename = Global.script.renderer.Filename;
-		cp.adjustScale(Global.script.renderer.Width,
-				Global.script.renderer.Height);
+        cp.copy(Global.script.cp);
+        filename = Global.script.renderer.Filename;
+        cp.adjustScale(Global.script.renderer.Width, Global.script.renderer.Height);
 
-		renderer.setCP(cp);
-		starttime = System.currentTimeMillis();
+        renderer.setCP(cp);
+        starttime = System.currentTimeMillis();
 
-		renderer.render();
+        renderer.render();
 
-		renderer.freeBuckets();
-		cp = null;
-		colormap = null;
+        renderer.freeBuckets();
+        cp = null;
+        colormap = null;
 
-		if (renderer.fstop == 0) {
-			try {
-				System.out.println("Saving image to " + filename);
-				renderer.saveImage(filename, jsrenderer.Comment,
-						jsrenderer.Encrypted, jsrenderer.Watermark);
-			} catch (Exception ex) {
-				ex.printStackTrace();
-			}
-		}
+        if (renderer.fstop == 0) {
+            try {
+                System.out.println("Saving image to " + filename);
+                renderer.saveImage(filename, jsrenderer.Comment, jsrenderer.Encrypted, jsrenderer.Watermark);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
 
-		hide();
+        setVisible(false);
 
-		launcher.dispose();
+        launcher.dispose();
 
-	} // End of method render
+    } // End of method render
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	public void output(String msg) {
-		script._print(msg);
-		System.out.println(msg);
-	}
+    @Override
+    public void output(String msg) {
+        script._print(msg);
+        System.out.println(msg);
+    }
 
-	public void progress(double value) {
-		int k = (int) (value * 100);
-		setInteger(find("ProgressBar"), "value", k);
+    @Override
+    public void progress(double value) {
+        int k = (int) (value * 100);
+        setInteger(find("ProgressBar"), "value", k);
 
-		if (value > 0.05) {
-			long elapsed = System.currentTimeMillis() - starttime;
-			long remaining = (long) ((1 - value) * elapsed / value);
-			String s = convertTime(remaining);
-			setString(find("ProgressMessage"), "text", "Remaining : " + s);
-		}
+        if (value > 0.05) {
+            long elapsed = System.currentTimeMillis() - starttime;
+            long remaining = (long) (((1 - value) * elapsed) / value);
+            String s = convertTime(remaining);
+            setString(find("ProgressMessage"), "text", "Remaining : " + s);
+        }
 
-	} // End of method progress
+    } // End of method progress
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	public void message(int index) {
-		System.out.println("message " + index);
-	}
+    @Override
+    public void message(int index) {
+        System.out.println("message " + index);
+    }
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	public void btnCancelClick() {
-		System.out.println("cancelling " + renderer);
-		if (renderer != null)
-			renderer.stop();
+    public void btnCancelClick() {
+        System.out.println("cancelling " + renderer);
+        if (renderer != null) {
+            renderer.stop();
+        }
 
-	}
+    }
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	String convertTime(long millis) {
-		long hr = millis / 3600000L;
-		millis -= hr * 3600000L;
+    String convertTime(long millis) {
+        long hr = millis / 3600000L;
+        millis -= hr * 3600000L;
 
-		long mn = millis / 60000L;
-		millis -= mn * 60000L;
+        long mn = millis / 60000L;
+        millis -= mn * 60000L;
 
-		long sc = millis / 1000L;
+        long sc = millis / 1000L;
 
-		return ((hr < 10) ? ("0" + hr) : ("" + hr)) + ":"
-				+ ((mn < 10) ? ("0" + mn) : ("" + mn)) + ":"
-				+ ((sc < 10) ? ("0" + sc) : ("" + sc));
+        return ((hr < 10) ? ("0" + hr) : ("" + hr)) + ":" + ((mn < 10) ? ("0" + mn) : ("" + mn)) + ":" + ((sc < 10) ? ("0" + sc) : ("" + sc));
 
-	}
+    }
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
 } // End of class ScriptRenderer
-

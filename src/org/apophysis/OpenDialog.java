@@ -36,344 +36,346 @@ import com.thinlet.Thinlet;
 
 public class OpenDialog {
 
-	/******************************************************************************/
-	// FIELDS
+    /******************************************************************************/
+    // FIELDS
 
-	public String filename = null;
+    public String filename = null;
 
-	/******************************************************************************/
+    /******************************************************************************/
 
-	private MyThinlet thinlet = null;
-	private Task task = null;
+    private MyThinlet thinlet = null;
+    private Task task = null;
 
-	private File curdir = null;
+    private File curdir = null;
 
-	private final List<File> dirs = new ArrayList<File>();
-	private final List<String[]> filters = new ArrayList<String[]>();
-	private String[] patterns = { "*.*" };
+    private final List<File> dirs = new ArrayList<>();
+    private final List<String[]> filters = new ArrayList<>();
+    private String[] patterns = { "*.*" };
 
-	File[] roots = null;
-	File root = null;
+    File[] roots = null;
+    File root = null;
 
-	/******************************************************************************/
-	// CONSTRUCTOR
+    /******************************************************************************/
+    // CONSTRUCTOR
 
-	OpenDialog(MyThinlet thinlet, String path, Task task) {
-		this.thinlet = thinlet;
-		this.task = task;
+    OpenDialog(MyThinlet thinlet, String path, Task task) {
+        this.thinlet = thinlet;
+        this.task = task;
 
-		roots = File.listRoots();
-		if (roots != null) {
-			if (roots.length <= 1) {
-				roots = null;
-			}
-		}
+        roots = File.listRoots();
+        if (roots != null) {
+            if (roots.length <= 1) {
+                roots = null;
+            }
+        }
 
-		if (roots != null) {
-			root = new File("");
-		}
+        if (roots != null) {
+            root = new File("");
+        }
 
-		File file = new File(path);
-		if (file.exists()) {
-			setDirectory(file);
-		} else {
-			setDirectory(new File(System.getProperty("user.dir")));
-		}
+        File file = new File(path);
+        if (file.exists()) {
+            setDirectory(file);
+        } else {
+            setDirectory(new File(System.getProperty("user.dir")));
+        }
 
-	}
+    }
 
-	/******************************************************************************/
+    /******************************************************************************/
 
-	public void addFilter(String title, String pattern) {
-		filters.add(new String[] { title, pattern });
-	}
+    public void addFilter(String title, String pattern) {
+        filters.add(new String[] { title, pattern });
+    }
 
-	/******************************************************************************/
+    /******************************************************************************/
 
-	void updateFilters() {
+    void updateFilters() {
 
-		Object combo = thinlet.find("opentypelist");
-		thinlet.removeAll(combo);
+        Object combo = thinlet.find("opentypelist");
+        thinlet.removeAll(combo);
 
-		for (int i = 0; i < filters.size(); i++) {
-			String[] s = filters.get(i);
+        for (int i = 0; i < filters.size(); i++) {
+            String[] s = filters.get(i);
 
-			Object choice = Thinlet.createImpl("choice");
-			thinlet.setString(choice, "text", s[0]);
+            Object choice = Thinlet.createImpl("choice");
+            thinlet.setString(choice, "text", s[0]);
 
-			thinlet.add(combo, choice);
-		}
+            thinlet.add(combo, choice);
+        }
 
-		thinlet.setInteger(combo, "selected", 0);
+        thinlet.setInteger(combo, "selected", 0);
 
-	}
+    }
 
-	/******************************************************************************/
+    /******************************************************************************/
 
-	public void changeDirectory(Object list) {
-		int index = thinlet.getSelectedIndex(list);
-		File dir = dirs.get(index);
-		setDirectory(dir);
-		updateDirs();
+    public void changeDirectory(Object list) {
+        int index = thinlet.getSelectedIndex(list);
+        File dir = dirs.get(index);
+        setDirectory(dir);
+        updateDirs();
 
-		if (curdir == root) {
-			updateDrives();
-		} else {
-			updateFiles();
-		}
-	} // End of method changeDirectory
+        if (curdir == root) {
+            updateDrives();
+        } else {
+            updateFiles();
+        }
+    } // End of method changeDirectory
 
-	/******************************************************************************/
+    /******************************************************************************/
 
-	void setDirectory(File dir) {
-		dirs.clear();
+    void setDirectory(File dir) {
+        dirs.clear();
 
-		curdir = dir;
+        curdir = dir;
 
-		while (true) {
-			dirs.add(0, dir);
-			String sparent = dir.getParent();
-			if (sparent == null) {
-				break;
-			}
-			dir = new File(sparent);
-		}
+        while (true) {
+            dirs.add(0, dir);
+            String sparent = dir.getParent();
+            if (sparent == null) {
+                break;
+            }
+            dir = new File(sparent);
+        }
 
-		int i = getRootIndex(dir);
-		if (i >= 0) {
-			dirs.add(0, root);
-		}
+        int i = getRootIndex(dir);
+        if (i >= 0) {
+            dirs.add(0, root);
+        }
 
-	} // End of method setDirectory
+    } // End of method setDirectory
 
-	/******************************************************************************/
+    /******************************************************************************/
 
-	int getRootIndex(File dir) {
-		if (roots == null) {
-			return -1;
-		}
+    int getRootIndex(File dir) {
+        if (roots == null) {
+            return -1;
+        }
 
-		for (int i = 0; i < roots.length; i++) {
-			if (roots[i].equals(dir)) {
-				return i;
-			}
-		}
+        for (int i = 0; i < roots.length; i++) {
+            if (roots[i].equals(dir)) {
+                return i;
+            }
+        }
 
-		return -1;
-	}
+        return -1;
+    }
 
-	/******************************************************************************/
+    /******************************************************************************/
 
-	String getBrowserPath() {
-		return curdir.getAbsolutePath();
-	}
+    String getBrowserPath() {
+        return curdir.getAbsolutePath();
+    }
 
-	/******************************************************************************/
+    /******************************************************************************/
 
-	void updateDirs() {
+    void updateDirs() {
 
-		Object dirlist = thinlet.find("opendirlist");
-		thinlet.removeAll(dirlist);
+        Object dirlist = thinlet.find("opendirlist");
+        thinlet.removeAll(dirlist);
 
-		for (int i = 0; i < dirs.size(); i++) {
-			File dir = dirs.get(i);
+        for (int i = 0; i < dirs.size(); i++) {
+            File dir = dirs.get(i);
 
-			Object choice = Thinlet.createImpl("choice");
+            Object choice = Thinlet.createImpl("choice");
 
-			int j = getRootIndex(dir);
-			if (j < 0) {
-				thinlet.setString(choice, "text", dir.getName()
-						+ File.separator);
-			} else {
-				thinlet.setString(choice, "text", dir.getAbsolutePath());
-			}
+            int j = getRootIndex(dir);
+            if (j < 0) {
+                thinlet.setString(choice, "text", dir.getName() + File.separator);
+            } else {
+                thinlet.setString(choice, "text", dir.getAbsolutePath());
+            }
 
-			thinlet.add(dirlist, choice);
-		}
+            thinlet.add(dirlist, choice);
+        }
 
-		thinlet.setInteger(dirlist, "selected", dirs.size() - 1);
+        thinlet.setInteger(dirlist, "selected", dirs.size() - 1);
 
-	} // End of method updateDirs
+    } // End of method updateDirs
 
-	/******************************************************************************/
+    /******************************************************************************/
 
-	void updateDrives() {
-		Object filelist = thinlet.find("openfilelist");
-		thinlet.removeAll(filelist);
+    void updateDrives() {
+        Object filelist = thinlet.find("openfilelist");
+        thinlet.removeAll(filelist);
 
-		for (File root2 : roots) {
-			Object item = Thinlet.createImpl("item");
-			thinlet.setString(item, "text", root2.getAbsolutePath());
-			thinlet.add(filelist, item);
-		}
+        for (File root2 : roots) {
+            Object item = Thinlet.createImpl("item");
+            thinlet.setString(item, "text", root2.getAbsolutePath());
+            thinlet.add(filelist, item);
+        }
 
-	}
+    }
 
-	/******************************************************************************/
+    /******************************************************************************/
 
-	void updateFiles() {
+    void updateFiles() {
 
-		Object filelist = thinlet.find("openfilelist");
-		thinlet.removeAll(filelist);
+        Object filelist = thinlet.find("openfilelist");
+        thinlet.removeAll(filelist);
 
-		String[] filenames = curdir.list();
-		if (filenames != null) {
-			for (String filename2 : filenames) {
-				if (filename2.startsWith(".")) {
-					continue;
-				}
+        String[] filenames = curdir.list();
+        if (filenames != null) {
+            for (String filename2 : filenames) {
+                if (filename2.startsWith(".")) {
+                    continue;
+                }
 
-				File file = new File(curdir, filename2);
+                File file = new File(curdir, filename2);
 
-				if (file.isDirectory()) {
-					Object item = Thinlet.createImpl("item");
-					thinlet.setString(item, "text", file.getName()
-							+ File.separator);
-					thinlet.add(filelist, item);
-					continue;
-				}
+                if (file.isDirectory()) {
+                    Object item = Thinlet.createImpl("item");
+                    thinlet.setString(item, "text", file.getName() + File.separator);
+                    thinlet.add(filelist, item);
+                    continue;
+                }
 
-				for (String pattern : patterns) {
-					if (match(file.getName().toLowerCase(), pattern)) {
-						Object item = Thinlet.createImpl("item");
-						thinlet.setString(item, "text", file.getName());
-						thinlet.add(filelist, item);
-						continue;
-					}
-				}
-			}
-		}
+                for (String pattern : patterns) {
+                    if (match(file.getName().toLowerCase(), pattern)) {
+                        Object item = Thinlet.createImpl("item");
+                        thinlet.setString(item, "text", file.getName());
+                        thinlet.add(filelist, item);
+                        continue;
+                    }
+                }
+            }
+        }
 
-	} // End of method updateFiles
+    } // End of method updateFiles
 
-	/******************************************************************************/
+    /******************************************************************************/
 
-	public void cancel() {
-		thinlet.remove(thinlet.find("opendialog"));
-	}
+    public void cancel() {
+        thinlet.remove(thinlet.find("opendialog"));
+    }
 
-	/******************************************************************************/
+    /******************************************************************************/
 
-	public void ok() {
-		openFile(thinlet.find("openfilelist"));
-	}
+    public void ok() {
+        openFile(thinlet.find("openfilelist"));
+    }
 
-	/******************************************************************************/
+    /******************************************************************************/
 
-	public void openFile(Object list) {
+    public void openFile(Object list) {
 
-		Object item = thinlet.getSelectedItem(list);
-		if (item == null) {
-			return;
-		}
+        Object item = thinlet.getSelectedItem(list);
+        if (item == null) {
+            return;
+        }
 
-		String fname = thinlet.getString(item, "text");
+        String fname = thinlet.getString(item, "text");
 
-		if (curdir == root) {
-			int i = thinlet.getSelectedIndex(list);
-			if (i >= 0) {
-				setDirectory(roots[i]);
-				updateDirs();
-				updateFiles();
-			}
-		} else if (fname.endsWith(File.separator)) {
-			fname = fname.substring(0, fname.length() - 1);
-			File dir = new File(curdir, fname);
-			setDirectory(dir);
-			updateDirs();
-			if (curdir == root) {
-				updateDrives();
-			} else {
-				updateFiles();
-			}
-		} else {
-			// close the dialog and return the name of the file
+        if (curdir == root) {
+            int i = thinlet.getSelectedIndex(list);
+            if (i >= 0) {
+                setDirectory(roots[i]);
+                updateDirs();
+                updateFiles();
+            }
+        } else if (fname.endsWith(File.separator)) {
+            fname = fname.substring(0, fname.length() - 1);
+            File dir = new File(curdir, fname);
+            setDirectory(dir);
+            updateDirs();
+            if (curdir == root) {
+                updateDrives();
+            } else {
+                updateFiles();
+            }
+        } else {
+            // close the dialog and return the name of the file
 
-			thinlet.remove(thinlet.find("opendialog"));
+            thinlet.remove(thinlet.find("opendialog"));
 
-			File file = new File(curdir, fname);
-			filename = file.getAbsolutePath();
-			if (task != null) {
-				task.execute();
-			}
-		}
+            File file = new File(curdir, fname);
+            filename = file.getAbsolutePath();
+            if (task != null) {
+                task.execute();
+            }
+        }
 
-	}
+    }
 
-	/******************************************************************************/
+    /******************************************************************************/
 
-	public void changeFile(Object list) {
-	}
+    public void changeFile(Object list) {
+    }
 
-	/******************************************************************************/
+    /******************************************************************************/
 
-	public void changeType(Object list) {
-		int index = thinlet.getSelectedIndex(list);
+    public void changeType(Object list) {
+        int index = thinlet.getSelectedIndex(list);
 
-		String[] s = filters.get(index);
+        String[] s = filters.get(index);
 
-		StringTokenizer tk = new StringTokenizer(s[1], ";");
+        StringTokenizer tk = new StringTokenizer(s[1], ";");
 
-		patterns = new String[tk.countTokens()];
-		for (int i = 0; i < patterns.length; i++) {
-			patterns[i] = tk.nextToken().toLowerCase();
-		}
+        patterns = new String[tk.countTokens()];
+        for (int i = 0; i < patterns.length; i++) {
+            patterns[i] = tk.nextToken().toLowerCase();
+        }
 
-		if (curdir == root) {
-			updateDrives();
-		} else {
-			updateFiles();
-		}
+        if (curdir == root) {
+            updateDrives();
+        } else {
+            updateFiles();
+        }
 
-	}
+    }
 
-	/******************************************************************************/
+    /******************************************************************************/
 
-	public void show() {
+    public void setVisible(boolean visible) {
 
-		try {
-			Object dialog = thinlet.parse("/org/apophysis/thinletxml/opendialog.xml", this);
-			thinlet.add(dialog);
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
+        if (!visible) {
+            return;
+        }
 
-		updateFilters();
-		updateDirs();
-		changeType(thinlet.find("opentypelist"));
+        try {
+            Object dialog = thinlet.parse("/org/apophysis/thinletxml/opendialog.xml", this);
+            thinlet.add(dialog);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
 
-	} // End of method execute
+        updateFilters();
+        updateDirs();
+        changeType(thinlet.find("opentypelist"));
 
-	/******************************************************************************/
+    } // End of method execute
 
-	boolean match(String name, String pattern) {
-		return match(name.toCharArray(), pattern.toCharArray(), 0, 0);
-	}
+    /******************************************************************************/
 
-	/******************************************************************************/
+    boolean match(String name, String pattern) {
+        return match(name.toCharArray(), pattern.toCharArray(), 0, 0);
+    }
 
-	boolean match(char name[], char pattern[], int in, int ip) {
+    /******************************************************************************/
 
-		if ((in == name.length) & (ip == pattern.length)) {
-			return true;
-		} else if (ip == pattern.length) {
-			return false;
-		} else if (pattern[ip] == '*') {
-			for (int i = in; i <= name.length; i++) {
-				if (match(name, pattern, i, ip + 1)) {
-					return true;
-				}
-			}
-			return false;
-		} else if (in == name.length) {
-			return false;
-		} else if (name[in] == pattern[ip]) {
-			return match(name, pattern, in + 1, ip + 1);
-		} else {
-			return false;
-		}
-	}
+    boolean match(char name[], char pattern[], int in, int ip) {
 
-	/******************************************************************************/
+        if ((in == name.length) & (ip == pattern.length)) {
+            return true;
+        } else if (ip == pattern.length) {
+            return false;
+        } else if (pattern[ip] == '*') {
+            for (int i = in; i <= name.length; i++) {
+                if (match(name, pattern, i, ip + 1)) {
+                    return true;
+                }
+            }
+            return false;
+        } else if (in == name.length) {
+            return false;
+        } else if (name[in] == pattern[ip]) {
+            return match(name, pattern, in + 1, ip + 1);
+        } else {
+            return false;
+        }
+    }
+
+    /******************************************************************************/
 
 } // End of class OpenDialog

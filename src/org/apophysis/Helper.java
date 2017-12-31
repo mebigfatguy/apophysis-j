@@ -32,132 +32,126 @@ import java.io.InputStreamReader;
 
 public class Helper extends MyThinlet implements Constants, Runnable {
 
-	/*****************************************************************************/
-	// CONSTANTS
+    /*****************************************************************************/
+    // CONSTANTS
 
-	/*****************************************************************************/
-	// FIELDS
+    /*****************************************************************************/
+    // FIELDS
 
-	private String titles[];
-	private String names[];
+    private String titles[];
+    private String names[];
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	Helper(String title, String xmlfile, int width, int height)
-			throws Exception {
-		super(title, xmlfile, width, height);
+    Helper(String title, String xmlfile, int width, int height) throws Exception {
+        super(title, xmlfile, width, height);
 
-		buildTopicMenu();
+        buildTopicMenu();
 
-	}
+    }
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	@Override
-	public boolean destroy() {
-		hide();
-		return false;
-	}
+    @Override
+    public boolean destroy() {
+        super.setVisible(false);
+        return false;
+    }
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	@Override
-	public void show() {
-		super.show();
+    @Override
+    public void setVisible(boolean visible) {
+        super.setVisible(visible);
 
-	} // End of method show
+    } // End of method show
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	void buildTopicMenu() {
-		Object combo = find("cmbTopic");
-		Object[] choices = getItems(combo);
+    void buildTopicMenu() {
+        Object combo = find("cmbTopic");
+        Object[] choices = getItems(combo);
 
-		int n = choices.length;
+        int n = choices.length;
 
-		titles = new String[n];
-		names = new String[n];
+        titles = new String[n];
+        names = new String[n];
 
-		for (int i = 0; i < n; i++) {
-			String t = getString(choices[i], "text");
-			int k = t.indexOf(":");
-			if (k < 0) {
-				continue;
-			}
-			titles[i] = t.substring(0, k);
-			names[i] = t.substring(k + 1);
-			setString(choices[i], "text", "  " + titles[i] + "  ");
-		}
+        for (int i = 0; i < n; i++) {
+            String t = getString(choices[i], "text");
+            int k = t.indexOf(":");
+            if (k < 0) {
+                continue;
+            }
+            titles[i] = t.substring(0, k);
+            names[i] = t.substring(k + 1);
+            setString(choices[i], "text", "  " + titles[i] + "  ");
+        }
 
-	}
+    }
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	public void changeTopic(Object combo) {
+    public void changeTopic(Object combo) {
 
-		int index = getInteger(combo, "selected");
-		if (index < 0) {
-			return;
-		}
-		if (names == null) {
-			return;
-		}
+        int index = getInteger(combo, "selected");
+        if (index < 0) {
+            return;
+        }
+        if (names == null) {
+            return;
+        }
 
-		setTopic(index);
+        setTopic(index);
 
-	} // End of method changeTopic
+    } // End of method changeTopic
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	public void setTopicByName(String name) {
-		for (int i = 0; i < names.length; i++) {
-			if (names[i].equals(name)) {
-				setTopic(i);
-				break;
-			}
-		}
-	} // End of method setTopicByName
+    public void setTopicByName(String name) {
+        for (int i = 0; i < names.length; i++) {
+            if (names[i].equals(name)) {
+                setTopic(i);
+                break;
+            }
+        }
+    } // End of method setTopicByName
 
-	/*****************************************************************************/
+    /*****************************************************************************/
 
-	public void setTopic(int index) {
-		String title = titles[index];
-		String name = names[index];
+    public void setTopic(int index) {
+        String title = titles[index];
+        String name = names[index];
 
         String rname = "/help/" + name + ".txt";
-		try (InputStreamReader r = new InputStreamReader(new BufferedInputStream(Global.main.getClass()
-                    .getResourceAsStream(rname)))) {
-			char[] buffer = new char[512];
+        try (InputStreamReader r = new InputStreamReader(new BufferedInputStream(Global.main.getClass().getResourceAsStream(rname)))) {
+            char[] buffer = new char[512];
 
+            StringBuilder sb = new StringBuilder();
 
-			
+            while (true) {
+                int n = r.read(buffer, 0, buffer.length);
+                if (n <= 0) {
+                    break;
+                }
+                sb.append(buffer, 0, n);
+            }
 
-			StringBuilder sb = new StringBuilder();
+            setString(find("Display"), "text", sb.toString());
+            setInteger(find("cmbTopic"), "selected", index);
+            setString(find("cmbTopic"), "text", title);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
 
-			while (true) {
-				int n = r.read(buffer, 0, buffer.length);
-				if (n <= 0) {
-					break;
-				}
-				sb.append(buffer, 0, n);
-			}
+    } // End of method setTopic
 
-			setString(find("Display"), "text", sb.toString());
-			setInteger(find("cmbTopic"), "selected", index);
-			setString(find("cmbTopic"), "text", title);
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
+    /*****************************************************************************/
 
-	} // End of method setTopic
+    public void btnCloseClick() {
+        setVisible(false);
+    }
 
-	/*****************************************************************************/
-
-	public void btnCloseClick() {
-		hide();
-	}
-
-	/*****************************************************************************/
+    /*****************************************************************************/
 
 } // End of class Helper
-
